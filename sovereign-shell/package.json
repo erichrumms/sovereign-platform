@@ -1,0 +1,24 @@
+{
+  "name": "@sovereign/shell",
+  "version": "1.0.0",
+  "description": "SOVEREIGN Platform — host shell (Option C): SovereignShellContext, module loader, navigation chrome, CPMI-VRS governance dashboard",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.11"
+  }
+}

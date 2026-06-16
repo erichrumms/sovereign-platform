@@ -1,0 +1,18 @@
+{
+  "name": "sovereign-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SOVEREIGN Platform monorepo root (Option C — Unified Shell + Module Applications). npm workspaces linkage for the shared packages and companion modules. Session 4, June 15, 2026.",
+  "workspaces": [
+    "sovereign-data",
+    "sovereign-api-client",
+    "sovereign-shell",
+    "module-counsel"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @sovereign/shell",
+    "typecheck": "npm run typecheck --workspace @sovereign/shell",
+    "test:data": "npm run test --workspace @sovereign/data",
+    "test:api-client": "npm run test --workspace @sovereign/api-client"
+  }
+}

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOVEREIGN Platform — Build Plan v2.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F2F6FB; color: #1C2B3A; }
+
+  /* Header */
+  .header { background: #0D1B2A; color: #fff; padding: 40px 48px 32px; }
+  .header h1 { font-size: 2rem; letter-spacing: 3px; font-weight: 800; color: #fff; }
+  .header .sub { font-size: 1rem; color: #D6E8F7; margin-top: 8px; }
+  .header .tagline { font-size: 0.85rem; color: #8FA4B8; margin-top: 6px; }
+  .header-rule { height: 3px; background: #1B6CA8; margin: 18px 0 0; border: none; }
+
+  /* Stats bar */
+  .stats { background: #0A1520; display: flex; gap: 0; }
+  .stat { flex: 1; padding: 20px 24px; border-right: 1px solid #1B3A55; }
+  .stat:last-child { border-right: none; }
+  .stat .num { font-size: 1.8rem; font-weight: 800; color: #1B6CA8; }
+  .stat .label { font-size: 0.72rem; color: #8FA4B8; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+  /* Architecture diagram */
+  .arch-section { background: #0D1B2A; padding: 32px 48px; }
+  .arch-section h2 { color: #D6E8F7; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+  .arch-pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .arch-stage { background: #0A1520; border: 1px solid #1B3A55; padding: 14px 12px; text-align: center; }
+  .arch-stage.active { border-color: #1B6CA8; }
+  .arch-stage .stage-num { font-size: 0.65rem; color: #1B6CA8; letter-spacing: 2px; text-transform: uppercase; }
+  .arch-stage .stage-name { font-size: 0.8rem; font-weight: 700; color: #fff; margin: 4px 0; }
+  .arch-stage .stage-product { font-size: 0.7rem; color: #8FA4B8; }
+  .arch-arrow { display: flex; align-items: center; justify-content: center; color: #1B6CA8; font-size: 1.2rem; }
+  .arch-infra { margin-top: 16px; background: #122030; border: 1px solid #1B6CA8; padding: 12px 16px; border-radius: 2px; }
+  .arch-infra .infra-label { font-size: 0.65rem; color: #1B6CA8; letter-spacing: 2px; text-transform: uppercase; }
+  .arch-infra .infra-items { display: flex; gap: 24px; margin-top: 8px; }
+  .arch-infra .infra-item { font-size: 0.75rem; color: #D6E8F7; }
+
+  /* Option C badge */
+  .option-c-banner { background: #5C3D99; color: #fff; padding: 12px 48px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+  .option-c-banner span { color: #D6E8F7; font-weight: 400; }
+
+  /* Main content */
+  .content { padding: 32px 48px; }
+  .section-title { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #1B6CA8; font-weight: 700; margin-bottom: 16px; }
+
+  /* Monorepo structure */
+  .monorepo { background: #0D1B2A; border: 1px solid #1B3A55; padding: 20px 24px; margin-bottom: 32px; font-family: 'Courier New', monospace; font-size: 0.78rem; color: #D6E8F7; border-radius: 2px; }
+  .monorepo .pkg { color: #1B6CA8; font-weight: 700; }
+  .monorepo .mod { color: #1A7A6E; font-weight: 700; }
+  .monorepo .comment { color: #8FA4B8; }
+  .monorepo .gov { color: #E8A020; }
+
+  /* Stage cards */
+  .stages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .stage-card { background: #fff; border: 1px solid #C8D8E8; border-left: 5px solid #1B6CA8; padding: 0; overflow: hidden; }
+  .stage-card.complete { border-left-color: #1A7A6E; }
+  .stage-card.next { border-left-color: #E8A020; }
+  .stage-card.future { border-left-color: #C8D8E8; }
+  .stage-card.parallel { border-left-color: #5C3D99; }
+  .stage-header { display: flex; align-items: center; padding: 14px 18px; gap: 16px; cursor: pointer; }
+  .stage-badge { font-size: 0.65rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; white-space: nowrap; }
+  .badge-complete { background: #EAF5F3; color: #1A7A6E; }
+  .badge-next { background: #FEF3DC; color: #B07010; }
+  .badge-future { background: #EBF2F9; color: #1B6CA8; }
+  .badge-parallel { background: #F0EDF8; color: #5C3D99; }
+  .stage-name { font-weight: 700; font-size: 0.9rem; color: #0D1B2A; flex: 1; }
+  .stage-meta { font-size: 0.75rem; color: #8FA4B8; white-space: nowrap; }
+  .stage-detail { padding: 0 18px 16px 18px; border-top: 1px solid #EBF2F9; display: none; }
+  .stage-detail.open { display: block; }
+  .stage-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .detail-col h4 { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: #1B6CA8; margin-bottom: 8px; }
+  .detail-col ul { list-style: none; }
+  .detail-col ul li { font-size: 0.78rem; color: #2C3E50; padding: 3px 0; padding-left: 14px; position: relative; }
+  .detail-col ul li::before { content: '→'; position: absolute; left: 0; color: #1B6CA8; font-size: 0.7rem; }
+  .detail-col ul li.cond::before { content: '⚠'; color: #B07010; }
+  .effort-bar { margin-top: 10px; }
+  .effort-track { background: #EBF2F9; height: 6px; border-radius: 3px; margin-top: 4px; }
+  .effort-fill { background: #1B6CA8; height: 6px; border-radius: 3px; }
+
+  /* Gate cards */
+  .gates { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 32px; }
+  .gate { background: #fff; border: 1px solid #C8D8E8; padding: 14px; text-align: center; }
+  .gate.satisfied { background: #EAF5F3; border-color: #1A7A6E; }
+  .gate.pending { background: #EBF2F9; border-color: #1B6CA8; }
+  .gate .gate-num { font-size: 0.65rem; letter-spacing: 2px; color: #8FA4B8; text-transform: uppercase; }
+  .gate .gate-name { font-size: 0.78rem; font-weight: 700; color: #0D1B2A; margin: 6px 0 4px; }
+  .gate .gate-status { font-size: 0.7rem; }
+  .gate.satisfied .gate-status { color: #1A7A6E; font-weight: 700; }
+  .gate.pending .gate-status { color: #1B6CA8; }
+
+  /* IL section */
+  .il-section { background: #0D1B2A; border: 2px solid #E8A020; padding: 24px; margin-bottom: 32px; }
+  .il-section h3 { color: #E8A020; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+  .il-components { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .il-comp { background: #0A1520; border: 1px solid #1B3A55; padding: 12px; }
+  .il-comp .il-name { font-size: 0.75rem; font-weight: 700; color: #D6E8F7; margin-bottom: 6px; }
+  .il-comp .il-source { font-size: 0.68rem; color: #8FA4B8; }
+  .il-comp .il-field { font-size: 0.65rem; color: #1B6CA8; font-family: monospace; margin-top: 4px; }
+  .il-warning { margin-top: 14px; font-size: 0.78rem; color: #E8A020; font-weight: 700; }
+
+  /* Product status table */
+  .product-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+  .product-table th { background: #0D1B2A; color: #D6E8F7; font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; }
+  .product-table td { padding: 10px 14px; font-size: 0.78rem; border-bottom: 1px solid #EBF2F9; }
+  .product-table tr:hover td { background: #F8FAFD; }
+  .product-name { font-weight: 700; color: #0D1B2A; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 0.65rem; font-weight: 700; }
+  .tag-ready { background: #EAF5F3; color: #1A7A6E; }
+  .tag-conditions { background: #FEF3DC; color: #B07010; }
+  .tag-pending { background: #EBF2F9; color: #1B6CA8; }
+
+  /* Footer */
+  .footer { background: #0D1B2A; color: #8FA4B8; padding: 20px 48px; font-size: 0.72rem; display: flex; justify-content: space-between; align-items: center; }
+
+  /* Toggle behavior */
+  .toggle-hint { font-size: 0.68rem; color: #1B6CA8; margin-left: auto; }
+</style>
+</head>
+<body>
+<!-- SESSION 1 STATUS UPDATE — June 1, 2026
+Stage 1 Security Framework: COMPLETE — 127 tests passing
+  - sovereign_logger.py (41 tests)
+  - sovereign_honeytoken.py (24 tests)
+  - sovereign_anomaly.py (29 tests)
+  - sovereign_alerts.py (33 tests)
+  - sovereign_config.yaml (10 checks)
+  - shell-contract.ts v1.0 APPROVED
+  - Agent_Operator_Scope_SOVEREIGN.md v1.0 produced (pending approval)
+R3 CLOSED pending approval
+Open Decision 1 (A2A approval behavior) CLOSED: ACKNOWLEDGE_AND_CONTINUE default; CPMI RE_EXECUTE exception
+Open Decision 4 (shell protocol scope) CLOSED: MCP/A2A/AG-UI in shell contract
+Remaining Stage 1: shell implementation (sovereign-shell/, sovereign-api-client/)
+-->
+
+
+<div class="header">
+  <h1>SOVEREIGN Platform</h1>
+  <div class="sub">Build Plan v2.0 — Governed Agentic Runtime with Integrated Security, Intelligence, and Oversight Networks</div>
+  <div class="tagline">A staged, agent-driven build plan for a governed, observable, sovereign-AI-aligned platform across six products, built through Claude sessions.</div>
+  <hr class="header-rule">
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="num">10</div><div class="label">Delivery Stages</div></div>
+  <div class="stat"><div class="num">6</div><div class="label">Products</div></div>
+  <div class="stat"><div class="num">7+</div><div class="label">AI Agents</div></div>
+  <div class="stat"><div class="num">1,320–1,420</div><div class="label">Hours Estimated</div></div>
+  <div class="stat"><div class="num">70–90 wks</div><div class="label">Calendar Time</div></div>
+  <div class="stat"><div class="num">GATE 1</div><div class="label">Current Status ✅</div></div>
+</div>
+
+<div class="option-c-banner">
+  APPROVED ARCHITECTURE: OPTION C — UNIFIED SHELL WITH MODULE APPLICATIONS &nbsp;|&nbsp; BLOCKING GAPS CLOSED: Decision Matrix · Prompt Registry · Agent Identity Standard &nbsp;|&nbsp;
+  <span>Monorepo · React Shell · Six Product Modules · Three Shared Packages · Single ATO Boundary</span>
+</div>
+
+<!-- Architecture Overview -->
+<div class="arch-section">
+  <h2>Target End-State Architecture</h2>
+  <div class="arch-pipeline">
+    <div class="arch-stage">
+      <div class="stage-num">Stage 1</div>
+      <div class="stage-name">FLOWPATH</div>
+      <div class="stage-product">Elicit</div>
+    </div>
+    <div class="arch-stage" style="background:#0D1B2A; border-color:#E8A020;">
+      <div class="stage-num" style="color:#E8A020;">Future</div>
+      <div class="stage-name" style="color:#E8A020;">Intel Layer</div>
+      <div class="stage-product" style="color:#8FA4B8;">Analyze</div>
+    </div>
+    <div class="arch-stage active">
+      <div class="stage-num">Stage 3</div>
+      <div class="stage-name">CPMI</div>
+      <div class="stage-product">Govern</div>
+    </div>
+    <div class="arch-stage active">
+      <div class="stage-num">Stage 4</div>
+      <div class="stage-name">AgentOS</div>
+      <div class="stage-product">Execute</div>
+    </div>
+    <div class="arch-stage active">
+      <div class="stage-num">Stages 6–7</div>
+      <div class="stage-name">NEXUS · APEX · ARIA</div>
+      <div class="stage-product">Report · Comply</div>
+    </div>
+  </div>
+  <div class="arch-infra">
+    <div class="infra-label">Shared Infrastructure (All Products)</div>
+    <div class="infra-items">
+      <div class="infra-item">⬡ SOVEREIGN Security Framework — Logger · Honeytoken · Anomaly · Alerts</div>
+      <div class="infra-item">⬡ CPMI-VRS Governance Standard — 4-gate certification</div>
+      <div class="infra-item">⬡ Sovereign Shell — Auth · Navigation · CPMI-VRS Dashboard</div>
+      <div class="infra-item">⬡ Shared Data Dictionary — 5 canonical entities</div>
+    </div>
+  </div>
+</div>
+
+<!-- Monorepo Structure -->
+<div class="content">
+  <div class="section-title">Monorepo Structure — Option C</div>
+  <div class="monorepo">
+sovereign-monorepo/<br>
+├── <span class="gov">sovereign-shell/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← HOST APPLICATION — Auth, Nav, VRS Dashboard, Logger client</span><br>
+│&nbsp;&nbsp; └── <span class="gov">shell-contract.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← GOVERNANCE DOC — approved by Project Principal before module dev</span><br>
+├── <span class="pkg">sovereign-security/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← SHARED PACKAGE — Logger, Honeytoken, Anomaly, Alerts (Python)</span><br>
+├── <span class="pkg">sovereign-data/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← SHARED PACKAGE — Canonical entity types (TypeScript)</span><br>
+├── <span class="pkg">sovereign-api-client/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← SHARED PACKAGE — CPMI client, Logger client, base headers</span><br>
+├── <span class="mod">module-flowpath/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← Stage 1 pipeline origin; VVR records; 6-agent system</span><br>
+├── <span class="mod">module-cpmi/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← Governance engine; Track A (Anthropic) + Track B (Notion MCP)</span><br>
+├── <span class="mod">module-apex/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← Program Analytics and Reporting Platform; governance HOLD; drift detection</span><br>
+├── <span class="mod">module-nexus/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← Task &amp; correspondence; program or enterprise-scale volume; Node.js + PostgreSQL</span><br>
+├── <span class="mod">module-agentos/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← MLOps backbone; Security Framework + CPMI-VRS native modules</span><br>
+└── <span class="mod">module-aria/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← ARC + TRACER + CLEAR; AI-absent compliance; policy-as-data</span>
+  </div>
+
+  <!-- Stage cards -->
+  <div style="background:#EAF5F3;border:1px solid #1A7A6E;border-left:4px solid #1A7A6E;padding:14px 18px;margin-bottom:24px;font-size:0.8rem;color:#0D1B2A;">
+    <strong>✅ Pre-Stage 1 Blocking Gaps — Closed May 2026:</strong> Three governance documents produced and approved before Stage 1 development: 
+    (1) <strong>SOVEREIGN Decision Matrix</strong> — Zone 1/2/3 assignments for all six products; (2) <strong>Prompt Registry Specification</strong> — versioned prompt governance with CPMI behavioral benchmarks; 
+    (3) <strong>Agent Identity Standard</strong> — agent registry, credential lifecycle, and Logger agent_id field requirement. 
+    All incorporated into Integration Brief v1.3. Stage 1 may begin. R2 (API abstraction layer) is a Stage 1 deliverable — sovereign-api-client must be built before any product module connects to an LLM provider.
+  </div>
+
+  <div class="section-title">Delivery Stages — Click to Expand</div>
+  <div class="stages">
+
+    <!-- Stage 1 -->
+    <div class="stage-card next">
+      <div class="stage-header" onclick="toggle('s1')">
+        <span class="stage-badge badge-next">NEXT — Stage 1</span>
+        <span class="stage-name">SOVEREIGN Security Observability Framework</span>
+        <span class="stage-meta">6–8 wks · ~120 hrs</span>
+        <span class="toggle-hint" id="s1-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s1">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Build Activities</h4>
+            <ul>
+              <li>Build sovereign_logger.py — SHA-256 hash chaining, append-only JSONL</li>
+              <li>Build sovereign_honeytoken.py — UUID4 tokens, silent webhook alerts</li>
+              <li>Build sovereign_anomaly.py — IsolationForest per product, CPMI 0.7× tier</li>
+              <li>Build sovereign_alerts.py — P1 immediate / P2 batch routing</li>
+              <li>Write sovereign_config.yaml — per-product tier configuration</li>
+              <li>Unit tests for all four modules (pytest)</li>
+              <li>Publish as internal Python package</li>
+              <li>Draft shell architecture specification (shell-contract.ts)</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Gate 2 Conditions (must close before Stage 2)</h4>
+            <ul>
+              <li>All four modules pass unit tests</li>
+              <li>Shell architecture specification approved by Project Principal</li>
+              <li>Decision Matrix, Prompt Registry Spec, and Agent Identity Standard incorporated into build context</li>
+              <li>SBOM entries created for all new dependencies</li>
+              <li>Documentation Agent produces stage summary</li>
+            </ul>
+            <div class="effort-bar">
+              <div style="font-size:0.68rem;color:#8FA4B8;">Effort relative to portfolio (~120/1,370 hrs)</div>
+              <div class="effort-track"><div class="effort-fill" style="width:9%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s2')">
+        <span class="stage-badge badge-future">Stage 2</span>
+        <span class="stage-name">Framework Deployment — All 6 Products</span>
+        <span class="stage-meta">8–10 wks · ~160 hrs</span>
+        <span class="toggle-hint" id="s2-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s2">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities</h4>
+            <ul>
+              <li>Replace Logger stubs in FLOWPATH, CPMI, APEX, NEXUS, ARIA, AgentOS</li>
+              <li>Wire external Logger emission pathway in all products</li>
+              <li>Place honeytokens in all product-specific locations</li>
+              <li>Validate P1/P2 alert routing for each product</li>
+              <li>Confirm CPMI enhanced tier active (0.7× threshold verified)</li>
+              <li>Baseline IsolationForest models per product (needs 100+ events each)</li>
+              <li>Close FLOWPATH cpmi_vrs_disclosure field (open condition)</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Gate 2 Conditions</h4>
+            <ul>
+              <li>All 6 products emitting live Logger events — no stubs remaining</li>
+              <li>At least one anomaly detected and alerted during testing</li>
+              <li><strong>Agent Operator prerequisite:</strong> Agent Operator scope document written and role formally assigned before Stage 2 alerts go live</li>
+              <li>Honeytokens confirmed inaccessible to legitimate code paths</li>
+              <li>CPMI enhanced tier confirmed active</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s3')">
+        <span class="stage-badge badge-future">Stage 3</span>
+        <span class="stage-name">CPMI-VRS Elevation to Portfolio Standard</span>
+        <span class="stage-meta">6–8 wks · ~100 hrs · Prerequisite satisfied ✅</span>
+        <span class="toggle-hint" id="s3-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s3">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities</h4>
+            <ul>
+              <li>Deploy CPMI world model REST API (GET /v1/world-model/...)</li>
+              <li>Certify all 6 products against VRS four-gate model</li>
+              <li>Issue VRS certificates for all products (including ARIA AI-absence certs)</li>
+              <li>Complete FLOWPATH Gate 1 VVR disclosure field</li>
+              <li>Run CPMI Phase 5 Notion write-back</li>
+              <li>Wire APEX governance HOLD gate to live CPMI API</li>
+              <li>Produce portfolio AI governance one-pager</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Gate 3 Conditions</h4>
+            <ul>
+              <li>CPMI world model REST API live and queryable</li>
+              <li>All 6 products hold a current VRS certificate</li>
+              <li>APEX governance HOLD gate wired to live CPMI API</li>
+              <li>Standards alignment crosswalk (NIST AI RMF) complete</li>
+              <li>Norm Accuracy Benchmark suite produced — test cases for each active world model norm confirmed by human expert review (OWI from panel review)</li>
+            </ul>
+            <div style="margin-top:10px;font-size:0.72rem;color:#1A7A6E;font-weight:700;">
+              ✅ Prerequisite satisfied: Named product owner assigned (Session 0A)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s4')">
+        <span class="stage-badge badge-future">Stage 4</span>
+        <span class="stage-name">AgentOS — Security Framework + CPMI-VRS Embedded as Native Modules</span>
+        <span class="stage-meta">6–8 wks · ~120 hrs</span>
+        <span class="toggle-hint" id="s4-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s4">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities</h4>
+            <ul>
+              <li>Embed Security Framework as native AgentOS module</li>
+              <li>Embed CPMI-VRS as native AgentOS governance layer</li>
+              <li>Run evaluate.py end-to-end — expect gate failures on synthetic data (correct)</li>
+              <li>Formally decide medium-risk approval behavior (re-execute vs. acknowledge-only)</li>
+              <li>Add Program Office Suite pipeline scaffold</li>
+              <li>Tune IsolationForest baseline for AgentOS</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Gate 4 Conditions</h4>
+            <ul>
+              <li>Security Framework + CPMI-VRS confirmed as native AgentOS modules</li>
+              <li>evaluate.py runs end-to-end — gate failures block pipeline (confirmed blocking, not warning)</li>
+              <li>Medium-risk approval behavior documented as governance record</li>
+              <li>AgentOS governance dashboard surfacing framework data</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 5 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s5')">
+        <span class="stage-badge badge-future">Stage 5</span>
+        <span class="stage-name">NEXUS Production Build</span>
+        <span class="stage-meta">10–14 wks · ~200 hrs</span>
+        <span class="toggle-hint" id="s5-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s5">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities</h4>
+            <ul>
+              <li>Complete Track B API handlers (PPTX/document generation)</li>
+              <li>Validate validateTenantContext middleware at scale</li>
+              <li>Close governance record (ISSO contact, ATO boundary, retention schedule)</li>
+              <li>Begin ATO package preparation (SSP, PIA, SBOM)</li>
+              <li>Scale testing at program or enterprise-scale volume target</li>
+              <li><strong>Review architecture prerequisite:</strong> Three-tier risk-stratified review design (risk tiers, sampling methodology, escalation thresholds) must be documented BEFORE Stage 5 build begins</li>
+              <li><strong>FedRAMP prerequisite:</strong> FedRAMP authorization preparation initiated; sponsoring agency identified if possible</li>
+              <li><strong>API/GovCloud prerequisite:</strong> LLM provider authorization decision for CUI-tier data must be resolved before Stage 5 — Anthropic commercial API is not in GovCloud boundary</li>
+              <li>PIV/CAC integration testing</li>
+              <li>pgvector semantic search integration</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Open Conditions to Close</h4>
+            <ul class="cond">
+              <li class="cond">Track B handlers not yet implemented</li>
+              <li class="cond">Governance record incomplete (ISSO, ATO boundary, retention)</li>
+              <li class="cond">ATO package not yet started</li>
+            </ul>
+            <div style="margin-top:10px;font-size:0.72rem;color:#8FA4B8;">
+              Note: ATO processing runs in parallel — government-controlled timeline, not development dependency.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 6 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s6')">
+        <span class="stage-badge badge-future">Stage 6</span>
+        <span class="stage-name">ARIA Suite — Known Issues + Production Hardening</span>
+        <span class="stage-meta">8–10 wks · ~160 hrs</span>
+        <span class="toggle-hint" id="s6-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s6">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities (resolve known issues first)</h4>
+            <ul>
+              <li>Fix TRACER selected-by-index bug (track by id)</li>
+              <li>Fix CLEAR calc(100vh) layout fragility</li>
+              <li>Fix CLEAR decision handler stale reference</li>
+              <li>Unify purple hex to canonical #6B4FA0</li>
+              <li>Add ARC role toggle (Thomas Nguyen → PERSONNEL object)</li>
+              <li>Add triggered_rules array to decision handler</li>
+              <li>Add DECISION_BLOCKED_INSUFFICIENT_ROLE event type</li>
+              <li>Place Honeytoken Manager hooks (ARC auth records, TRACER GTCC data, CLEAR cost codes)</li>
+              <li>PIV/CAC integration (production)</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>Open Conditions to Close</h4>
+            <ul class="cond">
+              <li class="cond">Transition session was documentation-only — source files unmodified</li>
+              <li class="cond">All 5 known issues carry forward with fixes documented</li>
+              <li class="cond">Governance records for TRACER and CLEAR not yet created</li>
+            </ul>
+            <div style="margin-top:10px;font-size:0.72rem;color:#1A7A6E;font-weight:700;">
+              ✅ Prerequisite satisfied: Named product owner assigned (Session 0A)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 7 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s7')">
+        <span class="stage-badge badge-future">Stage 7</span>
+        <span class="stage-name">APEX Production Build + Program Data Integration</span>
+        <span class="stage-meta">6–8 wks · ~100 hrs</span>
+        <span class="toggle-hint" id="s7-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s7">
+        <div class="detail-col">
+          <h4>Activities</h4>
+          <ul>
+            <li>Migrate sql.js to PostgreSQL backend (use Module 10 schema as canonical model)</li>
+            <li>Validate persistence end-to-end (create WP → reload → WP persists)</li>
+            <li>Wire sovereignHold() to live CPMI REST API (swap internals, no call-site rewrites)</li>
+            <li>Deploy server-side Anthropic API proxy (replace browser-direct calls)</li>
+            <li>Close governance record</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 8 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s8')">
+        <span class="stage-badge badge-future">Stage 8</span>
+        <span class="stage-name">FLOWPATH Production Build</span>
+        <span class="stage-meta">6–8 wks · ~100 hrs</span>
+        <span class="toggle-hint" id="s8-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s8">
+        <div class="detail-col">
+          <h4>Activities</h4>
+          <ul>
+            <li>Resolve context window risk — fix 5 known issues before adding features</li>
+            <li>Add cpmi_vrs_disclosure field to VVR schema</li>
+            <li>Production M365 GCC High integration for session management</li>
+            <li>Pilot with one program office (synthetic data initially)</li>
+            <li>Validate sentiment data deletion compliance (DELETE, not archive, at engagement close)</li>
+            <li>Validate supervisor access block on individual sentiment log entries (architectural, not policy)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 9 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s9')">
+        <span class="stage-badge badge-future">Stage 9</span>
+        <span class="stage-name">Integration Testing — Full Pipeline End-to-End</span>
+        <span class="stage-meta">6–8 wks · ~120 hrs</span>
+        <span class="toggle-hint" id="s9-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s9">
+        <div class="detail-col">
+          <h4>Gate 5 Conditions (must all pass)</h4>
+          <ul>
+            <li>FLOWPATH VVR produced and validated with CPMI export schema embedded</li>
+            <li>CPMI governance check runs against VVR — certificate issued</li>
+            <li>AgentOS executes governed workflow using CPMI output as authorization</li>
+            <li>NEXUS task records generated; APEX report generated</li>
+            <li>ARIA Suite compliance adjudication completes on task record</li>
+            <li>Full Logger trail visible end-to-end with no gaps in workflow_step_id chain</li>
+            <li>No manual intervention or reformatting at any pipeline stage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 10 -->
+    <div class="stage-card future">
+      <div class="stage-header" onclick="toggle('s10')">
+        <span class="stage-badge badge-future">Stage 10</span>
+        <span class="stage-name">Intelligence Layer — Design and Data Validation</span>
+        <span class="stage-meta">8–10 wks · ~140 hrs</span>
+        <span class="toggle-hint" id="s10-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="s10">
+        <div class="stage-detail-grid">
+          <div class="detail-col">
+            <h4>Activities</h4>
+            <ul>
+              <li>Validate IL exposure fields across all 6 products (workflow_step_id, decision_type, deployment_feedback, classification_level, VVR export schema)</li>
+              <li>Assess training data accumulation — are HUMAN_DECISION events tagged correctly?</li>
+              <li>Design IL architecture (5 components, build sequence, data pipeline)</li>
+              <li>Begin Judgment Detection training corpus (domain expert annotation of decision events)</li>
+              <li>Produce IL build plan — the eighth governance document</li>
+            </ul>
+          </div>
+          <div class="detail-col">
+            <h4>What the IL Build Plan Must Cover</h4>
+            <ul>
+              <li>Task Decomposition Engine — VVR ingestion pipeline spec</li>
+              <li>Judgment Detection — labeled dataset requirements, annotation workflow</li>
+              <li>Automatability Scorer — deployment_feedback aggregation model</li>
+              <li>Risk and Failure Modeler — ANOMALY_DETECTED event aggregation</li>
+              <li>Compliance Mapper — CPMI world model API query design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATO Track -->
+    <div class="stage-card parallel">
+      <div class="stage-header" onclick="toggle('ato')">
+        <span class="stage-badge badge-parallel">PARALLEL TRACK</span>
+        <span class="stage-name">ATO — Authority to Operate (NEXUS + Platform)</span>
+        <span class="stage-meta">6–18 months · Government-controlled timeline</span>
+        <span class="toggle-hint" id="ato-hint">▼ expand</span>
+      </div>
+      <div class="stage-detail" id="ato">
+        <div class="detail-col">
+          <h4>ATO Track Activities (not development activities)</h4>
+          <ul>
+            <li>ISSO engagement — begin in Stage 5 parallel with NEXUS production build</li>
+            <li>System Security Plan (SSP) — documents the shell ATO boundary (covers all modules)</li>
+            <li>Privacy Impact Assessment (PIA)</li>
+            <li>SBOM maintained as live registry</li>
+            <li>Penetration testing</li>
+            <li>Authorization Official (AO) review</li>
+            <li>Governance record completion — ISSO contact, ATO boundary, retention schedule (all 6 products)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Milestone Gates -->
+  <div class="section-title">Milestone Gates</div>
+  <div class="gates">
+    <div class="gate satisfied">
+      <div class="gate-num">Gate 1</div>
+      <div class="gate-name">Transition Builds Complete</div>
+      <div class="gate-status">✅ SATISFIED — May 2026<br><small style="color:#1A7A6E;">Blocking gaps closed: Decision Matrix · Prompt Registry · Agent Identity Standard</small></div>
+    </div>
+    <div class="gate pending">
+      <div class="gate-num">Gate 2</div>
+      <div class="gate-name">Security Framework Installed</div>
+      <div class="gate-status">All 6 products on live Logger; no stubs</div>
+    </div>
+    <div class="gate pending">
+      <div class="gate-num">Gate 3</div>
+      <div class="gate-name">VRS Certificates Issued</div>
+      <div class="gate-status">CPMI world model API live; all certs issued</div>
+    </div>
+    <div class="gate pending">
+      <div class="gate-num">Gate 4</div>
+      <div class="gate-name">AgentOS Platform Ready</div>
+      <div class="gate-status">Framework + CPMI-VRS as native modules; evaluate.py blocking</div>
+    </div>
+    <div class="gate pending">
+      <div class="gate-num">Gate 5</div>
+      <div class="gate-name">Full Pipeline Test Passing</div>
+      <div class="gate-status">FLOWPATH VVR → ARIA compliance with no manual intervention</div>
+    </div>
+  </div>
+
+  <!-- Required-Before-Production Gaps -->
+  <div style="background:#FEF3DC;border:2px solid #B07010;padding:20px 24px;margin-bottom:28px;">
+    <div style="font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:#B07010;font-weight:700;margin-bottom:14px;">Required-Before-Production Design Obligations</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+      <div style="background:#FFFDF5;border:1px solid #E8C070;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#0D1B2A;margin-bottom:6px;">R1 — Human Review Volume Architecture</div>
+        <div style="font-size:0.72rem;color:#4A6070;margin-bottom:6px;"><strong>Required before Stage 5.</strong> NEXUS at program or enterprise-scale volume cannot sustain individual review of every AI output.</div>
+        <div style="font-size:0.7rem;color:#B07010;">Design: risk-stratified tiers · statistical sampling methodology · automatic escalation thresholds · sovereign-shell review queue component</div>
+      </div>
+
+      <div style="background:#FFFDF5;border:1px solid #E8C070;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#0D1B2A;margin-bottom:6px;">R2 — AI Provider Abstraction Layer</div>
+        <div style="font-size:0.72rem;color:#4A6070;margin-bottom:6px;"><strong>Required in Stage 1.</strong> No product calls Anthropic API directly. sovereign-api-client wraps all LLM calls.</div>
+        <div style="font-size:0.7rem;color:#B07010;">Resolve: GovCloud LLM provider decision · FedRAMP authorization for CUI tier · three-tier fallback as platform standard</div>
+      </div>
+
+      <div style="background:#FFFDF5;border:1px solid #E8C070;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#0D1B2A;margin-bottom:6px;">R3 — Agent Operator Role</div>
+        <div style="font-size:0.72rem;color:#4A6070;margin-bottom:6px;"><strong>Required before Stage 2.</strong> Role must be formally defined and assigned before Security Framework alerts go live.</div>
+        <div style="font-size:0.7rem;color:#B07010;">Produce: Agent Operator scope document · formal role assignment · succession procedure · production capacity plan</div>
+      </div>
+
+      <div style="background:#FFFDF5;border:1px solid #E8C070;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#0D1B2A;margin-bottom:6px;">R4 — Federal Client Workforce Transition</div>
+        <div style="font-size:0.72rem;color:#4A6070;margin-bottom:6px;"><strong>Required before any client pilot.</strong> Federal transition state is 2–4 years. Implementation methodology must address it.</div>
+        <div style="font-size:0.7rem;color:#B07010;">Produce: Client Implementation Methodology document · FLOWPATH pilot framing · reviewer capacity design · middle management transition protocol</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Intelligence Layer -->
+  <div class="il-section">
+    <h3>⚡ Intelligence Layer — Seventh Product — NEVER LOSE THIS</h3>
+    <div class="il-components">
+      <div class="il-comp">
+        <div class="il-name">Task Decomposition Engine</div>
+        <div class="il-source">Source: FLOWPATH</div>
+        <div class="il-field">VVR export schema<br>{step_id, description,<br>inputs, outputs,<br>decision_required,<br>human_role}</div>
+      </div>
+      <div class="il-comp">
+        <div class="il-name">Judgment Detection</div>
+        <div class="il-source">Source: All 6 products; NEXUS primary</div>
+        <div class="il-field">HUMAN_DECISION events<br>decision_type field<br>12+ months required<br>before IL training</div>
+      </div>
+      <div class="il-comp">
+        <div class="il-name">Automatability Scorer</div>
+        <div class="il-source">Source: AgentOS</div>
+        <div class="il-field">deployment_feedback:<br>{workflow_step_id,<br>step_outcome,<br>agent_id,<br>failure_reason}</div>
+      </div>
+      <div class="il-comp">
+        <div class="il-name">Risk &amp; Failure Modeler</div>
+        <div class="il-source">Source: Security Framework</div>
+        <div class="il-field">ANOMALY_DETECTED<br>with workflow_step_id<br>on every event</div>
+      </div>
+      <div class="il-comp">
+        <div class="il-name">Compliance Mapper</div>
+        <div class="il-source">Source: CPMI + FLOWPATH</div>
+        <div class="il-field">classification_level<br>on every program entity<br>CPMI world model API<br>queryable by program_id</div>
+      </div>
+    </div>
+    <div class="il-warning">⚠ These field names are FROZEN: workflow_step_id · decision_type · deployment_feedback · classification_level · VVR export schema. Never rename. Every current product exposes them. No rewrite required when IL is built.</div>
+  </div>
+
+  <!-- Product Status -->
+  <div class="section-title">Current Product Status</div>
+  <table class="product-table">
+    <tr>
+      <th>Product</th>
+      <th>Pipeline Stage</th>
+      <th>Readiness</th>
+      <th>Open Condition (First SOVEREIGN Session)</th>
+      <th>Governance Record</th>
+    </tr>
+    <tr>
+      <td><span class="product-name">FLOWPATH</span></td>
+      <td>Stage 1 — Elicit</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Add cpmi_vrs_disclosure to VVR schema</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+    <tr>
+      <td><span class="product-name">CPMI</span></td>
+      <td>Stage 3 — Govern</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Deploy world model REST API; run Phase 5 write-back</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+    <tr>
+      <td><span class="product-name">AgentOS</span></td>
+      <td>Stage 4 — Execute</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Run evaluate.py end-to-end; decide medium-risk approval behavior</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+    <tr>
+      <td><span class="product-name">NEXUS</span></td>
+      <td>Stage 6 — Report</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Complete Track B API handlers; begin governance record</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+    <tr>
+      <td><span class="product-name">APEX</span></td>
+      <td>Stage 6 — Report</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Validate sql.js persistence; wire Logger emission pathway</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+    <tr>
+      <td><span class="product-name">ARIA Suite</span></td>
+      <td>Stage 7 — Comply</td>
+      <td><span class="tag tag-conditions">Ready with Conditions</span></td>
+      <td>Resolve all 5 known issues; begin source file modifications</td>
+      <td><span class="tag" style="background:#FEF3DC;color:#B07010;">INCOMPLETE</span></td>
+    </tr>
+  </table>
+
+  <div style="background:#FEF3DC;border:1px solid #E8A020;border-left:4px solid #E8A020;padding:14px 18px;margin-bottom:32px;font-size:0.8rem;color:#0D1B2A;">
+    <strong>⚠ Portfolio-Wide Priority:</strong> All six governance records are incomplete. Three blocking gaps have been closed (Decision Matrix, Prompt Registry, Agent Identity Standard — May 2026). No ISSO contacts, ATO boundaries, or retention schedules are documented for any product. This blocks ISSO engagement but not SOVEREIGN project entry. All governance records must be complete before any real federal data enters any product.
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>SOVEREIGN Platform — Build Plan v2.0 · May 2026 · Pre-Decisional · Internal Working Document</div>
+  <div>Leidos Federal AI Services · Meridian Federal Solutions</div>
+</div>
+
+<script>
+function toggle(id) {
+  const detail = document.getElementById(id);
+  const hint = document.getElementById(id + '-hint');
+  if (detail.classList.contains('open')) {
+    detail.classList.remove('open');
+    hint.textContent = '▼ expand';
+  } else {
+    detail.classList.add('open');
+    hint.textContent = '▲ collapse';
+  }
+}
+// Auto-expand Stage 1 (the next stage)
+toggle('s1');
+</script>
+</body>
+</html>

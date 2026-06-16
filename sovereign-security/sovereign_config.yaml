@@ -1,0 +1,260 @@
+# ═══════════════════════════════════════════════════════════════════
+# SOVEREIGN Platform — Security Observability Framework Configuration
+# sovereign_config.yaml
+#
+# Loaded by: sovereign_logger.py, sovereign_honeytoken.py (Stage 1),
+#            sovereign_anomaly.py, sovereign_alerts.py (Stage 2)
+#
+# Environment variables: Values prefixed with ${...} are resolved
+# at runtime from environment variables. Never hardcode secrets here.
+# This file is committed to the monorepo. Secrets are not.
+#
+# Change process: Changes to product tier assignments or anomaly
+# thresholds require a documented governance decision by the
+# Project Principal. This file is a governance document.
+#
+# Version: 1.0
+# Date: June 2026
+# Stage: 1 — Logger and Honeytoken active.
+#            Anomaly Detector and Alert Dispatcher: Stage 2.
+# ═══════════════════════════════════════════════════════════════════
+
+sovereign:
+  version: "1.0"
+  build_stage: 1
+  data_classification: SYNTHETIC   # SYNTHETIC | CUI | CLASSIFIED
+                                   # Governance Clock activates on first
+                                   # non-SYNTHETIC entry. Do not change
+                                   # this value manually — it is updated
+                                   # by the Logger when real data enters.
+
+  # ─────────────────────────────────────────────────────────────
+  # PRODUCT CONFIGURATION
+  # Every product in the pipeline is registered here.
+  # Tier assignments are governance decisions — not tuning parameters.
+  # CPMI is always enhanced regardless of what appears here;
+  # the Logger enforces this architecturally.
+  # ─────────────────────────────────────────────────────────────
+
+  products:
+    - id: CPMI
+      display_name: "Cognitive Program Management Intelligence"
+      tier: enhanced
+      anomaly_threshold_multiplier: 0.7   # 30% tighter — architectural, not configurable
+      priority_routing: true              # P1 alerts, no batching, immediate dispatch
+      pipeline_stage: 3
+      note: >
+        CPMI is the highest-priority security node. Its governance outputs
+        flow to all six products. Reasoning drift in CPMI is a platform-wide
+        event, not a product-level event. Enhanced monitoring is permanent.
+
+    - id: FLOWPATH
+      display_name: "FLOWPATH Workflow Mapping"
+      tier: standard
+      anomaly_threshold_multiplier: 1.0
+      priority_routing: false
+      pipeline_stage: 1
+
+    - id: AGENTOS
+      display_name: "AgentOS MLOps and Orchestration"
+      tier: standard
+      anomaly_threshold_multiplier: 1.0
+      priority_routing: false
+      pipeline_stage: 4
+
+    - id: NEXUS
+      display_name: "NEXUS Task and Correspondence Management"
+      tier: standard
+      anomaly_threshold_multiplier: 1.0
+      priority_routing: false
+      pipeline_stage: 6
+
+    - id: APEX
+      display_name: "Program Analytics and Reporting Platform"
+      tier: standard
+      anomaly_threshold_multiplier: 1.0
+      priority_routing: false
+      pipeline_stage: 6
+
+    - id: ARIA
+      display_name: "ARIA Suite — ARC, TRACER, CLEAR"
+      tier: standard
+      anomaly_threshold_multiplier: 1.0
+      priority_routing: false
+      pipeline_stage: 7
+
+  # ─────────────────────────────────────────────────────────────
+  # LOGGER CONFIGURATION
+  # Stage 1: local JSONL output only.
+  # Stage 2: remote_sink activated — add SOVEREIGN_LOGGER_ENDPOINT
+  #          environment variable. No call-site rewrites required.
+  # ─────────────────────────────────────────────────────────────
+
+  logger:
+    output_path: "./logs/sovereign.jsonl"
+    remote_sink: null              # Set SOVEREIGN_LOGGER_ENDPOINT env var to activate (Stage 2)
+    rotation:
+      enabled: false        # Stage 2: enable with max_bytes and backup_count
+      max_bytes: 10485760   # 10 MB — configured but inactive until Stage 2
+      backup_count: 5
+    chain_verification:
+      on_startup: true      # Verify chain integrity when Logger initializes
+      on_demand: true       # verify_chain() callable at any time
+
+  # ─────────────────────────────────────────────────────────────
+  # HONEYTOKEN MANAGER CONFIGURATION
+  # Stage 1: token generation and placement registry active.
+  # Webhook delivery requires alert_destinations to be configured.
+  # ─────────────────────────────────────────────────────────────
+
+  honeytoken:
+    enabled: true
+    token_format: "uuid4"
+    placement_registry_path: "./logs/honeytoken_registry.jsonl"
+    webhook_url: null              # Set HONEYTOKEN_WEBHOOK_URL env var to activate
+    alert_on_access: true
+    alert_priority: P1    # Any honeytoken access is immediate P1 — no exceptions
+    placements:
+      # Tokens are embedded in MCP-accessible data stores.
+      # Add entries here as each product's data layer is built.
+      # Format: {product, data_store, field_name, placement_date}
+      - product: CPMI
+        data_store: WORLD_MODEL_DB
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when CPMI world model API is deployed
+      - product: NEXUS
+        data_store: TASK_DB
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when NEXUS Track B is complete
+      - product: APEX
+        data_store: PROGRAM_DB
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when APEX PostgreSQL migration is complete
+      - product: FLOWPATH
+        data_store: VVR_RECORDS
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when FLOWPATH VVR schema is finalized
+      - product: ARIA
+        data_store: AUDIT_DB
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when ARIA source files are modified
+      - product: AGENTOS
+        data_store: FEATURE_STORE
+        field_name: "_sovereign_integrity_token"
+        placement_date: null    # Set when AgentOS evaluate.py runs end-to-end
+
+  # ─────────────────────────────────────────────────────────────
+  # ANOMALY DETECTOR CONFIGURATION
+  # Stage 2 activation. Structure defined here for no-rewrite
+  # connection when sovereign_anomaly.py is built.
+  # ─────────────────────────────────────────────────────────────
+
+  anomaly_detector:
+    enabled: false          # Activated in Stage 2
+    algorithm: IsolationForest
+    min_entries_before_activation: 100    # Per product — baselines are not shared
+    false_positive_target: 0.02           # <2% in production
+    retraining:
+      schedule: weekly
+      manual_trigger: true
+    cpmi_override:
+      # CPMI's contamination parameter is multiplied by 0.7 at the
+      # detector level — consistent with the Logger's enhanced tier.
+      # This is stated here as documentation; sovereign_anomaly.py
+      # enforces it architecturally.
+      contamination_multiplier: 0.7
+
+  # ─────────────────────────────────────────────────────────────
+  # ALERT DISPATCHER CONFIGURATION
+  # Stage 2 activation. Destinations defined here so the Alert
+  # Dispatcher has no config work to do when it is built.
+  #
+  # Priority levels:
+  #   P1 — Immediate dispatch, no batching:
+  #          HONEYTOKEN_ACCESS, APPROVAL_GATE_BYPASS,
+  #          all CPMI enhanced tier anomaly events
+  #   P2 — 5-minute batch window:
+  #          All other anomaly events
+  # ─────────────────────────────────────────────────────────────
+
+  alert_dispatcher:
+    enabled: false          # Activated in Stage 2
+    retry:
+      attempts: 3
+      backoff: exponential  # 1s, 2s, 4s
+    destinations:
+      slack:
+        enabled: false
+        webhook_url: null              # Set SLACK_WEBHOOK_URL env var
+        p1_channel: "#sovereign-p1-alerts"
+        p2_channel: "#sovereign-p2-alerts"
+      notion:
+        enabled: false
+        database_id: null              # Set NOTION_ALERT_DB_ID env var
+        api_version: "2022-06-28"
+      http_endpoint:
+        enabled: false
+        url: null                      # Set SOVEREIGN_ALERT_ENDPOINT env var
+        auth_header: null              # Set SOVEREIGN_ALERT_AUTH env var
+      local_file:
+        enabled: true       # Always active — fallback of last resort
+        path: "./logs/sovereign_alerts.jsonl"
+    priority_rules:
+      p1_event_types:
+        - HONEYTOKEN_ACCESS
+        - APPROVAL_GATE_BYPASS
+      p1_products:
+        - CPMI               # All anomaly events from CPMI route P1
+
+  # ─────────────────────────────────────────────────────────────
+  # PROTOCOL BOUNDARIES
+  # Stage 2 activation for MCP and A2A. Stage 2 for AG-UI.
+  # Placeholders here ensure no product builds its own config.
+  # ─────────────────────────────────────────────────────────────
+
+  protocols:
+    mcp:
+      enabled: false        # Stage 2
+      manifest_path: "./config/mcp_manifest.yaml"
+      manifest_version: null
+      security_observable: true   # All MCP calls logged — non-negotiable
+
+    a2a:
+      enabled: false        # Stage 2
+      agent_registry_path: "./config/agent_registry.yaml"
+      registry_version: null
+      approval_behavior: ACKNOWLEDGE_AND_CONTINUE   # Platform default — resolved June 1, 2026
+                                                     # Exception: CPMI Gate 3 uses RE_EXECUTE,
+                                                     # encoded in CPMI agent card. Rationale:
+                                                     # world model may update during review;
+                                                     # stale reasoning chain + fresh approval
+                                                     # is a governance risk.
+
+    agui:
+      enabled: false        # Stage 2
+      event_bus_path: null  # Defined when AgentOS event bus is built
+      taxonomy_version: null
+      taxonomy_path: "./config/agui_taxonomy.yaml"
+
+  # ─────────────────────────────────────────────────────────────
+  # INTELLIGENCE LAYER EXPOSURE
+  # Fields frozen — never rename. Every product must expose these.
+  # This section documents the requirement; enforcement is in the
+  # Logger schema and the shell contract.
+  # ─────────────────────────────────────────────────────────────
+
+  intelligence_layer:
+    frozen_fields:
+      - workflow_step_id        # Every Logger event
+      - decision_type           # Every HUMAN_DECISION event
+      - deployment_feedback     # Every AGENT_STEP_COMPLETE event
+      - classification_level    # Every program entity
+    vvr_export_schema:
+      required_fields:
+        - step_id
+        - description
+        - inputs
+        - outputs
+        - decision_required
+        - human_role
+        - cpmi_vrs_disclosure    # FLOWPATH open condition — must be added to VVR schema
