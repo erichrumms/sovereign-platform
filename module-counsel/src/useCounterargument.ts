@@ -32,6 +32,7 @@ import {
   type CounterargumentOutcome,
 } from "./counter-engine";
 import { COUNTER_SYSTEM_PROMPT, COUNTER_PROMPT_VERSION } from "./prompts/counter-system.prompt";
+import { readAnthropicKey } from "./anthropic-key";
 
 const COUNSEL_ANALYST = "counsel-analyst";
 
@@ -42,13 +43,6 @@ export interface UseCounterargument {
   outcome: CounterargumentOutcome | null;
   error: string | null;
   challenge: (input: CounterargumentInput) => Promise<void>;
-}
-
-/** Read the Anthropic key from the Vite build env. Absent in synthetic/air-gapped
- *  runs — the engine then degrades to cache/static. NEVER hardcode a key. */
-function readApiKey(): string | undefined {
-  const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
-  return env?.["VITE_ANTHROPIC_API_KEY"];
 }
 
 export function useCounterargument(ctx: SovereignShellContext): UseCounterargument {
@@ -101,7 +95,7 @@ export function useCounterargument(ctx: SovereignShellContext): UseCounterargume
         complete: async (messages, reqCtx) => {
           const client = createSovereignClient(
             { tier: "standard" },
-            { api_key_anthropic: readApiKey() }
+            { api_key_anthropic: readAnthropicKey() }
           );
           return client.complete(messages, reqCtx);
         },

@@ -31,6 +31,7 @@ import {
   type PreMortemOutcome,
 } from "./premortem-engine";
 import { PREMORTEM_SYSTEM_PROMPT, PREMORTEM_PROMPT_VERSION } from "./prompts/premortem-system.prompt";
+import { readAnthropicKey } from "./anthropic-key";
 
 const COUNSEL_ANALYST = "counsel-analyst";
 
@@ -41,13 +42,6 @@ export interface UsePreMortem {
   outcome: PreMortemOutcome | null;
   error: string | null;
   run: (input: PreMortemInput) => Promise<void>;
-}
-
-/** Read the Anthropic key from the Vite build env. Absent in synthetic/air-gapped
- *  runs — the engine then degrades to cache/static. NEVER hardcode a key. */
-function readApiKey(): string | undefined {
-  const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
-  return env?.["VITE_ANTHROPIC_API_KEY"];
 }
 
 export function usePreMortem(ctx: SovereignShellContext): UsePreMortem {
@@ -99,7 +93,7 @@ export function usePreMortem(ctx: SovereignShellContext): UsePreMortem {
         complete: async (messages, reqCtx) => {
           const client = createSovereignClient(
             { tier: "standard" },
-            { api_key_anthropic: readApiKey() }
+            { api_key_anthropic: readAnthropicKey() }
           );
           return client.complete(messages, reqCtx);
         },

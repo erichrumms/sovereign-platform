@@ -31,6 +31,7 @@ import {
   type AnalysisOutcome,
 } from "./analysis-engine";
 import { ANALYSIS_SYSTEM_PROMPT, ANALYSIS_PROMPT_VERSION } from "./prompts/analysis-system.prompt";
+import { readAnthropicKey } from "./anthropic-key";
 import type { DecisionFrame } from "./types";
 
 const COUNSEL_ANALYST = "counsel-analyst";
@@ -42,13 +43,6 @@ export interface UseAnalysis {
   outcome: AnalysisOutcome | null;
   error: string | null;
   run: (frame: DecisionFrame) => Promise<void>;
-}
-
-/** Read the Anthropic key from the Vite build env. Absent in synthetic/air-gapped
- *  runs — the engine then degrades to cache/static. NEVER hardcode a key. */
-function readApiKey(): string | undefined {
-  const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
-  return env?.["VITE_ANTHROPIC_API_KEY"];
 }
 
 export function useAnalysis(ctx: SovereignShellContext): UseAnalysis {
@@ -103,7 +97,7 @@ export function useAnalysis(ctx: SovereignShellContext): UseAnalysis {
           // rejection routes the engine to the cache/static tiers.
           const client = createSovereignClient(
             { tier: "standard" },
-            { api_key_anthropic: readApiKey() }
+            { api_key_anthropic: readAnthropicKey() }
           );
           return client.complete(messages, reqCtx);
         },
