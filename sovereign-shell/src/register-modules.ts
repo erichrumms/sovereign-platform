@@ -17,8 +17,12 @@
 
 import type { ModuleLoader } from "./module-loader";
 import { counselModule } from "@sovereign/module-counsel";
+import { scribeModule } from "@sovereign/module-scribe";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
-  // COUNSEL — first companion module (GD-5). Scaffold; core is a later session.
+  // COUNSEL — first companion module (GD-5). Core complete (Session 5).
   loader.register(counselModule);
+  // SCRIBE — second companion module (GD-5). Scaffold (Session 5); core is a later
+  // session. moduleId/product are pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(scribeModule);
 }

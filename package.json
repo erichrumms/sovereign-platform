@@ -7,12 +7,15 @@
     "sovereign-data",
     "sovereign-api-client",
     "sovereign-shell",
-    "module-counsel"
+    "module-counsel",
+    "module-scribe"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
     "typecheck": "npm run typecheck --workspace @sovereign/shell",
     "test:data": "npm run test --workspace @sovereign/data",
-    "test:api-client": "npm run test --workspace @sovereign/api-client"
+    "test:api-client": "npm run test --workspace @sovereign/api-client",
+    "test:counsel": "npm run test --workspace @sovereign/module-counsel",
+    "test:scribe": "npm run test --workspace @sovereign/module-scribe"
   }
 }
