@@ -74,6 +74,13 @@ export interface COUNSELInboundContext {
   decisionType: HumanDecisionType;
   suggestedStakes?: string;
   referenceDocumentId?: string;
+  /**
+   * Program the decision belongs to, when the deep-linking product knows it.
+   * Pre-fills the Decision Record's canonical Document `program_id` (a required
+   * Document field with no other DecisionFrame source). COUNSEL-local — NOT a
+   * change to any canonical contract; the user can still supply/override it.
+   */
+  programId?: string;
   alertId?: string; // VIGIL — active alert
   approvalRequestId?: string; // VIGIL — AgentOS approval request
 }

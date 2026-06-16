@@ -52,7 +52,13 @@ const counselAnalystCard: AgentCard = {
   agent_id: "counsel-analyst",
   agent_class: "Analytical",
   product: "COUNSEL",
-  capabilities: ["decision_support_analysis", "prior_position_reconciliation"],
+  capabilities: [
+    "decision_support_analysis",
+    "prior_position_reconciliation",
+    "counterargument_dialogue",
+    "premortem_analysis",
+    "decision_record_output",
+  ],
   input_schema: {},
   output_schema: {},
   task_lifecycle_contract: {

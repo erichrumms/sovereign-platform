@@ -23,11 +23,17 @@ export interface AnalysisPanelProps {
   ctx: SovereignShellContext;
   frame: DecisionFrame;
   onReframe: () => void;
+  /**
+   * Called once when a schema-valid AnalysisResult is available (any tier), so the
+   * composition root can lift the result and advance the flow to the mode hub.
+   */
+  onComplete?: (result: AnalysisResult) => void;
 }
 
-export function AnalysisPanel({ ctx, frame, onReframe }: AnalysisPanelProps): JSX.Element {
+export function AnalysisPanel({ ctx, frame, onReframe, onComplete }: AnalysisPanelProps): JSX.Element {
   const { status, outcome, error, run } = useAnalysis(ctx);
   const ranFor = useRef<DecisionFrame | null>(null);
+  const liftedFor = useRef<DecisionFrame | null>(null);
 
   // Run once per frame (guards against StrictMode double-invoke).
   useEffect(() => {
@@ -35,6 +41,13 @@ export function AnalysisPanel({ ctx, frame, onReframe }: AnalysisPanelProps): JS
     ranFor.current = frame;
     void run(frame);
   }, [frame, run]);
+
+  // Lift the result up exactly once per frame, when it is ready.
+  useEffect(() => {
+    if (!outcome || !onComplete || liftedFor.current === frame) return;
+    liftedFor.current = frame;
+    onComplete(outcome.result);
+  }, [outcome, onComplete, frame]);
 
   return (
     <div style={rootStyle}>
@@ -51,12 +64,12 @@ export function AnalysisPanel({ ctx, frame, onReframe }: AnalysisPanelProps): JS
 
       {error ? <div style={errorBannerStyle}>{error}</div> : null}
 
-      {outcome ? <Result result={outcome.result} /> : null}
+      {outcome ? <AnalysisResultView result={outcome.result} /> : null}
     </div>
   );
 }
 
-function Result({ result }: { result: AnalysisResult }): JSX.Element {
+export function AnalysisResultView({ result }: { result: AnalysisResult }): JSX.Element {
   const riskByAlt = new Map<string, RiskScenario>();
   result.riskScenarios.forEach((r) => riskByAlt.set(r.alternativeId, r));
   const degraded = result.source && result.source !== "live";
