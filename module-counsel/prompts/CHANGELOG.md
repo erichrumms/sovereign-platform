@@ -9,8 +9,8 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 | Registry ID | Logical name (COUNSEL spec §7) | File | Current Version | Approved By | Date |
 |---|---|---|---|---|---|
 | PR-COUNSEL-001 | `analysis_system.md` | `analysis-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-15 |
-| PR-COUNSEL-002 | `counter_system.md` | `counter-system-v1.0.md` | v1.0 | **PENDING Project Principal** | 2026-06-16 |
-| PR-COUNSEL-003 | `premortem_system.md` | `premortem-system-v1.0.md` | v1.0 | **PENDING Project Principal** | 2026-06-16 |
+| PR-COUNSEL-002 | `counter_system.md` | `counter-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-16 |
+| PR-COUNSEL-003 | `premortem_system.md` | `premortem-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-16 |
 
 ## Change History
 
@@ -49,9 +49,8 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 - Agent: `counsel-analyst` (Analytical) — the single registered COUNSEL agent
   (spec §7); Counterargument Mode adds no new agent. Model supplied by
   `sovereign-api-client` (`claude-sonnet-4`) — not hardcoded in COUNSEL.
-- Approved by: **PENDING Project Principal.** Authored Session 5; deployment in a
-  live (non-synthetic) context requires Project Principal approval per the Prompt
-  Registry change-management process.
+- Approved by: **Project Principal — APPROVED 2026-06-16.** Cleared for deployment
+  in live (non-synthetic) contexts per the Prompt Registry change-management process.
 
 - **PR-COUNSEL-003 — COUNSEL Pre-Mortem Studio system prompt.** Initial baseline.
   Drives the three-step failure-reconstruction exercise (COUNSEL spec §2.5 / §6
@@ -68,6 +67,5 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 - Agent: `counsel-analyst` (Analytical) — the single registered COUNSEL agent
   (spec §7); Pre-Mortem Studio adds no new agent. Model supplied by
   `sovereign-api-client` (`claude-sonnet-4`) — not hardcoded in COUNSEL.
-- Approved by: **PENDING Project Principal.** Authored Session 5; deployment in a
-  live (non-synthetic) context requires Project Principal approval per the Prompt
-  Registry change-management process.
+- Approved by: **Project Principal — APPROVED 2026-06-16.** Cleared for deployment
+  in live (non-synthetic) contexts per the Prompt Registry change-management process.

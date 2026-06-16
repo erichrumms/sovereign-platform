@@ -8,7 +8,7 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 
 | Registry ID | Logical name (companion suite spec Part 3) | File | Current Version | Approved By | Date |
 |---|---|---|---|---|---|
-| PR-SCRIBE-001 | `drafting_system.md` | `drafting-system-v1.0.md` | v1.0 | **PENDING Project Principal** | 2026-06-16 |
+| PR-SCRIBE-001 | `drafting_system.md` | `drafting-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-16 |
 
 PR-SCRIBE-002+ (Style DNA analysis, synthesis) are authored in later sessions, per
 the SCRIBE build sequence.
@@ -38,6 +38,7 @@ the SCRIBE build sequence.
   the eight-mode selector. The drafting engine (LLM call + per-mode validation +
   three-tier fallback + Export gate) is a later session, following the COUNSEL
   scaffold→core sequence.
-- Approved by: **PENDING Project Principal.** Authored Session 5; deployment in a
-  live (non-synthetic) context requires Project Principal approval per the Prompt
-  Registry change-management process.
+- Approved by: **Project Principal — APPROVED 2026-06-16.** Cleared for deployment
+  in live (non-synthetic) contexts per the Prompt Registry change-management
+  process. (Approving the prompt does not change the module's scaffold status — the
+  SCRIBE drafting engine that uses it is a later session.)
