@@ -5,7 +5,7 @@
 **Products Worked On:** COUNSEL (module-counsel — completion) + test infrastructure (RTL/jsdom) + SCRIBE (module-scribe — scaffold)
 **Stage:** Stage 2 — IN PROGRESS
 **Contract Status:** `shell-contract.ts` **UNCHANGED at v1.3** (SHA-256 `4d78754f…6836acc2`, both copies). No governance-document change this session.
-**Version control:** Repo initialized this session (`git init`, branch `main`); commits per deliverable. **No remote configured — push deferred** per Project Principal.
+**Version control:** Repo initialized this session (`git init`, branch `main`); commits per deliverable. **Pushed to `origin`** (`https://github.com/erichrumms/sovereign-platform.git`) — `main` @ `1fb8905` + tag `v1.0.0`, local and remote in sync (0 ahead / 0 behind).
 
 ---
 
@@ -73,33 +73,38 @@ No `shell-contract.ts` change, no new `SovereignEventType`, no new agent registr
 - `module-scribe`/`SCRIBE`/`SCRIBEMode`/`scribe-drafter` already exist in the contract (GD-5, GD-2); `scribe-style-analyst` is named by GD-1. Their agent cards implement those decisions — the same basis as `counsel-analyst` in Session 4.
 - COUNSEL-internal additions (`COUNSELInboundContext.programId`, `anthropic-key.ts`) are module-local types, not canonical contracts.
 
-### ⏳ AWAITING PROJECT PRINCIPAL APPROVAL (Prompt Registry change-management)
+### ✅ PROJECT PRINCIPAL APPROVAL — GRANTED 2026-06-16 (Prompt Registry change-management)
 
-Three prompts were **authored and registered PENDING** this session — Claude cannot self-approve (same boundary as PR-COUNSEL-001). They run in **SYNTHETIC** contexts only until approved:
+Three prompts were authored and registered this session (Claude cannot self-approve
+— same boundary as PR-COUNSEL-001). The Project Principal **approved all three on
+2026-06-16** (commit `1fb8905`); the CHANGELOG rows are now **APPROVED**. With
+PR-COUNSEL-001, the full COUNSEL prompt suite plus PR-SCRIBE-001 are cleared for
+live (non-synthetic) use:
 
-| Registry ID | File | Changelog |
+| Registry ID | File | Status |
 |---|---|---|
-| PR-COUNSEL-002 | `module-counsel/prompts/counter-system-v1.0.md` | `module-counsel/prompts/CHANGELOG.md` |
-| PR-COUNSEL-003 | `module-counsel/prompts/premortem-system-v1.0.md` | `module-counsel/prompts/CHANGELOG.md` |
-| PR-SCRIBE-001 | `module-scribe/prompts/drafting-system-v1.0.md` | `module-scribe/prompts/CHANGELOG.md` |
+| PR-COUNSEL-002 | `module-counsel/prompts/counter-system-v1.0.md` | **APPROVED 2026-06-16** |
+| PR-COUNSEL-003 | `module-counsel/prompts/premortem-system-v1.0.md` | **APPROVED 2026-06-16** |
+| PR-SCRIBE-001 | `module-scribe/prompts/drafting-system-v1.0.md` | **APPROVED 2026-06-16** |
 
-To approve: flip the CHANGELOG status rows to **APPROVED** with date (as done for PR-COUNSEL-001 on 2026-06-15), optionally with a PR-record like `PR-COUNSEL-001`'s.
+Note: approving PR-SCRIBE-001 does **not** change module-scribe's scaffold status —
+the SCRIBE drafting engine that consumes the prompt is a later session.
 
 ---
 
 ## Carried Items (unchanged / new)
 
 - **Unchanged from Session 4:** Decision 24 role→module access matrix (COUNSEL + SCRIBE `minimumRole` are READ_ONLY placeholders); Decision 25 access-denial taxonomy gap; module mount/unmount event-type gap (§13/13); shell-contract Section 1 re-export reconciliation (now five synced copies with the SCRIBE prompt); R7 Tier 2 LLM provider; esbuild GHSA-67mh-4wv8-2f99 (dev, Stage 5+); six governance records INCOMPLETE; Governance Clock not activated; all data SYNTHETIC.
-- **New (Session 5):** RTL/jsdom toolchain adds **19 moderate dev-only** npm advisories (prod audit remains 0) — same class as the esbuild dev advisory; review at the Stage 5+ dependency pass. SCRIBE **drafting engine** (capture → LLM draft → per-mode validation → three-tier fallback → human-gated Export) and **Style DNA** (scribe-style-analyst / StyleProfile) are the SCRIBE core — a later session, per the COUNSEL scaffold→core sequence. **No git remote** configured — push deferred.
+- **New (Session 5):** RTL/jsdom toolchain adds **19 moderate dev-only** npm advisories (prod audit remains 0) — same class as the esbuild dev advisory; review at the Stage 5+ dependency pass. SCRIBE **drafting engine** (capture → LLM draft → per-mode validation → three-tier fallback → human-gated Export) and **Style DNA** (scribe-style-analyst / StyleProfile) are the SCRIBE core — a later session, per the COUNSEL scaffold→core sequence. **Git remote configured and pushed** (`origin` → GitHub; `main` @ `1fb8905` + tag `v1.0.0`, in sync).
 
 ---
 
 ## Next Session — Suggested
 
-1. **Project Principal:** approve PR-COUNSEL-002, PR-COUNSEL-003, PR-SCRIBE-001 (flip CHANGELOG rows).
+1. ~~Project Principal: approve PR-COUNSEL-002, PR-COUNSEL-003, PR-SCRIBE-001~~ — **DONE 2026-06-16** (commit `1fb8905`).
 2. SCRIBE core (drafting engine + Style DNA), following this scaffold.
 3. VIGIL → LENS per the companion build order.
-4. Configure a git remote and push when ready.
+4. ~~Configure a git remote and push~~ — **DONE** (`origin` → GitHub, `main` + `v1.0.0` pushed).
 
 ---
 
