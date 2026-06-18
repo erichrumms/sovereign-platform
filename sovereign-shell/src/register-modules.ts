@@ -18,11 +18,18 @@
 import type { ModuleLoader } from "./module-loader";
 import { counselModule } from "@sovereign/module-counsel";
 import { scribeModule } from "@sovereign/module-scribe";
+import { vigilModule } from "@sovereign/module-vigil";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
   loader.register(counselModule);
-  // SCRIBE — second companion module (GD-5). Scaffold (Session 5); core is a later
-  // session. moduleId/product are pre-wired in the loader's MODULE_PRODUCT map.
+  // SCRIBE — second companion module (GD-5). Drafting engine + Style DNA
+  // (Session 6, D1/D2). moduleId/product are pre-wired in the loader's
+  // MODULE_PRODUCT map.
   loader.register(scribeModule);
+  // VIGIL — fourth companion module (GD-5). Scaffold (Session 6, D3): real role
+  // gate (minimumRole PLATFORM_ADMIN → the loader's fail-closed policy admits
+  // PLATFORM_ADMIN/SYSTEM_ADMIN only); ships with agentCards: [] (triage/approval
+  // agents deferred). LENS is the remaining companion module.
+  loader.register(vigilModule);
 }
