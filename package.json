@@ -9,7 +9,8 @@
     "sovereign-shell",
     "module-counsel",
     "module-scribe",
-    "module-vigil"
+    "module-vigil",
+    "module-lens"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
@@ -18,6 +19,7 @@
     "test:api-client": "npm run test --workspace @sovereign/api-client",
     "test:counsel": "npm run test --workspace @sovereign/module-counsel",
     "test:scribe": "npm run test --workspace @sovereign/module-scribe",
-    "test:vigil": "npm run test --workspace @sovereign/module-vigil"
+    "test:vigil": "npm run test --workspace @sovereign/module-vigil",
+    "test:lens": "npm run test --workspace @sovereign/module-lens"
   }
 }

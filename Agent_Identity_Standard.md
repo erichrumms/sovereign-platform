@@ -142,6 +142,8 @@ had been declared in module code under GD-1/GD-2/GD-5 but not yet in this regist
 | `scribe-drafter` | Operational | Project Principal | Draft destination-ready content in the six product modes; transcribe voice capture; produce synthesis. Export is human-gated (Gate 3). | Anthropic API key (via shell) |
 | `scribe-style-analyst` | Analytical | Project Principal | Analyze writing samples into a personal `StyleProfile` (data classification: user). Save is human-gated. | Anthropic API key (via shell) |
 | `vigil-triage-analyst` | Monitoring | Project Principal | Assemble anomaly context and produce an advisory triage brief (ranked likely causes, recommended investigation steps, false-positive likelihood). Never investigates, decides, or acts — the operator takes the action of record (Gate 3). | Anthropic API key (via shell) |
+| `lens-explainer` | Operational | Project Principal | Explain platform behaviour in plain language, grounded only in supplied knowledge-base source documents and context. Explanatory only — no platform action, no operational advice. (Class per the Session 7 done condition; the LENS architecture spec will confirm.) | Anthropic API key (via shell) |
+| `lens-orientation` | Analytical | Project Principal | Produce a user's orientation / pipeline-context view. Advisory only. | Anthropic API key (via shell) |
 
 **Companion suite agent scope limit:** No companion agent acts on the platform
 autonomously — every consequential output is human-gated. Companion agents that only
@@ -154,8 +156,9 @@ pattern, never CPMI's reasoning quality (only CPMI-VRS Gate 3 judges that).
 **Declared but not yet registered (registration precedes build):**
 - `vigil-approval-agent` (VIGIL) — routes AgentOS human-approval requests; deferred to
   the Agent Approval flow build session and intentionally not registered yet.
-- `lens-explainer`, `lens-orientation` (LENS) — declared in the LENS spec; register when
-  `module-lens` ships its agent cards.
+
+(`lens-explainer` / `lens-orientation` were declared-only at the start of Session 7; they
+are now registered above — `module-lens` ships their agent cards as of the D2 scaffold.)
 
 ---
 

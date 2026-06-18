@@ -19,6 +19,7 @@ import type { ModuleLoader } from "./module-loader";
 import { counselModule } from "@sovereign/module-counsel";
 import { scribeModule } from "@sovereign/module-scribe";
 import { vigilModule } from "@sovereign/module-vigil";
+import { lensModule } from "@sovereign/module-lens";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -27,9 +28,15 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // (Session 6, D1/D2). moduleId/product are pre-wired in the loader's
   // MODULE_PRODUCT map.
   loader.register(scribeModule);
-  // VIGIL — fourth companion module (GD-5). Scaffold (Session 6, D3): real role
-  // gate (minimumRole PLATFORM_ADMIN → the loader's fail-closed policy admits
-  // PLATFORM_ADMIN/SYSTEM_ADMIN only); ships with agentCards: [] (triage/approval
-  // agents deferred). LENS is the remaining companion module.
+  // VIGIL — fourth companion module (GD-5). Core (Session 7, D1): real role gate
+  // (minimumRole PLATFORM_ADMIN → the loader's fail-closed policy admits
+  // PLATFORM_ADMIN/SYSTEM_ADMIN only); registers vigil-triage-analyst for the Anomaly
+  // Triage Assistant (vigil-approval-agent still deferred).
   loader.register(vigilModule);
+  // LENS — third companion module (GD-5), the last to be built. Scaffold (Session 7,
+  // D2): READ_ONLY placeholder gate (Decision 24, like COUNSEL/SCRIBE); registers
+  // lens-explainer / lens-orientation. LENS core (the explainer grounded in the
+  // knowledge-base source docs) is deferred until the LENS architecture spec is
+  // authored. moduleId/product are pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(lensModule);
 }
