@@ -23,8 +23,13 @@ describe("vigilModule contract", () => {
     expect(vigilModule.minimumRole).toBe("PLATFORM_ADMIN");
   });
 
-  it("ships with NO agents — triage/approval agents are deferred", () => {
-    expect(vigilModule.agentCards).toEqual([]);
+  it("registers vigil-triage-analyst (Monitoring) and NOT vigil-approval-agent", () => {
+    const ids = vigilModule.agentCards.map((c) => c.agent_id);
+    expect(ids).toEqual(["vigil-triage-analyst"]);
+    const triage = vigilModule.agentCards.find((c) => c.agent_id === "vigil-triage-analyst")!;
+    expect(triage.agent_class).toBe("Monitoring");
+    expect(triage.product).toBe("VIGIL");
+    expect(ids).not.toContain("vigil-approval-agent");
   });
 
   it("exposes the lifecycle methods the loader requires", () => {

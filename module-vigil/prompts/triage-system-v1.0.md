@@ -6,14 +6,14 @@
 - **Model:** supplied by `sovereign-api-client` (`claude-sonnet-4`). Do **not** hardcode a model string in VIGIL.
 - **Max tokens:** platform default.
 - **Output:** a single JSON object — the triage brief (ranked likely causes, recommended investigation steps, and a `FALSE_POSITIVE_LIKELIHOOD` 0–100 with explanation), validated before it is shown to the operator.
-- **Status:** Authored Session 6 (June 17, 2026). Approval: **PENDING Project Principal.**
+- **Status:** Authored Session 6 (June 17, 2026). Approval: **APPROVED — Project Principal, June 17, 2026.** Cleared for live use.
 
-> **Not wired this session.** The Anomaly Triage Assistant, the `vigil-triage-analyst`
-> agent, and the `TRIAGE_ANALYSIS_PRODUCED` emission are a later session (spec §8
-> build sequencing). The VIGIL scaffold ships with `agentCards: []` and makes no LLM
-> call. This prompt is authored and registered ahead of that build so the registry
-> entry exists and is reviewable; it is not consumed by any code yet, so there is no
-> runtime copy (`*.prompt.ts`) until the triage engine is built.
+> **Wired in Session 7 (D1 — VIGIL Core).** The Anomaly Triage Assistant, the
+> `vigil-triage-analyst` agent (registered this session), and the
+> `TRIAGE_ANALYSIS_PRODUCED` emission are built. The runtime copy
+> (`src/prompts/triage-system.prompt.ts`) mirrors the body of this registered prompt
+> verbatim; any change to one MUST be mirrored in the other (a prompt change requires
+> a new registry version + CHANGELOG entry + Project Principal approval).
 
 ---
 

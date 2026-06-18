@@ -7,14 +7,15 @@
  * reads what the platform's shared infrastructure produces; it implements no
  * security logic and orchestrates no agents.
  *
- * Session 6 SCOPE — SCAFFOLD (D3):
+ * Session 7 SCOPE — CORE (D1):
  *   This file is the module's SovereignModuleContract. It enforces the VIGIL role
- *   gate structurally at mount and renders the VIGIL chrome (VigilApp) with the
- *   Alert Queue and Agent Approval Queue STUBS. Live alert ingestion, the Anomaly
- *   Triage Assistant, and the approval decision flow are later sessions (spec §8
- *   build sequencing). Ship with agentCards: [] — vigil-triage-analyst and
- *   vigil-approval-agent are deferred to the session that builds triage/approval
- *   (governance decision already recorded for Session 6).
+ *   gate structurally at mount and renders the VIGIL chrome (VigilApp) with the wired
+ *   Alert Queue + Alert Detail (response actions + Anomaly Triage Assistant) and the
+ *   Agent Approval Queue STUB. The module now registers vigil-triage-analyst (the
+ *   Anomaly Triage Assistant agent, PR-VIGIL-001 APPROVED). The live alert feed
+ *   activates by configuration (VIGIL_ALERT_ENDPOINT) in the Security Framework
+ *   live-wiring session; the Agent Approval decision flow and vigil-approval-agent are
+ *   a later session (spec §8 build sequencing) and are intentionally NOT registered.
  *
  * ROLE GATE (spec §1 / §7) — STRUCTURAL, not a conditional render:
  *   Access is restricted to PLATFORM_ADMIN and SYSTEM_ADMIN. This is enforced in
@@ -38,10 +39,12 @@
  *   - PLATFORM_ADMIN is a SovereignRole as of GD-5 / v1.3.
  *   - No Logger event on mount: there is no approved SovereignEventType for "module
  *     mounted" (open governance item §13/13). Same posture as COUNSEL / SCRIBE.
- *   - agentCards: [] — registering vigil-triage-analyst / vigil-approval-agent is
- *     deferred (Session 6 governance decision); this scaffold registers no agents.
+ *   - vigil-triage-analyst is registered this session (Session 7) — it is named in
+ *     the VIGIL spec (§7) and added to Agent_Identity_Standard.md before build, and
+ *     operates under the APPROVED PR-VIGIL-001 prompt. vigil-approval-agent stays
+ *     deferred (not registered) until the Agent Approval flow is built.
  *
- * Version: 1.0 (scaffold) · Session 6 · June 17, 2026
+ * Version: 1.1 (core D1) · Session 7 · June 18, 2026
  */
 
 import { createElement } from "react";
@@ -50,6 +53,7 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  AgentCard,
 } from "../../sovereign-shell/shell-contract";
 // Canonical access-denial error — reused from the loader (the platform owner of
 // this type), not forked. The loader file has only type-only imports, so this is a
@@ -59,6 +63,28 @@ import { VigilApp } from "./VigilApp";
 
 /** The role that satisfies VIGIL's gate (with SYSTEM_ADMIN as the universal superuser). */
 const VIGIL_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+
+// vigil-triage-analyst — Monitoring agent (observes and advises; never acts
+// autonomously — Agent Identity Standard taxonomy). Registered this session (Session
+// 7) for the Anomaly Triage Assistant; operates under PR-VIGIL-001 (APPROVED) and
+// obtains LLM access via createSovereignClient() (never the Anthropic API directly,
+// Standing Constraint #5). vigil-approval-agent remains deferred to the Agent Approval
+// build session and is intentionally NOT registered here.
+const vigilTriageAnalystCard: AgentCard = {
+  agent_id: "vigil-triage-analyst",
+  agent_class: "Monitoring",
+  product: "VIGIL",
+  capabilities: ["anomaly_triage", "context_assembly", "false_positive_estimation"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE", // platform default (Decision 19)
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "CUI",
+  security_observable: true,
+};
 
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
@@ -71,9 +97,9 @@ export const vigilModule: SovereignModuleContract = {
   // fail-closed default policy turns this into "PLATFORM_ADMIN or SYSTEM_ADMIN
   // only". Not a placeholder, unlike COUNSEL/SCRIBE's READ_ONLY.
   minimumRole: VIGIL_MINIMUM_ROLE,
-  // Scaffold ships with NO agents — vigil-triage-analyst / vigil-approval-agent are
-  // deferred to the triage/approval build session (Session 6 governance decision).
-  agentCards: [],
+  // vigil-triage-analyst registered (Session 7 — Anomaly Triage Assistant build).
+  // vigil-approval-agent stays deferred to the Agent Approval flow session.
+  agentCards: [vigilTriageAnalystCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate (spec §7): throw before building the tree. ---

@@ -8,7 +8,7 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 
 | Registry ID | Logical name (VIGIL spec §7) | File | Current Version | Approved By | Date |
 |---|---|---|---|---|---|
-| PR-VIGIL-001 | `triage_system.md` | `triage-system-v1.0.md` | v1.0 | **PENDING — Project Principal** | 2026-06-17 |
+| PR-VIGIL-001 | `triage_system.md` | `triage-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-17 |
 
 ## Change History
 
@@ -21,12 +21,19 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
   spec boundaries: advisory-only (the operator decides — Gate 3), no CPMI
   reasoning-quality judgement on `CPMI_DRIFT_DETECTED`, honeytoken triggers out of
   scope. Model supplied by `sovereign-api-client` (`claude-sonnet-4`) — not hardcoded.
-- **Not wired this session.** The VIGIL scaffold ships with `agentCards: []` and makes
-  no LLM call — the Anomaly Triage Assistant, the `vigil-triage-analyst` agent
-  registration, and the `TRIAGE_ANALYSIS_PRODUCED` emission are a later session (spec
-  §8). No runtime copy (`src/prompts/triage-system.prompt.ts`) is created until the
-  triage engine consumes the prompt, to avoid an unused copy that could silently
-  drift from this registry entry.
-- **Approval: PENDING — Project Principal.** Claude cannot self-approve a prompt
-  (same boundary as PR-COUNSEL-001 / PR-SCRIBE-001 / PR-SCRIBE-004). Until approved,
-  the prompt is not cleared for live (non-synthetic) use.
+- **Approval: APPROVED — Project Principal, 2026-06-17.** Cleared for live use.
+  Claude cannot self-approve a prompt; this approval was recorded by the Project
+  Principal (same boundary as PR-COUNSEL-001 / PR-SCRIBE-001 / PR-SCRIBE-004).
+
+### v1.0 runtime wiring — 2026-06-18 (Session 7, D1 — VIGIL Core)
+
+- **Now consumed by code.** The Anomaly Triage Assistant is built (Session 7, D1):
+  `vigil-triage-analyst` (Monitoring) is registered on the VIGIL module contract and
+  in `Agent_Identity_Standard.md`, the triage engine makes one
+  `createSovereignClient().complete` per session with three-tier fallback, and
+  `TRIAGE_ANALYSIS_PRODUCED` (plus `AGENT_STEP_*` / `FALLBACK_ACTIVATED`) is emitted.
+- **Runtime copy created.** `src/prompts/triage-system.prompt.ts` mirrors the body of
+  `triage-system-v1.0.md` verbatim. SYNC OBLIGATION: any edit to either MUST be
+  mirrored in the other; a prompt change requires a new registry version + a CHANGELOG
+  entry + Project Principal approval. No prompt text changed in this session — only the
+  runtime copy was added and the approval/registration recorded.

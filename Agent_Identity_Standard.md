@@ -125,6 +125,40 @@ ARIA Suite deliberately excludes AI from decision paths. ARIA does not have AI a
 
 ---
 
+### Companion Suite Agents
+
+The companion suite (COUNSEL, SCRIBE, LENS, VIGIL) was authorized by GD-5
+(shell-contract v1.3). Its agents are human-support agents: they advise, draft, and
+explain; they do not act on the platform autonomously, and they reach the LLM only via
+`createSovereignClient()` (never the Anthropic API directly — Standing Constraint #5).
+This section was added in Session 7 (June 18, 2026): it registers `vigil-triage-analyst`
+ahead of the VIGIL Anomaly Triage Assistant build (D1), and records the already-live
+companion agent cards (`counsel-analyst`, `scribe-drafter`, `scribe-style-analyst`) that
+had been declared in module code under GD-1/GD-2/GD-5 but not yet in this registry.
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `counsel-analyst` | Analytical | Project Principal | Produce decision-support analysis, counterargument and pre-mortem dialogue, prior-position reconciliation, and decision-record drafts. Advisory only — the human decides. | Anthropic API key (via shell) |
+| `scribe-drafter` | Operational | Project Principal | Draft destination-ready content in the six product modes; transcribe voice capture; produce synthesis. Export is human-gated (Gate 3). | Anthropic API key (via shell) |
+| `scribe-style-analyst` | Analytical | Project Principal | Analyze writing samples into a personal `StyleProfile` (data classification: user). Save is human-gated. | Anthropic API key (via shell) |
+| `vigil-triage-analyst` | Monitoring | Project Principal | Assemble anomaly context and produce an advisory triage brief (ranked likely causes, recommended investigation steps, false-positive likelihood). Never investigates, decides, or acts — the operator takes the action of record (Gate 3). | Anthropic API key (via shell) |
+
+**Companion suite agent scope limit:** No companion agent acts on the platform
+autonomously — every consequential output is human-gated. Companion agents that only
+produce analysis, drafts, recommendations, or triage briefs do not submit A2A approval
+requests; their output is reviewed by a human through the module's own interface.
+`vigil-triage-analyst` is a Monitoring agent: it advises, and the Security Operator
+takes the action of record. For `CPMI_DRIFT_DETECTED` it assesses only the anomaly
+pattern, never CPMI's reasoning quality (only CPMI-VRS Gate 3 judges that).
+
+**Declared but not yet registered (registration precedes build):**
+- `vigil-approval-agent` (VIGIL) — routes AgentOS human-approval requests; deferred to
+  the Agent Approval flow build session and intentionally not registered yet.
+- `lens-explainer`, `lens-orientation` (LENS) — declared in the LENS spec; register when
+  `module-lens` ships its agent cards.
+
+---
+
 ## Credential Lifecycle
 
 ### Issuance
