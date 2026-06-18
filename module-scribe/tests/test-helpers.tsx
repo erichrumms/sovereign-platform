@@ -1,18 +1,25 @@
 /**
  * module-scribe — component-test helpers.
- * A minimal fake SovereignShellContext (only the fields the scaffold reads:
- * auth.user) cast to the contract type.
+ * A minimal fake SovereignShellContext (the fields the SCRIBE UI reads: auth.user,
+ * logger.log, navigation.navigateTo) cast to the contract type. Tests may inject a
+ * logger and a navigateTo spy to assert Gate 2 emission and export routing.
  */
-import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import type { SovereignShellContext, SovereignLogEvent, SovereignRole } from "../../sovereign-shell/shell-contract";
 
-export function makeCtx(): SovereignShellContext {
+export interface CtxOverrides {
+  role?: SovereignRole;
+  log?: (event: SovereignLogEvent) => void;
+  navigateTo?: (path: string) => void;
+}
+
+export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
   return {
     auth: {
       user: {
         employee_id: "E-700",
         name: "Sam Author",
         org_unit: "Program Office",
-        role: "PROGRAM_MANAGER",
+        role: over.role ?? "PROGRAM_MANAGER",
         clearance_level: "CUI",
         cost_code_assignments: [],
       },
@@ -21,6 +28,11 @@ export function makeCtx(): SovereignShellContext {
       hasRole: () => true,
       hasClearance: () => true,
     },
-    logger: { log: () => {} },
+    logger: { log: over.log ?? (() => {}) },
+    navigation: {
+      navigateTo: over.navigateTo ?? (() => {}),
+      currentPath: "/scribe",
+      breadcrumb: [],
+    },
   } as unknown as SovereignShellContext;
 }

@@ -3,16 +3,17 @@
  * ScribeApp.tsx — SCRIBE composition root (React) — scaffold.
  *
  * The single React component the module mounts (via index.ts -> createRoot) into
- * the shell-provided outlet. This session it is a scaffold: it renders the SCRIBE
- * chrome and the eight-mode selector (SCRIBE_MODES), and shows the selected mode's
- * destination + output-schema binding. The drafting engine (capture → LLM draft →
- * per-mode validation → Export gate) is a later session, following the COUNSEL
- * scaffold→core sequence.
+ * the shell-provided outlet. It renders the SCRIBE chrome and the eight-mode
+ * selector (SCRIBE_MODES). Selecting one of the SIX product-aligned drafting modes
+ * opens the DraftWorkspace (D1 drafting engine: capture → LLM draft → per-mode
+ * schema validation → human-gated Export). The two intermediate modes (synthesis,
+ * framing) have no product intake schema and are not draftable this session — they
+ * show a later-session notice.
  *
  * Presentation reads the context; it never re-derives it. Styling is inline,
  * consistent with the shell chrome and the COUNSEL module.
  *
- * Version: 1.0 (scaffold) · Session 5 · June 16, 2026
+ * Version: 1.1 (D1 — drafting engine) · Session 6 · June 17, 2026
  */
 
 import { useState } from "react";
@@ -21,6 +22,8 @@ import type { CSSProperties } from "react";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { SCRIBEMode } from "../../sovereign-shell/shell-contract";
 import { SCRIBE_MODES, describeMode } from "./modes";
+import { isDraftableMode } from "./draft-contract";
+import { DraftWorkspace } from "./DraftWorkspace";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
@@ -38,9 +41,9 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
       </header>
 
       <div style={scaffoldBannerStyle}>
-        Scaffold — the mode selector and contract are wired; the drafting engine
-        (capture → draft → Export) arrives in a later session. Signed in as{" "}
-        <strong>{ctx.auth.user.name}</strong>.
+        Drafting engine live for the six product-aligned modes — capture → draft →
+        schema-validated, human-gated Export. Synthesis and framing arrive in a
+        later session. Signed in as <strong>{ctx.auth.user.name}</strong>.
       </div>
 
       <h2 style={sectionTitleStyle}>Drafting mode</h2>
@@ -65,19 +68,22 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
         <div style={detailStyle}>
           <h3 style={detailTitleStyle}>{descriptor.label}</h3>
           <p style={detailLineStyle}>{descriptor.description}</p>
-          <p style={detailLineStyle}>
-            <strong>Destination:</strong>{" "}
-            {descriptor.producesProductIntake
-              ? `${descriptor.targetProduct} (validated against the @sovereign/data ${descriptor.mode} schema before Export)`
-              : "intermediate artifact — feeds another drafting mode; no product intake"}
-          </p>
-          <p style={mutedStyle}>
-            Drafting for this mode is not yet implemented (scaffold). Selecting a mode here
-            confirms the selector ↔ schema binding the engine will use.
-          </p>
+          {selected && isDraftableMode(selected) && descriptor.targetProduct ? (
+            <DraftWorkspace
+              ctx={ctx}
+              mode={selected}
+              label={descriptor.label}
+              targetProduct={descriptor.targetProduct}
+            />
+          ) : (
+            <p style={mutedStyle}>
+              Intermediate artifact — feeds another drafting mode; it has no product intake schema.
+              Drafting for synthesis and framing arrives in a later session.
+            </p>
+          )}
         </div>
       ) : (
-        <p style={mutedStyle}>Select a mode to see its destination and output-schema binding.</p>
+        <p style={mutedStyle}>Select a mode to begin drafting (or to see an intermediate mode&apos;s role).</p>
       )}
     </section>
   );
