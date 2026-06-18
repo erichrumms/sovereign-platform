@@ -4,6 +4,7 @@
  * logger.log, navigation.navigateTo) cast to the contract type. Tests may inject a
  * logger and a navigateTo spy to assert Gate 2 emission and export routing.
  */
+import { validateStyleProfile } from "@sovereign/data";
 import type { SovereignShellContext, SovereignLogEvent, SovereignRole } from "../../sovereign-shell/shell-contract";
 
 export interface CtxOverrides {
@@ -34,5 +35,8 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       currentPath: "/scribe",
       breadcrumb: [],
     },
+    // Mirrors the shell's frozen ctx.data.types validator catalog (shell.ts) — so
+    // Style DNA can validate the StyleProfile "via ctx.data" under test.
+    data: { types: { validateStyleProfile } },
   } as unknown as SovereignShellContext;
 }

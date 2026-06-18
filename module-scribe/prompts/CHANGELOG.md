@@ -9,9 +9,13 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 | Registry ID | Logical name (companion suite spec Part 3) | File | Current Version | Approved By | Date |
 |---|---|---|---|---|---|
 | PR-SCRIBE-001 | `drafting_system.md` | `drafting-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-16 |
+| PR-SCRIBE-004 | `style_analysis_system.md` | `style-analysis-system-v1.0.md` | v1.0 | **PENDING — Project Principal** | 2026-06-17 |
 
-PR-SCRIBE-002+ (Style DNA analysis, synthesis) are authored in later sessions, per
-the SCRIBE build sequence.
+PR-SCRIBE-002/003 (synthesis, framing system prompts) are authored in later
+sessions, per the SCRIBE build sequence. PR-SCRIBE-004 (Style DNA analysis) is
+authored this session ahead of 002/003 because the Style DNA deliverable (D2)
+precedes synthesis/framing in the Session 6 plan; the registry ID follows the
+session plan's explicit numbering, not strict authoring order.
 
 ## Change History
 
@@ -42,3 +46,22 @@ the SCRIBE build sequence.
   in live (non-synthetic) contexts per the Prompt Registry change-management
   process. (Approving the prompt does not change the module's scaffold status — the
   SCRIBE drafting engine that uses it is a later session.)
+
+### v1.0 — 2026-06-17 (Session 6)
+
+- **PR-SCRIBE-004 — SCRIBE Style DNA style-analysis system prompt.** Authored
+  alongside the D2 Style DNA build. Instructs `scribe-style-analyst` (Analytical)
+  to read user-supplied writing samples and return ONLY the four StyleProfile
+  *analysis* fields (`formality_score` 0–100, `sentence_complexity`,
+  `vocabulary_density`, `structural_patterns[]`) from the canonical `@sovereign/data`
+  `StyleProfile` (GD-1). The engine assembles the full profile (`user_id`,
+  `sample_count`, `created_at`, `updated_at`) and validates it with
+  `validateStyleProfile` before the human approves storage. Prohibits drafting,
+  evaluation, and inference beyond the samples; prefers neutral values when evidence
+  is thin. Data classification: `user`.
+- Runtime copy: `src/prompts/style-analysis-system.prompt.ts` (synced to this
+  registry file; the version string must match).
+- **Approval: PENDING — Project Principal.** Claude cannot self-approve a prompt
+  (same boundary as PR-COUNSEL-001 / PR-SCRIBE-001). Until approved, the prompt is
+  not cleared for live (non-synthetic) use; the Style DNA feature runs against the
+  static/synthetic fallback tiers in the interim.

@@ -16,14 +16,17 @@
  * Version: 1.1 (D1 — drafting engine) · Session 6 · June 17, 2026
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { SCRIBEMode } from "../../sovereign-shell/shell-contract";
 import { SCRIBE_MODES, describeMode } from "./modes";
 import { isDraftableMode } from "./draft-contract";
+import { createSessionStyleProfileStore } from "./style-contract";
+import { useStyleProfile } from "./useStyleProfile";
 import { DraftWorkspace } from "./DraftWorkspace";
+import { StyleDNAManager } from "./StyleDNAManager";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
@@ -32,6 +35,11 @@ export interface ScribeAppProps {
 export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
   const descriptor = selected ? describeMode(selected) : null;
+
+  // Style DNA: one session-scoped store + hook shared across the module, so a saved
+  // profile (StyleDNAManager) is injected into drafting (DraftWorkspace).
+  const styleStore = useMemo(() => createSessionStyleProfileStore(), []);
+  const style = useStyleProfile(ctx, styleStore);
 
   return (
     <section style={rootStyle}>
@@ -45,6 +53,8 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
         schema-validated, human-gated Export. Synthesis and framing arrive in a
         later session. Signed in as <strong>{ctx.auth.user.name}</strong>.
       </div>
+
+      <StyleDNAManager style={style} />
 
       <h2 style={sectionTitleStyle}>Drafting mode</h2>
       <div style={modeGridStyle} role="list" aria-label="SCRIBE drafting modes">
@@ -74,6 +84,7 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
               mode={selected}
               label={descriptor.label}
               targetProduct={descriptor.targetProduct}
+              styleProfile={style.profile}
             />
           ) : (
             <p style={mutedStyle}>

@@ -19,6 +19,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
+import type { StyleProfile } from "@sovereign/data";
+
 import type { SovereignShellContext, SovereignProduct } from "../../sovereign-shell/shell-contract";
 import { validateModeOutput, type DraftableMode, type ModeOutput } from "./draft-contract";
 import { useDraft } from "./useDraft";
@@ -30,6 +32,8 @@ export interface DraftWorkspaceProps {
   mode: DraftableMode;
   label: string;
   targetProduct: SovereignProduct;
+  /** The active Style DNA profile, injected into drafting when present (D2). */
+  styleProfile?: StyleProfile | null;
 }
 
 const TIER_NOTE: Record<"live" | "cache" | "static", string> = {
@@ -38,7 +42,7 @@ const TIER_NOTE: Record<"live" | "cache" | "static", string> = {
   static: "Static fallback — the drafting service is unavailable. This is a placeholder template to edit, not a generated draft.",
 };
 
-export function DraftWorkspace({ ctx, mode, label, targetProduct }: DraftWorkspaceProps): JSX.Element {
+export function DraftWorkspace({ ctx, mode, label, targetProduct, styleProfile }: DraftWorkspaceProps): JSX.Element {
   const { status, outcome, error: draftError, draft, reset: resetDraft } = useDraft(ctx);
   const exporter = useExport(ctx);
 
@@ -68,14 +72,19 @@ export function DraftWorkspace({ ctx, mode, label, targetProduct }: DraftWorkspa
   const validation = parsed.value ? validateModeOutput(mode, parsed.value) : null;
   const canExport = parsed.value !== null && validation !== null && validation.valid;
 
+  // Inject the active Style DNA profile when present (D2). `?? undefined` keeps the
+  // DraftInput.styleProfile field absent (not null) when there is no profile, which
+  // is what useDraft logs as style_profile_present: false.
+  const styleInput = styleProfile ?? undefined;
+
   const onGenerate = (): void => {
-    const input: DraftInput = { mode, capturedMaterial: captured };
+    const input: DraftInput = { mode, capturedMaterial: captured, styleProfile: styleInput };
     void draft(input);
   };
 
   const onApprove = (): void => {
     if (!parsed.value) return;
-    const source: DraftInput = { mode, capturedMaterial: captured };
+    const source: DraftInput = { mode, capturedMaterial: captured, styleProfile: styleInput };
     exporter.approve({ mode, draft: parsed.value, source, targetProduct });
   };
 
@@ -90,6 +99,7 @@ export function DraftWorkspace({ ctx, mode, label, targetProduct }: DraftWorkspa
       {/* ---- Input panel ---- */}
       <label style={labelStyle} htmlFor="scribe-captured">
         Captured material for <strong>{label}</strong> → {targetProduct}
+        {styleProfile ? <span style={styleOnStyle}> · Style DNA active</span> : null}
       </label>
       <textarea
         id="scribe-captured"
@@ -214,5 +224,6 @@ const errorStyle: CSSProperties = { color: "#b91c1c", fontSize: 13, marginTop: 1
 const errListStyle: CSSProperties = { margin: "6px 0 0", paddingLeft: 18 };
 const okStyle: CSSProperties = { color: "#065f46", fontSize: 13, marginTop: 10 };
 const gateNoteStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
+const styleOnStyle: CSSProperties = { color: "#065f46", fontWeight: 700, fontSize: 12 };
 
 export default DraftWorkspace;
