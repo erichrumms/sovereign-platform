@@ -6,11 +6,11 @@
  * Owns useAlertResponse for the selected alert; on a successful response it applies
  * the queue transition (passed in from VigilApp) and closes the detail when the alert
  * leaves the active queue. Assembles the AnomalyContext for triage from the alert —
- * recentEvents / similarAlerts come from the scoped Logger query (wired in the
- * Security Framework live-wiring session); until then they are honestly empty and the
- * triage assistant degrades to its static checklist.
+ * recentEvents / similarAlerts come from the scoped Security Framework observability
+ * query (Session 9 wiring), read through an injectable port (synthetic/dev data this
+ * session; pointed at the live Security Framework by configuration — Constraint #3).
  *
- * Version: 1.0 · Session 7 · June 18, 2026
+ * Version: 1.1 (scoped query wired) · Session 9 · June 23, 2026
  */
 
 import { useMemo, type CSSProperties } from "react";
@@ -20,6 +20,10 @@ import type { AlertResponseAction, AnomalyContext, SecurityAlert } from "./vigil
 import { useAlertResponse, type RespondResult } from "./useAlertResponse";
 import { AlertResponsePanel } from "./AlertResponsePanel";
 import { AnomalyTriageAssistant } from "./AnomalyTriageAssistant";
+import { createDevSecurityQuery, type SecurityObservabilityQuery } from "./security-query";
+
+/** Default Security Framework query — synthetic/dev backing (Governance Clock OFF). */
+const DEV_SECURITY_QUERY: SecurityObservabilityQuery = createDevSecurityQuery();
 
 export interface AlertDetailProps {
   ctx: SovereignShellContext;
@@ -28,22 +32,34 @@ export interface AlertDetailProps {
   applyResponse: (alertId: string, action: AlertResponseAction) => void;
   /** Called when the alert leaves the active queue (closed). */
   onClose: () => void;
+  /**
+   * The Security Framework observability query. Defaults to the synthetic/dev backing;
+   * inject a live implementation to point at the real Security Framework (Constraint #3).
+   */
+  securityQuery?: SecurityObservabilityQuery;
 }
 
-export function AlertDetail({ ctx, alert, applyResponse, onClose }: AlertDetailProps): JSX.Element {
+export function AlertDetail({
+  ctx,
+  alert,
+  applyResponse,
+  onClose,
+  securityQuery = DEV_SECURITY_QUERY,
+}: AlertDetailProps): JSX.Element {
   const response = useAlertResponse(ctx);
   const isCpmiDrift = alert.alertType === "CPMI_DRIFT_DETECTED";
 
-  // Minimal AnomalyContext from the alert. recentEvents / similarAlerts are filled by
-  // the scoped Logger query in a later session; empty here (honest, not fabricated).
+  // AnomalyContext for triage. recentEvents / similarAlerts come from the scoped
+  // Security Framework query (synthetic/dev this session). The operator reviews this
+  // assembled context before the triage call (spec §2.3).
   const anomalyContext = useMemo<AnomalyContext>(
     () => ({
       alert,
-      recentEvents: [],
+      recentEvents: securityQuery.recentEvents(alert),
       productBaseline: { product: alert.sourceProduct },
-      similarAlerts: [],
+      similarAlerts: securityQuery.similarAlerts(alert),
     }),
-    [alert]
+    [alert, securityQuery]
   );
 
   function handleRespond(action: AlertResponseAction, note?: string): RespondResult {
