@@ -23,13 +23,14 @@ describe("vigilModule contract", () => {
     expect(vigilModule.minimumRole).toBe("PLATFORM_ADMIN");
   });
 
-  it("registers vigil-triage-analyst (Monitoring) and NOT vigil-approval-agent", () => {
+  it("registers vigil-triage-analyst and vigil-approval-agent (both Monitoring)", () => {
     const ids = vigilModule.agentCards.map((c) => c.agent_id);
-    expect(ids).toEqual(["vigil-triage-analyst"]);
-    const triage = vigilModule.agentCards.find((c) => c.agent_id === "vigil-triage-analyst")!;
-    expect(triage.agent_class).toBe("Monitoring");
-    expect(triage.product).toBe("VIGIL");
-    expect(ids).not.toContain("vigil-approval-agent");
+    expect(ids).toEqual(["vigil-triage-analyst", "vigil-approval-agent"]);
+    const byId = Object.fromEntries(vigilModule.agentCards.map((c) => [c.agent_id, c]));
+    expect(byId["vigil-triage-analyst"].agent_class).toBe("Monitoring");
+    // Activated this session (Session 10 — Agent Approval Flow).
+    expect(byId["vigil-approval-agent"].agent_class).toBe("Monitoring");
+    expect(vigilModule.agentCards.every((c) => c.product === "VIGIL")).toBe(true);
   });
 
   it("exposes the lifecycle methods the loader requires", () => {

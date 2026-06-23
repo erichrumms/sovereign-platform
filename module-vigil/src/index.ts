@@ -7,15 +7,16 @@
  * reads what the platform's shared infrastructure produces; it implements no
  * security logic and orchestrates no agents.
  *
- * Session 7 SCOPE — CORE (D1):
- *   This file is the module's SovereignModuleContract. It enforces the VIGIL role
- *   gate structurally at mount and renders the VIGIL chrome (VigilApp) with the wired
- *   Alert Queue + Alert Detail (response actions + Anomaly Triage Assistant) and the
- *   Agent Approval Queue STUB. The module now registers vigil-triage-analyst (the
- *   Anomaly Triage Assistant agent, PR-VIGIL-001 APPROVED). The live alert feed
- *   activates by configuration (VIGIL_ALERT_ENDPOINT) in the Security Framework
- *   live-wiring session; the Agent Approval decision flow and vigil-approval-agent are
- *   a later session (spec §8 build sequencing) and are intentionally NOT registered.
+ * SCOPE (through Session 10):
+ *   This file is the module's SovereignModuleContract. It enforces the VIGIL role gate
+ *   structurally at mount and renders the VIGIL chrome (VigilApp) with two tabs: the
+ *   wired Alert Queue + Alert Detail (response actions + Anomaly Triage Assistant,
+ *   Session 7) and the Agent Approval Queue (Session 10 — request queue, vigil-approval-
+ *   agent brief, and human-gated Approve/Reject/Escalate decisions). The module
+ *   registers BOTH vigil-triage-analyst (PR-VIGIL-001) and vigil-approval-agent
+ *   (PR-VIGIL-002, APPROVED June 23, 2026). The live alert feed (VIGIL_ALERT_ENDPOINT,
+ *   Session 9) and the live AgentOS approval port both activate by configuration
+ *   (Standing Constraint #3); this session both run on synthetic/dev backings.
  *
  * ROLE GATE (spec §1 / §7) — STRUCTURAL, not a conditional render:
  *   Access is restricted to PLATFORM_ADMIN and SYSTEM_ADMIN. This is enforced in
@@ -86,6 +87,27 @@ const vigilTriageAnalystCard: AgentCard = {
   security_observable: true,
 };
 
+// vigil-approval-agent — Monitoring agent (Agent Identity Standard v1.1). Activated
+// this session (Session 10 — Agent Approval Flow). Turns an AgentOS approval request
+// into a human-readable brief (PR-VIGIL-002, APPROVED June 23, 2026) and records the
+// operator's decision; it never self-approves and takes no platform action (spec §3.1).
+// LLM access via createSovereignClient() only (Standing Constraint #5).
+const vigilApprovalAgentCard: AgentCard = {
+  agent_id: "vigil-approval-agent",
+  agent_class: "Monitoring",
+  product: "VIGIL",
+  capabilities: ["approval_brief_generation", "decision_record_keeping"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE", // platform default (Agent Identity Standard)
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "CUI",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -97,9 +119,9 @@ export const vigilModule: SovereignModuleContract = {
   // fail-closed default policy turns this into "PLATFORM_ADMIN or SYSTEM_ADMIN
   // only". Not a placeholder, unlike COUNSEL/SCRIBE's READ_ONLY.
   minimumRole: VIGIL_MINIMUM_ROLE,
-  // vigil-triage-analyst registered (Session 7 — Anomaly Triage Assistant build).
-  // vigil-approval-agent stays deferred to the Agent Approval flow session.
-  agentCards: [vigilTriageAnalystCard],
+  // vigil-triage-analyst (Session 7 — Anomaly Triage Assistant) and vigil-approval-agent
+  // (Session 10 — Agent Approval Flow, activated this session) are both registered.
+  agentCards: [vigilTriageAnalystCard, vigilApprovalAgentCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate (spec §7): throw before building the tree. ---
