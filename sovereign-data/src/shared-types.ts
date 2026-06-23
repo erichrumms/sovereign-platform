@@ -63,7 +63,10 @@ export type HumanDecisionType =
   | "TRAVEL_DENIED"
   | "TRAVEL_ESCALATED"
   | "LABOR_CORRECTION_APPROVED"
-  | "LABOR_ESCALATION_INITIATED";
+  | "LABOR_ESCALATION_INITIATED"
+  // GD-6 (shell-contract v1.4, June 23, 2026) — a human authorizing an agent action
+  // via VIGIL's Agent Approval Queue. Synced from shell-contract.ts Section 2.
+  | "AGENT_APPROVAL";
 
 /** Runtime value sets, for validation reuse. Must mirror the unions above. */
 export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
@@ -102,6 +105,8 @@ export const HUMAN_DECISION_TYPES: readonly HumanDecisionType[] = [
   "TRAVEL_ESCALATED",
   "LABOR_CORRECTION_APPROVED",
   "LABOR_ESCALATION_INITIATED",
+  // GD-6 (shell-contract v1.4, June 23, 2026) — agent-action approval.
+  "AGENT_APPROVAL",
 ];
 
 /** Shared validation result shape used by every entity validator in this package. */

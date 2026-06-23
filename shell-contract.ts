@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.3
+ * Version: 1.4
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,26 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.4 (June 23, 2026) — GD-6 (VIGIL Agent Approval Flow, approved Project
+ *                       Principal June 23, 2026, Session 10, per
+ *                       05_VIGIL_Agent_Approval.md §7). Added four SovereignEventType
+ *                       members for the agent-action approval lifecycle:
+ *                       AGENT_ACTION_APPROVED, AGENT_ACTION_REJECTED,
+ *                       AGENT_ACTION_ESCALATED, AGENT_ACTION_EXPIRED. Added
+ *                       AGENT_APPROVAL to HumanDecisionType (a human authorizing an
+ *                       agent action via VIGIL's Agent Approval Queue carries
+ *                       decision_type AGENT_APPROVAL — Standing Constraint #4). All
+ *                       five are non-breaking union widenings. Impact assessment: the
+ *                       four event types are defined only here (the two shell-contract
+ *                       copies) and emitted only by module-vigil (vigil-approval-agent
+ *                       flow) — no existing module emits them and no exhaustive switch
+ *                       over SovereignEventType exists. AGENT_APPROVAL additionally
+ *                       propagates to the synced HumanDecisionType copy in
+ *                       sovereign-data/src/shared-types.ts (the type + the
+ *                       HUMAN_DECISION_TYPES runtime const) and its test, per Standing
+ *                       Constraint #11 — the data dictionary is a shared artifact. Full
+ *                       tsc --noEmit clean; both shell-contract copies SHA-256 verified
+ *                       identical at v1.4.
  *   v1.3 (June 13, 2026) — GD-5 (Companion Suite Contract Enablement, approved
  *                       Project Principal June 13, 2026, Session 3). Added four
  *                       companion products to SovereignProduct: COUNSEL, SCRIBE,
@@ -152,7 +172,13 @@ export type SovereignEventType =
   | "ALERT_ESCALATED"
   | "ALERT_FALSE_POSITIVE"
   | "TRIAGE_ANALYSIS_PRODUCED"
-  | "APPROVAL_REQUEST_RECEIVED";
+  | "APPROVAL_REQUEST_RECEIVED"
+  // GD-6 — June 23, 2026 (shell-contract v1.4) — four agent-action approval
+  // lifecycle event types (VIGIL Agent Approval Flow). Emitted only by module-vigil.
+  | "AGENT_ACTION_APPROVED"
+  | "AGENT_ACTION_REJECTED"
+  | "AGENT_ACTION_ESCALATED"
+  | "AGENT_ACTION_EXPIRED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -164,7 +190,10 @@ export type HumanDecisionType =
   | "TRAVEL_DENIED"
   | "TRAVEL_ESCALATED"
   | "LABOR_CORRECTION_APPROVED"
-  | "LABOR_ESCALATION_INITIATED";
+  | "LABOR_ESCALATION_INITIATED"
+  // GD-6 — June 23, 2026 (shell-contract v1.4) — a human authorizing an agent action
+  // via VIGIL's Agent Approval Queue. Synced to sovereign-data/src/shared-types.ts.
+  | "AGENT_APPROVAL";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;

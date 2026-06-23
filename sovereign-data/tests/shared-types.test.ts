@@ -20,11 +20,13 @@ describe("runtime enum mirrors", () => {
     expect(CLEARANCE_LEVELS).toEqual(["UNCLASSIFIED", "CUI", "SECRET", "TOP_SECRET"]);
   });
 
-  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (10 members, unique)", () => {
-    expect(HUMAN_DECISION_TYPES).toHaveLength(10);
-    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(10);
+  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (11 members, unique)", () => {
+    expect(HUMAN_DECISION_TYPES).toHaveLength(11);
+    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(11);
     expect(HUMAN_DECISION_TYPES).toContain("HUMAN_APPROVAL");
     expect(HUMAN_DECISION_TYPES).toContain("LABOR_ESCALATION_INITIATED");
+    // GD-6 (shell-contract v1.4) — synced agent-action approval decision type.
+    expect(HUMAN_DECISION_TYPES).toContain("AGENT_APPROVAL");
   });
 
   it("HUMAN_DECISION_TYPES values are assignable to HumanDecisionType", () => {
