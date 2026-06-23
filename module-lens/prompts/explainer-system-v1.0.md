@@ -2,19 +2,19 @@
 
 - **Registry ID:** PR-LENS-001
 - **Logical name (LENS spec):** `explainer_system.md`
-- **Agent:** `lens-explainer` (Operational) · **Module:** `module-lens` · **Product:** LENS
+- **Agent:** `lens-explainer` (Analytical) · **Module:** `module-lens` · **Product:** LENS
 - **Model:** supplied by `sovereign-api-client` (`claude-sonnet-4`). Do **not** hardcode a model string in LENS.
 - **Max tokens:** platform default.
 - **Output:** a single JSON object — a plain-language explanation grounded in the supplied source documents, validated before it is shown to the user.
-- **Status:** Authored Session 7 (June 18, 2026). Approval: **PENDING Project Principal.**
+- **Status:** Authored Session 7 (June 18, 2026). Approval: **APPROVED — Project Principal, June 18, 2026.**
 
-> **Not wired this session.** This prompt is authored and registered ahead of the LENS
-> core build so the registry entry exists and is reviewable. The LENS scaffold (Session 7,
-> D2) ships its agent cards but makes no LLM call, so there is no runtime copy
-> (`*.prompt.ts`) yet. LENS core — the lens-explainer engine grounded in the knowledge-base
-> source documents — is built once the LENS architecture spec (`03_LENS_Orientation_Module.md`)
-> is authored. The prompt text below is provisional and may be revised (with a new registry
-> version + CHANGELOG entry + Project Principal approval) when that spec lands.
+> **Wired in LENS core (Session 8, D1).** The runtime copy is
+> `src/prompts/explainer-system.prompt.ts` (body verbatim from this file). Any change to
+> this prompt requires a new registry version + CHANGELOG entry + Project Principal
+> approval, mirrored into the runtime copy. The output shape below is the canonical
+> `LensExplanation` entity in `@sovereign/data` — the entity was aligned to this prompt
+> per the Project Principal's Session 8 decision. (`lens-explainer` agent class corrected
+> Operational → Analytical, LENS spec §2.1.)
 
 ---
 

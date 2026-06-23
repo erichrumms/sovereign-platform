@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /**
  * module-lens — index.test.ts
- * The SovereignModuleContract scaffold: identity matches the loader's pre-wired
+ * The SovereignModuleContract (LENS core): identity matches the loader's pre-wired
  * module-lens slot, the READ_ONLY placeholder gate (COUNSEL/SCRIBE rationale), the
- * two registered agent cards (lens-explainer Operational, lens-orientation
- * Analytical), and an honest NOT_STARTED health state.
+ * two registered agent cards (lens-explainer Analytical — corrected from the scaffold's
+ * Operational, lens-orientation Analytical), and an honest NOT_STARTED health state.
  */
 import { lensModule } from "../src/index";
 import { makeCtx } from "./test-helpers";
@@ -21,10 +21,11 @@ describe("lensModule contract", () => {
     expect(lensModule.minimumRole).toBe("READ_ONLY");
   });
 
-  it("registers lens-explainer (Operational) and lens-orientation (Analytical)", () => {
+  it("registers lens-explainer (Analytical) and lens-orientation (Analytical)", () => {
     expect(lensModule.agentCards.map((c) => c.agent_id)).toEqual(["lens-explainer", "lens-orientation"]);
     const byId = Object.fromEntries(lensModule.agentCards.map((c) => [c.agent_id, c]));
-    expect(byId["lens-explainer"].agent_class).toBe("Operational");
+    // Corrected this session from the scaffold's Operational (LENS spec §2.1).
+    expect(byId["lens-explainer"].agent_class).toBe("Analytical");
     expect(byId["lens-orientation"].agent_class).toBe("Analytical");
     expect(lensModule.agentCards.every((c) => c.product === "LENS")).toBe(true);
   });
@@ -35,7 +36,7 @@ describe("lensModule contract", () => {
     expect(typeof lensModule.healthCheck).toBe("function");
   });
 
-  it("reports an honest NOT_STARTED health state for the scaffold", async () => {
+  it("reports an honest NOT_STARTED health state (Governance Clock not activated)", async () => {
     await expect(lensModule.healthCheck()).resolves.toEqual({
       status: "HEALTHY",
       vrs_gate: "NOT_STARTED",

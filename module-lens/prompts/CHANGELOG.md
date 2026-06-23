@@ -8,9 +8,26 @@ or unapproved prompt. Old versions are never deleted; this file records the curr
 
 | Registry ID | Logical name (LENS spec) | File | Current Version | Approved By | Date |
 |---|---|---|---|---|---|
-| PR-LENS-001 | `explainer_system.md` | `explainer-system-v1.0.md` | v1.0 | **PENDING — Project Principal** | 2026-06-18 |
+| PR-LENS-001 | `explainer_system.md` | `explainer-system-v1.0.md` | v1.0 | **APPROVED — Project Principal** | 2026-06-18 |
 
 ## Change History
+
+### Session 8, D1 — LENS Core (2026-06-22)
+
+- **PR-LENS-001 status: APPROVED — Project Principal, June 18, 2026.** Confirmed in the
+  Session 8 opening prompt; the approval record lives in the governance documents. The
+  prompt file header (which still read PENDING) was corrected to APPROVED this session.
+- **Runtime copy created:** `src/prompts/explainer-system.prompt.ts` — the model-facing
+  body of `explainer-system-v1.0.md`, verbatim. The LENS core explanation engine sends
+  this copy. Sync obligation: any prompt change is a new registry version + a CHANGELOG
+  entry + Project Principal approval, mirrored into the runtime copy.
+- **Output shape:** the prompt's output is the canonical `LensExplanation` entity in
+  `@sovereign/data` (`explanation`, `sources[]`, `confidence` grounded|partial, `gaps[]`).
+  The entity was aligned to this prompt per the Project Principal's Session 8 decision.
+- **`lens-explainer` agent class corrected** Operational → Analytical (LENS spec §2.1) in
+  `src/index.ts` and this prompt's header.
+- **PR-LENS-002 (orientation) — still deferred.** The Pipeline Navigator is a static
+  render and makes no LLM call.
 
 ### v1.0 — 2026-06-18 (Session 7, D2 — LENS Scaffold)
 

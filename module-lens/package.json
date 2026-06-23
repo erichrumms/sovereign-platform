@@ -1,7 +1,7 @@
 {
   "name": "@sovereign/module-lens",
   "version": "1.0.0",
-  "description": "SOVEREIGN Platform — LENS companion module (Orientation & Explanation) — scaffold",
+  "description": "SOVEREIGN Platform — LENS companion module (Orientation & Explanation)",
   "type": "module",
   "main": "src/index.ts",
   "exports": {
@@ -12,6 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@sovereign/api-client": "^1.0.0",
+    "@sovereign/data": "^1.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -36,6 +38,9 @@
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setup-dom.ts"
     ],
+    "moduleNameMapper": {
+      "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts"
+    },
     "transform": {
       "^.+\\.tsx?$": [
         "ts-jest",

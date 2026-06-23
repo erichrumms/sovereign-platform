@@ -1,27 +1,59 @@
 /**
  * SOVEREIGN Platform — module-lens
- * LensApp.tsx — LENS composition root (React) — scaffold.
+ * LensApp.tsx — LENS composition root (React).
  *
  * The single React component the module mounts (via index.ts → createRoot) into the
- * shell-provided outlet. It renders the LENS chrome and honest stubs for the three
- * orientation surfaces LENS core will provide (Pipeline Navigator, Governance
- * Explainer, AI Transparency Panel — VIGIL spec §4.6 / Integration Brief). LENS core
- * is deferred until the LENS architecture spec (03_LENS_Orientation_Module.md) is
- * authored; the scaffold makes no LLM call and explains exactly what is and is not
- * wired (it does not imply LENS is operational).
+ * shell-provided outlet. It renders the LENS chrome and the three orientation surfaces
+ * (LENS core, Session 8): Governance Explainer (§2.1, lens-explainer), Pipeline
+ * Navigator (§2.2, static), and AI Transparency Panel (§2.3, read-only).
  *
- * Version: 1.0 (scaffold) · Session 7 · June 18, 2026
+ * It owns the LENS session event capture: it wraps the shell logger so the events LENS
+ * emits are observable by the AI Transparency Panel (session-events.ts) — the only
+ * session activity the write-only shell logger lets a module see. The wrapped context
+ * is what the Explainer uses; the Transparency Panel reads the capture.
+ *
+ * Version: 2.0 (LENS core) · Session 8 · June 22, 2026
  */
 
-import type { CSSProperties } from "react";
+import { useMemo, useReducer, useRef, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import { GovernanceExplainer } from "./GovernanceExplainer";
+import { PipelineNavigator } from "./PipelineNavigator";
+import { AITransparencyPanel } from "./AITransparencyPanel";
+import { createSessionEventLog, withSessionCapture } from "./session-events";
 
 export interface LensAppProps {
   ctx: SovereignShellContext;
 }
 
+type Tab = "explainer" | "navigator" | "transparency";
+
+const TABS: Array<{ id: Tab; label: string }> = [
+  { id: "explainer", label: "Governance Explainer" },
+  { id: "navigator", label: "Pipeline Navigator" },
+  { id: "transparency", label: "AI Transparency" },
+];
+
 export function LensApp({ ctx }: LensAppProps): JSX.Element {
+  const [tab, setTab] = useState<Tab>("explainer");
+  // Force a re-render of the transparency tab as new events are captured.
+  const [, bump] = useReducer((n: number) => n + 1, 0);
+
+  // One session event log for the app's lifetime, and a logger-wrapping context
+  // whose emissions are captured into it. Bump re-render on each captured event.
+  const sessionLog = useRef(createSessionEventLog()).current;
+  const capturedCtx = useMemo<SovereignShellContext>(() => {
+    const wrapped = withSessionCapture(ctx, {
+      record: (event) => {
+        sessionLog.record(event);
+        bump();
+      },
+      events: sessionLog.events,
+    });
+    return wrapped;
+  }, [ctx, sessionLog]);
+
   return (
     <section style={rootStyle}>
       <header style={headerStyle}>
@@ -30,42 +62,41 @@ export function LensApp({ ctx }: LensAppProps): JSX.Element {
       </header>
 
       <div style={bannerStyle}>
-        Scaffold — the module mounts and registers its agents (lens-explainer,
-        lens-orientation). The explanation and orientation surfaces below are stubs: LENS core (the
-        lens-explainer agent grounded in the platform&apos;s source documents) is built once the LENS
-        architecture spec is authored. Signed in as <strong>{ctx.auth.user.name}</strong>.
+        Signed in as <strong>{ctx.auth.user.name}</strong>. LENS explains how the platform
+        works — it makes no decisions and takes no actions.
       </div>
 
-      <div style={stackStyle}>
-        <StubPanel
-          title="Governance Explainer"
-          body="Will answer plain-language questions about platform governance — including VIGIL alert response and agent approvals — grounded in the LENS knowledge-base source documents already in the repo (vigil_alert_response.md, vigil_agent_approvals.md). Not yet wired."
-        />
-        <StubPanel
-          title="Pipeline Navigator"
-          body="Will show any authenticated user their own pipeline context across the six products. VIGIL's Pipeline Health Panel deep-links here. Not yet wired."
-        />
-        <StubPanel
-          title="AI Transparency Panel"
-          body="Will surface the platform-wide agent-action log in plain language, visible to all users. Not yet wired."
-        />
+      <nav style={tabBarStyle} aria-label="LENS surfaces">
+        {TABS.map((t) => {
+          const active = t.id === tab;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setTab(t.id)}
+              style={{
+                ...tabStyle,
+                color: active ? "#0f172a" : "#64748b",
+                borderBottom: active ? "2px solid #0f172a" : "2px solid transparent",
+                fontWeight: active ? 700 : 500,
+              }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div style={bodyStyle}>
+        {tab === "explainer" && <GovernanceExplainer ctx={capturedCtx} />}
+        {tab === "navigator" && <PipelineNavigator ctx={ctx} />}
+        {tab === "transparency" && <AITransparencyPanel events={sessionLog.events()} />}
       </div>
     </section>
   );
 }
-
-function StubPanel({ title, body }: { title: string; body: string }): JSX.Element {
-  return (
-    <section style={panelStyle} aria-label={title}>
-      <h3 style={panelTitleStyle}>{title}</h3>
-      <p style={panelBodyStyle}>{body}</p>
-    </section>
-  );
-}
-
-// ============================================================
-// STYLES (inline — consistent with the shell chrome / other modules)
-// ============================================================
 
 const rootStyle: CSSProperties = {
   fontFamily: "system-ui, sans-serif", padding: 32, color: "#0f172a", height: "100%",
@@ -75,14 +106,15 @@ const headerStyle: CSSProperties = { marginBottom: 16 };
 const titleStyle: CSSProperties = { margin: "0 0 4px", fontSize: 22 };
 const subtitleStyle: CSSProperties = { margin: 0, color: "#475569" };
 const bannerStyle: CSSProperties = {
-  padding: "10px 14px", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 8,
-  color: "#92400e", fontSize: 13, marginBottom: 16, maxWidth: 720,
+  padding: "10px 14px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8,
+  color: "#1e40af", fontSize: 13, marginBottom: 16, maxWidth: 720,
 };
-const stackStyle: CSSProperties = { display: "flex", flexDirection: "column", gap: 12 };
-const panelStyle: CSSProperties = {
-  padding: 14, border: "1px solid #e2e8f0", borderRadius: 10, background: "#ffffff", maxWidth: 720,
+const tabBarStyle: CSSProperties = {
+  display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 20,
 };
-const panelTitleStyle: CSSProperties = { margin: "0 0 6px", fontSize: 15 };
-const panelBodyStyle: CSSProperties = { margin: 0, fontSize: 13, color: "#475569" };
+const tabStyle: CSSProperties = {
+  padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer",
+};
+const bodyStyle: CSSProperties = {};
 
 export default LensApp;
