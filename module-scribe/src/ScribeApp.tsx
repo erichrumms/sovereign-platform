@@ -23,9 +23,11 @@ import type { SovereignShellContext } from "../../sovereign-shell/shell-contract
 import type { SCRIBEMode } from "../../sovereign-shell/shell-contract";
 import { SCRIBE_MODES, describeMode } from "./modes";
 import { isDraftableMode } from "./draft-contract";
+import { isIntermediateMode } from "./intermediate-contract";
 import { createSessionStyleProfileStore } from "./style-contract";
 import { useStyleProfile } from "./useStyleProfile";
 import { DraftWorkspace } from "./DraftWorkspace";
+import { IntermediateWorkspace } from "./IntermediateWorkspace";
 import { StyleDNAManager } from "./StyleDNAManager";
 
 export interface ScribeAppProps {
@@ -50,8 +52,9 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
 
       <div style={scaffoldBannerStyle}>
         Drafting engine live for the six product-aligned modes — capture → draft →
-        schema-validated, human-gated Export. Synthesis and framing arrive in a
-        later session. Signed in as <strong>{ctx.auth.user.name}</strong>.
+        schema-validated, human-gated Export. Synthesis and framing produce
+        intermediate prose you carry forward (no product export). Signed in as{" "}
+        <strong>{ctx.auth.user.name}</strong>.
       </div>
 
       <StyleDNAManager style={style} />
@@ -86,10 +89,16 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
               targetProduct={descriptor.targetProduct}
               styleProfile={style.profile}
             />
+          ) : selected && isIntermediateMode(selected) ? (
+            <IntermediateWorkspace
+              ctx={ctx}
+              mode={selected}
+              label={descriptor.label}
+              styleProfile={style.profile}
+            />
           ) : (
             <p style={mutedStyle}>
               Intermediate artifact — feeds another drafting mode; it has no product intake schema.
-              Drafting for synthesis and framing arrives in a later session.
             </p>
           )}
         </div>

@@ -19,6 +19,21 @@ session plan's explicit numbering, not strict authoring order.
 
 ## Change History
 
+### Session 8, D2 — SCRIBE intermediate modes (2026-06-22)
+
+- **No prompt change.** The intermediate modes `synthesis` and `framing` were wired to
+  run under the already-APPROVED **PR-SCRIBE-001** drafting prompt, whose "What you
+  produce" section already scopes them: "synthesis / framing → intermediate prose for
+  the human to carry into a drafting mode (no product intake schema)." No new prompt
+  version, no edit to `drafting-system-v1.0.md` or its runtime copy.
+- **PR-SCRIBE-002 / PR-SCRIBE-003 remain unauthored** (a later Claude Chat deliverable).
+  They are NOT required for this build; if authored later, re-binding the intermediate
+  engine to them is a registry change, not a rewrite (Standing Constraint #3).
+- Intermediate prose is NOT validated against any product schema and has no Export gate
+  (D2 done condition) — the human carries it forward. Logger emission uses approved
+  event types only (AGENT_STEP_START / FALLBACK_ACTIVATED / AGENT_STEP_COMPLETE), each
+  carrying `workflow_step_id`.
+
 ### v1.0 — 2026-06-16 (Session 5)
 
 - **PR-SCRIBE-001 — SCRIBE Drafting Engine system prompt.** Initial baseline,

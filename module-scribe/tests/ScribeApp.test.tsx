@@ -3,7 +3,7 @@
  * module-scribe — ScribeApp.test.tsx
  * The composition root renders the SCRIBE chrome and the eight-mode selector.
  * Selecting one of the six product-aligned modes opens the DraftWorkspace; the two
- * intermediate modes show the later-session notice.
+ * intermediate modes (synthesis, framing) open the IntermediateWorkspace.
  */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
@@ -30,11 +30,16 @@ describe("ScribeApp", () => {
     expect(screen.getAllByText(/NEXUS/).length).toBeGreaterThan(0);
   });
 
-  it("shows a later-session notice for an intermediate mode (no product intake)", () => {
+  it("opens the intermediate workspace for synthesis/framing (no product export)", () => {
     render(<ScribeApp ctx={makeCtx()} />);
     fireEvent.click(screen.getByText("Synthesis"));
-    expect(screen.getByText(/feeds another drafting mode/i)).toBeInTheDocument();
+    // The intermediate workspace renders — no draft/export gate, a Synthesize action.
+    expect(screen.getByRole("button", { name: /Synthesize material/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /generate draft/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /export to/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Framing"));
+    expect(screen.getByRole("button", { name: /Frame material/i })).toBeInTheDocument();
   });
 
   it("injects a saved Style DNA profile into the drafting workspace (D2)", async () => {

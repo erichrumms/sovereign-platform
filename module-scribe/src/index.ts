@@ -55,7 +55,7 @@ const scribeDrafterCard: AgentCard = {
   agent_id: "scribe-drafter",
   agent_class: "Operational",
   product: "SCRIBE",
-  capabilities: ["mode_drafting", "voice_capture_transcription", "synthesis"],
+  capabilities: ["mode_drafting", "voice_capture_transcription", "synthesis", "framing"],
   input_schema: {},
   output_schema: {},
   task_lifecycle_contract: {
