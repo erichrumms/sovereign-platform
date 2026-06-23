@@ -25,6 +25,7 @@ import type { SovereignShellContext, SovereignProduct } from "../../sovereign-sh
 import { validateModeOutput, type DraftableMode, type ModeOutput } from "./draft-contract";
 import { useDraft } from "./useDraft";
 import { useExport } from "./useExport";
+import { SmartCapturePanel } from "./SmartCapturePanel";
 import type { DraftInput } from "./draft-engine";
 
 export interface DraftWorkspaceProps {
@@ -101,11 +102,16 @@ export function DraftWorkspace({ ctx, mode, label, targetProduct, styleProfile }
         Captured material for <strong>{label}</strong> → {targetProduct}
         {styleProfile ? <span style={styleOnStyle}> · Style DNA active</span> : null}
       </label>
+      <SmartCapturePanel
+        ctx={ctx}
+        targetMode={mode}
+        onTranscript={(text) => setCaptured((prev) => (prev.trim() === "" ? text : `${prev}\n${text}`))}
+      />
       <textarea
         id="scribe-captured"
         style={textareaStyle}
         rows={5}
-        placeholder="Paste notes, a transcript, or source text to draft from…"
+        placeholder="Paste notes, a transcript, or source text to draft from… (or use Smart Capture above)"
         value={captured}
         onChange={(e) => setCaptured(e.target.value)}
       />
