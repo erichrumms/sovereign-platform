@@ -7,10 +7,11 @@
  * package as the source of canonical entity types. No module may redefine or
  * rename these fields.
  *
- * Version: 1.1.0 — Session 8, June 22, 2026
+ * Version: 1.2.0 — Session 11, June 23, 2026
  *   - Canonical entities: Employee, Program, Cost Code, Document, Vendor
  *   - StyleProfile (GD-1, approved June 11, 2026)
  *   - LensExplanation (Session 8, approved Project Principal — aligned to PR-LENS-001)
+ *   - ReasoningChainOutput (Session 11, CPMI module — six-step chain output)
  *   - SCRIBE mode output schemas (companion suite spec, Part 3)
  */
 
@@ -47,6 +48,18 @@ export { validateStyleProfile } from './entities/style-profile';
 export type { LensExplanation, LensExplanationConfidence } from './entities/lens-explanation';
 export { validateLensExplanation } from './entities/lens-explanation';
 
+// Session 11 — CPMI module (six-step reasoning chain output)
+export type {
+  ReasoningChainOutput,
+  ReasoningRisk,
+  ReasoningConstraint,
+  ReasoningOption,
+  ConfidenceLevel,
+  RiskSeverity,
+  RiskType,
+} from './entities/reasoning-chain-output';
+export { validateReasoningChainOutput } from './entities/reasoning-chain-output';
+
 // SCRIBE mode output schemas (companion suite spec, Part 3)
 export type {
   CorrespondenceDraftSchema,
@@ -59,4 +72,4 @@ export type {
 } from './schemas/scribe-modes';
 
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.1.0';
+export const SOVEREIGN_DATA_VERSION = '1.2.0';

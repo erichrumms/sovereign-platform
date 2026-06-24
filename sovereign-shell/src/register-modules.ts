@@ -20,6 +20,7 @@ import { counselModule } from "@sovereign/module-counsel";
 import { scribeModule } from "@sovereign/module-scribe";
 import { vigilModule } from "@sovereign/module-vigil";
 import { lensModule } from "@sovereign/module-lens";
+import { cpmiModule } from "@sovereign/module-cpmi";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -39,4 +40,10 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // knowledge-base source docs) is deferred until the LENS architecture spec is
   // authored. moduleId/product are pre-wired in the loader's MODULE_PRODUCT map.
   loader.register(lensModule);
+  // CPMI — the platform AI governance engine and the FIRST primary product (Stage 3,
+  // Session 11). Real role gate (minimumRole PLATFORM_ADMIN → the loader's fail-closed
+  // policy admits PLATFORM_ADMIN/SYSTEM_ADMIN only); registers cpmi.reasoning-chain /
+  // cpmi.world-model-api / cpmi.vrs-certification. module-cpmi/CPMI is pre-wired in the
+  // loader's MODULE_PRODUCT map.
+  loader.register(cpmiModule);
 }
