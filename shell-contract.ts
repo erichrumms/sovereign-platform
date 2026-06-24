@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.7
+ * Version: 1.8
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,24 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.8 (June 24, 2026) — GD-11 (NEXUS work-request lifecycle events, approved Project
+ *                       Principal June 24, 2026, Session 15, per 12_NEXUS_Architecture.md
+ *                       §4). Added six SovereignEventType members for the NEXUS work-request
+ *                       lifecycle state machine: NEXUS_REQUEST_SUBMITTED,
+ *                       NEXUS_REQUEST_ROUTED, NEXUS_APPROVAL_PENDING,
+ *                       NEXUS_REQUEST_IN_PROGRESS, NEXUS_REQUEST_COMPLETE,
+ *                       NEXUS_REQUEST_REJECTED. All six are non-breaking union widenings.
+ *                       Impact assessment: the six event types are defined only here (the
+ *                       two shell-contract copies) and emitted only by module-nexus (the
+ *                       work-request registry); no existing module emits them and no
+ *                       exhaustive switch over SovereignEventType exists. NO HumanDecisionType
+ *                       change — NEXUS records the OUTCOMES of VIGIL decisions routed via
+ *                       AgentOS (the TASK_APPROVAL decision_type added at v1.7 already
+ *                       covers the human approval), so NO sovereign-data shared-types
+ *                       propagation is required (SovereignEventType is not mirrored in
+ *                       shared-types — only SovereignRole / ClearanceLevel / HumanDecisionType
+ *                       are; consistent with the GD-8 impact assessment). Full tsc --noEmit
+ *                       clean; both shell-contract copies SHA-256 verified identical at v1.8.
  *   v1.7 (June 24, 2026) — GD-9 (AgentOS task lifecycle events, approved Project
  *                       Principal June 24, 2026, Session 14, per 11_AgentOS_Architecture.md
  *                       §4). Added seven SovereignEventType members for the AgentOS task
@@ -256,7 +274,15 @@ export type SovereignEventType =
   | "AGENTOS_TASK_REJECTED"
   | "AGENTOS_TASK_STARTED"
   | "AGENTOS_TASK_COMPLETE"
-  | "AGENTOS_TASK_CANCELLED";
+  | "AGENTOS_TASK_CANCELLED"
+  // GD-11 — June 24, 2026 (shell-contract v1.8) — six NEXUS work-request lifecycle event
+  // types (work-request registry state machine). Emitted only by module-nexus.
+  | "NEXUS_REQUEST_SUBMITTED"
+  | "NEXUS_REQUEST_ROUTED"
+  | "NEXUS_APPROVAL_PENDING"
+  | "NEXUS_REQUEST_IN_PROGRESS"
+  | "NEXUS_REQUEST_COMPLETE"
+  | "NEXUS_REQUEST_REJECTED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
