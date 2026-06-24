@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.5
+ * Version: 1.6
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,27 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.6 (June 24, 2026) — GD-8 (Local LLM inference events + DataClassification routing,
+ *                       approved Project Principal June 24, 2026, Session 13, per
+ *                       10_LocalLLM_Infrastructure.md §3). Added three SovereignEventType
+ *                       members for the inference layer: INFERENCE_CALL,
+ *                       INFERENCE_PROVIDER_FALLBACK, MODEL_HASH_MISMATCH. Non-breaking
+ *                       union widenings, emitted only by sovereign-api-client (the Local
+ *                       LLM infrastructure). Impact assessment: the three event types are
+ *                       defined only here (the two shell-contract copies); no existing
+ *                       module emits them and no exhaustive switch over SovereignEventType
+ *                       exists. No HumanDecisionType change, so NO sovereign-data
+ *                       shared-types propagation is required (SovereignEventType is not
+ *                       mirrored in shared-types — only SovereignRole / ClearanceLevel /
+ *                       HumanDecisionType are; consistent with the GD-6 / GD-7 impact
+ *                       assessments). The spec's "DataClassification routing field" is
+ *                       realized WITHOUT a new shell-contract type: the existing
+ *                       ClearanceLevel (UNCLASSIFIED | CUI | SECRET | TOP_SECRET) IS the
+ *                       data-classification taxonomy (Standing Constraint #2 — no divergent
+ *                       duplicate), and the optional data_classification field lives on the
+ *                       sovereign-api-client SovereignRequestContext (an api-client type),
+ *                       not the shell contract. Full tsc --noEmit clean; both shell-contract
+ *                       copies SHA-256 verified identical at v1.6.
  *   v1.5 (June 23, 2026) — GD-7 (CPMI Module / CPMI-VRS Gate Runner, approved Project
  *                       Principal June 23, 2026, Session 11, per 08_CPMI_Architecture.md
  *                       §5 / §9). Added five SovereignEventType members for the CPMI
@@ -203,7 +224,12 @@ export type SovereignEventType =
   | "CPMI_VRS_GATE_1_PASSED"
   | "CPMI_VRS_GATE_2_PASSED"
   | "CPMI_VRS_GATE_3_ATTESTED"
-  | "CPMI_VRS_GATE_4_PASSED";
+  | "CPMI_VRS_GATE_4_PASSED"
+  // GD-8 — June 24, 2026 (shell-contract v1.6) — three inference-layer event types
+  // (Local LLM infrastructure). Emitted only by sovereign-api-client.
+  | "INFERENCE_CALL"
+  | "INFERENCE_PROVIDER_FALLBACK"
+  | "MODEL_HASH_MISMATCH";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
