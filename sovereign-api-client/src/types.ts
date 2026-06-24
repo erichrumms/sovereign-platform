@@ -18,7 +18,10 @@
  * governance obligation, not an optional sync.
  *
  * Source of truth: sovereign-shell/shell-contract.ts (Section 1)
- * Version: 1.1 — synced to shell-contract v1.3 (GD-5), Session 3, June 13, 2026
+ * Version: 1.2 — synced to shell-contract v1.6 (GD-8), Session 13, June 24, 2026
+ *   (added ClearanceLevel for the Local LLM data-classification routing field;
+ *    ClearanceLevel is the canonical classification taxonomy — Standing Constraint #2,
+ *    no divergent "DataClassification" duplicate)
  */
 
 /**
@@ -50,3 +53,16 @@ export type SovereignProduct =
  * Canonical source: shell-contract.ts, Section 1.
  */
 export type SovereignTier = "standard" | "enhanced";
+
+/**
+ * Data classification of a request — the canonical taxonomy used for Local LLM
+ * provider routing (GD-8, shell-contract v1.6). This is the SAME taxonomy as
+ * shell-contract.ts `ClearanceLevel` (Section 1): there is no separate
+ * "DataClassification" type (Standing Constraint #2 — no divergent duplicate of a
+ * data-dictionary concept). Synced copy, governance-obligated per this file's header.
+ */
+export type ClearanceLevel =
+  | "UNCLASSIFIED"
+  | "CUI"
+  | "SECRET"
+  | "TOP_SECRET";

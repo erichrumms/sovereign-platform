@@ -19,7 +19,7 @@
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  */
 
-import type { SovereignProduct, SovereignTier } from "./types";
+import type { SovereignProduct, SovereignTier, ClearanceLevel } from "./types";
 
 // ============================================================
 // REQUEST / RESPONSE TYPES
@@ -47,6 +47,13 @@ export interface SovereignRequestContext {
   agent_id: string;
   /** Tier determines which provider client is selected. */
   tier: SovereignTier;
+  /**
+   * Data classification of the request — drives Local LLM provider routing (GD-8,
+   * shell-contract v1.6). Optional and additive: absent is treated as "UNCLASSIFIED"
+   * (Provider A / Anthropic). `CUI` with Ollama enabled routes to Provider B. Uses the
+   * canonical ClearanceLevel taxonomy (Standing Constraint #2 — no divergent duplicate).
+   */
+  data_classification?: ClearanceLevel;
 }
 
 /**
@@ -220,7 +227,11 @@ export interface ClientLogger {
       | "FALLBACK_ACTIVATED"
       | "EXTERNAL_DEPENDENCY_FAILURE"
       | "AGENT_STEP_START"
-      | "AGENT_STEP_COMPLETE";
+      | "AGENT_STEP_COMPLETE"
+      // GD-8 (shell-contract v1.6) — Local LLM inference-layer events.
+      | "INFERENCE_CALL"
+      | "INFERENCE_PROVIDER_FALLBACK"
+      | "MODEL_HASH_MISMATCH";
     workflow_step_id: string;
     product: SovereignProduct;
     actor_id: string;

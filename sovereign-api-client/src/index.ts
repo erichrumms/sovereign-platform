@@ -90,7 +90,33 @@ export {
 // RE-EXPORTS — SHARED TYPES
 // ============================================================
 
-export type { SovereignProduct, SovereignTier } from "./types";
+export type { SovereignProduct, SovereignTier, ClearanceLevel } from "./types";
+
+// ============================================================
+// RE-EXPORTS — LOCAL LLM INFRASTRUCTURE (GD-8, Session 13)
+// Provider B (Ollama) registration, classification routing, model registry, and the
+// inference-layer Logger events. Additive — the existing createSovereignClient() factory
+// is unchanged (Standing Constraint #3). Classification routing is exposed via
+// routedComplete() built on top of the existing providers.
+// ============================================================
+
+export type { InferenceProvider, ProviderConfig, ProviderRegistry } from "./providers/provider-registry";
+export { createProviderRegistry, isOllamaEnabled, DEFAULT_OLLAMA_MODEL_ID } from "./providers/provider-registry";
+
+export { OllamaProvider, OllamaUnavailableError } from "./providers/ollama-provider";
+export type { OllamaProviderConfig, FetchImpl } from "./providers/ollama-provider";
+
+export { selectProvider, isClassificationFallback } from "./routing";
+
+export type { ModelRegistryEntry, CpmiVrsGateStatus, DeploymentEnvironment } from "./model-registry";
+export { ModelRegistry, ModelIntegrityError, createDefaultModelRegistry, SYNTHETIC_MODEL_PLACEHOLDER } from "./model-registry";
+
+export { emitInferenceCall, emitProviderFallback, emitModelHashMismatch } from "./inference-logger";
+
+export { routedComplete } from "./routed-inference";
+export type { RoutedInferenceDeps } from "./routed-inference";
+
+export { readOllamaEndpoint, readOllamaEnabled } from "./ollama-endpoint";
 
 // ============================================================
 // PROVIDER SELECTION
