@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.4
+ * Version: 1.5
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,24 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.5 (June 23, 2026) — GD-7 (CPMI Module / CPMI-VRS Gate Runner, approved Project
+ *                       Principal June 23, 2026, Session 11, per 08_CPMI_Architecture.md
+ *                       §5 / §9). Added five SovereignEventType members for the CPMI
+ *                       reasoning chain + CPMI-VRS gate lifecycle:
+ *                       CPMI_REASONING_CHAIN_COMPLETE, CPMI_VRS_GATE_1_PASSED,
+ *                       CPMI_VRS_GATE_2_PASSED, CPMI_VRS_GATE_3_ATTESTED,
+ *                       CPMI_VRS_GATE_4_PASSED. Added GATE_3_ATTESTATION (Gate 3 human
+ *                       attestation) and WORLD_MODEL_UPDATE (human-gated world-model
+ *                       update) to HumanDecisionType. All seven are non-breaking union
+ *                       widenings. Impact assessment: the five event types are defined
+ *                       only here (the two shell-contract copies) and emitted only by
+ *                       module-cpmi; no existing module emits them and no exhaustive
+ *                       switch over SovereignEventType exists. The two HumanDecisionType
+ *                       members additionally propagate to the synced copy in
+ *                       sovereign-data/src/shared-types.ts (the type + the
+ *                       HUMAN_DECISION_TYPES runtime const, 11 -> 13 members) and its
+ *                       test, per Standing Constraint #11. Full tsc --noEmit clean; both
+ *                       shell-contract copies SHA-256 verified identical at v1.5.
  *   v1.4 (June 23, 2026) — GD-6 (VIGIL Agent Approval Flow, approved Project
  *                       Principal June 23, 2026, Session 10, per
  *                       05_VIGIL_Agent_Approval.md §7). Added four SovereignEventType
@@ -178,7 +196,14 @@ export type SovereignEventType =
   | "AGENT_ACTION_APPROVED"
   | "AGENT_ACTION_REJECTED"
   | "AGENT_ACTION_ESCALATED"
-  | "AGENT_ACTION_EXPIRED";
+  | "AGENT_ACTION_EXPIRED"
+  // GD-7 — June 23, 2026 (shell-contract v1.5) — CPMI reasoning-chain completion +
+  // four CPMI-VRS gate lifecycle event types. Emitted only by module-cpmi.
+  | "CPMI_REASONING_CHAIN_COMPLETE"
+  | "CPMI_VRS_GATE_1_PASSED"
+  | "CPMI_VRS_GATE_2_PASSED"
+  | "CPMI_VRS_GATE_3_ATTESTED"
+  | "CPMI_VRS_GATE_4_PASSED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -193,7 +218,11 @@ export type HumanDecisionType =
   | "LABOR_ESCALATION_INITIATED"
   // GD-6 — June 23, 2026 (shell-contract v1.4) — a human authorizing an agent action
   // via VIGIL's Agent Approval Queue. Synced to sovereign-data/src/shared-types.ts.
-  | "AGENT_APPROVAL";
+  | "AGENT_APPROVAL"
+  // GD-7 — June 23, 2026 (shell-contract v1.5) — CPMI-VRS Gate 3 human attestation and
+  // human-gated world-model update. Synced to sovereign-data/src/shared-types.ts.
+  | "GATE_3_ATTESTATION"
+  | "WORLD_MODEL_UPDATE";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;
