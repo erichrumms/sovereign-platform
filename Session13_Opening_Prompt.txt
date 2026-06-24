@@ -1,0 +1,138 @@
+You are opening Session 13 of the SOVEREIGN Platform build.
+This is an AUTONOMOUS SESSION — the Project Principal will not be
+available. Read everything below carefully. You have full authority
+to build, test, and commit within the defined scope. Do not stop
+for questions. Surface anything unexpected in the handoff.
+
+Read all context documents in your window before doing anything.
+Confirm each by name when done reading.
+
+MONOREPO ROOT: ~/Developer/sovereign-platform/
+GITHUB REMOTE: https://github.com/erichrumms/sovereign-platform.git
+BRANCH: main · HEAD: 051ef82
+SHELL CONTRACT: v1.5 · SHA-256: 8f50399cf5e03c33f3d2a809ff5a5c66167b98ba7aa980b418c259b1d4537a7a
+SHELL CONTRACT CHANGE REQUIRED THIS SESSION (D1 — GD-8). Read
+docs/10_LocalLLM_Infrastructure.md §3 before touching the contract.
+
+---
+
+SESSION 13 DONE CONDITION
+
+Read docs/10_LocalLLM_Infrastructure.md in full before restating.
+State the done condition, then begin immediately — this is an
+autonomous session, do not wait for approval.
+
+D1 — Shell Contract v1.5 → v1.6 (GD-8, do first)
+- Add INFERENCE_CALL, INFERENCE_PROVIDER_FALLBACK, MODEL_HASH_MISMATCH
+  to SovereignEventType
+- Add DataClassification type + data_classification optional field
+  to SovereignRequest (defaults to UNCLASSIFIED when absent)
+- Version increment v1.5 → v1.6
+- Changelog entry: GD-8 — Local LLM inference events +
+  DataClassification routing field
+- Impact assessment: sovereign-api-client only for new event types;
+  SovereignRequest addition is additive and non-breaking
+- Propagate SovereignEventType additions to
+  sovereign-data/src/shared-types.ts (Constraint #11) + update test
+- SHA-256 verify both copies after change — record v1.6 hash
+- Do not proceed to D2 until both copies verified identical
+
+D2 — Local LLM Infrastructure (in sovereign-api-client)
+- Provider registry: Anthropic (A) + Ollama (B), ProviderConfig,
+  InferenceProvider enum
+- Data-classification routing in createSovereignClient():
+  CUI + Ollama enabled → Provider B; everything else → Provider A;
+  CUI + Ollama disabled → Provider A + INFERENCE_PROVIDER_FALLBACK warning
+- Ollama adapter: OpenAI-compatible REST (localhost:11434),
+  OllamaUnavailableError on connection failure
+- Three-tier fallback: live Ollama → Anthropic → static degraded response
+- Model registry: ModelRegistryEntry shape, SHA-256 integrity check,
+  ModelIntegrityError on mismatch, one synthetic placeholder entry
+  (13B model, PENDING CPMI-VRS gate status)
+- Logger integration: INFERENCE_CALL on every successful call,
+  INFERENCE_PROVIDER_FALLBACK on fallback, MODEL_HASH_MISMATCH on
+  integrity failure — all carrying workflow_step_id (Constraint #6)
+- Ollama endpoint config reader: VITE_OLLAMA_ENDPOINT +
+  VITE_OLLAMA_ENABLED (mirrors vigil-endpoint.ts pattern)
+- Full test coverage — all routing scenarios, fallback chain,
+  integrity check, Logger emission
+
+---
+
+AUTONOMOUS OPERATION RULES
+
+You have authority to make all technical decisions within this scope.
+
+Authorized without stopping:
+- All technical decisions within the defined scope
+- TypeScript errors from new files
+- Test mock adjustments
+- Minor interface adjustments to make routing work cleanly
+- Choosing the exact file and class structure within sovereign-api-client
+
+NOT authorized — record in handoff instead:
+- Any shell-contract change beyond GD-8 as defined above
+- New agents or prompts
+- Connecting to a live Ollama instance or making real inference calls
+- Activating real inference through Provider B
+- Any decision requiring a new governance record
+
+If a genuine blocker is encountered: complete as much as possible,
+document precisely in the handoff, close cleanly.
+
+---
+
+STANDING CONSTRAINTS — every session without exception:
+1. No independent security, governance, or audit systems
+2. No shared entity field-name divergence from the data dictionary
+3. No rewrite debt — connections are configuration changes
+4. Every human decision event carries decision_type
+5. No direct Anthropic API calls — createSovereignClient() only
+6. workflow_step_id on every Logger call
+7. Shell context frozen at eight exports — EXCEPT GD-8 additions in D1
+8. shell-contract.ts is a governance document — D1 requires version
+   increment, changelog (GD-8), impact assessment, SHA-256 verification
+   of both copies, Constraint #11 propagation to shared-types
+9. All prompts registered before build — no new prompts this session
+10. All agents registered before build — no new agents this session
+    (Local LLM is infrastructure, not an agent — D1 decision)
+11. Five synced copies of shared artifacts — propagate all changes
+
+---
+
+GOVERNANCE DECISIONS ALREADY RECORDED (Integration Brief v1.17):
+- D1: Local LLM = infrastructure component, SBOM entry only
+- D2: Ollama on Mac Mini M4; Anthropic primary through demo;
+  13B Q4/Q5; three-tier fallback; inference by configuration
+- D3: Mac Mini M4 for dev/demo; GovCloud deferred
+- D4: Inference-only; fine-tuning deferred Stage 10
+- D5: Agent Operator Scope update deferred until live inference
+- GD-8 shell-contract change: pre-approved by this session's
+  architecture spec (10_LocalLLM_Infrastructure.md)
+- Governance Clock: OFF — all data SYNTHETIC
+- No live Ollama connection this session
+
+---
+
+SESSION CLOSE REQUIREMENTS — do not skip:
+1. Full test suite: npm run test:data && npm run test:api-client &&
+   npm run test:counsel && npm run test:scribe && npm run test:vigil &&
+   npm run test:lens && npm run test:cpmi
+2. tsc --noEmit in sovereign-shell and sovereign-api-client — zero errors
+3. npm audit --omit=dev — zero production vulnerabilities
+4. Verify both shell-contract copies SHA-256 identical at v1.6 hash
+5. Commit D1 and D2 as separate commits to main
+6. Push to origin
+7. Produce Session 13 Handoff — include:
+   a. All update flags for Integration Brief v1.20
+   b. New test totals
+   c. Shell-contract v1.6 hash of record
+   d. Routing logic summary (which classification routes where)
+   e. Model registry placeholder details
+   f. Any blockers or unexpected findings
+8. Produce SBOM_Session13_Update.md
+
+---
+
+Begin now. Read context documents, state the done condition,
+then build D1 → D2 without stopping.
