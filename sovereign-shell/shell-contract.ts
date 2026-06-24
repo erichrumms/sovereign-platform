@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.6
+ * Version: 1.7
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,24 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.7 (June 24, 2026) — GD-9 (AgentOS task lifecycle events, approved Project
+ *                       Principal June 24, 2026, Session 14, per 11_AgentOS_Architecture.md
+ *                       §4). Added seven SovereignEventType members for the AgentOS task
+ *                       lifecycle state machine: AGENTOS_TASK_ASSIGNED,
+ *                       AGENTOS_APPROVAL_REQUESTED, AGENTOS_TASK_APPROVED,
+ *                       AGENTOS_TASK_REJECTED, AGENTOS_TASK_STARTED, AGENTOS_TASK_COMPLETE,
+ *                       AGENTOS_TASK_CANCELLED. Added TASK_APPROVAL (a human approving an
+ *                       agent task via VIGIL) and TASK_CANCELLATION (a human cancelling a
+ *                       task) to HumanDecisionType. All nine are non-breaking union
+ *                       widenings. Impact assessment: the seven event types are defined
+ *                       only here (the two shell-contract copies) and emitted only by
+ *                       module-agentos (the task registry / dispatcher); no existing module
+ *                       emits them and no exhaustive switch over SovereignEventType exists.
+ *                       The two HumanDecisionType members additionally propagate to the
+ *                       synced copy in sovereign-data/src/shared-types.ts (the type + the
+ *                       HUMAN_DECISION_TYPES runtime const, 13 -> 15 members) and its test,
+ *                       per Standing Constraint #11. Full tsc --noEmit clean; both
+ *                       shell-contract copies SHA-256 verified identical at v1.7.
  *   v1.6 (June 24, 2026) — GD-8 (Local LLM inference events + DataClassification routing,
  *                       approved Project Principal June 24, 2026, Session 13, per
  *                       10_LocalLLM_Infrastructure.md §3). Added three SovereignEventType
@@ -229,7 +247,16 @@ export type SovereignEventType =
   // (Local LLM infrastructure). Emitted only by sovereign-api-client.
   | "INFERENCE_CALL"
   | "INFERENCE_PROVIDER_FALLBACK"
-  | "MODEL_HASH_MISMATCH";
+  | "MODEL_HASH_MISMATCH"
+  // GD-9 — June 24, 2026 (shell-contract v1.7) — seven AgentOS task-lifecycle event types
+  // (task registry / dispatcher state machine). Emitted only by module-agentos.
+  | "AGENTOS_TASK_ASSIGNED"
+  | "AGENTOS_APPROVAL_REQUESTED"
+  | "AGENTOS_TASK_APPROVED"
+  | "AGENTOS_TASK_REJECTED"
+  | "AGENTOS_TASK_STARTED"
+  | "AGENTOS_TASK_COMPLETE"
+  | "AGENTOS_TASK_CANCELLED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -248,7 +275,12 @@ export type HumanDecisionType =
   // GD-7 — June 23, 2026 (shell-contract v1.5) — CPMI-VRS Gate 3 human attestation and
   // human-gated world-model update. Synced to sovereign-data/src/shared-types.ts.
   | "GATE_3_ATTESTATION"
-  | "WORLD_MODEL_UPDATE";
+  | "WORLD_MODEL_UPDATE"
+  // GD-9 — June 24, 2026 (shell-contract v1.7) — AgentOS task-lifecycle human decisions:
+  // a human approving an agent task via VIGIL (TASK_APPROVAL) and a human cancelling a
+  // task (TASK_CANCELLATION). Synced to sovereign-data/src/shared-types.ts.
+  | "TASK_APPROVAL"
+  | "TASK_CANCELLATION";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;

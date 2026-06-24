@@ -26,7 +26,9 @@
  * decision + version increment. It is not performed in Session 3.
  *
  * Source of truth (current): sovereign-shell/shell-contract.ts
- * Version: 1.0 — synced to shell-contract v1.3, Session 3, June 13, 2026
+ * Version: 1.0 — synced to shell-contract v1.7, Session 14, June 24, 2026
+ *   (HumanDecisionType: + AGENT_APPROVAL v1.4, + GATE_3_ATTESTATION / WORLD_MODEL_UPDATE
+ *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7 — 15 members)
  */
 
 /** Canonical platform roles. Synced to shell-contract.ts v1.3 (incl. GD-5 PLATFORM_ADMIN). */
@@ -70,7 +72,11 @@ export type HumanDecisionType =
   // GD-7 (shell-contract v1.5, June 23, 2026) — CPMI-VRS Gate 3 human attestation and
   // human-gated world-model update. Synced from shell-contract.ts Section 2.
   | "GATE_3_ATTESTATION"
-  | "WORLD_MODEL_UPDATE";
+  | "WORLD_MODEL_UPDATE"
+  // GD-9 (shell-contract v1.7, June 24, 2026) — AgentOS task-lifecycle human decisions:
+  // approving an agent task via VIGIL, and cancelling a task. Synced from shell-contract.ts.
+  | "TASK_APPROVAL"
+  | "TASK_CANCELLATION";
 
 /** Runtime value sets, for validation reuse. Must mirror the unions above. */
 export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
@@ -114,6 +120,9 @@ export const HUMAN_DECISION_TYPES: readonly HumanDecisionType[] = [
   // GD-7 (shell-contract v1.5, June 23, 2026) — CPMI Gate 3 attestation + world-model update.
   "GATE_3_ATTESTATION",
   "WORLD_MODEL_UPDATE",
+  // GD-9 (shell-contract v1.7, June 24, 2026) — AgentOS task approval + cancellation.
+  "TASK_APPROVAL",
+  "TASK_CANCELLATION",
 ];
 
 /** Shared validation result shape used by every entity validator in this package. */
