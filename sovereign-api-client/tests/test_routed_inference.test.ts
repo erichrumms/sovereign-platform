@@ -1,12 +1,14 @@
 /**
  * sovereign-api-client — test_routed_inference.test.ts
- * Classification routing + three-tier fallback + INFERENCE_CALL emission:
- *   UNCLASSIFIED → Anthropic; CUI+enabled → Ollama; CUI+enabled+Ollama-down → Anthropic
- *   (provider fallback); CUI+disabled → Anthropic (provider fallback); both down → static.
- * Every event carries workflow_step_id.
+ * GD-10 classification routing (Session 14):
+ *   - UNCLASSIFIED (and absent) → Anthropic; on Anthropic failure → static (Tier 3).
+ *   - CUI / SECRET / TOP_SECRET → ClassificationNotAuthorizedError PROPAGATES (not swallowed).
+ * Every emitted event carries workflow_step_id. The Ollama (Provider B) path is retained
+ * architecture but unreachable while GD-10 is in force, so it is exercised by the provider
+ * unit tests, not here.
  */
 import { routedComplete, type RoutedInferenceDeps } from "../src/routed-inference";
-import { OllamaUnavailableError } from "../src/providers/ollama-provider";
+import { ClassificationNotAuthorizedError } from "../src/routing";
 import type { ClientLogger, SovereignMessage, SovereignRequestContext, SovereignLLMResponse } from "../src/base-client";
 
 const messages: SovereignMessage[] = [{ role: "user", content: "hi" }];
@@ -38,53 +40,51 @@ function deps(over: Partial<RoutedInferenceDeps>): RoutedInferenceDeps {
   };
 }
 
-describe("routedComplete", () => {
+describe("routedComplete — authorized (UNCLASSIFIED) traffic", () => {
   it("UNCLASSIFIED → Anthropic, INFERENCE_CALL provider anthropic", async () => {
     const { logger, events } = makeLogger();
     const r = await routedComplete(messages, ctx({ data_classification: "UNCLASSIFIED" }), deps({ ollamaEnabled: true, logger }));
     expect(r.sovereign_metadata.provider).toBe("anthropic");
     const call = events.find((e) => e.event_type === "INFERENCE_CALL")!;
-    expect(call.payload).toMatchObject({ provider: "anthropic" });
+    expect(call.payload).toMatchObject({ provider: "anthropic", input_classification: "UNCLASSIFIED" });
     expect(events.every((e) => e.workflow_step_id === "wf-1")).toBe(true);
   });
 
-  it("CUI + Ollama enabled → Ollama (Tier 1)", async () => {
+  it("absent classification → Anthropic (treated as UNCLASSIFIED)", async () => {
     const { logger, events } = makeLogger();
-    const r = await routedComplete(messages, ctx({ data_classification: "CUI" }), deps({ ollamaEnabled: true, logger }));
-    expect(r.sovereign_metadata.provider).toBe("ollama");
-    expect(events.find((e) => e.event_type === "INFERENCE_CALL")!.payload).toMatchObject({ provider: "ollama", input_classification: "CUI" });
-  });
-
-  it("CUI + Ollama enabled but unavailable → Anthropic (Tier 2) with provider fallback", async () => {
-    const { logger, events } = makeLogger();
-    const r = await routedComplete(messages, ctx({ data_classification: "CUI" }), deps({
-      ollamaEnabled: true,
-      logger,
-      ollamaComplete: async () => { throw new OllamaUnavailableError("http://x", "down"); },
-    }));
+    const r = await routedComplete(messages, ctx(), deps({ logger }));
     expect(r.sovereign_metadata.provider).toBe("anthropic");
-    const fb = events.find((e) => e.event_type === "INFERENCE_PROVIDER_FALLBACK")!;
-    expect(fb.payload).toMatchObject({ intended_provider: "ollama", actual_provider: "anthropic", fallback_reason: "ollama_unavailable" });
-    expect(events.some((e) => e.event_type === "INFERENCE_CALL")).toBe(true);
+    expect(events.find((e) => e.event_type === "INFERENCE_CALL")!.payload).toMatchObject({ provider: "anthropic" });
   });
 
-  it("CUI + Ollama disabled → Anthropic with ollama_disabled fallback warning", async () => {
+  it("Anthropic unavailable → static (Tier 3), never throws for authorized traffic", async () => {
     const { logger, events } = makeLogger();
-    const r = await routedComplete(messages, ctx({ data_classification: "CUI" }), deps({ ollamaEnabled: false, logger }));
-    expect(r.sovereign_metadata.provider).toBe("anthropic");
-    expect(events.find((e) => e.event_type === "INFERENCE_PROVIDER_FALLBACK")!.payload).toMatchObject({ fallback_reason: "ollama_disabled" });
-  });
-
-  it("both providers unavailable → static (Tier 3), never throws", async () => {
-    const { logger, events } = makeLogger();
-    const r = await routedComplete(messages, ctx({ data_classification: "CUI" }), deps({
-      ollamaEnabled: true,
+    const r = await routedComplete(messages, ctx({ data_classification: "UNCLASSIFIED" }), deps({
       logger,
-      ollamaComplete: async () => { throw new OllamaUnavailableError("http://x"); },
       anthropicComplete: async () => { throw new Error("anthropic down"); },
     }));
     expect(r.fallback_tier).toBe("static");
     expect(r.fallback_activated).toBe(true);
     expect(events.every((e) => e.workflow_step_id === "wf-1")).toBe(true);
+  });
+});
+
+describe("routedComplete — GD-10 classification boundary (error propagates, not swallowed)", () => {
+  it.each(["CUI", "SECRET", "TOP_SECRET"] as const)(
+    "%s throws ClassificationNotAuthorizedError and does not return a response",
+    async (classification) => {
+      const { logger, events } = makeLogger();
+      await expect(
+        routedComplete(messages, ctx({ data_classification: classification }), deps({ ollamaEnabled: true, logger }))
+      ).rejects.toBeInstanceOf(ClassificationNotAuthorizedError);
+      // The boundary rejects before any provider runs — no inference/fallback events emitted.
+      expect(events).toHaveLength(0);
+    }
+  );
+
+  it("surfaces the governance-fixed message to the caller", async () => {
+    await expect(
+      routedComplete(messages, ctx({ data_classification: "SECRET" }), deps({}))
+    ).rejects.toThrow("This classification level is not authorized for processing in SOVEREIGN. Contact your system administrator.");
   });
 });

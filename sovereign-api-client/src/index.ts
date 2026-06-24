@@ -107,6 +107,14 @@ export { OllamaProvider, OllamaUnavailableError } from "./providers/ollama-provi
 export type { OllamaProviderConfig, FetchImpl } from "./providers/ollama-provider";
 
 export { selectProvider, isClassificationFallback } from "./routing";
+// GD-10 (Session 14) — classification boundary: UNCLASSIFIED only is authorized for
+// processing; CUI/SECRET/TOP_SECRET throw ClassificationNotAuthorizedError.
+export {
+  ClassificationNotAuthorizedError,
+  AUTHORIZED_CLASSIFICATIONS,
+  isClassificationAuthorized,
+  assertClassificationAuthorized,
+} from "./routing";
 
 export type { ModelRegistryEntry, CpmiVrsGateStatus, DeploymentEnvironment } from "./model-registry";
 export { ModelRegistry, ModelIntegrityError, createDefaultModelRegistry, SYNTHETIC_MODEL_PLACEHOLDER } from "./model-registry";

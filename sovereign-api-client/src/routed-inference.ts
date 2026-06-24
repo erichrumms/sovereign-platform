@@ -8,15 +8,20 @@
  * client; Provider B (Ollama) is the new adapter. The dependencies are injected so this is
  * unit-testable without a live provider.
  *
+ * GD-10 (Session 14): selectProvider enforces the classification boundary — a request
+ * above UNCLASSIFIED throws ClassificationNotAuthorizedError, which routedComplete lets
+ * PROPAGATE to the caller (it is NOT caught by the three-tier fallback). The fallback
+ * machinery only ever sees authorized (UNCLASSIFIED) traffic.
+ *
  * Routing + three-tier fallback (10_LocalLLM_Infrastructure.md §2.2 / §2.4):
- *   1. selectProvider(context.data_classification, ollamaEnabled).
- *   2. Tier 1 — if Ollama selected: live Ollama. On OllamaUnavailableError → fall back.
- *   3. Tier 2 — Anthropic (Provider A). Also the destination for non-CUI and for CUI when
- *      Ollama is disabled (with an INFERENCE_PROVIDER_FALLBACK warning).
- *   4. Tier 3 — static degraded response (both providers unavailable).
+ *   0. selectProvider(context.data_classification, ollamaEnabled) — GD-10 boundary; may throw.
+ *   1. Tier 1 — if Ollama selected: live Ollama. On OllamaUnavailableError → fall back.
+ *      (Latent under GD-10 — UNCLASSIFIED never selects Ollama; retained as architecture.)
+ *   2. Tier 2 — Anthropic (Provider A). The destination for all authorized traffic.
+ *   3. Tier 3 — static degraded response (provider unavailable).
  * INFERENCE_CALL is emitted on the served tier; every event carries workflow_step_id.
  *
- * Version: 1.0 · Session 13 · June 24, 2026
+ * Version: 1.1 (GD-10 boundary) · Session 14 · June 24, 2026
  */
 
 import {
@@ -27,7 +32,7 @@ import {
   type SovereignLLMResponse,
 } from "./base-client";
 import type { ClearanceLevel } from "./types";
-import { selectProvider, isClassificationFallback } from "./routing";
+import { selectProvider } from "./routing";
 import { OllamaUnavailableError } from "./providers/ollama-provider";
 import { emitInferenceCall, emitProviderFallback } from "./inference-logger";
 
@@ -44,9 +49,12 @@ export interface RoutedInferenceDeps {
 }
 
 /**
- * Route a request by data classification and complete it with three-tier fallback. Never
- * throws — always returns a SovereignLLMResponse; the `provider` in sovereign_metadata and
- * `fallback_tier` indicate which tier served it.
+ * Route a request by data classification and complete it with three-tier fallback.
+ *
+ * GD-10: throws ClassificationNotAuthorizedError for a classification above UNCLASSIFIED —
+ * the error PROPAGATES to the caller (it is not swallowed by the fallback). For authorized
+ * (UNCLASSIFIED) traffic it never throws — it always returns a SovereignLLMResponse, with
+ * `provider` in sovereign_metadata and `fallback_tier` indicating which tier served it.
  */
 export async function routedComplete(
   messages: SovereignMessage[],
@@ -56,12 +64,11 @@ export async function routedComplete(
   const now = deps.now ?? (() => Date.now());
   const classification: ClearanceLevel = context.data_classification ?? "UNCLASSIFIED";
   const base = { logger: deps.logger, workflow_step_id: context.workflow_step_id, product: context.product, actor_id: context.agent_id };
-  const provider = selectProvider(context.data_classification, deps.ollamaEnabled);
 
-  // CUI requested but Ollama disabled → proceeds on Anthropic, recorded as a fallback.
-  if (isClassificationFallback(context.data_classification, deps.ollamaEnabled)) {
-    emitProviderFallback({ ...base, intended_provider: "ollama", actual_provider: "anthropic", fallback_reason: "ollama_disabled" });
-  }
+  // GD-10 boundary: selectProvider throws ClassificationNotAuthorizedError for any
+  // classification above UNCLASSIFIED. It is deliberately OUTSIDE the try/catch below so
+  // the error surfaces to the caller rather than being absorbed into a fallback response.
+  const provider = selectProvider(context.data_classification, deps.ollamaEnabled);
 
   // --- Tier 1: live Ollama (only when selected) ---
   if (provider === "ollama") {
