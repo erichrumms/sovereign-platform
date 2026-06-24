@@ -11,10 +11,10 @@
 
 import { useMemo, useState, type CSSProperties } from "react";
 
-import { createDevWorldModelPort } from "./world-model-port";
+import { createWorldModelPort } from "./world-model-port";
 
 export function WorldModelPanel(): JSX.Element {
-  const port = useMemo(() => createDevWorldModelPort(), []);
+  const port = useMemo(() => createWorldModelPort(), []);
   const programs = useMemo(() => port.listPrograms(), [port]);
   const [programId, setProgramId] = useState(programs[0] ?? "");
   const record = port.getProgramContext(programId);

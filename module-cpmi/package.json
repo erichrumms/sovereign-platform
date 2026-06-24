@@ -39,7 +39,8 @@
       "<rootDir>/tests/setup-dom.ts"
     ],
     "moduleNameMapper": {
-      "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts"
+      "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts",
+      "(.*)/cpmi-world-model-endpoint$": "<rootDir>/tests/__mocks__/cpmi-world-model-endpoint.ts"
     },
     "transform": {
       "^.+\\.tsx?$": [

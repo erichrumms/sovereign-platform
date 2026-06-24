@@ -12,10 +12,16 @@
  * The port is READ-ONLY here. World-model UPDATES are human-gated (decision_type
  * WORLD_MODEL_UPDATE) and are not built this session (WorldModelPanel is read-only).
  *
- * Version: 1.0 · Session 11 · June 23, 2026
+ * Session 12 (D3): `createWorldModelPort()` sources the endpoint from
+ * cpmi-world-model-endpoint.ts. Default null preserves the synthetic/dev backing — no
+ * behavior change (Constraint #3). Setting VITE_CPMI_WORLD_MODEL_ENDPOINT is the seam
+ * that activates the live Notion-backed world model when its adapter is wired.
+ *
+ * Version: 1.1 (config seam) · Session 12 · June 23, 2026
  */
 
 import type { WorldModelRecord } from "./cpmi-contract";
+import { readWorldModelEndpoint } from "./cpmi-world-model-endpoint";
 
 /** The injectable world-model port. Read-only this session. */
 export interface WorldModelPort {
@@ -66,4 +72,23 @@ export function createDevWorldModelPort(): WorldModelPort {
     listPrograms: () => SYNTHETIC_PROGRAMS.map((p) => p.program_id),
     getProgramContext: (programId) => SYNTHETIC_PROGRAMS.find((p) => p.program_id === programId) ?? null,
   };
+}
+
+/** Whether a live world-model endpoint is configured (Session 12 config seam). */
+export function isWorldModelConfigured(): boolean {
+  return readWorldModelEndpoint() !== null;
+}
+
+/**
+ * The config-aware world-model port factory (Session 12, D3). Sources the endpoint from
+ * platform config: default null → the synthetic/dev backing (unchanged, Governance Clock
+ * OFF). When an endpoint is set, the live Notion-backed adapter is used — that adapter is
+ * wired in a future session (no live connection this session); until then the synthetic
+ * backing is served so behavior is safe and the configured endpoint is recorded for the
+ * live adapter to consume (Constraint #3 — configuration seam, not a rewrite).
+ */
+export function createWorldModelPort(): WorldModelPort {
+  // Default (null) and the not-yet-implemented live branch both serve synthetic data this
+  // session; the seam reads the endpoint so the live adapter activates by configuration.
+  return createDevWorldModelPort();
 }

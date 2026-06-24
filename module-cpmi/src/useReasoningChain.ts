@@ -35,7 +35,7 @@ import {
   type ReasoningChainOutput,
 } from "./cpmi-contract";
 import { runReasoningChain, type ReasoningDeps, type ReasoningOutcome } from "./reasoning-engine";
-import { createDevWorldModelPort, type WorldModelPort } from "./world-model-port";
+import { createWorldModelPort, type WorldModelPort } from "./world-model-port";
 import { REASONING_CHAIN_SYSTEM_PROMPT, REASONING_CHAIN_PROMPT_VERSION } from "./prompts/reasoning-chain.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -61,7 +61,7 @@ export interface UseReasoningChainOptions {
 
 export function useReasoningChain(ctx: SovereignShellContext, opts: UseReasoningChainOptions = {}): UseReasoningChain {
   const actorId = ctx.auth.user.employee_id;
-  const port = opts.port ?? createDevWorldModelPort();
+  const port = opts.port ?? createWorldModelPort();
 
   const [status, setStatus] = useState<ReasoningStatus>("idle");
   const [outcome, setOutcome] = useState<ReasoningOutcome | null>(null);
