@@ -21,6 +21,7 @@ import { scribeModule } from "@sovereign/module-scribe";
 import { vigilModule } from "@sovereign/module-vigil";
 import { lensModule } from "@sovereign/module-lens";
 import { cpmiModule } from "@sovereign/module-cpmi";
+import { agentosModule } from "@sovereign/module-agentos";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -46,4 +47,10 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // cpmi.world-model-api / cpmi.vrs-certification. module-cpmi/CPMI is pre-wired in the
   // loader's MODULE_PRODUCT map.
   loader.register(cpmiModule);
+  // AgentOS — the agent orchestration backbone (primary product), scaffold + task lifecycle
+  // core (Session 14, D2). Real role gate (minimumRole PLATFORM_ADMIN → fail-closed policy
+  // admits PLATFORM_ADMIN/SYSTEM_ADMIN only). agentCards are empty this session — AgentOS
+  // orchestrator agents are not yet in Agent_Identity_Standard.md (Constraint #10), so none
+  // are self-registered. module-agentos/AGENTOS is pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(agentosModule);
 }

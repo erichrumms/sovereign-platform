@@ -11,7 +11,8 @@
     "module-scribe",
     "module-vigil",
     "module-lens",
-    "module-cpmi"
+    "module-cpmi",
+    "module-agentos"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
@@ -22,6 +23,7 @@
     "test:scribe": "npm run test --workspace @sovereign/module-scribe",
     "test:vigil": "npm run test --workspace @sovereign/module-vigil",
     "test:lens": "npm run test --workspace @sovereign/module-lens",
-    "test:cpmi": "npm run test --workspace @sovereign/module-cpmi"
+    "test:cpmi": "npm run test --workspace @sovereign/module-cpmi",
+    "test:agentos": "npm run test --workspace @sovereign/module-agentos"
   }
 }
