@@ -14,12 +14,12 @@ import { useAgentDispatcher } from "../src/useAgentDispatcher";
 import { AgentDispatchPanel } from "../src/AgentDispatchPanel";
 import { makeCtx } from "./test-helpers";
 
-function Harness({ ctx }: { ctx: SovereignShellContext }): JSX.Element {
+function Harness({ ctx, requiresApproval = true }: { ctx: SovereignShellContext; requiresApproval?: boolean }): JSX.Element {
   const registry = useTaskRegistry(ctx);
   const dispatcher = useAgentDispatcher();
   useEffect(() => {
-    registry.create({ task_id: "task-1", title: "Refresh model", description: "d", requires_approval: true, data_classification: "UNCLASSIFIED" });
-  }, [registry]);
+    registry.create({ task_id: "task-1", title: "Refresh model", description: "d", requires_approval: requiresApproval, data_classification: "UNCLASSIFIED" });
+  }, [registry, requiresApproval]);
   return <AgentDispatchPanel registry={registry} dispatcher={dispatcher} />;
 }
 
@@ -47,5 +47,16 @@ describe("AgentDispatchPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Reject" }));
     expect(screen.queryByText(/agentos-req-task-1/)).toBeNull();
     expect(screen.queryByRole("button", { name: "Start" })).toBeNull();
+  });
+
+  it("dispatches a requires_approval=false task straight to Execution (D3b — no approval queue)", () => {
+    const logSink: import("../../sovereign-shell/shell-contract").SovereignLogEvent[] = [];
+    render(<Harness ctx={makeCtx({ logSink })} requiresApproval={false} />);
+    fireEvent.click(screen.getByRole("button", { name: "Dispatch" }));
+
+    // No VIGIL approval request; the task went ASSIGNED → IN_PROGRESS directly.
+    expect(screen.queryByText(/agentos-req-task-1/)).toBeNull();
+    expect(screen.getByRole("button", { name: "Complete" })).toBeInTheDocument();
+    expect(logSink.map((e) => e.event_type)).toEqual(["AGENTOS_TASK_ASSIGNED", "AGENTOS_TASK_STARTED"]);
   });
 });

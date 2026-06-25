@@ -77,6 +77,13 @@ describe("transitions are pure and stamp updated_at", () => {
     const created: Task[] = [createTask(input, NOW)];
     expect(getTask(cancelTask(created, "task-1", NOW), "task-1")!.status).toBe("CANCELLED");
   });
+
+  it("starts a requires_approval=false task directly ASSIGNED → IN_PROGRESS (D3b)", () => {
+    let tasks: Task[] = [createTask({ ...input, requires_approval: false }, NOW)];
+    tasks = assignTask(tasks, "task-1", "agentos-deployer", NOW);
+    tasks = startTask(tasks, "task-1", NOW); // ASSIGNED → IN_PROGRESS, no approval gate
+    expect(getTask(tasks, "task-1")!.status).toBe("IN_PROGRESS");
+  });
 });
 
 describe("guards", () => {

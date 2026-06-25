@@ -57,7 +57,10 @@ export const TERMINAL_STATUSES: readonly TaskStatus[] = ["COMPLETE", "CANCELLED"
  */
 export const ALLOWED_TRANSITIONS: Readonly<Record<TaskStatus, readonly TaskStatus[]>> = {
   CREATED: ["ASSIGNED", "CANCELLED"],
-  ASSIGNED: ["PENDING_APPROVAL", "CANCELLED"],
+  // ASSIGNED → IN_PROGRESS (Session 15, D3b): a task with requires_approval=false skips the
+  // approval gate and begins execution directly. The requires_approval flag governs which
+  // edge the dispatcher takes (PENDING_APPROVAL when true, IN_PROGRESS when false).
+  ASSIGNED: ["PENDING_APPROVAL", "IN_PROGRESS", "CANCELLED"],
   PENDING_APPROVAL: ["APPROVED", "REJECTED", "CANCELLED"],
   APPROVED: ["IN_PROGRESS", "CANCELLED"],
   REJECTED: ["CANCELLED"],

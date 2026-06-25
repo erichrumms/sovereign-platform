@@ -13,11 +13,11 @@
  *   3. Execution — APPROVED → IN_PROGRESS → COMPLETE (synthetic; real agent execution is
  *      future work, spec §7).
  *
- * NOTE (reconciliation): a task with requires_approval=false stops at ASSIGNED — the spec's
- * 7-transition table has no ASSIGNED → IN_PROGRESS edge, and Session 14 does not invent one
- * (non-approval execution is future work, §7). Such a task can still be cancelled.
+ * Session 15 (D3b): a task with requires_approval=false skips the approval gate — dispatch
+ * assigns it and starts it directly (ASSIGNED → IN_PROGRESS), so it lands in the Execution
+ * section rather than stopping at ASSIGNED (the Session 14 limitation, now resolved).
  *
- * Version: 1.0 · Session 14 · June 24, 2026
+ * Version: 1.1 (D3b non-approval edge) · Session 15 · June 24, 2026
  */
 
 import { type CSSProperties } from "react";
@@ -47,7 +47,11 @@ export function AgentDispatchPanel({ registry, dispatcher }: AgentDispatchPanelP
     if (!result) return;
     registry.assign(task.task_id, result.agent.agent_id);
     if (result.approvalRequest) {
+      // requires_approval=true → route to the VIGIL approval queue.
       registry.requestApproval(task.task_id, result.approvalRequest.request_id);
+    } else {
+      // requires_approval=false (D3b) → skip approval, begin execution directly.
+      registry.start(task.task_id);
     }
   };
 

@@ -44,6 +44,10 @@ describe("canTransition — the spec §3.2 transition table", () => {
     expect(canTransition("IN_PROGRESS", "COMPLETE")).toBe(true);
   });
 
+  it("allows ASSIGNED → IN_PROGRESS directly for the requires_approval=false path (D3b)", () => {
+    expect(canTransition("ASSIGNED", "IN_PROGRESS")).toBe(true);
+  });
+
   it("allows CANCELLED from every non-terminal state (incl. REJECTED)", () => {
     const nonTerminal: TaskStatus[] = ["CREATED", "ASSIGNED", "PENDING_APPROVAL", "APPROVED", "REJECTED", "IN_PROGRESS"];
     for (const s of nonTerminal) expect(canTransition(s, "CANCELLED")).toBe(true);
@@ -52,7 +56,6 @@ describe("canTransition — the spec §3.2 transition table", () => {
   it("rejects illegal jumps", () => {
     expect(canTransition("CREATED", "IN_PROGRESS")).toBe(false);
     expect(canTransition("CREATED", "APPROVED")).toBe(false);
-    expect(canTransition("ASSIGNED", "IN_PROGRESS")).toBe(false); // no skip-approval edge (§7)
     expect(canTransition("COMPLETE", "CANCELLED")).toBe(false);
     expect(canTransition("CANCELLED", "ASSIGNED")).toBe(false);
     expect(canTransition("APPROVED", "REJECTED")).toBe(false);
