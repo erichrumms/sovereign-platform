@@ -104,6 +104,10 @@ const VALID_AGENT_CLASSES: ReadonlySet<string> = new Set([
   "Operational",
   "Governance",
   "Monitoring",
+  // GD-12 / shell-contract v1.9 (June 24, 2026) — AgentOS orchestrator class. Required so an
+  // AgentCard declaring agent_class "Orchestration" (agentos.deployer / .exporter /
+  // .configurator) passes contract validation. Synced to shell-contract AgentClass.
+  "Orchestration",
 ]);
 
 const MOUNT_PATH_PATTERN = /^\/[a-z][a-z-]*$/;

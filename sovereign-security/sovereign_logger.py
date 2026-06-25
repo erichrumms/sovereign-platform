@@ -95,7 +95,10 @@ APPROVED_DECISION_TYPES = frozenset({
 })
 
 APPROVED_AGENT_CLASSES = frozenset({
-    "Analytical", "Operational", "Governance", "Monitoring"
+    "Analytical", "Operational", "Governance", "Monitoring",
+    # GD-12 / shell-contract v1.9 (June 24, 2026) — AgentOS orchestrator class.
+    # Synced from shell-contract.ts AgentClass (Standing Constraint #11).
+    "Orchestration",
 })
 
 # Events that require decision_type, actor, and actor_name

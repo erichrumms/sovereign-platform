@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.8
+ * Version: 1.9
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,23 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.9 (June 24, 2026) — GD-12 (Orchestration AgentClass for AgentOS orchestrators,
+ *                       pre-approved Integration Brief v1.22 §6, Session 16). Added
+ *                       "Orchestration" to the AgentClass union (and the matching inline
+ *                       SovereignLogEvent.agent_class union) so AgentOS's orchestrator
+ *                       agents (agentos.deployer / .exporter / .configurator, registered in
+ *                       Agent_Identity_Standard.md v1.3) can carry an AgentCard. Additive
+ *                       union widening. Impact assessment: AgentCard / SovereignLogEvent
+ *                       agent_class consumers (module-agentos) gain one class; no
+ *                       SovereignEventType or HumanDecisionType change; no exhaustive switch
+ *                       over AgentClass exists. Per Standing Constraint #11 the agent-class
+ *                       taxonomy is also synced to the module loader's VALID_AGENT_CLASSES
+ *                       and the Security Framework logger's APPROVED_AGENT_CLASSES
+ *                       (sovereign-security/sovereign_logger.py) — these are the synced
+ *                       copies of the agent-class taxonomy. No sovereign-data shared-types
+ *                       propagation (shared-types mirrors only SovereignRole / ClearanceLevel
+ *                       / HumanDecisionType, not AgentClass). Full tsc --noEmit clean; both
+ *                       shell-contract copies SHA-256 verified identical at v1.9.
  *   v1.8 (June 24, 2026) — GD-11 (NEXUS work-request lifecycle events, approved Project
  *                       Principal June 24, 2026, Session 15, per 12_NEXUS_Architecture.md
  *                       §4). Added six SovereignEventType members for the NEXUS work-request
@@ -322,7 +339,8 @@ export interface SovereignLogEvent {
   actor_name?: string;
   // AGENT_STEP_START and AGENT_STEP_COMPLETE events
   agent_id?: string;
-  agent_class?: "Analytical" | "Operational" | "Governance" | "Monitoring";
+  // GD-12 (v1.9) — "Orchestration" added to keep this inline union in sync with AgentClass.
+  agent_class?: "Analytical" | "Operational" | "Governance" | "Monitoring" | "Orchestration";
   // AGENT_STEP_COMPLETE events (Intelligence Layer exposure)
   deployment_feedback?: {
     automatability_score: number;
@@ -483,7 +501,11 @@ export type AgentClass =
   | "Analytical"
   | "Operational"
   | "Governance"
-  | "Monitoring";
+  | "Monitoring"
+  // GD-12, June 24, 2026 (shell-contract v1.9) — AgentOS orchestrator class. Manages agent
+  // task assignment, routing, and lifecycle; does not execute tasks directly. Synced to the
+  // loader VALID_AGENT_CLASSES and the Python logger APPROVED_AGENT_CLASSES (Constraint #11).
+  | "Orchestration";
 
 export type TaskLifecycleState =
   | "QUEUED"
