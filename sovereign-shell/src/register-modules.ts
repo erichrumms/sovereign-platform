@@ -22,6 +22,7 @@ import { vigilModule } from "@sovereign/module-vigil";
 import { lensModule } from "@sovereign/module-lens";
 import { cpmiModule } from "@sovereign/module-cpmi";
 import { agentosModule } from "@sovereign/module-agentos";
+import { nexusModule } from "@sovereign/module-nexus";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -53,4 +54,10 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // orchestrator agents are not yet in Agent_Identity_Standard.md (Constraint #10), so none
   // are self-registered. module-agentos/AGENTOS is pre-wired in the loader's MODULE_PRODUCT map.
   loader.register(agentosModule);
+  // NEXUS — the work-request intake + routing surface (primary product), scaffold + request
+  // lifecycle core (Session 15, D2). Role gate minimumRole AGENT_OPERATOR (nearest existing
+  // role; no OPERATOR in the taxonomy) → fail-closed policy admits AGENT_OPERATOR/SYSTEM_ADMIN.
+  // agentCards empty — NEXUS routes work to AgentOS-orchestrated agent classes, registers no
+  // agents. module-nexus/NEXUS is pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(nexusModule);
 }

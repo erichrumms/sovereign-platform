@@ -12,7 +12,8 @@
     "module-vigil",
     "module-lens",
     "module-cpmi",
-    "module-agentos"
+    "module-agentos",
+    "module-nexus"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
@@ -24,6 +25,7 @@
     "test:vigil": "npm run test --workspace @sovereign/module-vigil",
     "test:lens": "npm run test --workspace @sovereign/module-lens",
     "test:cpmi": "npm run test --workspace @sovereign/module-cpmi",
-    "test:agentos": "npm run test --workspace @sovereign/module-agentos"
+    "test:agentos": "npm run test --workspace @sovereign/module-agentos",
+    "test:nexus": "npm run test --workspace @sovereign/module-nexus"
   }
 }
