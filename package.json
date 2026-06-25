@@ -13,7 +13,8 @@
     "module-lens",
     "module-cpmi",
     "module-agentos",
-    "module-nexus"
+    "module-nexus",
+    "e2e"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
@@ -26,6 +27,7 @@
     "test:lens": "npm run test --workspace @sovereign/module-lens",
     "test:cpmi": "npm run test --workspace @sovereign/module-cpmi",
     "test:agentos": "npm run test --workspace @sovereign/module-agentos",
-    "test:nexus": "npm run test --workspace @sovereign/module-nexus"
+    "test:nexus": "npm run test --workspace @sovereign/module-nexus",
+    "test:e2e": "npm run test --workspace @sovereign/e2e"
   }
 }
