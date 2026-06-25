@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.9
+ * Version: 1.10
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,21 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.10 (June 24, 2026) — GD-13 (model-evaluation event, pre-approved Session 16 opening
+ *                       prompt, per 11_AgentOS_Architecture.md §5.2). Added one
+ *                       SovereignEventType member: MODEL_EVALUATION_COMPLETE — emitted when
+ *                       the sovereign-security evaluate.py CPMI-VRS validation pipeline
+ *                       finishes its four-gate check before a model is promoted. Non-breaking
+ *                       union widening. Impact assessment: emitted by evaluate.py (Python,
+ *                       via the Security Framework logger) under product AGENTOS; no existing
+ *                       module emits it and no exhaustive switch over SovereignEventType
+ *                       exists. NO HumanDecisionType change (the evaluation verdict is a
+ *                       pipeline outcome, not a human decision), so NO sovereign-data
+ *                       shared-types propagation is required. Per Standing Constraint #11 the
+ *                       event-type taxonomy is synced to the Python logger's
+ *                       APPROVED_EVENT_TYPES (sovereign-security/sovereign_logger.py) so
+ *                       evaluate.py may emit it. Full tsc --noEmit clean; both shell-contract
+ *                       copies SHA-256 verified identical at v1.10.
  *   v1.9 (June 24, 2026) — GD-12 (Orchestration AgentClass for AgentOS orchestrators,
  *                       pre-approved Integration Brief v1.22 §6, Session 16). Added
  *                       "Orchestration" to the AgentClass union (and the matching inline
@@ -299,7 +314,11 @@ export type SovereignEventType =
   | "NEXUS_APPROVAL_PENDING"
   | "NEXUS_REQUEST_IN_PROGRESS"
   | "NEXUS_REQUEST_COMPLETE"
-  | "NEXUS_REQUEST_REJECTED";
+  | "NEXUS_REQUEST_REJECTED"
+  // GD-13 — June 24, 2026 (shell-contract v1.10) — model-evaluation completion event.
+  // Emitted by sovereign-security/evaluate.py (CPMI-VRS four-gate validation before a model
+  // is promoted), via the Security Framework logger under product AGENTOS.
+  | "MODEL_EVALUATION_COMPLETE";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
