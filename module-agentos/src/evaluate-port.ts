@@ -9,14 +9,18 @@
  * no live model evaluation. The live `evaluate.py` backing is injected by configuration in a
  * later session — no AgentOS rewrite (Constraint #3).
  *
- * SCOPE NOTE (Session 15, D4): this is the AgentOS-side seam only. `evaluate.py` does not yet
- * exist in sovereign-security, and an evaluation-outcome Logger event would require a new
- * SovereignEventType (a shell-contract change beyond GD-11 — not authorized this session).
- * So the port returns a validation result the caller uses as a promotion gate; it emits no
- * Logger event. The live pipeline + an evaluation event type are future work (see handoff).
+ * SCOPE NOTE: this is the AgentOS-side seam. Session 16 (D3) authored the live backing —
+ * sovereign-security/evaluate.py — and the GD-13 MODEL_EVALUATION_COMPLETE event evaluate.py
+ * emits via the Security Framework logger. createEvaluatePort() is the config-aware factory
+ * that activates that live backing by configuration (VITE_EVALUATE_ENDPOINT); until the
+ * cross-runtime adapter is wired it serves the synthetic backing (no live model evaluation
+ * this session). The TypeScript port itself emits no Logger event — evaluate.py owns the
+ * MODEL_EVALUATION_COMPLETE emission on the Python side.
  *
- * Version: 1.0 · Session 15 · June 24, 2026
+ * Version: 1.1 (config seam to live evaluate.py) · Session 16 · June 24, 2026
  */
+
+import { readEvaluateEndpoint } from "./evaluate-endpoint";
 
 export type EvaluationVerdict = "PASS" | "FAIL";
 
@@ -75,4 +79,24 @@ export function createSyntheticEvaluatePort(verdict: EvaluationVerdict = "PASS")
           : "Synthetic CPMI-VRS evaluation — Gate 3 (accuracy/attestation) failed (dev).",
     }),
   };
+}
+
+/** Whether the live evaluate.py backing is configured (Session 16, D3 config seam). */
+export function isEvaluateConfigured(): boolean {
+  return readEvaluateEndpoint() !== null;
+}
+
+/**
+ * The config-aware evaluate-port factory (Session 16, D3). Sources the backing from platform
+ * config: default (no endpoint) → the synthetic/dev backing (unchanged — Governance Clock
+ * OFF). When VITE_EVALUATE_ENDPOINT is set, the live sovereign-security/evaluate.py CPMI-VRS
+ * pipeline is the backing — that cross-runtime adapter is wired in a future session (no live
+ * model evaluation here); until then the synthetic backing is served so behavior is safe and
+ * the configured endpoint is recorded for the live adapter to consume (Constraint #3 —
+ * configuration seam, not a rewrite of createSyntheticEvaluatePort).
+ */
+export function createEvaluatePort(): EvaluatePort {
+  // Default (null) and the not-yet-wired live branch both serve the synthetic backing this
+  // session; isEvaluateConfigured() is the seam that activates the live evaluate.py adapter.
+  return createSyntheticEvaluatePort();
 }

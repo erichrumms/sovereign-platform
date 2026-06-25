@@ -75,6 +75,15 @@ APPROVED_EVENT_TYPES = frozenset({
     "MCP_TOOL_CALL",
     "A2A_TASK_HANDOFF",
     "A2A_TASK_FAILURE",
+    # GD-13 / shell-contract v1.10 (June 24, 2026) — model-evaluation completion event,
+    # emitted by evaluate.py (CPMI-VRS four-gate validation). Synced from shell-contract.ts
+    # SovereignEventType (Standing Constraint #11).
+    # NOTE (drift flagged for governance): this set is otherwise still at the v1.0 baseline —
+    # it does NOT yet include the GD-2..GD-11 event types (VOICE_CAPTURE_COMPLETED, ALERT_*,
+    # AGENT_ACTION_*, CPMI_VRS_*, INFERENCE_*, AGENTOS_*, NEXUS_*). Those are emitted only by
+    # the TypeScript modules today, so the gap is latent, but a future session should complete
+    # the Constraint #11 propagation. See SOVEREIGN_Session16_Handoff.md.
+    "MODEL_EVALUATION_COMPLETE",
 })
 
 APPROVED_PRODUCTS = frozenset({

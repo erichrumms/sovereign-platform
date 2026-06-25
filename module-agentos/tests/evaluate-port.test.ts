@@ -3,7 +3,7 @@
  * The injectable evaluate.py port (AgentOS → CPMI-VRS validation): a synthetic PASS clears
  * all four gates and permits promotion; a synthetic FAIL fails Gate 3 and blocks promotion.
  */
-import { createSyntheticEvaluatePort, canPromote, type ModelEvaluationInput } from "../src/evaluate-port";
+import { createSyntheticEvaluatePort, createEvaluatePort, isEvaluateConfigured, canPromote, type ModelEvaluationInput } from "../src/evaluate-port";
 
 const input: ModelEvaluationInput = {
   model_id: "mistral:13b-q4",
@@ -33,5 +33,26 @@ describe("createSyntheticEvaluatePort", () => {
 
   it("defaults to PASS", () => {
     expect(createSyntheticEvaluatePort().evaluateModel(input).verdict).toBe("PASS");
+  });
+});
+
+describe("createEvaluatePort (D3 config seam)", () => {
+  it("is not configured by default (no VITE_EVALUATE_ENDPOINT) and serves the synthetic backing", () => {
+    expect(isEvaluateConfigured()).toBe(false);
+    const port = createEvaluatePort();
+    expect(port.evaluateModel(input).verdict).toBe("PASS");
+  });
+
+  it("reports configured when VITE_EVALUATE_ENDPOINT is set", () => {
+    const prev = process.env["VITE_EVALUATE_ENDPOINT"];
+    process.env["VITE_EVALUATE_ENDPOINT"] = "http://localhost:9100/evaluate";
+    try {
+      expect(isEvaluateConfigured()).toBe(true);
+      // Live adapter not wired this session — synthetic backing is still served (safe default).
+      expect(createEvaluatePort().evaluateModel(input).verdict).toBe("PASS");
+    } finally {
+      if (prev === undefined) delete process.env["VITE_EVALUATE_ENDPOINT"];
+      else process.env["VITE_EVALUATE_ENDPOINT"] = prev;
+    }
   });
 });
