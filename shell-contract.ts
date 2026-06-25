@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.10
+ * Version: 1.11
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,18 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.11 (June 24, 2026) — GD-14 (AgentOS A2A messaging events, pre-approved Session 16
+ *                       opening prompt). Added two SovereignEventType members for the AgentOS
+ *                       agent-to-agent communication layer: AGENT_MESSAGE_SENT,
+ *                       AGENT_MESSAGE_RECEIVED. Both are non-breaking union widenings. Impact
+ *                       assessment: emitted only by module-agentos (the A2A message bus); no
+ *                       existing module emits them and no exhaustive switch over
+ *                       SovereignEventType exists. NO HumanDecisionType change (message
+ *                       send/receive are agent actions, not human decisions), so NO
+ *                       sovereign-data shared-types propagation. Per Standing Constraint #11
+ *                       the event-type taxonomy is synced to the Python logger's
+ *                       APPROVED_EVENT_TYPES. Full tsc --noEmit clean; both shell-contract
+ *                       copies SHA-256 verified identical at v1.11.
  *   v1.10 (June 24, 2026) — GD-13 (model-evaluation event, pre-approved Session 16 opening
  *                       prompt, per 11_AgentOS_Architecture.md §5.2). Added one
  *                       SovereignEventType member: MODEL_EVALUATION_COMPLETE — emitted when
@@ -318,7 +330,11 @@ export type SovereignEventType =
   // GD-13 — June 24, 2026 (shell-contract v1.10) — model-evaluation completion event.
   // Emitted by sovereign-security/evaluate.py (CPMI-VRS four-gate validation before a model
   // is promoted), via the Security Framework logger under product AGENTOS.
-  | "MODEL_EVALUATION_COMPLETE";
+  | "MODEL_EVALUATION_COMPLETE"
+  // GD-14 — June 24, 2026 (shell-contract v1.11) — two AgentOS A2A messaging event types
+  // (agent-to-agent message bus). Emitted only by module-agentos.
+  | "AGENT_MESSAGE_SENT"
+  | "AGENT_MESSAGE_RECEIVED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"

@@ -84,6 +84,10 @@ APPROVED_EVENT_TYPES = frozenset({
     # the TypeScript modules today, so the gap is latent, but a future session should complete
     # the Constraint #11 propagation. See SOVEREIGN_Session16_Handoff.md.
     "MODEL_EVALUATION_COMPLETE",
+    # GD-14 / shell-contract v1.11 (June 24, 2026) — AgentOS A2A messaging events.
+    # Synced from shell-contract.ts SovereignEventType (Standing Constraint #11).
+    "AGENT_MESSAGE_SENT",
+    "AGENT_MESSAGE_RECEIVED",
 })
 
 APPROVED_PRODUCTS = frozenset({
