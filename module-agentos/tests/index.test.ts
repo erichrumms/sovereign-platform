@@ -22,8 +22,13 @@ describe("agentosModule contract", () => {
     expect(agentosModule.minimumRole).toBe("PLATFORM_ADMIN");
   });
 
-  it("registers no platform agents this session (Constraint #10 — no self-registration)", () => {
-    expect(agentosModule.agentCards).toEqual([]);
+  it("registers the three AgentOS orchestrator agents (D2; Orchestration class, GD-12)", () => {
+    const ids = agentosModule.agentCards.map((c) => c.agent_id);
+    expect(ids).toEqual(["agentos.deployer", "agentos.exporter", "agentos.configurator"]);
+    expect(agentosModule.agentCards.every((c) => c.agent_class === "Orchestration")).toBe(true);
+    expect(agentosModule.agentCards.every((c) => c.product === "AGENTOS")).toBe(true);
+    expect(agentosModule.agentCards.every((c) => c.data_classification_ceiling === "UNCLASSIFIED")).toBe(true);
+    expect(agentosModule.agentCards.every((c) => c.task_lifecycle_contract.approval_behavior === "ACKNOWLEDGE_AND_CONTINUE")).toBe(true);
   });
 
   it("reports an honest NOT_STARTED health state", async () => {

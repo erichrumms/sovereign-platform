@@ -16,17 +16,19 @@
  *   (same pattern as CPMI / VIGIL). The authoritative role→module matrix (Decision 24)
  *   remains open; this is the least-privilege default, relaxable by configuration.
  *
- * AGENT CARDS (Constraint #10 — no self-registration): empty this session. AgentOS's
- *   orchestrator agents are NOT yet in Agent_Identity_Standard.md; Claude Code does not
- *   self-register agents. The dispatcher's synthetic roster (agent-dispatcher.ts) is dev
- *   dispatch-target data, not platform agent registration. When AgentOS orchestrator agents
- *   are entered in the registry by governance, their AgentCards are added here.
+ * AGENT CARDS (Constraint #10): the three AgentOS orchestrator agents
+ *   (agentos.deployer / .exporter / .configurator), registered in
+ *   Agent_Identity_Standard.md v1.3 as class "Orchestration" and activated here in
+ *   Session 16 (D2), after GD-12 added "Orchestration" to the shell-contract AgentClass
+ *   union (D1). They route/assign tasks and submit approvals to VIGIL; they use no AI
+ *   reasoning prompt. The dispatcher's synthetic roster (agent-dispatcher.ts) remains
+ *   separate dev dispatch-target data, distinct from these registered agents.
  *
  * GOVERNANCE: module-agentos → AGENTOS is already in the ModuleLoader's MODULE_PRODUCT map
  *   and the SovereignProduct union. No Logger event on mount (no approved "module mounted"
  *   event type).
  *
- * Version: 1.0 (AgentOS scaffold + task lifecycle core) · Session 14 · June 24, 2026
+ * Version: 1.1 (orchestrator AgentCards) · Session 16 · June 24, 2026
  */
 
 import { createElement } from "react";
@@ -42,8 +44,36 @@ import { AgentOSApp } from "./AgentOSApp";
 
 const AGENTOS_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
 
-// No platform agents are registered this session (Constraint #10 — see header).
-const AGENTOS_AGENT_CARDS: AgentCard[] = [];
+// AgentOS orchestrator agents (Session 16, D2). Registered in Agent_Identity_Standard.md
+// v1.3 as class "Orchestration" (added to the shell-contract AgentClass union in GD-12 / D1).
+// They route and assign tasks and submit approval requests to VIGIL — they do NOT execute
+// tasks directly (orchestrator scope limit). No AI reasoning prompt (routing logic only),
+// so no PR-* binding. data_classification_ceiling is UNCLASSIFIED (GD-10 — the platform
+// processes UNCLASSIFIED only). approval_behavior ACKNOWLEDGE_AND_CONTINUE (the platform
+// default; orchestrators resume from a paused state after a human authorization).
+function orchestratorCard(agentId: string, orchestrationCapability: string): AgentCard {
+  return {
+    agent_id: agentId,
+    agent_class: "Orchestration",
+    product: "AGENTOS",
+    capabilities: ["task_routing", "task_assignment", orchestrationCapability, "vigil_approval_submission"],
+    input_schema: {},
+    output_schema: {},
+    task_lifecycle_contract: {
+      supports_long_running: true,
+      approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+      partial_failure_behavior: "ESCALATE",
+    },
+    data_classification_ceiling: "UNCLASSIFIED",
+    security_observable: true,
+  };
+}
+
+const AGENTOS_AGENT_CARDS: AgentCard[] = [
+  orchestratorCard("agentos.deployer", "deployment_orchestration"),
+  orchestratorCard("agentos.exporter", "data_export_orchestration"),
+  orchestratorCard("agentos.configurator", "configuration_orchestration"),
+];
 
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
