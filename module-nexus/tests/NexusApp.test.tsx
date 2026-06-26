@@ -63,6 +63,26 @@ describe("NexusApp", () => {
     expect(within(row).getByText("COMPLETE")).toBeInTheDocument();
   });
 
+  it("Gap 1: a freshly submitted request renders in the Request Queue with SUBMITTED status", () => {
+    render(<NexusApp ctx={makeCtx()} />);
+    submitViaUI("OilShield Q3 compliance document review", "DOCUMENT_REVIEW");
+    fireEvent.click(screen.getByRole("tab", { name: "Request Queue" }));
+    const row = screen.getByText(/OilShield Q3 compliance document review/).closest("tr")!;
+    expect(within(row).getByText("SUBMITTED")).toBeInTheDocument();
+    expect(within(row).getByText(/req-1/)).toBeInTheDocument();
+  });
+
+  it("Gap 1: two back-to-back submissions both appear as distinct queue rows", () => {
+    render(<NexusApp ctx={makeCtx()} />);
+    submitViaUI("First request", "DOCUMENT_REVIEW");
+    submitViaUI("Second request", "DOCUMENT_REVIEW");
+    fireEvent.click(screen.getByRole("tab", { name: "Request Queue" }));
+    expect(screen.getByText(/First request/).closest("tr")).toBeTruthy();
+    expect(screen.getByText(/Second request/).closest("tr")).toBeTruthy();
+    expect(screen.getByText(/req-1/)).toBeInTheDocument();
+    expect(screen.getByText(/req-2/)).toBeInTheDocument();
+  });
+
   it("refuses a CUI intake (GD-10) and shows the boundary message", () => {
     const logSink: SovereignLogEvent[] = [];
     render(<NexusApp ctx={makeCtx({ logSink })} />);

@@ -129,3 +129,32 @@ describe("useRequestRegistry — guards", () => {
     expect(result.current.requests[0].status).toBe("SUBMITTED");
   });
 });
+
+// ── Gap 1 (Walkthrough A) — request-id allocation is monotonic and state-independent. ──
+describe("useRequestRegistry — Gap 1 monotonic id source", () => {
+  it("nextRequestId() returns distinct, monotonic ids on each synchronous call", () => {
+    const { result } = renderHook(() => useRequestRegistry(makeCtx(), createSyntheticAgentOSPort()));
+    let ids: string[] = [];
+    // Allocate three ids WITHOUT any intervening render (the real double-submit timing).
+    act(() => {
+      ids = [result.current.nextRequestId(), result.current.nextRequestId(), result.current.nextRequestId()];
+    });
+    expect(ids).toEqual(["req-1", "req-2", "req-3"]);
+    expect(new Set(ids).size).toBe(3); // no collisions
+  });
+
+  it("each submitted request keeps its own row (no silent drop on back-to-back submits)", () => {
+    const { result } = renderHook(() => useRequestRegistry(makeCtx(), createSyntheticAgentOSPort()));
+    // Mirror the intake panel: id comes from the hook, not from requests.length.
+    act(() => {
+      const a = result.current.nextRequestId();
+      result.current.submit(submitInput({ request_id: a, title: "First", request_type: "DOCUMENT_REVIEW" }));
+    });
+    act(() => {
+      const b = result.current.nextRequestId();
+      result.current.submit(submitInput({ request_id: b, title: "Second", request_type: "DOCUMENT_REVIEW" }));
+    });
+    expect(result.current.requests.map((r) => r.request_id)).toEqual(["req-1", "req-2"]);
+    expect(result.current.requests.map((r) => r.title)).toEqual(["First", "Second"]);
+  });
+});

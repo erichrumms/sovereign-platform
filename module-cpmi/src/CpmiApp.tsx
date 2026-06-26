@@ -56,7 +56,7 @@ export function CpmiApp({ ctx }: CpmiAppProps): JSX.Element {
               role="tab"
               aria-selected={active}
               onClick={() => setTab(t.id)}
-              style={{ ...tabStyle, color: active ? "#0f172a" : "#64748b", borderBottom: active ? "2px solid #0f172a" : "2px solid transparent", fontWeight: active ? 700 : 500 }}
+              style={{ ...tabStyle, color: active ? "#0f172a" : "#475569", borderBottom: active ? "2px solid #0f172a" : "2px solid transparent", fontWeight: active ? 700 : 500 }}
             >
               {t.label}
             </button>

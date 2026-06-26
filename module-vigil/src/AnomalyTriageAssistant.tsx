@@ -131,7 +131,7 @@ const sectionTitleStyle: CSSProperties = { margin: "8px 0 4px", fontSize: 13 };
 const listStyle: CSSProperties = { margin: 0, paddingLeft: 18, fontSize: 13 };
 const fpStyle: CSSProperties = { margin: "8px 0 0", fontSize: 13 };
 const mutedStyle: CSSProperties = { margin: "4px 0 0", fontSize: 12, color: "#64748b" };
-const mutedInlineStyle: CSSProperties = { color: "#94a3b8" };
+const mutedInlineStyle: CSSProperties = { color: "#475569" };
 const errorStyle: CSSProperties = {
   margin: "8px 0 0", padding: "8px 10px", borderRadius: 8, background: "#fef2f2",
   border: "1px solid #fecaca", color: "#991b1b", fontSize: 12,

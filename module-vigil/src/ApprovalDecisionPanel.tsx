@@ -91,7 +91,7 @@ const buttonStyle: CSSProperties = {
   padding: "8px 16px", borderRadius: 8, border: "1px solid", cursor: "pointer", fontSize: 13, fontWeight: 600,
 };
 const buttonDisabledStyle: CSSProperties = {
-  ...buttonStyle, background: "#e2e8f0", borderColor: "#e2e8f0", color: "#94a3b8", cursor: "not-allowed",
+  ...buttonStyle, background: "#e2e8f0", borderColor: "#e2e8f0", color: "#64748b", cursor: "not-allowed",
 };
 const gateNoteStyle: CSSProperties = { margin: 0, fontSize: 12, color: "#64748b" };
 const errorStyle: CSSProperties = { margin: 0, color: "#b91c1c", fontSize: 13 };

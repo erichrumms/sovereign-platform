@@ -106,7 +106,7 @@ const cardSelectedStyle: CSSProperties = { borderColor: "#0c4a6e", background: "
 const cardMainStyle: CSSProperties = { display: "flex", flexDirection: "column", gap: 2 };
 const cardTypeStyle: CSSProperties = { fontSize: 13, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 };
 const cardMetaStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
-const cardExpiryStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const cardExpiryStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const badgeStyle: CSSProperties = {
   color: "#ffffff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999, flexShrink: 0,
 };

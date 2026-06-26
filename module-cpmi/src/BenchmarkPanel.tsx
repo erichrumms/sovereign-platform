@@ -157,6 +157,6 @@ const labelStyle: CSSProperties = { fontSize: 13, color: "#334155" };
 const mutedInlineStyle: CSSProperties = { color: "#64748b" };
 const textareaStyle: CSSProperties = { width: "100%", boxSizing: "border-box", padding: 10, borderRadius: 8, border: "1px solid #cbd5e1", fontFamily: "system-ui, sans-serif", fontSize: 13, resize: "vertical" };
 const attestBtn: CSSProperties = { alignSelf: "flex-start", padding: "8px 16px", borderRadius: 8, border: "1px solid #0c4a6e", background: "#0c4a6e", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 };
-const attestBtnDisabled: CSSProperties = { ...attestBtn, background: "#e2e8f0", border: "1px solid #e2e8f0", color: "#94a3b8", cursor: "not-allowed" };
+const attestBtnDisabled: CSSProperties = { ...attestBtn, background: "#e2e8f0", border: "1px solid #e2e8f0", color: "#64748b", cursor: "not-allowed" };
 
 export default BenchmarkPanel;

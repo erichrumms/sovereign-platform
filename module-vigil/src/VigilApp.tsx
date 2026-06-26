@@ -124,7 +124,7 @@ function TabButton({ id, label, active, onClick }: { id: Tab; label: string; act
       role="tab"
       aria-selected={active}
       onClick={() => onClick(id)}
-      style={{ ...tabStyle, color: active ? "#0f172a" : "#64748b", borderBottom: active ? "2px solid #0f172a" : "2px solid transparent", fontWeight: active ? 700 : 500 }}
+      style={{ ...tabStyle, color: active ? "#0f172a" : "#475569", borderBottom: active ? "2px solid #0f172a" : "2px solid transparent", fontWeight: active ? 700 : 500 }}
     >
       {label}
     </button>
@@ -163,7 +163,7 @@ const cardStyle: CSSProperties = {
 };
 const cardValueStyle: CSSProperties = { fontSize: 22, fontWeight: 700, color: "#0c4a6e" };
 const cardLabelStyle: CSSProperties = { fontSize: 13, color: "#334155" };
-const cardNoteStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const cardNoteStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const tabBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 16 };
 const tabStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
 const stackStyle: CSSProperties = { display: "flex", flexDirection: "column", gap: 12 };

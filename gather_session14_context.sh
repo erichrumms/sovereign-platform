@@ -1,7 +1,5 @@
 #!/bin/bash
 # SOVEREIGN Platform — Session 14 Context Gather Script
-# Session 14 focus: AgentOS scaffold + task lifecycle core (autonomous)
-
 REPO="$HOME/Developer/sovereign-platform"
 
 exact_files=(

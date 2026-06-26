@@ -117,7 +117,7 @@ const gateBadgeStyle = (status: GateRecord["status"]): CSSProperties => ({
 const errorStyle: CSSProperties = { margin: 0, color: "#b91c1c", fontSize: 13 };
 const gate4BoxStyle: CSSProperties = { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" };
 const gate4Btn: CSSProperties = { padding: "8px 14px", borderRadius: 8, border: "1px solid #0c4a6e", background: "#fff", color: "#0c4a6e", cursor: "pointer", fontSize: 13, fontWeight: 600 };
-const gate4BtnDisabled: CSSProperties = { ...gate4Btn, opacity: 0.4, cursor: "not-allowed", border: "1px solid #cbd5e1", color: "#94a3b8" };
+const gate4BtnDisabled: CSSProperties = { ...gate4Btn, opacity: 0.4, cursor: "not-allowed", border: "1px solid #cbd5e1", color: "#64748b" };
 const mutedStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
 const certOkStyle: CSSProperties = { padding: "10px 14px", background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 8, color: "#065f46", fontSize: 13 };
 const certPendingStyle: CSSProperties = { padding: "10px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, color: "#475569", fontSize: 13 };

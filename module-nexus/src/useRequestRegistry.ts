@@ -55,6 +55,12 @@ export interface UseRequestRegistry {
   reject: (requestId: string) => void;
   /** IN_PROGRESS → COMPLETE (AgentOS reports completion). */
   complete: (requestId: string) => void;
+  /**
+   * Allocate the next unique request id for the intake surface. Ref-backed and monotonic:
+   * it advances synchronously on each call, so it never depends on the (lagging) `requests`
+   * state. See the Gap 1 note on the counter in the hook body.
+   */
+  nextRequestId: () => string;
   clearError: () => void;
 }
 
@@ -62,6 +68,18 @@ export function useRequestRegistry(ctx: SovereignShellContext, port: AgentOSPort
   const requestsRef = useRef<WorkRequest[]>([]);
   const [requests, setRequestsState] = useState<WorkRequest[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // ── Gap 1 fix (Walkthrough A) — ref-backed monotonic request-id source. ──────────────
+  // The intake panel previously derived the next id from `registry.requests.length + 1`,
+  // i.e. from React STATE, which lags a render behind the hook's synchronously-updated
+  // `requestsRef`. A fast double-submit (the operator clicks Submit twice before the Intake
+  // panel re-renders — easy to do because the freshly submitted row only shows on the Queue
+  // tab) computed the SAME id twice; the idempotency guard in `submit()` then silently
+  // dropped the second one. To the operator the form "submitted and cleared" but nothing
+  // appeared in the queue. Owning id allocation in the hook via a ref counter removes the
+  // stale-state dependency: each call advances immediately, so ids never collide.
+  const idCounterRef = useRef(0);
+  const nextRequestId = useCallback((): string => `req-${(idCounterRef.current += 1)}`, []);
 
   const operatorId = ctx.auth.user.employee_id;
 
@@ -207,7 +225,7 @@ export function useRequestRegistry(ctx: SovereignShellContext, port: AgentOSPort
   const complete = useCallback((requestId: string) => runTransition(requestId, "COMPLETE"), [runTransition]);
   const clearError = useCallback((): void => setError(null), []);
 
-  return { requests, error, submit, route, sendForApproval, startWork, approveAndStart, reject, complete, clearError };
+  return { requests, error, submit, route, sendForApproval, startWork, approveAndStart, reject, complete, nextRequestId, clearError };
 }
 
 function intakeEmitError(err: unknown): string {

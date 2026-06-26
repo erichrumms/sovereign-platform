@@ -100,7 +100,7 @@ const noteStyle: CSSProperties = {
   width: "100%", minHeight: 56, padding: 8, borderRadius: 8, border: "1px solid #cbd5e1",
   fontSize: 13, fontFamily: "inherit", boxSizing: "border-box", marginBottom: 8, resize: "vertical",
 };
-const hintStyle: CSSProperties = { margin: "4px 0 0", fontSize: 11, color: "#94a3b8" };
+const hintStyle: CSSProperties = { margin: "4px 0 0", fontSize: 11, color: "#475569" };
 const errorStyle: CSSProperties = {
   margin: "8px 0 0", padding: "8px 10px", borderRadius: 8, background: "#fef2f2",
   border: "1px solid #fecaca", color: "#991b1b", fontSize: 12,

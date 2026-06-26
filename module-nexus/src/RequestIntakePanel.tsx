@@ -36,7 +36,10 @@ export function RequestIntakePanel({ registry, ctx }: RequestIntakePanelProps): 
   const onSubmit = (): void => {
     const trimmed = title.trim();
     if (trimmed === "") return;
-    const nextId = `req-${registry.requests.length + 1}`;
+    // Gap 1 fix: take the id from the hook's monotonic source, NOT from the lagging
+    // `registry.requests.length` (which produced duplicate ids on fast double-submits
+    // that the registry's idempotency guard then silently dropped).
+    const nextId = registry.nextRequestId();
     registry.submit({
       request_id: nextId,
       title: trimmed,
