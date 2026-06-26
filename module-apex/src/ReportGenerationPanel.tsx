@@ -12,13 +12,14 @@
  * Version: 1.0 · Session 17 · June 25, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { Fragment, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { ApexDataAdapter } from "./apex-data-adapter";
 import type { ApexReportType } from "./apex-contract";
 import { useApexAnalysis } from "./useApexAnalysis";
 import { useReportGenerator } from "./useReportGenerator";
+import { ReportCharts } from "./ReportCharts";
 import {
   rootStyle,
   contentCardStyle,
@@ -50,6 +51,9 @@ export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelPro
 
   const analysis = useApexAnalysis(ctx, { adapter });
   const gen = useReportGenerator(ctx, { adapter });
+
+  // The program the displayed report was generated for (DC-4 charts read from it).
+  const reportProgram = gen.report ? adapter.getProgram(gen.report.program_id) : null;
 
   const onGenerate = async (): Promise<void> => {
     const program = adapter.getProgram(programId);
@@ -111,12 +115,16 @@ export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelPro
         <div style={contentCardStyle} data-category="3-content">
           <h2 style={sectionHeadingStyle}>{gen.report.title}</h2>
           {gen.report.sections.map((s) => (
-            <div key={s.heading}>
-              <h3 style={subHeadingStyle}>{s.heading}</h3>
-              {s.body.split("\n\n").map((para, i) => (
-                <p key={i} style={bodyTextStyle}>{para}</p>
-              ))}
-            </div>
+            <Fragment key={s.heading}>
+              <div>
+                <h3 style={subHeadingStyle}>{s.heading}</h3>
+                {s.body.split("\n\n").map((para, i) => (
+                  <p key={i} style={bodyTextStyle}>{para}</p>
+                ))}
+              </div>
+              {/* DC-4 — visual indicators between the status narrative and the risk findings. */}
+              {s.heading === "Program Status" && reportProgram ? <ReportCharts program={reportProgram} /> : null}
+            </Fragment>
           ))}
 
           <h3 style={subHeadingStyle}>Attestation</h3>
