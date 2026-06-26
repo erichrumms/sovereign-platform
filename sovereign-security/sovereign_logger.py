@@ -75,17 +75,61 @@ APPROVED_EVENT_TYPES = frozenset({
     "MCP_TOOL_CALL",
     "A2A_TASK_HANDOFF",
     "A2A_TASK_FAILURE",
-    # GD-13 / shell-contract v1.10 (June 24, 2026) — model-evaluation completion event,
-    # emitted by evaluate.py (CPMI-VRS four-gate validation). Synced from shell-contract.ts
-    # SovereignEventType (Standing Constraint #11).
-    # NOTE (drift flagged for governance): this set is otherwise still at the v1.0 baseline —
-    # it does NOT yet include the GD-2..GD-11 event types (VOICE_CAPTURE_COMPLETED, ALERT_*,
-    # AGENT_ACTION_*, CPMI_VRS_*, INFERENCE_*, AGENTOS_*, NEXUS_*). Those are emitted only by
-    # the TypeScript modules today, so the gap is latent, but a future session should complete
-    # the Constraint #11 propagation. See SOVEREIGN_Session16_Handoff.md.
+    # ─────────────────────────────────────────────────────────
+    # GD-15 / Session 17 (June 25, 2026) — Constraint #11 re-sync (catch-up only).
+    # Brings APPROVED_EVENT_TYPES to full parity with the shell-contract v1.11
+    # SovereignEventType union by adding the GD-2..GD-11 members that drifted over
+    # Sessions 3–15 (each session previously synced only its own GD additions).
+    # No NEW event types are introduced here — these are types already approved in
+    # the shell contract, propagated to the Python logger. After this re-sync the
+    # set holds 58 members, identical to shell-contract.ts v1.11. See
+    # SOVEREIGN_Session16_Handoff.md §G and Integration Brief v1.25 §6 (GD-15).
+    # ─────────────────────────────────────────────────────────
+    # GD-2 / shell-contract v1.1 — SCRIBE voice capture (module-scribe).
+    "VOICE_CAPTURE_COMPLETED",
+    # GD-3 / shell-contract v1.1 — COUNSEL prior-position reconciliation (module-counsel).
+    "PRIOR_POSITION_RECONCILIATION",
+    # GD-4 / shell-contract v1.2 — seven VIGIL alert/triage/approval events (module-vigil).
+    "ALERT_RECEIVED",
+    "ALERT_ACKNOWLEDGED",
+    "ALERT_RESOLVED",
+    "ALERT_ESCALATED",
+    "ALERT_FALSE_POSITIVE",
+    "TRIAGE_ANALYSIS_PRODUCED",
+    "APPROVAL_REQUEST_RECEIVED",
+    # GD-6 / shell-contract v1.4 — four VIGIL agent-action approval lifecycle events.
+    "AGENT_ACTION_APPROVED",
+    "AGENT_ACTION_REJECTED",
+    "AGENT_ACTION_ESCALATED",
+    "AGENT_ACTION_EXPIRED",
+    # GD-7 / shell-contract v1.5 — CPMI reasoning-chain + four CPMI-VRS gate events (module-cpmi).
+    "CPMI_REASONING_CHAIN_COMPLETE",
+    "CPMI_VRS_GATE_1_PASSED",
+    "CPMI_VRS_GATE_2_PASSED",
+    "CPMI_VRS_GATE_3_ATTESTED",
+    "CPMI_VRS_GATE_4_PASSED",
+    # GD-8 / shell-contract v1.6 — three inference-layer events (sovereign-api-client).
+    "INFERENCE_CALL",
+    "INFERENCE_PROVIDER_FALLBACK",
+    "MODEL_HASH_MISMATCH",
+    # GD-9 / shell-contract v1.7 — seven AgentOS task-lifecycle events (module-agentos).
+    "AGENTOS_TASK_ASSIGNED",
+    "AGENTOS_APPROVAL_REQUESTED",
+    "AGENTOS_TASK_APPROVED",
+    "AGENTOS_TASK_REJECTED",
+    "AGENTOS_TASK_STARTED",
+    "AGENTOS_TASK_COMPLETE",
+    "AGENTOS_TASK_CANCELLED",
+    # GD-11 / shell-contract v1.8 — six NEXUS work-request lifecycle events (module-nexus).
+    "NEXUS_REQUEST_SUBMITTED",
+    "NEXUS_REQUEST_ROUTED",
+    "NEXUS_APPROVAL_PENDING",
+    "NEXUS_REQUEST_IN_PROGRESS",
+    "NEXUS_REQUEST_COMPLETE",
+    "NEXUS_REQUEST_REJECTED",
+    # GD-13 / shell-contract v1.10 — model-evaluation completion (evaluate.py). Synced Session 16.
     "MODEL_EVALUATION_COMPLETE",
-    # GD-14 / shell-contract v1.11 (June 24, 2026) — AgentOS A2A messaging events.
-    # Synced from shell-contract.ts SovereignEventType (Standing Constraint #11).
+    # GD-14 / shell-contract v1.11 — AgentOS A2A messaging events. Synced Session 16.
     "AGENT_MESSAGE_SENT",
     "AGENT_MESSAGE_RECEIVED",
 })
@@ -105,6 +149,15 @@ APPROVED_DECISION_TYPES = frozenset({
     "TRAVEL_ESCALATED",
     "LABOR_CORRECTION_APPROVED",
     "LABOR_ESCALATION_INITIATED",
+    # GD-15 / Session 17 (June 25, 2026) — Constraint #11 re-sync (catch-up only).
+    # The five HumanDecisionType members added to the shell contract over GD-6..GD-9
+    # that had not yet been propagated to the Python logger. No new decision types —
+    # full parity with shell-contract.ts v1.11 HumanDecisionType (15 members).
+    "AGENT_APPROVAL",          # GD-6 / v1.4 — VIGIL agent-action approval
+    "GATE_3_ATTESTATION",      # GD-7 / v1.5 — CPMI-VRS Gate 3 human attestation
+    "WORLD_MODEL_UPDATE",      # GD-7 / v1.5 — human-gated world-model update
+    "TASK_APPROVAL",           # GD-9 / v1.7 — AgentOS task approval via VIGIL
+    "TASK_CANCELLATION",       # GD-9 / v1.7 — AgentOS task cancellation
 })
 
 APPROVED_AGENT_CLASSES = frozenset({
