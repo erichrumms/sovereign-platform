@@ -12,9 +12,10 @@
  *                                      cards, each with an expandable full-output view in
  *                                      plain prose (Gap 5 — never a JSON dump).
  *   - Gate 3 (Human Attestation)    — PENDING. The Project Principal attests in this tab; the
- *                                      attestation logs a REPORT_ATTESTATION human decision
- *                                      (Constraint #4) and enables Gate 4. This is THE
- *                                      Walkthrough B human step — Claude Code does not simulate it.
+ *                                      attestation logs a GATE_3_ATTESTATION human decision
+ *                                      (Constraint #4, GD-7 — shared with the CPMI gate panel)
+ *                                      and enables Gate 4. This is THE Walkthrough B human step —
+ *                                      Claude Code does not simulate it.
  *   - Gate 4 (Monitoring Baseline)  — LOCKED until Gate 3 passes, then completable. Logs a
  *                                      HUMAN_DECISION (decision_type HUMAN_APPROVAL — no Gate-4
  *                                      specific HumanDecisionType exists and no GD authorizes a
@@ -86,7 +87,7 @@ export function GateRunnerPanel({ ctx, adapter }: GateRunnerPanelProps): JSX.Ele
         product: "APEX",
         actor_id: ctx.auth.user.employee_id,
         outcome: "apex_cpmi_vrs_gate3_attested",
-        decision_type: "REPORT_ATTESTATION", // Constraint #4 — see handoff for the GATE_3_ATTESTATION reconciliation note
+        decision_type: "GATE_3_ATTESTATION", // Constraint #4 — GD-7 Gate 3 attestation type (Item 56); shared with the CPMI gate panel
         actor: "human",
         actor_name: ctx.auth.user.name,
         payload: { gate: 3, note: trimmed, attested_at: attestedAt },

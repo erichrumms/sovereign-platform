@@ -3,7 +3,7 @@
  * module-apex — GateRunnerPanel.test.tsx (Session 18, D2).
  * The APEX CPMI-VRS Certification tab: Gate 1 passes on load; Gate 2 renders the three
  * benchmark scenarios with human-readable full output; Gate 3 attestation logs a
- * REPORT_ATTESTATION human decision and unlocks Gate 4; Gate 4 is locked until Gate 3 passes
+ * GATE_3_ATTESTATION human decision and unlocks Gate 4; Gate 4 is locked until Gate 3 passes
  * and logs a HUMAN_DECISION (HUMAN_APPROVAL) on completion; the certification summary tracks
  * progress; the Gap 6 governance banner is present.
  */
@@ -70,7 +70,7 @@ describe("GateRunnerPanel — CPMI-VRS Certification tab", () => {
     expect(within(gate(3)).getByText("Pending")).toBeInTheDocument();
   });
 
-  it("Gate 3 attestation logs a REPORT_ATTESTATION human decision and unlocks Gate 4", () => {
+  it("Gate 3 attestation logs a GATE_3_ATTESTATION human decision and unlocks Gate 4", () => {
     const logSink: SovereignLogEvent[] = [];
     render(<GateRunnerPanel ctx={makeCtx({ logSink })} adapter={adapter} />);
     fireEvent.change(screen.getByLabelText("gate 3 attestation note"), {
@@ -80,7 +80,7 @@ describe("GateRunnerPanel — CPMI-VRS Certification tab", () => {
 
     const decision = logSink.find((e) => e.event_type === "HUMAN_DECISION");
     expect(decision).toBeDefined();
-    expect(decision!.decision_type).toBe("REPORT_ATTESTATION");
+    expect(decision!.decision_type).toBe("GATE_3_ATTESTATION");
     expect(decision!.actor).toBe("human");
     expect(decision!.product).toBe("APEX");
     expect(decision!.workflow_step_id).toBe("apex-cpmi-vrs-gate3-attestation");
