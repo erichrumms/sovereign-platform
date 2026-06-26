@@ -103,3 +103,149 @@ Every new agent registration requires:
 
 *SOVEREIGN Platform Agent Identity Standard v1.3 · June 24, 2026*
 *Pre-Decisional · Internal Working Document*
+
+---
+
+# Agent Identity Standard — APEX Module Additions
+## Append to Agent_Identity_Standard.md
+
+**Session:** Session 17 Pre-Build Registration
+**Date:** June 25, 2026
+**Approved by:** Project Principal
+**Scope:** Two new agent identities — APEX (2)
+
+---
+
+## APEX Agents
+
+### apex.ai-assistant
+
+| Field | Value |
+|---|---|
+| `agent_id` | `apex.ai-assistant` |
+| Module | `module-apex` |
+| Product | APEX — Analytics and Program Executive Suite |
+| Agent Class | Analytical |
+| Registered | 2026-06-25 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The LLM-backed analysis agent for APEX. Receives a structured
+context packet containing the CPMI World Model record, reasoning chain history,
+AgentOS task records, and governance decisions for a given program. Produces a
+structured `ApexAnalysisOutput` object containing a plain-prose status narrative,
+risk findings with DC-3 provenance fields, and human-addressed recommendations.
+All LLM calls route through `createSovereignClient()`. One analysis run per report
+generation request — no chained calls, no parallel requests.
+
+**Prompt:** PR-APEX-001 (approved by Project Principal June 25, 2026)
+
+**Logger events:** `APEX_ANALYSIS_STARTED`, `APEX_ANALYSIS_COMPLETE`
+
+**Data classification:** Platform-level audit data. Program analysis records
+accessible to authorized platform administrators.
+
+**Monitoring tier:** Standard (not enhanced — APEX is an
+cat >> ~/Developer/sovereign-platform/Agent_Identity_Standard.md << 'ENDOFENTRIES'
+
+---
+
+# Agent Identity Standard — APEX Module Additions
+## Append to Agent_Identity_Standard.md
+
+**Session:** Session 17 Pre-Build Registration
+**Date:** June 25, 2026
+**Approved by:** Project Principal
+**Scope:** Two new agent identities — APEX (2)
+
+---
+
+## APEX Agents
+
+### apex.ai-assistant
+
+| Field | Value |
+|---|---|
+| `agent_id` | `apex.ai-assistant` |
+| Module | `module-apex` |
+| Product | APEX — Analytics and Program Executive Suite |
+| Agent Class | Analytical |
+| Registered | 2026-06-25 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The LLM-backed analysis agent for APEX. Receives a structured
+context packet containing the CPMI World Model record, reasoning chain history,
+AgentOS task records, and governance decisions for a given program. Produces a
+structured `ApexAnalysisOutput` object containing a plain-prose status narrative,
+risk findings with DC-3 provenance fields, and human-addressed recommendations.
+All LLM calls route through `createSovereignClient()`. One analysis run per report
+generation request — no chained calls, no parallel requests.
+
+**Prompt:** PR-APEX-001 (approved by Project Principal June 25, 2026)
+
+**Logger events:** `APEX_ANALYSIS_STARTED`, `APEX_ANALYSIS_COMPLETE`
+
+**Data classification:** Platform-level audit data. Program analysis records
+accessible to authorized platform administrators.
+
+**Monitoring tier:** Standard (not enhanced — APEX is an analytics product,
+not a governance engine).
+
+**Scope constraint:** `apex.ai-assistant` produces advisory analysis only. It does
+not modify any upstream data, does not make governance decisions, and does not
+invoke other agents. Every analysis run produces either a valid `ApexAnalysisOutput`
+or logs a structured error.
+
+---
+
+### apex.report-generator
+
+| Field | Value |
+|---|---|
+| `agent_id` | `apex.report-generator` |
+| Module | `module-apex` |
+| Product | APEX — Analytics and Program Executive Suite |
+| Agent Class | Operational |
+| Registered | 2026-06-25 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The document assembly agent for APEX. Takes a valid
+`ApexAnalysisOutput` from `apex.ai-assistant` and produces a formatted report
+artifact (MSR, QPR, or program dossier). Does not call the LLM — performs
+deterministic structured document assembly from governed data objects. Enforces
+the `sovereignHold()` gate before any document is produced. Logs
+`REPORT_GENERATION_HELD` if hold is active.
+
+**Prompt:** None — deterministic document assembly, no LLM calls.
+
+**Logger events:** `APEX_REPORT_GENERATED`, `APEX_DOSSIER_EXPORTED`,
+`REPORT_GENERATION_HELD`, `APEX_EVENT_RECEIVED`
+
+**Data classification:** Platform-level audit data.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `apex.report-generator` assembles documents only. It does
+not perform analysis, does not call the LLM, and does not export any document
+until `sovereignHold()` returns false and human attestation (`REPORT_ATTESTATION`)
+is logged.
+
+---
+
+## Updated Agent Count — 18 Total
+
+| `agent_id` | Module | Class | LLM-Backed | Status |
+|---|---|---|---|---|
+| `apex.ai-assistant` | module-apex | Analytical | Yes | Registered |
+| `apex.report-generator` | module-apex | Operational | No | Registered |
+
+*All prior agents (16) remain active. APEX additions bring total to 18.*
+
+---
+
+*Agent Identity Standard — APEX Module Additions*
+*Session 17 Pre-Build Registration · June 25, 2026*
+*Approved by Project Principal*
+*Pre-Decisional · Internal Working Document*
