@@ -3,13 +3,14 @@
  * ApexApp.tsx — APEX composition root (React).
  *
  * The single component the module mounts after the role gate admits the reviewer. It lifts the
- * ApexDataAdapter ONCE and renders the APEX chrome with four tabs: Portfolio Dashboard,
- * Program Detail, Report Generation, and the Execution Monitoring stub (PPBE Phase 5). The
- * "Export Dossier" actions and program links route between tabs. Governance banners on each
- * screen are Category 2 (permanent, blue); status notices are Category 1 (amber); program
- * content is Category 3 (substantive) — the Gap 6 three-category model.
+ * ApexDataAdapter ONCE and renders the APEX chrome with five tabs: Portfolio Dashboard,
+ * Program Detail, Report Generation, CPMI-VRS Certification (the gate runner — Session 18), and
+ * the Execution Monitoring stub (PPBE Phase 5). The "Export Dossier" actions and program links
+ * route between tabs. Governance banners on each screen are Category 2 (permanent, blue); status
+ * notices are Category 1 (amber); program content is Category 3 (substantive) — the Gap 6
+ * three-category model.
  *
- * Version: 1.0 · Session 17 · June 25, 2026
+ * Version: 1.1 (CPMI-VRS Gates tab) · Session 18 · June 26, 2026
  */
 
 import { useMemo, useState, type CSSProperties } from "react";
@@ -19,6 +20,7 @@ import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "./apex-dat
 import { PortfolioDashboard } from "./PortfolioDashboard";
 import { ProgramDetailView } from "./ProgramDetailView";
 import { ReportGenerationPanel } from "./ReportGenerationPanel";
+import { GateRunnerPanel } from "./GateRunnerPanel";
 import { ExecutionMonitoringStub } from "./ExecutionMonitoringStub";
 
 export interface ApexAppProps {
@@ -27,12 +29,13 @@ export interface ApexAppProps {
   adapter?: ApexDataAdapter;
 }
 
-type Tab = "portfolio" | "detail" | "report" | "execution";
+type Tab = "portfolio" | "detail" | "report" | "gates" | "execution";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "portfolio", label: "Portfolio Dashboard" },
   { id: "detail", label: "Program Detail" },
   { id: "report", label: "Report Generation" },
+  { id: "gates", label: "CPMI-VRS Certification" },
   { id: "execution", label: "Execution Monitoring" },
 ];
 
@@ -81,6 +84,7 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
         )
       )}
       {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} />}
+      {tab === "gates" && <GateRunnerPanel ctx={ctx} adapter={adapter} />}
       {tab === "execution" && <ExecutionMonitoringStub />}
     </section>
   );
