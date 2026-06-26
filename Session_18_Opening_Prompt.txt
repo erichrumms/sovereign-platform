@@ -1,0 +1,141 @@
+SESSION 18 OPENING PROMPT
+SOVEREIGN Platform — Stage 5a Completion: APEX CPMI-VRS Gates + Walkthrough B Readiness
+Date: June 26, 2026
+
+SESSION HEADER
+Session number:       18
+HEAD at session open: 956ce80
+Integration Brief:    v1.26
+Shell contract:       v1.12
+Shell contract SHA:   61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+Total tests at open:  1018 (876 JS + 142 Python)
+Monorepo root:        ~/Developer/sovereign-platform/
+
+This is an AUTONOMOUS session. Read all context documents, confirm each by name, restate the done condition, then begin building immediately. Do not wait for approval between deliverables. Do not stop unless you hit a governance-blocked item — document it in the handoff and continue.
+
+STEP 1 — CONFIRM CONTEXT DOCUMENTS
+Confirm each of the following by name before proceeding. If any document is missing, stop and report which file is absent.
+
+Governance: Integration Brief v1.26, Agent_Identity_Standard.md, SOVEREIGN_Agent_to_Agent_Briefing.md (June 25), AGENT_REFERENCE.md
+Shell contract: sovereign-shell/shell-contract.ts (v1.12)
+Architecture specs: docs/13_APEX_Architecture.md, docs/14_HumanReviewerStandard.md, docs/08_CPMI_Architecture.md, docs/11_AgentOS_Architecture.md, docs/12_NEXUS_Architecture.md
+Prior session: SOVEREIGN_Session17_Handoff.md
+APEX source: module-apex/src/index.ts, benchmark-scenarios.ts, ApexApp.tsx, banners.tsx, apex-contract.ts
+Pattern reference: module-cpmi/src/index.ts
+D1 target: sovereign-security/sovereign_logger.py
+D3 targets: module-nexus/src/index.ts, module-agentos/src/index.ts
+D4 target: e2e/tests/pipeline.test.tsx
+Shared: sovereign-data/src/shared-types.ts
+
+STEP 2 — VERIFY SHELL CONTRACT
+Before any build work begins, verify SHA-256 of both shell-contract copies:
+  shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts
+Both must match: 61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+If either copy does not match, STOP.
+
+CRITICAL CODEBASE FACTS
+Real types: SovereignRequestContext / SovereignLLMResponse / ClearanceLevel
+LLM calls: createSovereignClient() only — never direct Anthropic API calls
+CommonJS vs ESM: sovereign-api-client uses process.env; module-cpmi and module-apex use import.meta.env via isolated anthropic-key.ts with jest stub — do NOT change to process.env in those modules
+SovereignEventType: NOT mirrored in sovereign-data/src/shared-types.ts
+sovereignHold(): does NOT exist — use ctx.governance.isOnHold(product)
+NEXUS minimumRole: AGENT_OPERATOR. APEX minimumRole: PLATFORM_ADMIN
+GD-10: UNCLASSIFIED only — CUI/SECRET/TOP_SECRET throw ClassificationNotAuthorizedError
+APEX is read-only to upstream — never writes to World Model
+PPBE reserved field names (never use): fiscal_year, lifecycle_cost_estimate, obligation_plan, performance_baseline
+Gap 4 / static fallback: correct dev behavior — do not force a live connection
+
+ACTIVE GOVERNANCE DECISIONS — PRE-APPROVED
+GD-17 — APPROVED_PRODUCTS companion-product re-sync (pre-approved, D1):
+  Add to sovereign_logger.py APPROVED_PRODUCTS: "COUNSEL", "SCRIBE", "LENS", "VIGIL"
+  No shell-contract change. No Constraint #11 propagation beyond sovereign_logger.py.
+  Add GD-17 changelog comment in the file.
+  Run 142 Python tests before proceeding to D2.
+
+NO other shell-contract changes authorized this session. If D2 requires a new SovereignEventType, STOP and document in handoff. Use HUMAN_APPROVAL for Gate 4 if no specific HumanDecisionType fits — document the choice.
+
+DONE CONDITION
+
+D1 — GD-17: APPROVED_PRODUCTS Companion Re-sync [REQUIRED]
+  sovereign_logger.py APPROVED_PRODUCTS += COUNSEL, SCRIBE, LENS, VIGIL
+  GD-17 changelog comment added
+  All 142 Python tests pass
+  Committed: "GD-17: APPROVED_PRODUCTS companion-product re-sync"
+
+D2 — APEX CPMI-VRS Gates Tab [REQUIRED — Walkthrough B gate]
+  Fifth tab added to ApexApp.tsx: "CPMI-VRS Certification"
+  GateRunnerPanel component renders four gates:
+
+  Gate 1 (AI Disclosure): always PASSED on load — plain prose description of what the banner confirms — green indicator
+
+  Gate 2 (Reasoning Transparency): PASSED — three benchmark scenario cards (A, B, C) each showing: scenario name/description, program ID, schema_valid: true as plain prose, risk findings count and severity summary, recommendations count, expandable "View Full Output" in human-readable prose (NOT a JSON dump) — green indicator
+
+  Gate 3 (Human Attestation): PENDING — plain prose explanation — attestation note field (min 10 chars) — "Attest Gate 3" button — on click: logs REPORT_ATTESTATION human decision with decision_type, actor, actor_name, note, workflow_step_id — Gate 3 status → PASSED with timestamp — enables Gate 4 — amber pending → green pass
+
+  Gate 4 (Monitoring Baseline): locked until Gate 3 passes — plain prose explanation — "Complete Gate 4" button enabled only after Gate 3 — on click: logs HUMAN_DECISION with decision_type HUMAN_APPROVAL (or nearest existing type — document choice) — Gate 4 → PASSED with timestamp — locked → amber → green
+
+  Certification summary: when all four gates pass shows completion message with dates; when pending shows "N of 4 gates complete — Gate 3 attestation is the Project Principal step during Walkthrough B"
+
+  Gap 5: all Gates tab text is plain prose — no JSON, no machine-formatted output
+  Gap 6: Category 2 blue banner present; gate status cards are Category 3; pending indicators are Category 1 amber
+  Gate 3 attestation UI is prominent and in natural reading flow — not buried
+  Minimum 8 new tests: Gate 1 passes on load; Gate 2 renders all three scenario cards; Gate 3 logs correctly and enables Gate 4; Gate 4 locked until Gate 3 passes
+  All module-apex tests still passing (80 + new >= 88 total)
+  Committed: "feat: APEX CPMI-VRS Gates tab (Walkthrough B ready)"
+
+D3 — NEXUS-to-AgentOS Pipeline Handoff [OPTIONAL — only if D1 and D2 complete]
+  Read existing AgentOS port interface and NEXUS registry before wiring
+  A NEXUS submission with agent routing flag creates a corresponding AgentOS task
+  AgentOS task carries NEXUS request_id for traceability
+  Logger emits NEXUS and AgentOS events in sequence
+  At least 4 new integration tests; all existing NEXUS (52) and AgentOS (81) tests still passing
+  If wiring requires new SovereignEventType or port design decision: STOP and document
+  Committed: "feat: NEXUS-to-AgentOS pipeline handoff"
+
+D4 — E2E Walkthrough B Scenario [OPTIONAL — only if D3 complete]
+  Fifth E2E scenario: NEXUS → AgentOS → VIGIL → CPMI context → APEX portfolio
+  Synthetic UNCLASSIFIED data throughout; validates D3 handoff end-to-end
+  E2E scenarios: 4 → 5
+  Committed: "test: E2E Walkthrough B pipeline scenario"
+
+D5 — APEX Gap 5/6 Polish [OPTIONAL — parallel with D2 if gaps found]
+  Fix any Gap 5/6 failures found during D2 build
+  All module-apex tests still passing
+  Committed with D2 or separately: "fix: APEX Gap 5/6 polish"
+
+AUTONOMOUS OPERATION RULES
+MAY decide: GateRunnerPanel layout/styling (Gap 5/6 compliant), benchmark output presentation, test structure, D3 wiring approach within existing port pattern
+MUST stop and document: new SovereignEventType needed, Gate 4 HumanDecisionType ambiguity (use HUMAN_APPROVAL and document), D3 requires port design decision, Gap 5/6 failures requiring full screen rewrite
+NEVER: issue GDs beyond GD-17, modify shell-contract.ts, make direct Anthropic API calls, write to World Model from APEX, force live LLM connection
+
+STANDING CONSTRAINTS — ALL 11
+1. No independent security/governance/audit systems
+2. No field-name divergence — ClearanceLevel not DataClassification
+3. No rewrite debt — connections are configuration changes
+4. Every human decision event carries decision_type
+5. No direct LLM API calls — createSovereignClient() only
+6. workflow_step_id on every Logger event
+7. Shell context frozen at eight exports
+8. shell-contract.ts — v1.12, SHA above — NO changes authorized this session
+9. All prompts registered — 10 approved — no new prompts this session
+10. All agents registered — 18 registered — no new agents this session
+11. Five synced copies — GD-17 affects sovereign_logger.py only
+
+WALKTHROUGH B READINESS NOTE
+When D2 is complete, APEX is ready for Walkthrough B. Gate 3 attestation is the Project Principal's step — Claude Code does not simulate it. The Gates tab must pass the five-second test from doc 14: a reviewer opening it for the first time must orient within five seconds. Gate 3 must be prominent and in natural reading flow after Gate 2.
+
+CLOSE REQUIREMENTS — DO NOT SKIP
+1. Run full test suite: npm test (JS) + python -m pytest sovereign-security/ (Python) — report counts separately and total
+2. Run tsc --noEmit — must compile clean
+3. Verify SHA-256 both shell-contract copies unchanged at v1.12 — record in handoff
+4. Commit all work with clear messages per deliverable
+5. Produce SOVEREIGN_Session18_Handoff.md with: done condition traceability, SHA confirmation, commit hashes, test counts, Gate 4 HumanDecisionType choice documented, D3 status, any Gap 5/6 polish, update flags for Integration Brief v1.27
+6. Produce SBOM_Session18_Update.md: GD-17 recorded, test totals, GateRunnerPanel added, shell-contract v1.12 confirmed unchanged
+7. Commit both: git add SOVEREIGN_Session18_Handoff.md SBOM_Session18_Update.md && git commit -m "close: Session 18 handoff + SBOM update" && git push
+
+Session is not closed until both artifacts are committed and pushed.
+
+BEGIN NOW.
+Build D1 → D2 → D3 → D4 → D5 without stopping.
+D1 and D2 are required. D3, D4, D5 are optional — attempt in order after D2.
+D2 is the Walkthrough B gate. It must be complete before this session closes.
