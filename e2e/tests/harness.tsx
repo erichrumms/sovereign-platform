@@ -23,6 +23,8 @@ import { useRequestRegistry } from "../../module-nexus/src/useRequestRegistry";
 import { createSyntheticAgentOSPort } from "../../module-nexus/src/agentos-port";
 import { useTaskRegistry } from "../../module-agentos/src/useTaskRegistry";
 import { useAgentDispatcher } from "../../module-agentos/src/useAgentDispatcher";
+import { createAgentOSBackedPort, type AgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
+import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "../../module-apex/src/apex-data-adapter";
 
 export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
   const role: SovereignRole = "SYSTEM_ADMIN";
@@ -48,6 +50,13 @@ export interface Pipeline {
   nexus: ReturnType<typeof useRequestRegistry>;
   tasks: ReturnType<typeof useTaskRegistry>;
   dispatcher: ReturnType<typeof useAgentDispatcher>;
+  /** Walkthrough B (Session 18) — a second NEXUS registry driven by the LIVE AgentOS-backed
+   *  port (D3), so a scenario can exercise the real NEXUS → AgentOS hand-off. Additive: the
+   *  existing four scenarios use `nexus` (synthetic) and never touch these. */
+  nexusLive: ReturnType<typeof useRequestRegistry>;
+  livePort: AgentOSBackedPort;
+  /** APEX synthetic World Model adapter — the portfolio program data a reviewer sees. */
+  apex: ApexDataAdapter;
 }
 
 export function usePipeline(ctx: SovereignShellContext): Pipeline {
@@ -55,5 +64,10 @@ export function usePipeline(ctx: SovereignShellContext): Pipeline {
   const nexus = useRequestRegistry(ctx, nexusPort);
   const tasks = useTaskRegistry(ctx);
   const dispatcher = useAgentDispatcher();
-  return { nexus, tasks, dispatcher };
+  // Live NEXUS → AgentOS hand-off path (D3). Captures the first ctx (its logger writes to the
+  // same shared logSink) and stays stable across renders, mirroring the synthetic port above.
+  const livePort = useMemo(() => createAgentOSBackedPort(ctx), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const nexusLive = useRequestRegistry(ctx, livePort);
+  const apex = useMemo(() => createSyntheticApexDataAdapter(), []);
+  return { nexus, tasks, dispatcher, nexusLive, livePort, apex };
 }

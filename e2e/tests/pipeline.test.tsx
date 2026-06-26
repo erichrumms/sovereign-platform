@@ -150,4 +150,50 @@ describe("SOVEREIGN end-to-end pipeline", () => {
     expect(sink.find((e) => e.event_type === "NEXUS_REQUEST_SUBMITTED")!.workflow_step_id).toBe("nexus-request-req-4");
     expect(types(sink)).toContain("AGENTOS_TASK_REJECTED");
   });
+
+  // ── Scenario 5 — Walkthrough B: live NEXUS → AgentOS hand-off (D3) end-to-end ──────────────
+  // Exercises the Stage 5a pipeline through the LIVE AgentOS-backed port (createAgentOSBackedPort):
+  // a NEXUS submission routes, passes the VIGIL-routed approval marker, and on entering
+  // IN_PROGRESS creates a REAL AgentOS task (AGENTOS_TASK_ASSIGNED) carrying the NEXUS request_id
+  // — the hand-off Walkthrough A found missing. It then confirms APEX surfaces portfolio program
+  // data (the CPMI World Model projection a reviewer sees) for the same UNCLASSIFIED session.
+  it("Scenario 5: a NEXUS submission creates a live AgentOS task and APEX shows portfolio data", () => {
+    const sink: SovereignLogEvent[] = [];
+    const { result } = renderHook(() => usePipeline(makeCtx(sink)));
+
+    // NEXUS submission → routing → VIGIL-routed approval → execution hand-off (live port).
+    act(() => result.current.nexusLive.submit(submitInput("req-5", "COMPLIANCE_CHECK")));
+    act(() => result.current.nexusLive.route("req-5"));
+    act(() => result.current.nexusLive.sendForApproval("req-5"));
+    act(() => result.current.nexusLive.approveAndStart("req-5"));
+
+    // NEXUS reached IN_PROGRESS.
+    expect(result.current.nexusLive.requests[0].status).toBe("IN_PROGRESS");
+
+    // The LIVE port created a real AgentOS task carrying the NEXUS request_id (traceability).
+    const liveTasks = result.current.livePort.listTasks();
+    expect(liveTasks).toHaveLength(1);
+    expect(liveTasks[0].task_id).toBe("nexus-req-5");
+    expect(liveTasks[0].status).toBe("ASSIGNED");
+    const assigned = sink.find((e) => e.event_type === "AGENTOS_TASK_ASSIGNED");
+    expect(assigned).toBeDefined();
+    expect(assigned!.payload.request_id).toBe("req-5");
+
+    // Event sequence across products: SUBMITTED → ROUTED → APPROVAL_PENDING → IN_PROGRESS → ASSIGNED.
+    const all = types(sink);
+    for (const expected of [
+      "NEXUS_REQUEST_SUBMITTED", "NEXUS_REQUEST_ROUTED", "NEXUS_APPROVAL_PENDING",
+      "NEXUS_REQUEST_IN_PROGRESS", "AGENTOS_TASK_ASSIGNED",
+    ]) expect(all).toContain(expected);
+
+    // workflow_step_id chain: the AgentOS task's id ties back to the NEXUS request.
+    expect(forProduct(sink, "NEXUS").every((e) => e.workflow_step_id === "nexus-request-req-5")).toBe(true);
+    expect(assigned!.workflow_step_id).toBe("agentos-task-nexus-req-5");
+    expect(result.current.nexusLive.requests[0].agentos_task_id).toBe("agentos-task-nexus-req-5");
+
+    // APEX portfolio view has program data (synthetic CPMI World Model), incl. P-100.
+    const programs = result.current.apex.listPrograms();
+    expect(programs.length).toBeGreaterThan(0);
+    expect(programs.some((p) => p.program_id === "P-100")).toBe(true);
+  });
 });
