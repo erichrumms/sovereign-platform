@@ -145,7 +145,16 @@ APPROVED_EVENT_TYPES = frozenset({
 })
 
 APPROVED_PRODUCTS = frozenset({
-    "NEXUS", "CPMI", "APEX", "FLOWPATH", "AGENTOS", "ARIA"
+    "NEXUS", "CPMI", "APEX", "FLOWPATH", "AGENTOS", "ARIA",
+    # GD-17 / Session 18 (June 26, 2026) — Constraint #11 companion-product re-sync
+    # (catch-up only). The four companion products have been in the shell-contract
+    # SovereignProduct union since GD-5 (v1.3) but were never propagated to the Python
+    # logger (GD-15, Session 17, was scoped to event/decision types only). Adding them
+    # so any future Python-side emission under a companion product is accepted rather
+    # than rejected. No shell-contract change (APPROVED_PRODUCTS is Python-only) and no
+    # other synced copy to update. See Integration Brief v1.26 §13 (Item 55) and
+    # SOVEREIGN_Session17_Handoff.md §G.1.
+    "COUNSEL", "SCRIBE", "LENS", "VIGIL",
 })
 
 APPROVED_DECISION_TYPES = frozenset({
