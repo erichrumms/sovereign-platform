@@ -60,7 +60,7 @@ append_file "sovereign-data shared-types (GD-16 HumanDecisionType sync)" "$REPO/
 append_file "sovereign-api-client package.json (CommonJS build confirm)" "$REPO/sovereign-api-client/package.json"
 
 # E2E SUITE
-append_file "E2E suite index (baseline before gap fixes)" "$REPO/e2e/index.ts"
+append_file "E2E suite index (baseline before gap fixes)" "$REPO/e2e/tests/pipeline.test.tsx"
 
 # REPORT
 TOTAL=$((FOUND + MISSING))
