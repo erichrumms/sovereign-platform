@@ -522,15 +522,62 @@ Project Principal. Workflow:
 
 ## File Location Reference
 
-| Location | What Goes There |
-|---|---|
-| Monorepo root (`~/Developer/sovereign-platform/`) | Integration Brief (current version) · Agent Identity Standard · Agent-to-Agent Briefing · gather scripts · opening prompts |
-| `docs/` | Architecture specs |
-| Git remote (`origin/main`) | Everything committed |
-| iCloud `7 - SOVEREIGN/` root | Integration Brief (current) · Agent-to-Agent Briefing · Agent Identity Standard · System Prompt |
-| iCloud `Companion Suite/Governance/` | SBOM Registry (merged, current) |
-| iCloud `Session Handoffs/` | Every session handoff document |
-| iCloud `Walkthroughs/` | Walkthrough reports |
+### Monorepo (`~/Developer/sovereign-platform/`)
+
+```
+~/Developer/sovereign-platform/
+├── SOVEREIGN_Platform_Integration_Brief_v1.NN.md  ← current version only
+├── Agent_Identity_Standard.md                     ← current version only
+├── SOVEREIGN_Agent_to_Agent_Briefing.md            ← current version only
+├── AGENT_REFERENCE.md
+├── gather_sessionNN_context.sh                    ← current session only
+├── sovereign-security/  sovereign-api-client/  sovereign-data/
+├── sovereign-shell/shell-contract.ts              ← current version only
+├── module-counsel/ · module-scribe/ · module-vigil/ · module-lens/
+├── module-cpmi/ · module-agentos/ · module-nexus/
+├── e2e/
+└── docs/                                          ← all architecture specs
+```
+
+### iCloud (`7 - SOVEREIGN/`)
+
+```
+7 - SOVEREIGN/
+├── SOVEREIGN_Platform_Integration_Brief_v1.NN.md  ← current only
+├── SOVEREIGN_System_Prompt_vN.md                  ← current only
+├── SOVEREIGN_Agent_to_Agent_Briefing_YYYYMMDD.md  ← most recent only
+├── Agent_Identity_Standard.md                     ← current only
+├── SOVEREIGN_Agent_Transfer_Handoff_YYYYMMDD.md   ← most recent only
+├── AGENT_REFERENCE.md
+│
+├── docs/                           ← mirrors monorepo docs/
+│
+├── Session Handoffs/               ← ALL sessions · never delete
+│
+├── Walkthroughs/                   ← one report per walkthrough (A–F)
+│
+├── Companion Suite/
+│   └── Governance/                 ← SBOM (current) + all GD records
+│                                      + all prompt approval records
+│
+├── Product Transition Packages/
+│   └── PPBE/                       ← ACTIVE SCOPE · do not archive
+│
+├── Archive/                        ← historical value · not current
+│   └── Early Strategy/             ← original thinking pre-monorepo
+│
+└── For Disposal/                   ← safe to delete · empty periodically
+```
+
+### Folder Maintenance Rules
+
+**Root:** One current version of each document only. Old versions → For Disposal.
+**Session Handoffs/:** Keep all — project history. Never delete.
+**Walkthroughs/:** Keep all — documents what tests cannot catch.
+**Companion Suite/Governance/:** Keep all GD records and prompt approvals permanently. Old SBOMs → For Disposal when superseded.
+**Product Transition Packages/PPBE/:** Active scope through Session 22. Do not archive until PPBE Phase I complete.
+**Archive/:** Genuine historical value — pre-monorepo documents and original thinking.
+**For Disposal/:** Empty periodically. Everything here has a copy in git or no remaining value.
 
 ---
 
