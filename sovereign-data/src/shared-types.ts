@@ -26,9 +26,9 @@
  * decision + version increment. It is not performed in Session 3.
  *
  * Source of truth (current): sovereign-shell/shell-contract.ts
- * Version: 1.0 — synced to shell-contract v1.7, Session 14, June 24, 2026
+ * Version: 1.1 — synced to shell-contract v1.12, Session 17, June 25, 2026
  *   (HumanDecisionType: + AGENT_APPROVAL v1.4, + GATE_3_ATTESTATION / WORLD_MODEL_UPDATE
- *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7 — 15 members)
+ *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7, + REPORT_ATTESTATION v1.12 — 16 members)
  */
 
 /** Canonical platform roles. Synced to shell-contract.ts v1.3 (incl. GD-5 PLATFORM_ADMIN). */
@@ -76,7 +76,10 @@ export type HumanDecisionType =
   // GD-9 (shell-contract v1.7, June 24, 2026) — AgentOS task-lifecycle human decisions:
   // approving an agent task via VIGIL, and cancelling a task. Synced from shell-contract.ts.
   | "TASK_APPROVAL"
-  | "TASK_CANCELLATION";
+  | "TASK_CANCELLATION"
+  // GD-16 (shell-contract v1.12, June 25, 2026) — a human attesting an APEX report
+  // (MSR/QPR or program dossier) before export. Synced from shell-contract.ts Section 2.
+  | "REPORT_ATTESTATION";
 
 /** Runtime value sets, for validation reuse. Must mirror the unions above. */
 export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
@@ -123,6 +126,8 @@ export const HUMAN_DECISION_TYPES: readonly HumanDecisionType[] = [
   // GD-9 (shell-contract v1.7, June 24, 2026) — AgentOS task approval + cancellation.
   "TASK_APPROVAL",
   "TASK_CANCELLATION",
+  // GD-16 (shell-contract v1.12, June 25, 2026) — APEX report attestation before export.
+  "REPORT_ATTESTATION",
 ];
 
 /** Shared validation result shape used by every entity validator in this package. */

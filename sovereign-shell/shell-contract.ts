@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.11
+ * Version: 1.12
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,30 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.12 (June 25, 2026) — GD-16 (APEX event types + analysis schema, pre-approved Session 17
+ *                       opening prompt + Integration Brief v1.25, per 13_APEX_Architecture.md
+ *                       §10). Added seven SovereignEventType members for the APEX analytics /
+ *                       reporting product: APEX_ANALYSIS_STARTED, APEX_ANALYSIS_COMPLETE,
+ *                       APEX_REPORT_GENERATED, APEX_DOSSIER_EXPORTED, APEX_PROVENANCE_VIEWED,
+ *                       REPORT_GENERATION_HELD, APEX_EVENT_RECEIVED. Added one HumanDecisionType
+ *                       member: REPORT_ATTESTATION (a human attesting an APEX report before
+ *                       export — Standing Constraint #4). Added three exported shared types for
+ *                       the apex.ai-assistant → apex.report-generator contract: ApexReportType,
+ *                       RiskFinding, ApexAnalysisOutput. All non-breaking additions (union
+ *                       widenings + new exported types). Impact assessment: the seven event
+ *                       types are defined only here (the two shell-contract copies) and emitted
+ *                       only by module-apex; no existing module emits them and no exhaustive
+ *                       switch over SovereignEventType exists. REPORT_ATTESTATION additionally
+ *                       propagates to the synced HumanDecisionType copy in
+ *                       sovereign-data/src/shared-types.ts (the type + the HUMAN_DECISION_TYPES
+ *                       runtime const, 15 -> 16 members) and its test, per Standing Constraint
+ *                       #11. SovereignEventType is NOT mirrored in shared-types (only
+ *                       SovereignRole / ClearanceLevel / HumanDecisionType are). NO AgentClass
+ *                       change — both APEX agents use existing classes (Analytical, Operational).
+ *                       Per Standing Constraint #11 the event-type taxonomy and the new decision
+ *                       type are synced to the Python logger (APPROVED_EVENT_TYPES +
+ *                       APPROVED_DECISION_TYPES) AFTER the GD-15 re-sync. Full tsc --noEmit
+ *                       clean; both shell-contract copies SHA-256 verified identical at v1.12.
  *   v1.11 (June 24, 2026) — GD-14 (AgentOS A2A messaging events, pre-approved Session 16
  *                       opening prompt). Added two SovereignEventType members for the AgentOS
  *                       agent-to-agent communication layer: AGENT_MESSAGE_SENT,
@@ -334,7 +358,17 @@ export type SovereignEventType =
   // GD-14 — June 24, 2026 (shell-contract v1.11) — two AgentOS A2A messaging event types
   // (agent-to-agent message bus). Emitted only by module-agentos.
   | "AGENT_MESSAGE_SENT"
-  | "AGENT_MESSAGE_RECEIVED";
+  | "AGENT_MESSAGE_RECEIVED"
+  // GD-16 — June 25, 2026 (shell-contract v1.12) — seven APEX analytics/reporting event types
+  // (program analysis, report + dossier generation, DC-3 provenance, sovereignHold gate, and
+  // the PPBE event-trigger stub). Emitted only by module-apex.
+  | "APEX_ANALYSIS_STARTED"
+  | "APEX_ANALYSIS_COMPLETE"
+  | "APEX_REPORT_GENERATED"
+  | "APEX_DOSSIER_EXPORTED"
+  | "APEX_PROVENANCE_VIEWED"
+  | "REPORT_GENERATION_HELD"
+  | "APEX_EVENT_RECEIVED";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -358,7 +392,10 @@ export type HumanDecisionType =
   // a human approving an agent task via VIGIL (TASK_APPROVAL) and a human cancelling a
   // task (TASK_CANCELLATION). Synced to sovereign-data/src/shared-types.ts.
   | "TASK_APPROVAL"
-  | "TASK_CANCELLATION";
+  | "TASK_CANCELLATION"
+  // GD-16 — June 25, 2026 (shell-contract v1.12) — a human attesting an APEX report (MSR/QPR
+  // or program dossier) before it is exported. Synced to sovereign-data/src/shared-types.ts.
+  | "REPORT_ATTESTATION";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;
@@ -446,6 +483,48 @@ export interface PriorPositionReconciliationEvent {
   decision_type: HumanDecisionType;  // from the Decision Matrix taxonomy
   workflow_step_id?: string;
 }
+
+
+// ------------------------------------------------------------
+// APEX ANALYSIS TYPES (shell-contract v1.12 — GD-16)
+// The contract between apex.ai-assistant (produces ApexAnalysisOutput) and
+// apex.report-generator (consumes it for deterministic document assembly).
+// Defined here so module-apex and any downstream consumer share one schema.
+// These are governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+/** The three APEX report kinds: Monthly Status Report, Quarterly Program Review, ad-hoc. */
+export type ApexReportType = "MSR" | "QPR" | "AD_HOC";
+
+/**
+ * A single risk finding produced by apex.ai-assistant. Carries the DC-3 provenance fields
+ * (source_data, baseline, trend, responsible_party) so every surfaced finding is traceable
+ * to the data that produced it.
+ */
+export type RiskFinding = {
+  flag_id: string;
+  description: string;
+  source_data: string;
+  baseline: string;
+  trend: "IMPROVING" | "STABLE" | "DEGRADING";
+  responsible_party: string;
+  severity: "P1" | "P2" | "P3";
+};
+
+/**
+ * The structured output of one apex.ai-assistant analysis run. `status_narrative` and each
+ * `recommendations` entry are plain prose (Gap 5). `schema_valid` is the agent's assertion
+ * that the output conforms; a schema_valid:false output is not surfaced for report assembly.
+ */
+export type ApexAnalysisOutput = {
+  program_id: string;
+  report_type: ApexReportType;
+  status_narrative: string;
+  risk_findings: RiskFinding[];
+  recommendations: string[];
+  schema_valid: boolean;
+  workflow_step_id: string;
+};
 
 
 // ============================================================

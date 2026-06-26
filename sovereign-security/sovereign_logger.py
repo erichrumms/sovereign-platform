@@ -132,6 +132,16 @@ APPROVED_EVENT_TYPES = frozenset({
     # GD-14 / shell-contract v1.11 — AgentOS A2A messaging events. Synced Session 16.
     "AGENT_MESSAGE_SENT",
     "AGENT_MESSAGE_RECEIVED",
+    # GD-16 / shell-contract v1.12 (June 25, 2026) — seven APEX analytics/reporting events
+    # (module-apex). Synced from shell-contract.ts SovereignEventType (Constraint #11) AFTER
+    # the GD-15 re-sync above. The set now holds 65 members, identical to shell-contract v1.12.
+    "APEX_ANALYSIS_STARTED",
+    "APEX_ANALYSIS_COMPLETE",
+    "APEX_REPORT_GENERATED",
+    "APEX_DOSSIER_EXPORTED",
+    "APEX_PROVENANCE_VIEWED",
+    "REPORT_GENERATION_HELD",
+    "APEX_EVENT_RECEIVED",
 })
 
 APPROVED_PRODUCTS = frozenset({
@@ -158,6 +168,9 @@ APPROVED_DECISION_TYPES = frozenset({
     "WORLD_MODEL_UPDATE",      # GD-7 / v1.5 — human-gated world-model update
     "TASK_APPROVAL",           # GD-9 / v1.7 — AgentOS task approval via VIGIL
     "TASK_CANCELLATION",       # GD-9 / v1.7 — AgentOS task cancellation
+    # GD-16 / shell-contract v1.12 (June 25, 2026) — APEX report attestation before export.
+    # Synced from shell-contract.ts HumanDecisionType (Constraint #11). 16 members total.
+    "REPORT_ATTESTATION",
 })
 
 APPROVED_AGENT_CLASSES = frozenset({

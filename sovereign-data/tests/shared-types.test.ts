@@ -20,9 +20,9 @@ describe("runtime enum mirrors", () => {
     expect(CLEARANCE_LEVELS).toEqual(["UNCLASSIFIED", "CUI", "SECRET", "TOP_SECRET"]);
   });
 
-  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (15 members, unique)", () => {
-    expect(HUMAN_DECISION_TYPES).toHaveLength(15);
-    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(15);
+  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (16 members, unique)", () => {
+    expect(HUMAN_DECISION_TYPES).toHaveLength(16);
+    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(16);
     expect(HUMAN_DECISION_TYPES).toContain("HUMAN_APPROVAL");
     expect(HUMAN_DECISION_TYPES).toContain("LABOR_ESCALATION_INITIATED");
     // GD-6 (shell-contract v1.4) — synced agent-action approval decision type.
@@ -33,6 +33,8 @@ describe("runtime enum mirrors", () => {
     // GD-9 (shell-contract v1.7) — synced AgentOS task approval + cancellation.
     expect(HUMAN_DECISION_TYPES).toContain("TASK_APPROVAL");
     expect(HUMAN_DECISION_TYPES).toContain("TASK_CANCELLATION");
+    // GD-16 (shell-contract v1.12) — synced APEX report attestation.
+    expect(HUMAN_DECISION_TYPES).toContain("REPORT_ATTESTATION");
   });
 
   it("HUMAN_DECISION_TYPES values are assignable to HumanDecisionType", () => {
