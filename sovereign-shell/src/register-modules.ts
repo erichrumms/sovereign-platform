@@ -23,6 +23,7 @@ import { lensModule } from "@sovereign/module-lens";
 import { cpmiModule } from "@sovereign/module-cpmi";
 import { agentosModule } from "@sovereign/module-agentos";
 import { nexusModule } from "@sovereign/module-nexus";
+import { apexModule } from "@sovereign/module-apex";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -60,4 +61,10 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // agentCards empty — NEXUS routes work to AgentOS-orchestrated agent classes, registers no
   // agents. module-nexus/NEXUS is pre-wired in the loader's MODULE_PRODUCT map.
   loader.register(nexusModule);
+  // APEX — the analytics / reporting product (primary product, Stage 5a), scaffold + the three
+  // screens + GD-16 schema (Session 17). Role gate minimumRole PLATFORM_ADMIN → the loader's
+  // fail-closed policy admits PLATFORM_ADMIN/SYSTEM_ADMIN only. Registers apex.ai-assistant
+  // (Analytical) and apex.report-generator (Operational), both in Agent_Identity_Standard.md
+  // (Constraint #10). module-apex/APEX is pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(apexModule);
 }

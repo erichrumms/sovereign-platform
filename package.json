@@ -14,6 +14,7 @@
     "module-cpmi",
     "module-agentos",
     "module-nexus",
+    "module-apex",
     "e2e"
   ],
   "scripts": {
@@ -28,6 +29,7 @@
     "test:cpmi": "npm run test --workspace @sovereign/module-cpmi",
     "test:agentos": "npm run test --workspace @sovereign/module-agentos",
     "test:nexus": "npm run test --workspace @sovereign/module-nexus",
+    "test:apex": "npm run test --workspace @sovereign/module-apex",
     "test:e2e": "npm run test --workspace @sovereign/e2e"
   }
 }
