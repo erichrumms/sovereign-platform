@@ -82,13 +82,32 @@ export function ClassificationBoundaryBanner({ operatorName }: { operatorName: s
 }
 
 // ── Shared content tokens (Category 3 — substantive content) ──────────────────────────
+// The APEX page canvas is an explicit light slate (#f1f5f9) so substantive content never
+// renders on an unknown/dark shell background — the Walkthrough B Gap 1/2 contrast finding.
+// Substantive content sits inside white `contentCardStyle` cards (the approved GateRunnerPanel
+// pattern), giving every screen the same guaranteed dark-text-on-white legibility.
 export const rootStyle: CSSProperties = {
   fontFamily: "system-ui, sans-serif",
   padding: 32,
   color: "#0f172a",
+  background: "#f1f5f9",
   height: "100%",
   boxSizing: "border-box",
   overflow: "auto",
+};
+
+/**
+ * A white substantive-content card (Category 3). Matches the GateRunnerPanel gate-card design —
+ * white background, light border, rounded — so program data, risk findings, and report sections
+ * always render as dark text on white regardless of the shell canvas behind APEX.
+ */
+export const contentCardStyle: CSSProperties = {
+  padding: "16px 18px",
+  background: "#ffffff",
+  border: "1px solid #e2e8f0",
+  borderRadius: 10,
+  marginBottom: 14,
+  maxWidth: 940,
 };
 export const titleStyle: CSSProperties = { margin: "0 0 4px", fontSize: 22 };
 export const subtitleStyle: CSSProperties = { margin: 0, color: "#475569" };

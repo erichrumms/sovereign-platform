@@ -20,6 +20,7 @@ import {
   Gate1Banner,
   ClassificationBoundaryBanner,
   rootStyle,
+  contentCardStyle,
   titleStyle,
   subtitleStyle,
   sectionHeadingStyle,
@@ -73,12 +74,15 @@ export function PortfolioDashboard({ ctx, adapter, onOpenProgram, onExportDossie
       <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
-      <p style={rollupStyle} data-category="3-content">
-        This portfolio contains {programs.length} programs. {atRisk === 0 ? "No programs are currently at risk" : `${atRisk} ${atRisk === 1 ? "program is" : "programs are"} at risk`}, {offTrack === 0 ? "and none are off track" : `${offTrack} ${offTrack === 1 ? "program is" : "programs are"} off track`}. There are {openFlags} open risk {openFlags === 1 ? "flag" : "flags"} across the portfolio.
-      </p>
+      <div style={contentCardStyle} data-category="3-content">
+        <p style={rollupStyle}>
+          This portfolio contains {programs.length} programs. {atRisk === 0 ? "No programs are currently at risk" : `${atRisk} ${atRisk === 1 ? "program is" : "programs are"} at risk`}, {offTrack === 0 ? "and none are off track" : `${offTrack} ${offTrack === 1 ? "program is" : "programs are"} off track`}. There are {openFlags} open risk {openFlags === 1 ? "flag" : "flags"} across the portfolio.
+        </p>
+      </div>
 
-      <h2 style={sectionHeadingStyle}>Programs</h2>
-      <table style={tableStyle}>
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Programs</h2>
+        <table style={tableStyle}>
         <thead>
           <tr>
             <th style={thStyle}>Program</th>
@@ -112,7 +116,8 @@ export function PortfolioDashboard({ ctx, adapter, onOpenProgram, onExportDossie
             );
           })}
         </tbody>
-      </table>
+        </table>
+      </div>
     </section>
   );
 }

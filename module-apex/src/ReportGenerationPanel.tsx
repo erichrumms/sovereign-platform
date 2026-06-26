@@ -21,6 +21,7 @@ import { useApexAnalysis } from "./useApexAnalysis";
 import { useReportGenerator } from "./useReportGenerator";
 import {
   rootStyle,
+  contentCardStyle,
   titleStyle,
   subtitleStyle,
   sectionHeadingStyle,
@@ -67,6 +68,7 @@ export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelPro
       <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
+      <div style={contentCardStyle}>
       <div style={formStyle}>
         <label style={labelStyle}>
           Report type
@@ -88,6 +90,7 @@ export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelPro
           {analysis.status === "running" ? "Generating…" : "Generate Report"}
         </button>
       </div>
+      </div>
 
       {gen.hold?.held ? (
         <StatusNotice label="Report generation is paused.">{gen.hold.reason}</StatusNotice>
@@ -105,7 +108,7 @@ export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelPro
       ) : null}
 
       {gen.report ? (
-        <div data-category="3-content">
+        <div style={contentCardStyle} data-category="3-content">
           <h2 style={sectionHeadingStyle}>{gen.report.title}</h2>
           {gen.report.sections.map((s) => (
             <div key={s.heading}>

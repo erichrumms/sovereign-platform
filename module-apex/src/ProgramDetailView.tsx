@@ -19,6 +19,7 @@ import type { ProvenanceRecord } from "./apex-contract";
 import { ProvenancePanel } from "./ProvenancePanel";
 import {
   rootStyle,
+  contentCardStyle,
   titleStyle,
   subtitleStyle,
   sectionHeadingStyle,
@@ -89,87 +90,97 @@ export function ProgramDetailView({ ctx, adapter, programId, onExportDossier, on
         Export Dossier
       </button>
 
-      <h2 style={sectionHeadingStyle}>Program Status</h2>
-      <p style={bodyTextStyle}>{program.status_narrative}</p>
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Program Status</h2>
+        <p style={bodyTextStyle}>{program.status_narrative}</p>
 
-      <h2 style={sectionHeadingStyle}>Objectives</h2>
-      <ul style={listStyle}>
-        {program.objectives.map((o, i) => (
-          <li key={i} style={liStyle}>{o}</li>
-        ))}
-      </ul>
-
-      <h2 style={sectionHeadingStyle}>Milestones</h2>
-      <ul style={listStyle}>
-        {program.milestones.map((m, i) => (
-          <li key={i} style={liStyle}><strong>{m.name}.</strong> {m.status_narrative}</li>
-        ))}
-      </ul>
-
-      <h2 style={sectionHeadingStyle}>Risk Register</h2>
-      {program.risk_flags.length === 0 ? (
-        <p style={bodyTextStyle}>There are no open risk flags for this program.</p>
-      ) : (
+        <h2 style={sectionHeadingStyle}>Objectives</h2>
         <ul style={listStyle}>
-          {program.risk_flags.map((flag) => (
-            <li key={flag.flag_id} style={liStyle}>
-              <button type="button" onClick={() => openProvenance(flag.flag_id, flag.provenance)} style={flagBtnStyle}>
-                {flag.summary} <span style={traceHintStyle}>(Priority {flag.severity.slice(1)} — view source data)</span>
-              </button>
-            </li>
+          {program.objectives.map((o, i) => (
+            <li key={i} style={liStyle}>{o}</li>
           ))}
         </ul>
-      )}
+
+        <h2 style={sectionHeadingStyle}>Milestones</h2>
+        <ul style={listStyle}>
+          {program.milestones.map((m, i) => (
+            <li key={i} style={liStyle}><strong>{m.name}.</strong> {m.status_narrative}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Risk Register</h2>
+        {program.risk_flags.length === 0 ? (
+          <p style={bodyTextStyle}>There are no open risk flags for this program.</p>
+        ) : (
+          <ul style={listStyle}>
+            {program.risk_flags.map((flag) => (
+              <li key={flag.flag_id} style={liStyle}>
+                <button type="button" onClick={() => openProvenance(flag.flag_id, flag.provenance)} style={flagBtnStyle}>
+                  {flag.summary} <span style={traceHintStyle}>(Priority {flag.severity.slice(1)} — view source data)</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {provenance ? <ProvenancePanel record={provenance} onClose={() => setProvenance(null)} /> : null}
 
-      <h2 style={sectionHeadingStyle}>Reasoning Chain History</h2>
-      {reasoning.length === 0 ? (
-        <p style={bodyTextStyle}>No reasoning chains have been recorded for this program yet.</p>
-      ) : (
-        <ul style={listStyle}>
-          {reasoning.map((r, i) => (
-            <li key={i} style={liStyle}>
-              <button type="button" onClick={() => setExpanded(expanded === i ? null : i)} style={expandBtnStyle}>
-                {new Date(r.recorded_at).toISOString().slice(0, 10)} — {expanded === i ? "hide detail" : "show detail"}
-              </button>
-              {expanded === i ? (
-                <p style={{ ...bodyTextStyle, marginTop: 6 }}>
-                  Recommendation: {r.recommendation} This output was served from the {r.tier} tier and{" "}
-                  {r.schema_valid ? "passed schema validation." : "did not pass schema validation."}
-                </p>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Reasoning Chain History</h2>
+        {reasoning.length === 0 ? (
+          <p style={bodyTextStyle}>No reasoning chains have been recorded for this program yet.</p>
+        ) : (
+          <ul style={listStyle}>
+            {reasoning.map((r, i) => (
+              <li key={i} style={liStyle}>
+                <button type="button" onClick={() => setExpanded(expanded === i ? null : i)} style={expandBtnStyle}>
+                  {new Date(r.recorded_at).toISOString().slice(0, 10)} — {expanded === i ? "hide detail" : "show detail"}
+                </button>
+                {expanded === i ? (
+                  <p style={{ ...bodyTextStyle, marginTop: 6 }}>
+                    Recommendation: {r.recommendation} This output was served from the {r.tier} tier and{" "}
+                    {r.schema_valid ? "passed schema validation." : "did not pass schema validation."}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <h2 style={sectionHeadingStyle}>Governance Decisions</h2>
-      {decisions.length === 0 ? (
-        <p style={bodyTextStyle}>No human governance decisions have been logged against this program yet.</p>
-      ) : (
-        <ul style={listStyle}>
-          {decisions.map((d, i) => (
-            <li key={i} style={liStyle}>
-              On {new Date(d.decided_at).toISOString().slice(0, 10)}, {d.actor_name} recorded a {d.outcome} decision: {d.note}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Governance Decisions</h2>
+        {decisions.length === 0 ? (
+          <p style={bodyTextStyle}>No human governance decisions have been logged against this program yet.</p>
+        ) : (
+          <ul style={listStyle}>
+            {decisions.map((d, i) => (
+              <li key={i} style={liStyle}>
+                On {new Date(d.decided_at).toISOString().slice(0, 10)}, {d.actor_name} recorded a {d.outcome} decision: {d.note}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <h2 style={sectionHeadingStyle}>Agent Task History</h2>
-      {tasks.length === 0 ? (
-        <p style={bodyTextStyle}>No agent tasks have been created for this program yet.</p>
-      ) : (
-        <ul style={listStyle}>
-          {tasks.map((t) => (
+      <div style={contentCardStyle} data-category="3-content">
+        <h2 style={sectionHeadingStyle}>Agent Task History</h2>
+        {tasks.length === 0 ? (
+          <p style={bodyTextStyle}>No agent tasks have been created for this program yet.</p>
+        ) : (
+          <ul style={listStyle}>
+            {tasks.map((t) => (
             <li key={t.task_id} style={liStyle}>
               {t.title}. Approval status: {t.approval_status}
               {t.approved_by ? ` (approved by ${t.approved_by})` : ""}. {t.completed ? "Completed." : "Not yet completed."}
             </li>
-          ))}
-        </ul>
-      )}
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }
