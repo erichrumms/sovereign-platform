@@ -1,0 +1,153 @@
+SESSION 19 OPENING PROMPT
+SOVEREIGN Platform — APEX Completion: Gap Fixes + Contrast Audit + DC-3 Enhancement
+Date: June 26, 2026
+
+SESSION HEADER
+Session number:       19
+HEAD at session open: cd10267
+Integration Brief:    v1.27
+Shell contract:       v1.12
+Shell contract SHA:   61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+Total tests at open:  1035 (893 JS + 142 Python)
+Monorepo root:        ~/Developer/sovereign-platform/
+
+This is an AUTONOMOUS session. Read all context documents, confirm each by name, restate the done condition, then begin building immediately. Do not wait for approval between deliverables. Do not stop unless you hit a governance-blocked item — document it in the handoff and continue.
+
+STEP 1 — CONFIRM CONTEXT DOCUMENTS
+Confirm each of the following by name before proceeding:
+Governance: Integration Brief v1.27, Agent_Identity_Standard.md, SOVEREIGN_Agent_to_Agent_Briefing.md, AGENT_REFERENCE.md
+Shell contract: sovereign-shell/shell-contract.ts (v1.12)
+Architecture specs: docs/13_APEX_Architecture.md, docs/14_HumanReviewerStandard.md, docs/15_FLOWPATH_Architecture.md
+Prior session: SOVEREIGN_Session18_Handoff.md
+APEX source: GateRunnerPanel.tsx, ApexApp.tsx, banners.tsx, PortfolioDashboard.tsx, ProgramDetailView.tsx, ReportGenerationPanel.tsx, ProvenancePanel.tsx, apex-contract.ts, apex-analysis.ts, synthetic-world-model.ts, index.ts
+APEX tests: ProvenancePanel.test.tsx, GateRunnerPanel.test.tsx, ProgramDetailView.test.tsx
+Shared: shell-contract.ts (root), sovereign-data/src/shared-types.ts
+E2E: e2e/tests/pipeline.test.tsx
+
+STEP 2 — VERIFY SHELL CONTRACT
+shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts
+Both must match: 61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+If either copy does not match, STOP.
+
+CRITICAL CODEBASE FACTS
+Real types: SovereignRequestContext / SovereignLLMResponse / ClearanceLevel
+LLM calls: createSovereignClient() only
+ESM/Vite: module-apex uses import.meta.env via anthropic-key.ts — NOT process.env
+SovereignEventType: NOT mirrored in sovereign-data/src/shared-types.ts
+sovereignHold(): does NOT exist — use ctx.governance.isOnHold(product)
+APEX minimumRole: PLATFORM_ADMIN
+GD-10: UNCLASSIFIED only
+Shell-contract v1.12 UNCHANGED this session — no contract change authorized
+
+GATE 3 DECISION TYPE (Item 56):
+Current: GateRunnerPanel.tsx attestGate3 logs decision_type REPORT_ATTESTATION
+Correct: GATE_3_ATTESTATION (already in contract GD-7, used by CPMI gate panel)
+Fix: one-line change in attestGate3 + update the test assertion
+No shell-contract change, no new GD required — both types already exist
+
+DC-3 PROVENANCE PANEL (Gap 3 Walkthrough B):
+Current: ProvenancePanel shows 5 fields (source, baseline, date, trend, party)
+Missing: current_actual_value and variance_from_baseline
+Fix: extend ProvenanceRecord in apex-contract.ts, update panel rendering,
+update synthetic world model data, update tests
+If adding these fields requires touching RiskFinding in shell-contract.ts: STOP
+If fields stay within apex-contract.ts ProvenanceRecord only: proceed
+
+NO SHELL-CONTRACT CHANGES AUTHORIZED THIS SESSION.
+
+DONE CONDITION
+
+D1 — Gate 3 decision_type correction [REQUIRED]
+  GateRunnerPanel.tsx attestGate3: REPORT_ATTESTATION -> GATE_3_ATTESTATION
+  GateRunnerPanel.test.tsx: update assertion to match
+  All 91 module-apex tests pass
+  tsc --noEmit clean
+  Committed: "fix(apex): Gate 3 decision_type GATE_3_ATTESTATION (Item 56)"
+
+D2 — APEX contrast audit [REQUIRED]
+  Read all APEX screen files before touching any. Identify every contrast failure.
+  The CPMI-VRS Certification tab (GateRunnerPanel) has correct contrast via white
+  card backgrounds — apply this same card pattern to all other APEX screens.
+  Target screens: PortfolioDashboard, ProgramDetailView, ReportGenerationPanel.
+  Fix: section labels, body text, column headers, risk register entries,
+  reasoning chain entries, report section labels, report body text.
+  After fixing: all text readable without strain, Gap 5/6 confirmed on every screen.
+  All 91 module-apex tests pass. tsc clean.
+  Committed: "fix(apex): contrast audit — Walkthrough B Gap 1/2"
+
+D3 — DC-3 Provenance Panel: actual value and variance [REQUIRED]
+  Extend ProvenanceRecord in apex-contract.ts:
+    current_actual_value: string (e.g. "costs running at 66 percent of budget")
+    variance_from_baseline: string (e.g. "8 percentage points above planned 58
+      percent spend rate — unfavorable")
+  Update ProvenancePanel.tsx: render both new fields with plain-language labels:
+    "Current actual" and "Variance from plan"
+  Update synthetic-world-model.ts: populate both fields for all risk flags
+    on P-100, P-150, P-200, P-300 in plain prose matching existing descriptions
+  Update ProvenancePanel.test.tsx: assert both new fields render
+  If RiskFinding in shell-contract.ts needs new fields: STOP and document in handoff
+  All 91 module-apex tests pass. tsc clean.
+  Committed: "feat(apex): DC-3 provenance — actual value + variance (WB Gap 3)"
+
+D4 — Chart capability in report output [OPTIONAL — only if D1/D2/D3 complete]
+  Check workspace dependency tree before treating recharts as new.
+  If recharts available: add three visual indicators to ReportGenerationPanel
+  between status narrative and risk findings:
+    Chart 1 — Completion percentage: horizontal progress bar + plain-prose label
+      "This program is 62 percent complete."
+    Chart 2 — Cost variance indicator: actual vs planned with amber/green/neutral
+      styling. Label: "Actual cost is running 8 percent above the planned rate.
+      This is flagged as a Priority 2 risk."
+    Chart 3 — Milestone status summary: count by status (completed/at risk/missed)
+      Label: "2 milestones completed on schedule. 1 milestone is at risk."
+  Every chart has a plain-prose caption conveying same info as the visual (Gap 5).
+  Charts are Category 3 content — no special styling beyond report section (Gap 6).
+  At least 4 new tests covering chart rendering.
+  If charting unavailable without new production dependency: implement text-only
+    fallback with structured plain prose and document dependency choice in handoff.
+  All module-apex tests pass. tsc clean.
+  Committed: "feat(apex): DC-4 report charts — completion, cost variance, milestones"
+
+AUTONOMOUS OPERATION RULES
+MAY decide: CSS/styling for contrast fix (match GateRunnerPanel card pattern),
+  chart component structure, whether recharts or CSS-based visual for charts,
+  test structure for new assertions
+MUST stop and document: DC-3 requires shell-contract.ts RiskFinding changes,
+  DC-4 requires new production npm package, contrast fix requires structural
+  component changes affecting test intent, any fix causes tests to fail in ways
+  requiring test intent changes
+NEVER: modify shell-contract.ts, add agents/prompts, alter APEX upstream
+  read-only relationship, change Logger event types
+
+STANDING CONSTRAINTS — ALL 11
+1. No independent security/governance/audit systems
+2. No field-name divergence — ClearanceLevel not DataClassification
+3. No rewrite debt — connections are configuration changes
+4. Every human decision event carries decision_type
+5. No direct LLM API calls — createSovereignClient() only
+6. workflow_step_id on every Logger event
+7. Shell context frozen at eight exports
+8. shell-contract.ts v1.12 — NO changes this session
+9. 10 approved prompts — no new prompts
+10. 18 registered agents — no new agents
+11. Five synced copies — no propagation needed (no contract change)
+
+CLOSE REQUIREMENTS
+1. npm test — report JS count
+2. python -m pytest sovereign-security/ — report Python count
+3. npx tsc --noEmit — must be clean
+4. shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts — confirm v1.12 unchanged
+5. Commit all work per deliverable
+6. Produce SOVEREIGN_Session19_Handoff.md:
+   done condition traceability, SHA confirmation, commit hashes, test counts,
+   DC-3 spec reconciliation (ProvenanceRecord only vs shell-contract change),
+   DC-4 chart dependency assessment, update flags for Integration Brief v1.28:
+   test total, Item 56 CLOSED, WB Gap 1/2/3 CLOSED, DC-4 status, SHA unchanged
+7. Produce SBOM_Session19_Update.md:
+   test totals, components changed, any new dependency from DC-4
+8. git add SOVEREIGN_Session19_Handoff.md SBOM_Session19_Update.md
+   git commit -m "close: Session 19 handoff + SBOM update" && git push
+
+BEGIN NOW.
+Build D1 -> D2 -> D3 -> D4 without stopping.
+D1, D2, and D3 are required. D4 is optional after D3.
