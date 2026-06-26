@@ -49,9 +49,15 @@ export const PR_APEX_001 = {
 export type ProvenanceTrend = "IMPROVING" | "STABLE" | "DEGRADING" | "UNKNOWN";
 
 /**
- * The five DC-3 fields for any figure, status, or flag APEX surfaces. Generic by
+ * The DC-3 fields for any figure, status, or flag APEX surfaces. Generic by
  * `entity_type` so the provenance panel renders obligation records, evaluation findings,
  * or world-model flags through one component without hardcoding world-model field names.
+ *
+ * `current_actual_value` and `variance_from_baseline` (Session 19, Gap 3 from Walkthrough B)
+ * make the drill-down show not just what was expected (baseline) but what was actually
+ * measured and how far it diverges — the difference between "I can see the flag" and "I can
+ * defend the flag". These two fields live on this module-local type only; the governance-frozen
+ * shell-contract `RiskFinding` is unchanged (no shell-contract change, no GD).
  */
 export interface ProvenanceRecord {
   /** What kind of thing this provenance describes, e.g. "World Model risk flag". */
@@ -62,6 +68,10 @@ export interface ProvenanceRecord {
   source_data: string;
   /** DC-3 #2 — the expected/target value when the measurement was taken. */
   baseline: string;
+  /** DC-3 #2a — the actual measured value at the most recent update (plain prose). */
+  current_actual_value: string;
+  /** DC-3 #2b — the calculated difference from baseline, in plain prose, with direction. */
+  variance_from_baseline: string;
   /** DC-3 #3 — when the underlying data was last refreshed (ISO date or "Unknown"). */
   last_updated: string;
   /** DC-3 #4 — direction of travel. A single data point is not actionable; a trend is. */

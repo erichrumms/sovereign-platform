@@ -33,6 +33,8 @@ export function ProvenancePanel({ record, onClose }: ProvenancePanelProps): JSX.
   const rows: Array<{ label: string; value: string }> = [
     { label: "Source record", value: record.source_data },
     { label: "Baseline (expected value)", value: record.baseline },
+    { label: "Current actual", value: record.current_actual_value },
+    { label: "Variance from plan", value: record.variance_from_baseline },
     { label: "Date last updated", value: record.last_updated },
     { label: "Trend over time", value: trendText(record.trend) },
     { label: "Responsible party", value: record.responsible_party },
