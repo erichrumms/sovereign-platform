@@ -1,6 +1,6 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
 ## For Any Claude Instance Opening a SOVEREIGN Session
-## Updated June 26, 2026 — reflects Session 18 close, APEX complete, Walkthrough B ready
+## Updated June 26, 2026 — reflects Session 19 close, APEX fully complete, Session 20 unblocked
 
 ---
 
@@ -20,177 +20,126 @@ information. One question at a time. Never assume he knows where a file is.
 SOVEREIGN is a governed, AI-aligned operations platform for enterprise and federal
 organizations — six integrated core products (NEXUS, CPMI, APEX, FLOWPATH, AgentOS,
 ARIA Suite) plus four companion modules (COUNSEL, SCRIBE, LENS, VIGIL) and a future
-seventh product called the Intelligence Layer that must never be lost. Every current
-product builds toward it.
+seventh product called the Intelligence Layer that must never be lost.
 
-Three non-negotiable design outcomes govern every build decision: integration
-reliability, operational efficiency, and end-to-end security observability.
+Three non-negotiable design outcomes: integration reliability, operational efficiency,
+and end-to-end security observability.
 
 ---
 
-## Current Build State — As of Session 18 (June 26, 2026)
+## Current Build State — As of Session 19 (June 26, 2026)
 
 | Item | State |
 |---|---|
-| Last completed session | Session 18 (autonomous, 17 min) |
-| HEAD / origin/main | `aab61ac` |
+| Last completed session | Session 19 (autonomous, 13 min) |
+| HEAD / origin/main | `b4d0a65` |
 | shell-contract.ts | **v1.12 · SHA `61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3`** |
-| shell-contract status | **UNCHANGED through Session 18** |
-| Integration Brief | v1.27 |
-| SBOM Registry | v1.19 |
-| JS tests passing | 893 (+ 142 Python = 1035 total) |
+| Next shell-contract change | GD-18 · Session 20 D1 · v1.12 → v1.13 |
+| Integration Brief | v1.28 |
+| SBOM Registry | v1.20 |
+| JS tests passing | 899 (+ 142 Python = 1041 total) |
 | Stage 1–4 | COMPLETE |
-| Stage 5a (APEX) | **COMPLETE — Walkthrough B READY** |
+| Stage 5a (APEX) | **COMPLETE — all Walkthrough B follow-ups closed** |
+| Walkthrough B | **COMPLETE — June 26, 2026** |
+| Stage 5b (FLOWPATH) | **Session 20 — NEXT — fully unblocked** |
 | All data | SYNTHETIC — Governance Clock not activated |
 
-**Session 18 deliverables — ALL COMPLETE:**
-- D1: GD-17 — APPROVED_PRODUCTS companion re-sync (COUNSEL/SCRIBE/LENS/VIGIL added; Item 55 closed)
-- D2: APEX CPMI-VRS Gates tab — fifth tab with GateRunnerPanel; Gates 1/2 auto-pass; Gate 3/4 await Project Principal during Walkthrough B
-- D3: NEXUS→AgentOS live backing — `createAgentOSBackedPort` (module-agentos); UI convergence deferred (shell-contract decision needed)
-- D4: E2E Walkthrough B scenario — Scenario 5 (e2e 4→5)
-- D5: Gap 5/6 scan — no fixes required; all APEX screens compliant
+**Session 19 deliverables:**
+- D1: Item 56 — Gate 3 `GATE_3_ATTESTATION` (pre-session, verified closed)
+- D2: APEX contrast audit — white card pattern across all screens
+- D3: DC-3 provenance — actual value + variance added
+- D4: DC-4 report charts — completion bar, cost variance badge, milestone summary (CSS)
 
-**Next action: Walkthrough B** — Project Principal operates APEX in browser. Gate 3
-attestation and Gate 4 completion are the Project Principal's steps in the CPMI-VRS
-Certification tab. After Walkthrough B: Session 19.
+**Session 20 prerequisites — ALL COMPLETE:**
+- FLOWPATH Architecture Spec: `docs/15_FLOWPATH_Architecture.md` — committed `cd10267`
+- GD-18: pre-approved June 26, 2026
+- PR-FLOWPATH-001/002/003/004: all approved June 26, 2026
+- Six FLOWPATH agents: already registered in Agent_Identity_Standard.md
 
 ---
 
-## Shell Contract — v1.12 (UNCHANGED through Session 18)
+## Shell Contract — v1.12 (Session 20 advances to v1.13 via GD-18)
 
 | | Hash |
 |---|---|
 | **Current (v1.12)** | `61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3` |
-| Retired (v1.11) | `78709b213ff9976ecadd4066645a897ece55fb9b3ffb049b59dd02d19c0162db` |
+| Next (v1.13 — Session 20 D1) | TBD — record after GD-18 execution |
 
-Every session must verify both copies match the v1.12 hash before any build work begins.
-No shell-contract change was made in Session 18. The next authorized shell-contract
-change will be a future GD — likely related to the NEXUS→AgentOS shared task surface
-decision (Item 57).
-
----
-
-## Monorepo Location
-
-```
-~/Developer/sovereign-platform/        ← MONOREPO ROOT
-```
-
-**Absolute path:** `/Users/developmentsystem/Developer/sovereign-platform/`
-**GitHub remote:** `https://github.com/erichrumms/sovereign-platform.git`
-**Branch:** `main` · HEAD: `aab61ac`
-
-**Open Claude Code with:**
-```bash
-cd ~/Developer/sovereign-platform
-caffeinate -i claude --dangerously-skip-permissions
-```
-
----
-
-## The Two Claude Environments — Never Cross These
-
-**Claude Chat** — governance only. Authors documents, merges SBOMs, approves prompts,
-produces session opening prompts, authors architecture specs, runs walkthroughs. Never
-writes code.
-
-**Claude Code** — code only. Writes, tests, and commits code. Produces session handoff
-and SBOM update at close. Never authors governance documents.
-
-The Project Principal is the bridge.
+GD-18 adds: 10 FLOWPATH SovereignEventType members, WORKFLOW_APPROVAL +
+VALIDATION_SIGN_OFF to HumanDecisionType (16→18), AnalystWorkstyleProfile exported
+type, FLOWPATH to SovereignProduct.
 
 ---
 
 ## The Invariant Constraints
 
-1. No independent security, governance, or audit systems — use the platform's
-2. No shared entity field-name divergence from the data dictionary
+1. No independent security, governance, or audit systems
+2. No shared entity field-name divergence
 3. No rewrite debt — connections are configuration changes
 4. Every human decision event carries `decision_type`
 5. No direct Anthropic API calls — `createSovereignClient()` only
 6. `workflow_step_id` on every Logger event
 7. Shell context frozen at eight exports
-8. `shell-contract.ts` is a governance document — v1.12, SHA above. Changes require
-   governance decision, version increment, changelog, impact assessment, SHA-256
-   verification of both copies, and propagation to all synced shared-type copies
-9. All prompts registered before build — 10 APPROVED
-10. All agents registered before build — 18 registered (all AgentCards active)
-11. Five synced copies of shared artifacts — changes must propagate to all copies
+8. `shell-contract.ts` v1.12 — GD-18 pre-approved for Session 20 D1
+9. All prompts registered — **14 approved**
+10. All agents registered — **18 registered**
+11. Five synced copies — propagate all changes
 
-**Critical codebase facts — updated through Session 18:**
-- `sovereignHold()` does not exist — use `ctx.governance.isOnHold(product)` instead
-- ESM modules (module-cpmi, module-apex) use `import.meta.env` via isolated
-  `anthropic-key.ts` with jest stub — do NOT change to `process.env` in those modules
-- APEX `minimumRole` is `PLATFORM_ADMIN`
-- PPBE reserved field names (never use): `fiscal_year`, `lifecycle_cost_estimate`,
-  `obligation_plan`, `performance_baseline`
-- `createAgentOSBackedPort` (module-agentos) is the live NEXUS→AgentOS port — injectable
-  by configuration; NEXUS default still uses synthetic port pending shell-contract decision
-- **Gate 3 `decision_type` correction queued (Item 56):** APEX GateRunnerPanel logs
-  `REPORT_ATTESTATION` for Gate 3; correct type is `GATE_3_ATTESTATION` (already in
-  contract). One-line fix — Session 19 first deliverable.
+**Critical codebase facts updated through Session 19:**
+- module-flowpath uses `import.meta.env` / `anthropic-key.ts` pattern (same as module-apex)
+- FLOWPATH `minimumRole` is `AGENT_OPERATOR`
+- `AnalystWorkstyleProfile` is `data_classification: user` — analyst_id hashed, no admin path
+- **Approved contrast pattern:** white cards (`#ffffff`, `1px solid #e2e8f0`) on `#f1f5f9` canvas
+  — apply to every FLOWPATH screen from day one, not as a retrofit
+- Gate 3 attestation logs `GATE_3_ATTESTATION` (corrected in Session 19)
 
 ---
 
-## Open Governance Items — Priority Order for Session 19
+## UI Standard — Non-Negotiable (Project Principal directive)
 
-1. **Item 56** — Gate 3 `decision_type` correction (one line; first deliverable Session 19)
-2. **Item 57** — NEXUS→AgentOS shared task surface (shell-contract design decision)
-3. **PPBE six decisions** (D-P1 through D-P6) — Claude Chat governance session
-4. **Item 53** — AgentOS §5.2 evaluate gates spec section
-5. **Item 54** — evaluate.py cross-runtime adapter
+Every FLOWPATH screen is built to Gap 5 and Gap 6 standards from the first line of code.
+The white content card pattern is the approved pattern. Walkthrough C must find zero
+contrast gaps and zero Gap 5/6 failures. Any gap found at Walkthrough C is a build
+failure in the session that created it.
 
----
-
-## The Registered Agents (18 total — unchanged)
-
-All 18 AgentCards active. See Integration Brief v1.27 §18 for full registry.
-Key additions from Sessions 17–18: `apex.ai-assistant` (Analytical) and
-`apex.report-generator` (Operational) — both implemented and exercised by the Gates tab.
+Gap 5: all text readable in plain prose by a non-technical reviewer.
+Gap 6: three content categories visually distinct within five seconds.
+Approved pattern: white cards on light canvas — match the APEX Session 19 implementation.
 
 ---
 
-## The Approved Prompts (10 total — unchanged)
+## Open Governance Items — Priority for Session 20
 
-PR-COUNSEL-001/002/003 · PR-SCRIBE-001 · PR-SCRIBE-004 · PR-VIGIL-001 ·
-PR-VIGIL-002 · PR-LENS-001 · PR-CPMI-001 · PR-APEX-001
+1. **GD-18** — execute as Session 20 first deliverable (pre-approved)
+2. **FLOWPATH build** — Screens 1, 2, 4 (Session 20); Screen 3 + CPMI-VRS (Session 21)
+3. **Item 57** — NEXUS→AgentOS shared task surface shell-contract decision
+4. **PPBE six decisions** (D-P1 through D-P6) — Claude Chat governance session
+5. **Items 58/59** — dossier file export, CSV format (deferred, future session)
 
 ---
 
-## What Makes a Session Go Badly — and How to Prevent It
+## Approved Prompts (14 total)
+
+PR-COUNSEL-001/002/003 · PR-SCRIBE-001 · PR-SCRIBE-004 · PR-VIGIL-001 · PR-VIGIL-002 ·
+PR-LENS-001 · PR-CPMI-001 · PR-APEX-001 ·
+**PR-FLOWPATH-001 · PR-FLOWPATH-002 · PR-FLOWPATH-003 · PR-FLOWPATH-004**
+(all FLOWPATH prompts approved June 26, 2026)
+
+---
+
+## What Makes a Session Go Badly
 
 | Problem | Prevention |
 |---|---|
-| Wrong shell-contract hash | Verify v1.12 hash `61594a69…46dfe3` before any build work |
-| Using `process.env` in ESM module | module-cpmi / module-apex use `import.meta.env` via `anthropic-key.ts` |
-| Calling `sovereignHold()` | Doesn't exist — use `ctx.governance.isOnHold(product)` |
-| Using PPBE reserved field names | Never: `fiscal_year`, `lifecycle_cost_estimate`, `obligation_plan`, `performance_baseline` |
-| Wiring NEXUS→AgentOS UI without a shell decision | Live backing exists; UI convergence needs Item 57 resolved first |
-| Prompt runs before approval | Register as PENDING, approve in Claude Chat, never self-approve |
+| Wrong shell-contract hash | Verify v1.12 before Session 20 D1; v1.13 after GD-18 |
+| FLOWPATH screens with contrast issues | Apply white card pattern from line one — not a retrofit |
+| `process.env` in ESM module | module-flowpath uses `import.meta.env` via `anthropic-key.ts` |
+| AnalystWorkstyleProfile privacy breach | `data_classification: user`, analyst_id hashed, no admin path |
+| PPBE reserved field names | Never: `fiscal_year`, `lifecycle_cost_estimate`, `obligation_plan`, `performance_baseline` |
 | Session closes without handoff | Non-negotiable — always produce the handoff |
-| Shell-contract change without full governance | Version increment + changelog + impact assessment + dual-copy SHA + Constraint #11 |
-
----
-
-## The Post-Session Rhythm — Every Session
-
-```
-Claude Code closes → handoff + SBOM committed + pushed
-        ↓
-Project Principal copies close artifacts → uploads to Claude Chat
-        ↓
-Claude Chat produces → merged SBOM + updated Integration Brief
-                     + updated Agent-to-Agent Briefing + system prompt (if hash changed)
-        ↓
-Project Principal downloads → copies Brief to monorepo root
-                            → commits + pushes → places files in iCloud
-        ↓
-Next session → gather script → Claude Code → context paste → opening prompt
-```
 
 ---
 
 *SOVEREIGN Platform · Agent-to-Agent Briefing · Updated June 26, 2026*
-*Supersedes the June 25, 2026 version — Session 18 complete, APEX Stage 5a complete,
-Walkthrough B ready, shell-contract v1.12 unchanged*
+*Supersedes June 26, 2026 (Session 18) version*
 *Pre-Decisional · Internal Working Document*
