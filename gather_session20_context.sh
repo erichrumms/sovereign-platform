@@ -39,7 +39,7 @@ append_file "PPBE Integration Architecture (reference)" "$REPO/SOVEREIGN_PPBE_In
 append_file "Session 19 Handoff" "$REPO/SOVEREIGN_Session19_Handoff.md"
 append_file "sovereign-data shared-types (GD-18 sync)" "$REPO/sovereign-data/src/shared-types.ts"
 append_file "sovereign_logger.py (GD-18 sync)" "$REPO/sovereign-security/sovereign_logger.py"
-append_file "sovereign-shell module-loader" "$REPO/sovereign-shell/src/module-loader.ts"
+append_file "sovereign-shell module-loader" "$REPO/sovereign-shell/src/module-loader/index.ts"
 append_file "APEX banners.tsx (approved card pattern)" "$REPO/module-apex/src/banners.tsx"
 append_file "APEX ApexApp.tsx (tab structure reference)" "$REPO/module-apex/src/ApexApp.tsx"
 append_file "APEX index.ts (module contract reference)" "$REPO/module-apex/src/index.ts"
