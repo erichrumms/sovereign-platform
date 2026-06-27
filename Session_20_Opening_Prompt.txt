@@ -1,0 +1,219 @@
+SESSION 20 OPENING PROMPT
+SOVEREIGN Platform — Stage 5b: FLOWPATH Scaffold + GD-18 + Screens 1, 2, 4 + E2E
+Date: June 26, 2026
+
+SESSION HEADER
+Session number:       20
+HEAD at session open: ea23868
+Integration Brief:    v1.28
+Shell contract:       v1.12 at open -> v1.13 after D1 (GD-18)
+Shell contract SHA:   61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+Total tests at open:  1041 (899 JS + 142 Python)
+Monorepo root:        ~/Developer/sovereign-platform/
+
+This is an AUTONOMOUS session. Read all context documents, confirm each by name, restate the done condition, then begin building immediately. Do not wait for approval between deliverables. Do not stop unless you hit a governance-blocked item.
+
+STEP 1 - CONFIRM CONTEXT DOCUMENTS
+Governance: Integration Brief v1.28, Agent_Identity_Standard.md (confirm six FLOWPATH agents registered), SOVEREIGN_Agent_to_Agent_Briefing.md, AGENT_REFERENCE.md
+Shell contract: sovereign-shell/shell-contract.ts (v1.12), shell-contract.ts (root)
+Architecture specs: docs/15_FLOWPATH_Architecture.md (PRIMARY - read in full before any build work), docs/14_HumanReviewerStandard.md, docs/13_APEX_Architecture.md, docs/11_AgentOS_Architecture.md, SOVEREIGN_PPBE_Integration_Architecture_Draft1.md
+Prior session: SOVEREIGN_Session19_Handoff.md
+GD-18 sync targets: sovereign-data/src/shared-types.ts, sovereign-security/sovereign_logger.py, sovereign-shell/src/module-loader.ts
+UI pattern reference: module-apex/src/banners.tsx, module-apex/src/ApexApp.tsx, module-apex/src/index.ts
+E2E: e2e/tests/pipeline.test.tsx
+
+Read docs/15_FLOWPATH_Architecture.md in full before anything else. Pay particular attention to: §5 (DC-5/DC-6/DC-7), §5a (individual workstyle trust design + prohibited questions), §6 (screens 1/2/4 UI structure), §8 (GD-18 event types), §12 (Gap 5/6 compliance), §13 (codebase facts).
+
+STEP 2 - VERIFY SHELL CONTRACT
+shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts
+Both must match: 61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3
+After D1 re-verify both copies match the new v1.13 hash. Record v1.13 hash in handoff.
+
+STEP 3 - VERIFY FLOWPATH AGENT REGISTRATION
+Confirm Agent_Identity_Standard.md contains all six: flowpath.coordinator, flowpath.interviewer, flowpath.mapper, flowpath.validator, flowpath.analyzer, flowpath.domain-translator. All registered May 2026. If any absent: STOP.
+
+CRITICAL CODEBASE FACTS
+Real types: SovereignRequestContext / SovereignLLMResponse / ClearanceLevel
+LLM calls: createSovereignClient() only
+ESM/Vite: module-flowpath uses import.meta.env via anthropic-key.ts — NOT process.env (same pattern as module-cpmi and module-apex)
+SovereignEventType: NOT mirrored in sovereign-data/src/shared-types.ts
+sovereignHold(): does NOT exist — use ctx.governance.isOnHold(product)
+FLOWPATH minimumRole: AGENT_OPERATOR
+GD-10: UNCLASSIFIED only
+PPBE reserved field names (never use): fiscal_year, lifecycle_cost_estimate, obligation_plan, performance_baseline
+
+UI STANDARD — NON-NEGOTIABLE (Project Principal directive):
+Every FLOWPATH screen built to Gap 5 and Gap 6 from the FIRST line of code. Apply the approved white card pattern immediately — NOT as a retrofit. Approved pattern (from module-apex/src/banners.tsx): page canvas #f1f5f9, content cards #ffffff border 1px solid #e2e8f0 border-radius 8px. Export contentCardStyle from FLOWPATH banners.tsx. No screen passes its done condition without Gap 5/6 verified. Walkthrough C must find zero contrast gaps. Zero Gap 5/6 failures.
+
+PRIVACY - ANALYST WORKSTYLE:
+AnalystWorkstyleProfile is data_classification: user without exception. analyst_id hashed before logging — never cleartext. No admin read path. Trust statement in PR-FLOWPATH-002 delivered verbatim before first question every session no exceptions.
+
+INDIVIDUAL ELICITATION PROHIBITED QUESTIONS:
+Never ask: describe all steps / how long does it take / what would you do differently / how do you compare to other analysts. flowpath.interviewer individual mode asks about expertise and preference only.
+
+ACTIVE GOVERNANCE DECISIONS — PRE-APPROVED
+
+GD-18 — Shell-Contract v1.12 -> v1.13 (PRE-APPROVED June 26, 2026):
+Execute as D1 before any FLOWPATH build work.
+
+New SovereignEventType (10): FLOWPATH_SESSION_STARTED, FLOWPATH_SESSION_COMPLETE, FLOWPATH_ARTIFACT_PRODUCED, FLOWPATH_ARTIFACT_APPROVED, FLOWPATH_GATE_FAILED, FLOWPATH_VOCABULARY_CAPTURED, FLOWPATH_DATASOURCE_REGISTERED, FLOWPATH_VALIDATION_CADENCE_SET, FLOWPATH_WORKSTYLE_ELICITED, FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT
+
+New HumanDecisionType (2) — propagate to sovereign-data/src/shared-types.ts: WORKFLOW_APPROVAL, VALIDATION_SIGN_OFF. HumanDecisionType 16 -> 18 members. Update runtime array and test assertion.
+
+New exported type: AnalystWorkstyleProfile (see FLOWPATH spec §8 for full schema)
+
+New SovereignProduct: FLOWPATH — propagate to sovereign_logger.py APPROVED_PRODUCTS (10 -> 11)
+
+Constraint #11 propagation:
+  shell-contract.ts root — update
+  sovereign-shell/shell-contract.ts — byte-identical diff verify
+  sovereign-data/src/shared-types.ts — WORKFLOW_APPROVAL + VALIDATION_SIGN_OFF
+  sovereign-shell/src/module-loader.ts — no AgentClass change, verify unchanged
+  sovereign-security/sovereign_logger.py — 10 new event types + 2 decision types + FLOWPATH to APPROVED_PRODUCTS
+
+SHA-256 verify both copies after change. Record new v1.13 hash in handoff.
+No other shell-contract changes authorized this session.
+
+DONE CONDITION
+
+D1 — GD-18 Shell-Contract v1.12 -> v1.13 [REQUIRED]
+  All GD-18 changes applied. AnalystWorkstyleProfile compiles clean.
+  sovereign-data shared-types updated (16->18 HumanDecisionType, test updated).
+  sovereign_logger.py updated (10 events + 2 decisions + FLOWPATH product).
+  142 Python tests pass. SHA-256 both copies identical. Record v1.13 hash.
+  tsc clean (shell + sovereign-data).
+  Committed: "GD-18: shell-contract v1.13 — FLOWPATH event types + workstyle entity"
+
+D2 — FLOWPATH Scaffold [REQUIRED]
+  module-flowpath/ created with standard SOVEREIGN module structure.
+  package.json + tsconfig.json following module-apex ESM/Vite pattern.
+  anthropic-key.ts + tests/__mocks__/anthropic-key.ts stub created.
+  All six AgentCards activated (minimumRole: AGENT_OPERATOR).
+  Four prompt files created and marked APPROVED:
+    module-flowpath/prompts/org_elicitation_system.md (PR-FLOWPATH-001)
+    module-flowpath/prompts/individual_elicitation_system.md (PR-FLOWPATH-002)
+    module-flowpath/prompts/completeness_gate_system.md (PR-FLOWPATH-003)
+    module-flowpath/prompts/workflow_analysis_system.md (PR-FLOWPATH-004)
+    prompts/CHANGELOG.md — all four APPROVED June 26, 2026
+  Core types in module-flowpath/src/flowpath-contract.ts:
+    WorkflowArtifact, WorkflowStep, FiveQuestionGateResult, OrganizationalVocabulary,
+    VocabularyEntry, DataSourceRegistry, DataSourceEntry, ValidationCadenceRecord,
+    FlowpathAnalysisOutput. AnalystWorkstyleProfile imported from shell-contract.
+  PPBE reservation stub: module-flowpath/agents/ppbe-dependency-tracker/README.md
+  Synthetic elicitation data: one complete synthetic WorkflowArtifact for tests.
+  banners.tsx: contentCardStyle + approved color tokens (#f1f5f9 canvas, #ffffff cards).
+  module-flowpath registered in root package.json and register-modules.ts.
+  tsc clean.
+  Committed: "feat: FLOWPATH scaffold — GD-18 types, AgentCards, prompts, banners"
+
+D3 — Elicitation Session Manager Screen 1 [REQUIRED]
+  Renders in shell under FLOWPATH. Session list with workflow type, expert role,
+  date, Five-Question Gate status in plain prose. New Session button.
+  Gap 5: status in plain prose. Gap 6: Category 2 blue AI disclosure banner (permanent),
+  Category 3 session list. White card pattern applied.
+  FLOWPATH_SESSION_STARTED logged when new session begins.
+  Minimum 8 tests: session list renders, banner present and blue, status plain prose,
+  new session button present, contrast correct.
+  Committed: "feat: FLOWPATH Screen 1 — Elicitation Session Manager"
+
+D4 — Elicitation Dialogue Interface Organizational Mode Screen 2 [REQUIRED]
+  flowpath.interviewer organizational mode via createSovereignClient() PR-FLOWPATH-001.
+  Five-Question Gate indicators (Who/Sequence/Conditions/Inputs-Outputs/Terminal)
+  showing answered/unanswered/gap in plain prose. Produce Artifact button enabled
+  only when all five answered.
+  On artifact production: WorkflowArtifact produced by flowpath.mapper.
+  FLOWPATH_ARTIFACT_PRODUCED, FLOWPATH_VOCABULARY_CAPTURED,
+  FLOWPATH_DATASOURCE_REGISTERED, FLOWPATH_VALIDATION_CADENCE_SET logged.
+  Artifact preview in plain prose (Gap 5) — not a schema dump.
+  Gap 5: questions in domain language not SOVEREIGN internals.
+  Gap 6: Category 1 amber gate failure notices, Category 2 blue disclosure,
+  Category 3 dialogue. White card pattern applied.
+  Minimum 10 tests: dialogue renders, gate indicators update, gate blocks artifact
+  until all five answered, artifact preview in prose not JSON, all four Logger events.
+  Committed: "feat: FLOWPATH Screen 2 — Elicitation Dialogue (organizational)"
+
+D5 — Individual Workstyle Elicitation Screen 4 [OPTIONAL — if D4 complete]
+  Private — only visible to authenticated analyst, not in admin views.
+  flowpath.interviewer individual mode via PR-FLOWPATH-002.
+  Trust statement delivered VERBATIM before first question — analyst must acknowledge.
+  flowpath.validator boundary validation — personal threshold must be >= org standard.
+  If looser: plain-prose conflict notice, FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT logged.
+  AnalystWorkstyleProfile produced with analyst_id_hash (never cleartext).
+  FLOWPATH_WORKSTYLE_ELICITED logged, data_classification: user.
+  Profile not visible to admin queries — enforced at data layer.
+  Privacy notice Category 2 blue permanent: "Your workstyle profile is visible only
+  to you. It is never shared with administrators or used in performance evaluation."
+  Three entry points: Initial / Post-review reflection / Annual refresh.
+  Gap 5: expertise and preference questions only. Gap 6: Category 1 amber conflict,
+  Category 2 blue privacy notice, Category 3 dialogue. White card pattern applied.
+  Minimum 8 tests: trust statement before questions, analyst must acknowledge,
+  boundary conflict surfaced, workstyle event with hashed id, privacy banner always present.
+  Committed: "feat: FLOWPATH Screen 4 — Individual Workstyle Elicitation"
+
+D6 — E2E Stage 5b Pipeline Scenario [OPTIONAL — if D4 complete, independent of D5]
+  Add Scenario 6 to e2e/tests/pipeline.test.tsx covering the Stage 5b pipeline:
+  FLOWPATH elicitation -> WorkflowArtifact -> AgentOS task -> APEX portfolio.
+
+  Five pipeline steps using synthetic data throughout (no live LLM calls):
+  1. FLOWPATH session produces valid WorkflowArtifact (synthetic elicitation data)
+     FLOWPATH_SESSION_STARTED + FLOWPATH_SESSION_COMPLETE logged
+     FLOWPATH_ARTIFACT_PRODUCED logged
+  2. WorkflowArtifact passes Five-Question Gate (gate_passed === true)
+  3. Human reviewer approves — WORKFLOW_APPROVAL human decision logged with
+     decision_type, actor, actor_name, workflow_step_id
+     FLOWPATH_ARTIFACT_APPROVED logged
+  4. AgentOS receives approved workflow — task created referencing session_id
+     AGENTOS_TASK_ASSIGNED logged carrying session_id for traceability
+  5. APEX portfolio confirms program data accessible (adapter returns P-100)
+
+  Audit trail chain verified: every event carries workflow_step_id, chain from
+  FLOWPATH through AgentOS to APEX traceable without gaps.
+  e2e 5 -> 6. tsc clean on e2e.
+  Committed: "test: E2E Scenario 6 — Stage 5b FLOWPATH->AgentOS->APEX pipeline"
+
+AUTONOMOUS OPERATION RULES
+MAY decide: layout and component structure (within Gap 5/6), Five-Question Gate
+  visual representation, WorkflowArtifact internal schema beyond required fields,
+  synthetic elicitation data structure, Screen 2 dialogue as scrolling history or current-turn
+MUST stop and document: any shell-contract change beyond GD-18, PPBE artifact type
+  conflict requiring governance decision, new SovereignEventType needed beyond GD-18,
+  AnalystWorkstyleProfile privacy cannot be enforced at data layer without new pattern
+NEVER: modify shell-contract beyond GD-18, store analyst_id as cleartext,
+  create admin path to workstyle data, ask prohibited questions in individual mode,
+  skip trust statement, build PPBE workflow artifacts, use PPBE reserved field names
+
+STANDING CONSTRAINTS — ALL 11
+1. No independent security/governance/audit systems
+2. No field-name divergence — ClearanceLevel not DataClassification
+3. No rewrite debt — connections are configuration changes
+4. Every human decision event carries decision_type
+5. No direct LLM API calls — createSovereignClient() only
+6. workflow_step_id on every Logger event
+7. Shell context frozen at eight exports
+8. shell-contract.ts — GD-18 authorized (v1.12->v1.13); no other changes
+9. 14 approved prompts (PR-FLOWPATH-001/002/003/004 included)
+10. 18 registered agents (six FLOWPATH already in registry — verify before AgentCards)
+11. Five synced copies — GD-18 propagation checklist in D1 above
+
+CLOSE REQUIREMENTS
+1. npm test — report JS count
+2. python -m pytest sovereign-security/ — report Python count
+3. npx tsc --noEmit — clean across shell, sovereign-data, module-flowpath, e2e
+4. shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts — record v1.13 hash
+5. Commit all work per deliverable
+6. Produce SOVEREIGN_Session20_Handoff.md: done condition traceability, v1.13 SHA,
+   commit hashes, test counts, GD-18 Constraint #11 propagation confirmed,
+   spec reconciliations, update flags for Integration Brief v1.29:
+   new shell-contract v1.13 hash, new test total, FLOWPATH screens built,
+   GD-18 complete, E2E Scenario 6 status
+7. Produce SBOM_Session20_Update.md: GD-18 recorded, new contract version + hash,
+   test totals, FLOWPATH module added, six AgentCards active, four prompts APPROVED
+8. git add SOVEREIGN_Session20_Handoff.md SBOM_Session20_Update.md
+   git commit -m "close: Session 20 handoff + SBOM update" && git push
+
+BEGIN NOW.
+Build D1 -> D2 -> D3 -> D4 -> D5 -> D6 without stopping.
+D1 through D4 are required. D5 and D6 are optional — attempt in order after D4.
+D6 may be attempted after D4 even if D5 is not complete.
+D1 is the shell-contract change — execute before any FLOWPATH code is written.
+The UI standard is non-negotiable: white card pattern from the first screen built.
