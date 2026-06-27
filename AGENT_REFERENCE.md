@@ -159,6 +159,24 @@ package defined in the Integration Brief. A missing file means the Build Agent
 builds without critical context. The gather script reports missing files explicitly
 — always check the count before pasting.
 
+**Critical: verify filenames against the SBOM before writing the gather script.**
+The Governance Agent writes gather scripts against expected filenames before Claude
+Code has built the files. When Claude Code names a file slightly differently than
+the spec assumed, the path in the gather script is wrong and the file is reported
+missing. This happened in Sessions 20 and 21 (wrong path for module-loader,
+wrong filename for synthetic-elicitation.ts).
+
+The fix is simple: before writing any gather script, read the prior session's
+SBOM update (Section: New Components or Changed Components) and use the exact
+filenames Claude Code recorded — not the filenames the spec anticipated. The SBOM
+is the authoritative record of what actually exists on disk.
+
+**Gather script file verification checklist (every session):**
+1. Read the prior session's SBOM update — note every new file created
+2. Cross-reference each new file's path against what you planned to include
+3. Use the SBOM filename exactly — not the spec's assumed filename
+4. If a file you expected is not in the SBOM, it was not built — do not include it
+
 **Who writes it:** Governance Agent produces a new version for each session.
 The file list grows as the project grows.
 
@@ -904,6 +922,49 @@ for demonstrating the platform to clients. By Walkthrough F, the Project Princip
 will have operated every product in the platform six times under realistic
 synthetic scenarios. This is deliberate design.
 
+### Lesson 11: Gather script filenames must come from the SBOM, not the spec
+
+Sessions 20 and 21 both produced gather scripts with wrong file paths —
+`sovereign-shell/src/module-loader.ts` (actual: `module-loader/index.ts`) and
+`synthetic-elicitation-data.ts` (actual: `synthetic-elicitation.ts`). In both
+cases the Governance Agent wrote the gather script against the filename the spec
+anticipated, not the filename Claude Code actually used.
+
+The root cause: Claude Code sometimes names files slightly differently than the
+spec assumed, and the Governance Agent has no way to know the actual filename until
+after the session closes and the SBOM is produced.
+
+The fix: always read the prior session's SBOM update (§New Components) before
+writing the next gather script. The SBOM records every file Claude Code created,
+with the exact path. Use those paths verbatim. Never guess from the spec.
+
+The gather script's missing-file warning caught both errors before any context
+was pasted — the system worked. But the fix is to prevent the miss, not just
+catch it. The SBOM is the source of truth for what exists on disk.
+
+### Lesson 12: Agent registration count claims in the Brief cannot be trusted —
+verify the file
+
+Session 20 halted at the STEP 3 session-open gate because the Integration Brief
+claimed 18 registered agents but Agent_Identity_Standard.md held only 15. The
+six FLOWPATH agents had never been appended to the standard despite the Brief's
+claim. Claude Code correctly blocked (Constraint #10 — no agent may be
+instantiated in code before appearing in the standard).
+
+The root cause: the agent count in the Integration Brief drifted from the actual
+file. The Brief is a summary document; Agent_Identity_Standard.md is the
+authoritative registry. When they disagree, the file wins.
+
+The fix is now structural in the session protocol (§15 of the Integration Brief):
+Step 3 requires Claude Code to verify the actual agent count in the file directly,
+not accept the Brief's claim. The Governance Agent must also verify the count
+when updating the Brief — count the entries in the file, do not propagate a number
+from memory.
+
+This lesson pairs with Lesson 7: registration must precede code by one commit,
+and the registration must actually exist in the standard — not just be claimed
+in the Brief.
+
 ---
 
 ## Document Naming Conventions
@@ -949,5 +1010,5 @@ SOVEREIGN_System_Prompt_v9.md
 *This document is version-controlled. When adopting for a new project, update
 the project root path, monorepo name, and any project-specific tool references.*
 
-*SOVEREIGN Platform reference — updated through Session 16 / Walkthrough A /
-June 25, 2026*
+*SOVEREIGN Platform reference — updated through Session 21 / Walkthrough C /
+June 26, 2026*
