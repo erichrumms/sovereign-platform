@@ -22,33 +22,33 @@ seventh product called the Intelligence Layer that must never be lost.
 
 ---
 
-## Current Build State — As of Session 20 (June 26, 2026)
+## Current Build State — As of Session 21 (June 26, 2026)
 
 | Item | State |
 |---|---|
-| Last completed session | Session 20 (autonomous, 37 min — halted then resumed) |
-| HEAD / origin/main | `fa11ad9` |
+| Last completed session | Session 21 (autonomous, 18 min) |
+| HEAD / origin/main | `b4e0f8b` |
 | shell-contract.ts | **v1.13 · SHA `2a3f0b9d8f390c30e23816e4e928cbcd02ccd59f765294f8ed247d9c75d18569`** |
-| Previous hash (retired) | v1.12 · `61594a698da07a4a748259fe23cf2be03d8e6aeaea5c72502f04e0d3e246dfe3` |
-| Integration Brief | v1.29 |
-| SBOM Registry | v1.21 |
-| JS tests passing | 952 (+ 142 Python = 1094 total) |
-| Stage 1–4 | COMPLETE |
-| Stage 5a (APEX) | COMPLETE — VRS certified |
-| Stage 5b (FLOWPATH) | **IN PROGRESS — Screens 1/2/4 done · Screen 3 + CPMI-VRS next** |
-| Registered agents | **21** (corrected from erroneous "18") |
+| Next shell-contract change | GD-19 · Session 22 D1 · v1.13 → v1.14 |
+| Integration Brief | v1.30 |
+| SBOM Registry | v1.22 |
+| JS tests passing | 993 (+ 142 Python = 1135 total) |
+| Stage 1–5b | **COMPLETE** |
+| Walkthrough C | **READY — Gate 3 wired for Project Principal attestation** |
+| Registered agents | 21 |
 | All data | SYNTHETIC — Governance Clock not activated |
 
-**Session 20 key events:**
-- Halted at STEP 3 gate — six FLOWPATH agents absent from Agent_Identity_Standard.md
-  despite Integration Brief's claim. Claude Code correctly blocked (Constraint #10).
-  Blocker resolved in Claude Chat (commit `8f8ebed`) during session.
-- D1: GD-18 executed — shell-contract v1.12 → v1.13
-- D2–D5: FLOWPATH scaffold + Screens 1/2/4 built to Gap 5/6 standard from day one
-- D6: E2E Scenario 6 — Stage 5b pipeline (FLOWPATH→AgentOS→APEX)
+**Session 21 deliverables:**
+- D1: Screen 3 — Workflow Artifact Review (plain prose, WORKFLOW_APPROVAL gate)
+- D2: CPMI-VRS benchmark scenarios A/B/C (schema-valid, gate-passing)
+- D3: FLOWPATH CPMI-VRS Gates tab (Gate 3 = GATE_3_ATTESTATION, Walkthrough C ready)
+- D4: Item 57 — deferred with committee-grade finding → GD-19 pre-approved
+- D5: module-flowpath 52 → 93 tests
 
-**Next action: Session 21** — Screen 3 (Workflow Artifact Review) + CPMI-VRS benchmark
-scenarios + Gates tab + Item 57. Then Walkthrough C.
+**Next actions:**
+1. Walkthrough C — Gate 3 attestation in browser (Project Principal step)
+2. Post-walkthrough → new conversation
+3. Session 22 — GD-19 (Item 57) + PPBE decisions + ARIA Suite scaffold
 
 ---
 
@@ -103,14 +103,14 @@ enforced verification step — Session 20 demonstrated why.
 
 ---
 
-## Open Governance Items — Priority for Session 21
+## Open Governance Items — Priority for Session 22
 
-1. **Screen 3** — Workflow Artifact Review (human approval surface)
-2. **CPMI-VRS benchmark scenarios A/B/C** — three elicitation scenarios, schema-valid
-3. **FLOWPATH CPMI-VRS Gates tab** — visible gate runner for Walkthrough C
-4. **Item 57** — NEXUS→AgentOS shared task surface shell-contract decision
-5. **PPBE six decisions** (D-P1 through D-P6) — Claude Chat governance session
-6. **Items 58/59** — dossier file export, CSV format (deferred)
+1. **Walkthrough C** — Gate 3 attestation in browser (Project Principal step) — NEXT
+2. **GD-19** — execute as Session 22 first deliverable (pre-approved)
+3. **Item 57** — NEXUS→AgentOS UI convergence (taskSurface ninth export)
+4. **PPBE six decisions** (D-P1 through D-P6) — Claude Chat governance session
+5. **ARIA Suite scaffold** — Stage 6 begins Session 22 or 23
+6. **Items 58/59** — dossier export, CSV format (deferred)
 
 ---
 
@@ -118,8 +118,9 @@ enforced verification step — Session 20 demonstrated why.
 
 | Problem | Prevention |
 |---|---|
-| Agent count claim in Brief is wrong | Verify Agent_Identity_Standard.md directly — count the entries |
+| Agent count claim in Brief is wrong | Verify Agent_Identity_Standard.md directly — count the entries in the file. Never rely on the Brief's count claim alone. |
 | Wrong shell-contract hash | Verify v1.13 hash `2a3f0b9d…d18569` before any build work |
+| Gather script has wrong filename | Before writing any gather script, read the prior session's SBOM §New Components and use the exact filenames Claude Code recorded — never guess from the spec. The SBOM is the source of truth for what exists on disk. (Lesson 11) |
 | process.env in ESM module | module-flowpath uses import.meta.env via anthropic-key.ts |
 | AnalystWorkstyleProfile admin path | data_classification: user enforced at data layer, analyst_id hashed |
 | Trust statement skipped | PR-FLOWPATH-002 delivers it verbatim before the first question, every session |
@@ -129,5 +130,5 @@ enforced verification step — Session 20 demonstrated why.
 ---
 
 *SOVEREIGN Platform · Agent-to-Agent Briefing · Updated June 26, 2026*
-*Supersedes June 26, 2026 (Session 19) version*
+*Supersedes June 26, 2026 (Session 20) version — Session 21 complete, Walkthrough C ready*
 *Pre-Decisional · Internal Working Document*
