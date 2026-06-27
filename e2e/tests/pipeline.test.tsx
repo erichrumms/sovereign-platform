@@ -14,6 +14,17 @@ import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import type { Task } from "../../module-agentos/src/agentos-contract";
 import { routeRequest } from "../../module-nexus/src/request-router";
 import { approvalRequestId } from "../../module-agentos/src/agent-dispatcher";
+import {
+  SYNTHETIC_WORKFLOW_ARTIFACT,
+  SYNTHETIC_SESSION_ID,
+} from "../../module-flowpath/src/synthetic-elicitation";
+import {
+  evaluateFiveQuestionGate,
+  sessionWorkflowStep,
+  artifactWorkflowStep,
+  FLOWPATH_COORDINATOR,
+  FLOWPATH_MAPPER,
+} from "../../module-flowpath/src/flowpath-contract";
 import { usePipeline, makeCtx, type Pipeline } from "./harness";
 
 type Result = RenderHookResult<Pipeline, unknown>["result"];
@@ -195,5 +206,61 @@ describe("SOVEREIGN end-to-end pipeline", () => {
     const programs = result.current.apex.listPrograms();
     expect(programs.length).toBeGreaterThan(0);
     expect(programs.some((p) => p.program_id === "P-100")).toBe(true);
+  });
+
+  // ── Scenario 6 — Stage 5b: FLOWPATH → AgentOS → APEX pipeline (synthetic, no live LLM) ──────
+  // A FLOWPATH elicitation session produces a gate-passing WorkflowArtifact; a human reviewer
+  // approves it (WORKFLOW_APPROVAL — Constraint #4); AgentOS receives the approved workflow as a
+  // task whose id encodes the FLOWPATH session_id (traceability, the same pattern as Scenarios
+  // 1–5); APEX confirms portfolio program data. Synthetic artifact — no live LLM call. Every event
+  // carries workflow_step_id.
+  it("Scenario 6: a FLOWPATH session produces an approved workflow AgentOS receives, and APEX shows portfolio data", () => {
+    const sink: SovereignLogEvent[] = [];
+    const ctx = makeCtx(sink);
+    const { result } = renderHook(() => usePipeline(ctx));
+
+    const sessionId = SYNTHETIC_SESSION_ID;
+    const artifact = SYNTHETIC_WORKFLOW_ARTIFACT;
+    const sessionStep = sessionWorkflowStep(sessionId);
+    const artifactStep = artifactWorkflowStep(sessionId);
+
+    // Step 1 — FLOWPATH session produces the WorkflowArtifact (synthetic; flowpath.coordinator/mapper).
+    ctx.logger.log({ event_type: "FLOWPATH_SESSION_STARTED", workflow_step_id: sessionStep, sovereign_tier: "standard", product: "FLOWPATH", actor_id: "E-001", agent_id: FLOWPATH_COORDINATOR, outcome: "flowpath_session_started", payload: { session_id: sessionId, workflow_type: artifact.workflow_type } });
+    ctx.logger.log({ event_type: "FLOWPATH_ARTIFACT_PRODUCED", workflow_step_id: artifactStep, sovereign_tier: "standard", product: "FLOWPATH", actor_id: "E-001", agent_id: FLOWPATH_MAPPER, outcome: "flowpath_artifact_static", payload: { session_id: sessionId, artifact_type: artifact.workflow_type } });
+    ctx.logger.log({ event_type: "FLOWPATH_SESSION_COMPLETE", workflow_step_id: sessionStep, sovereign_tier: "standard", product: "FLOWPATH", actor_id: "E-001", agent_id: FLOWPATH_COORDINATOR, outcome: "flowpath_session_complete", payload: { session_id: sessionId, gate_passed: true } });
+
+    // Step 2 — the artifact passes the Five-Question Gate.
+    expect(evaluateFiveQuestionGate(artifact).gate_passed).toBe(true);
+
+    // Step 3 — a human reviewer approves the artifact (WORKFLOW_APPROVAL).
+    ctx.logger.log({ event_type: "HUMAN_DECISION", workflow_step_id: artifactStep, sovereign_tier: "standard", product: "FLOWPATH", actor_id: "E-001", actor: "human", actor_name: "E2E Operator", decision_type: "WORKFLOW_APPROVAL", outcome: "flowpath_workflow_approved", payload: { session_id: sessionId, artifact_id: artifact.artifact_id } });
+    ctx.logger.log({ event_type: "FLOWPATH_ARTIFACT_APPROVED", workflow_step_id: artifactStep, sovereign_tier: "standard", product: "FLOWPATH", actor_id: "E-001", actor: "human", actor_name: "E2E Operator", outcome: "flowpath_artifact_approved", payload: { session_id: sessionId, artifact_type: artifact.workflow_type } });
+
+    // Step 4 — AgentOS receives the approved workflow as a task whose id encodes the session_id.
+    const taskId = `flowpath-${sessionId}`;
+    act(() => result.current.tasks.create({ task_id: taskId, title: artifact.title, description: "Approved FLOWPATH workflow", requires_approval: false, data_classification: "UNCLASSIFIED" }));
+    act(() => result.current.tasks.assign(taskId, "agentos.configurator"));
+
+    const assigned = sink.find((e) => e.event_type === "AGENTOS_TASK_ASSIGNED");
+    expect(assigned).toBeDefined();
+    expect(assigned!.workflow_step_id).toBe(`agentos-task-${taskId}`);
+    expect((assigned!.payload as { task_id: string }).task_id).toContain(sessionId);
+    expect(result.current.tasks.tasks[0].status).toBe("ASSIGNED");
+
+    // Step 5 — APEX portfolio shows program data (synthetic CPMI World Model), incl. P-100.
+    const programs = result.current.apex.listPrograms();
+    expect(programs.some((p) => p.program_id === "P-100")).toBe(true);
+
+    // Audit trail: the FLOWPATH lifecycle + approval + AgentOS assignment are all present, and every
+    // event carries a workflow_step_id (Constraint #6).
+    const all = types(sink);
+    for (const expected of ["FLOWPATH_SESSION_STARTED", "FLOWPATH_SESSION_COMPLETE", "FLOWPATH_ARTIFACT_PRODUCED", "FLOWPATH_ARTIFACT_APPROVED", "AGENTOS_TASK_ASSIGNED"]) {
+      expect(all).toContain(expected);
+    }
+    const approval = sink.find((e) => e.event_type === "HUMAN_DECISION" && e.decision_type === "WORKFLOW_APPROVAL");
+    expect(approval).toBeDefined();
+    expect(approval!.actor).toBe("human");
+    expect(approval!.actor_name).toBe("E2E Operator");
+    expect(sink.every((e) => typeof e.workflow_step_id === "string" && e.workflow_step_id.length > 0)).toBe(true);
   });
 });
