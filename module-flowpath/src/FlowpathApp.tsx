@@ -15,16 +15,8 @@
 import type { CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
-import {
-  rootStyle,
-  titleStyle,
-  subtitleStyle,
-  sectionHeadingStyle,
-  bodyTextStyle,
-  contentCardStyle,
-  Gate1Banner,
-  ClassificationBoundaryBanner,
-} from "./banners";
+import { rootStyle, titleStyle, subtitleStyle } from "./banners";
+import { SessionManager } from "./SessionManager";
 
 export interface FlowpathAppProps {
   ctx: SovereignShellContext;
@@ -39,19 +31,7 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
           <p style={subtitleStyle}>Workflow Elicitation and Process Intelligence — the entry point to the SOVEREIGN pipeline.</p>
         </header>
 
-        {/* Category 2 — permanent governance guardrails (blue, always present). */}
-        <Gate1Banner />
-        <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
-
-        {/* Category 3 — substantive content (white card on the light canvas). */}
-        <div style={contentCardStyle}>
-          <h2 style={sectionHeadingStyle}>Module scaffolded</h2>
-          <p style={bodyTextStyle}>
-            FLOWPATH is active. The elicitation surfaces — the Session Manager, the Elicitation
-            Dialogue, and Individual Workstyle — are added in this session and appear here as they
-            are built.
-          </p>
-        </div>
+        <SessionManager ctx={ctx} />
       </div>
     </section>
   );
