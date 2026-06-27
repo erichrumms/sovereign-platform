@@ -34,6 +34,8 @@ export interface SessionManagerProps {
   ctx: SovereignShellContext;
   /** Injectable initial sessions (tests). Defaults to the synthetic set. */
   initialSessions?: ElicitationSession[];
+  /** Session ids whose artifact has been approved on Screen 3 (committed to the registry). */
+  approvedSessionIds?: string[];
 }
 
 /** Workflow type rendered in plain language (Gap 5) — never the raw enum. */
@@ -69,9 +71,10 @@ function readableDate(iso: string): string {
   return `${months[m - 1]} ${d}, ${y}`;
 }
 
-export function SessionManager({ ctx, initialSessions }: SessionManagerProps): JSX.Element {
+export function SessionManager({ ctx, initialSessions, approvedSessionIds = [] }: SessionManagerProps): JSX.Element {
   const [sessions, setSessions] = useState<ElicitationSession[]>(initialSessions ?? SYNTHETIC_SESSIONS);
   const [newCount, setNewCount] = useState(0);
+  const approved = new Set(approvedSessionIds);
 
   const startNewSession = (): void => {
     const n = newCount + 1;
@@ -126,7 +129,11 @@ export function SessionManager({ ctx, initialSessions }: SessionManagerProps): J
                   {workflowTypeLabel(s.workflow_type)} — with the {s.expert_role}
                 </div>
                 <div style={metaStyle}>Conducted on {readableDate(s.date)}.</div>
-                <div style={metaStyle}>{gateStatusProse(s)}</div>
+                <div style={metaStyle}>
+                  {approved.has(s.session_id)
+                    ? "Approved and committed to the workflow registry."
+                    : gateStatusProse(s)}
+                </div>
               </li>
             ))}
           </ul>
