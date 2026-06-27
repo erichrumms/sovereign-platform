@@ -18,16 +18,18 @@ import type { SovereignShellContext } from "../../sovereign-shell/shell-contract
 import { rootStyle, titleStyle, subtitleStyle } from "./banners";
 import { SessionManager } from "./SessionManager";
 import { ElicitationDialogue } from "./ElicitationDialogue";
+import { IndividualWorkstyle } from "./IndividualWorkstyle";
 
 export interface FlowpathAppProps {
   ctx: SovereignShellContext;
 }
 
-type Tab = "sessions" | "dialogue";
+type Tab = "sessions" | "dialogue" | "workstyle";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "sessions", label: "Elicitation Sessions" },
   { id: "dialogue", label: "Elicitation Dialogue" },
+  { id: "workstyle", label: "My Workstyle" },
 ];
 
 export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
@@ -61,6 +63,7 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
 
         {tab === "sessions" && <SessionManager ctx={ctx} />}
         {tab === "dialogue" && <ElicitationDialogue ctx={ctx} />}
+        {tab === "workstyle" && <IndividualWorkstyle ctx={ctx} />}
       </div>
     </section>
   );
