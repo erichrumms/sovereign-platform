@@ -24,18 +24,20 @@ import { SessionManager } from "./SessionManager";
 import { ElicitationDialogue } from "./ElicitationDialogue";
 import { WorkflowArtifactReview } from "./WorkflowArtifactReview";
 import { IndividualWorkstyle } from "./IndividualWorkstyle";
+import { GateRunnerPanel } from "./GateRunnerPanel";
 
 export interface FlowpathAppProps {
   ctx: SovereignShellContext;
 }
 
-type Tab = "sessions" | "dialogue" | "review" | "workstyle";
+type Tab = "sessions" | "dialogue" | "review" | "workstyle" | "certification";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "sessions", label: "Elicitation Sessions" },
   { id: "dialogue", label: "Elicitation Dialogue" },
   { id: "review", label: "Artifact Review" },
   { id: "workstyle", label: "My Workstyle" },
+  { id: "certification", label: "CPMI-VRS Certification" },
 ];
 
 export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
@@ -80,6 +82,7 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
         {tab === "dialogue" && <ElicitationDialogue ctx={ctx} />}
         {tab === "review" && <WorkflowArtifactReview ctx={ctx} onApproved={onApproved} onReturnForRevision={onReturnForRevision} />}
         {tab === "workstyle" && <IndividualWorkstyle ctx={ctx} />}
+        {tab === "certification" && <GateRunnerPanel ctx={ctx} />}
       </div>
     </section>
   );
