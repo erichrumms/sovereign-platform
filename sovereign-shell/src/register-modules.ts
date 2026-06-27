@@ -24,6 +24,7 @@ import { cpmiModule } from "@sovereign/module-cpmi";
 import { agentosModule } from "@sovereign/module-agentos";
 import { nexusModule } from "@sovereign/module-nexus";
 import { apexModule } from "@sovereign/module-apex";
+import { flowpathModule } from "@sovereign/module-flowpath";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -67,4 +68,11 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // (Analytical) and apex.report-generator (Operational), both in Agent_Identity_Standard.md
   // (Constraint #10). module-apex/APEX is pre-wired in the loader's MODULE_PRODUCT map.
   loader.register(apexModule);
+  // FLOWPATH — the workflow-elicitation product (primary product, Stage 5b), the pipeline entry
+  // point. Scaffold + GD-18 schema + Screens 1/2/4 (Session 20). Role gate minimumRole
+  // AGENT_OPERATOR → the loader's fail-closed policy admits AGENT_OPERATOR/SYSTEM_ADMIN (program
+  // managers and analysts participate in elicitation; no PLATFORM_ADMIN required). Registers all
+  // six FLOWPATH agents (all Analytical), in Agent_Identity_Standard.md (Constraint #10).
+  // module-flowpath/FLOWPATH is pre-wired in the loader's MODULE_PRODUCT map.
+  loader.register(flowpathModule);
 }
