@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.12
+ * Version: 1.13
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,44 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.13 (June 26, 2026) — GD-18 (FLOWPATH event types + workstyle entity, pre-approved
+ *                       Session 20 opening prompt + Integration Brief v1.28 §6/GD-18, per
+ *                       15_FLOWPATH_Architecture.md §8 / §10). Added ten SovereignEventType
+ *                       members for the FLOWPATH workflow-elicitation product:
+ *                       FLOWPATH_SESSION_STARTED, FLOWPATH_SESSION_COMPLETE,
+ *                       FLOWPATH_ARTIFACT_PRODUCED, FLOWPATH_ARTIFACT_APPROVED,
+ *                       FLOWPATH_GATE_FAILED, FLOWPATH_VOCABULARY_CAPTURED,
+ *                       FLOWPATH_DATASOURCE_REGISTERED, FLOWPATH_VALIDATION_CADENCE_SET,
+ *                       FLOWPATH_WORKSTYLE_ELICITED, FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT (the
+ *                       last two are data_classification: user — analyst-scoped, hashed id).
+ *                       Added two HumanDecisionType members: WORKFLOW_APPROVAL (a human reviewer
+ *                       approving a FLOWPATH workflow artifact before it is committed to the
+ *                       registry) and VALIDATION_SIGN_OFF (an analyst signing off on an APEX
+ *                       pre-review validation cycle — DC-5). Added one exported user-scoped type
+ *                       for the individual-workstyle elicitation contract: AnalystWorkstyleProfile
+ *                       (plus its supporting ProgramExpertiseDepth / AnalystProgramExpertise /
+ *                       AnalystPersonalThreshold / AnalystVocabularyExtension types). All
+ *                       non-breaking additions (union widenings + new exported types). Impact
+ *                       assessment: the ten event types are defined only here (the two
+ *                       shell-contract copies) and emitted only by module-flowpath; no existing
+ *                       module emits them and no exhaustive switch over SovereignEventType exists.
+ *                       The two HumanDecisionType members additionally propagate to the synced
+ *                       HumanDecisionType copy in sovereign-data/src/shared-types.ts (the type +
+ *                       the HUMAN_DECISION_TYPES runtime const, 16 -> 18 members) and its test,
+ *                       per Standing Constraint #11. SovereignEventType is NOT mirrored in
+ *                       shared-types (only SovereignRole / ClearanceLevel / HumanDecisionType are);
+ *                       AnalystWorkstyleProfile is NOT propagated to shared-types either (shared-
+ *                       types mirrors only the three enums, not entity types). NO SovereignProduct
+ *                       change — FLOWPATH has been a primary product in SovereignProduct since v1.0
+ *                       (Standing Constraint #2 — no divergent duplicate); likewise the Python
+ *                       logger APPROVED_PRODUCTS already contains FLOWPATH, so no product
+ *                       propagation is required (this corrects the opening prompt's "10 -> 11"
+ *                       expectation — FLOWPATH was already present). NO AgentClass change — all
+ *                       six FLOWPATH agents use the existing Analytical class. Per Standing
+ *                       Constraint #11 the ten event types and two decision types are synced to
+ *                       the Python logger (APPROVED_EVENT_TYPES 65 -> 75, APPROVED_DECISION_TYPES
+ *                       16 -> 18). Full tsc --noEmit clean; both shell-contract copies SHA-256
+ *                       verified identical at v1.13.
  *   v1.12 (June 25, 2026) — GD-16 (APEX event types + analysis schema, pre-approved Session 17
  *                       opening prompt + Integration Brief v1.25, per 13_APEX_Architecture.md
  *                       §10). Added seven SovereignEventType members for the APEX analytics /
@@ -368,7 +406,23 @@ export type SovereignEventType =
   | "APEX_DOSSIER_EXPORTED"
   | "APEX_PROVENANCE_VIEWED"
   | "REPORT_GENERATION_HELD"
-  | "APEX_EVENT_RECEIVED";
+  | "APEX_EVENT_RECEIVED"
+  // GD-18 — June 26, 2026 (shell-contract v1.13) — ten FLOWPATH workflow-elicitation event types
+  // (elicitation session lifecycle, artifact production/approval, Five-Question Gate, vocabulary
+  // capture, data-source registration, validation cadence, and individual workstyle elicitation).
+  // Emitted only by module-flowpath. The two workstyle events carry data_classification: user and
+  // a hashed analyst_id — they must never appear in a platform-wide audit query without the user
+  // filter applied (15_FLOWPATH_Architecture.md §8).
+  | "FLOWPATH_SESSION_STARTED"
+  | "FLOWPATH_SESSION_COMPLETE"
+  | "FLOWPATH_ARTIFACT_PRODUCED"
+  | "FLOWPATH_ARTIFACT_APPROVED"
+  | "FLOWPATH_GATE_FAILED"
+  | "FLOWPATH_VOCABULARY_CAPTURED"
+  | "FLOWPATH_DATASOURCE_REGISTERED"
+  | "FLOWPATH_VALIDATION_CADENCE_SET"
+  | "FLOWPATH_WORKSTYLE_ELICITED"
+  | "FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT";
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -395,7 +449,13 @@ export type HumanDecisionType =
   | "TASK_CANCELLATION"
   // GD-16 — June 25, 2026 (shell-contract v1.12) — a human attesting an APEX report (MSR/QPR
   // or program dossier) before it is exported. Synced to sovereign-data/src/shared-types.ts.
-  | "REPORT_ATTESTATION";
+  | "REPORT_ATTESTATION"
+  // GD-18 — June 26, 2026 (shell-contract v1.13) — two FLOWPATH human decisions: a human
+  // reviewer approving a FLOWPATH workflow artifact before it is committed to the registry
+  // (WORKFLOW_APPROVAL, Screen 3), and an analyst signing off on an APEX pre-review validation
+  // cycle (VALIDATION_SIGN_OFF, DC-5). Both synced to sovereign-data/src/shared-types.ts.
+  | "WORKFLOW_APPROVAL"
+  | "VALIDATION_SIGN_OFF";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;
@@ -524,6 +584,74 @@ export type ApexAnalysisOutput = {
   recommendations: string[];
   schema_valid: boolean;
   workflow_step_id: string;
+};
+
+
+// ------------------------------------------------------------
+// FLOWPATH INDIVIDUAL WORKSTYLE TYPES (shell-contract v1.13 — GD-18)
+// The structured output of FLOWPATH individual (analyst) elicitation
+// (15_FLOWPATH_Architecture.md §5a). AnalystWorkstyleProfile is
+// data_classification: user WITHOUT EXCEPTION — it belongs to the analyst, not
+// the organization. It is stored in sovereign-data alongside StyleProfile,
+// queryable only by the owning user, never by any admin/role/elevation path,
+// and never passed to CPMI, VIGIL, or any governance product. The analyst's
+// identity is carried ONLY as a one-way per-user-salted hash (analyst_id_hash) —
+// never a cleartext analyst_id — so no platform query can reverse it (Guarantee 2,
+// §5a "Privacy Architecture"). This reconciles §5a's descriptive `analyst_id`
+// field to the hashed form mandated by the Session 20 privacy directive.
+// These are governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+/** Depth of an analyst's prior familiarity with a program (§5a program_expertise). */
+export type ProgramExpertiseDepth =
+  | "CURRENT_CYCLE"
+  | "MULTIPLE_CYCLES"
+  | "LONG_TERM_FAMILIARITY";
+
+/** A program this analyst has reviewed before, with depth rating. */
+export type AnalystProgramExpertise = {
+  program_id: string;
+  depth: ProgramExpertiseDepth;
+};
+
+/**
+ * A metric value at which this analyst personally becomes concerned. The validator
+ * enforces that a personal threshold is AT LEAST as sensitive as the organizational
+ * standard — never looser (§5a "Balancing Organizational and Individual Layers").
+ * Values are plain prose (Gap 5), e.g. metric "cost variance", value "10 percent".
+ */
+export type AnalystPersonalThreshold = {
+  metric: string;
+  value: string;
+};
+
+/**
+ * A term this analyst uses differently from the organizational vocabulary standard.
+ * Surfaced by flowpath.domain-translator for reconciliation; flagged, not blocked.
+ */
+export type AnalystVocabularyExtension = {
+  term: string;
+  analyst_usage: string;
+  organizational_definition: string;
+  intentional_divergence: boolean;
+};
+
+/**
+ * The structured output of one FLOWPATH individual-workstyle elicitation session.
+ * ADVISORY (Layer 2) — it changes how APEX guides this analyst, never what is logged,
+ * approved, or audited. data_classification is the literal "user" — mandatory and
+ * non-removable. The identity field is the hashed form only.
+ */
+export type AnalystWorkstyleProfile = {
+  analyst_id_hash: string;
+  program_expertise: AnalystProgramExpertise[];
+  preferred_analysis_sequence: string[];
+  personal_thresholds: AnalystPersonalThreshold[];
+  program_context_notes: string[];
+  vocabulary_extensions: AnalystVocabularyExtension[];
+  last_elicited: string;
+  profile_version: number;
+  data_classification: "user";
 };
 
 

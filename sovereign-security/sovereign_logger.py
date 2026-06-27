@@ -142,8 +142,27 @@ APPROVED_EVENT_TYPES = frozenset({
     "APEX_PROVENANCE_VIEWED",
     "REPORT_GENERATION_HELD",
     "APEX_EVENT_RECEIVED",
+    # GD-18 / shell-contract v1.13 (June 26, 2026) — ten FLOWPATH workflow-elicitation events
+    # (module-flowpath). Synced from shell-contract.ts SovereignEventType (Constraint #11). The
+    # set now holds 75 members, identical to shell-contract v1.13. The two workstyle events carry
+    # data_classification: user (hashed analyst_id) — never surface in a platform-wide audit query
+    # without the user filter applied.
+    "FLOWPATH_SESSION_STARTED",
+    "FLOWPATH_SESSION_COMPLETE",
+    "FLOWPATH_ARTIFACT_PRODUCED",
+    "FLOWPATH_ARTIFACT_APPROVED",
+    "FLOWPATH_GATE_FAILED",
+    "FLOWPATH_VOCABULARY_CAPTURED",
+    "FLOWPATH_DATASOURCE_REGISTERED",
+    "FLOWPATH_VALIDATION_CADENCE_SET",
+    "FLOWPATH_WORKSTYLE_ELICITED",
+    "FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT",
 })
 
+# NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary
+# SovereignProduct since shell-contract v1.0 and was added to this Python set at the GD-17
+# companion re-sync framing. No product propagation was required for GD-18 (this corrects the
+# Session 20 opening prompt's "10 -> 11" expectation; the set already holds 10 with FLOWPATH).
 APPROVED_PRODUCTS = frozenset({
     "NEXUS", "CPMI", "APEX", "FLOWPATH", "AGENTOS", "ARIA",
     # GD-17 / Session 18 (June 26, 2026) — Constraint #11 companion-product re-sync
@@ -180,6 +199,10 @@ APPROVED_DECISION_TYPES = frozenset({
     # GD-16 / shell-contract v1.12 (June 25, 2026) — APEX report attestation before export.
     # Synced from shell-contract.ts HumanDecisionType (Constraint #11). 16 members total.
     "REPORT_ATTESTATION",
+    # GD-18 / shell-contract v1.13 (June 26, 2026) — FLOWPATH artifact approval + DC-5 validation
+    # sign-off. Synced from shell-contract.ts HumanDecisionType (Constraint #11). 18 members total.
+    "WORKFLOW_APPROVAL",       # GD-18 / v1.13 — reviewer approves a FLOWPATH workflow artifact
+    "VALIDATION_SIGN_OFF",     # GD-18 / v1.13 — analyst signs off an APEX pre-review validation cycle
 })
 
 APPROVED_AGENT_CLASSES = frozenset({

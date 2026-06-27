@@ -26,9 +26,10 @@
  * decision + version increment. It is not performed in Session 3.
  *
  * Source of truth (current): sovereign-shell/shell-contract.ts
- * Version: 1.1 — synced to shell-contract v1.12, Session 17, June 25, 2026
+ * Version: 1.2 — synced to shell-contract v1.13, Session 20, June 26, 2026
  *   (HumanDecisionType: + AGENT_APPROVAL v1.4, + GATE_3_ATTESTATION / WORLD_MODEL_UPDATE
- *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7, + REPORT_ATTESTATION v1.12 — 16 members)
+ *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7, + REPORT_ATTESTATION v1.12,
+ *    + WORKFLOW_APPROVAL / VALIDATION_SIGN_OFF v1.13 (GD-18) — 18 members)
  */
 
 /** Canonical platform roles. Synced to shell-contract.ts v1.3 (incl. GD-5 PLATFORM_ADMIN). */
@@ -79,7 +80,12 @@ export type HumanDecisionType =
   | "TASK_CANCELLATION"
   // GD-16 (shell-contract v1.12, June 25, 2026) — a human attesting an APEX report
   // (MSR/QPR or program dossier) before export. Synced from shell-contract.ts Section 2.
-  | "REPORT_ATTESTATION";
+  | "REPORT_ATTESTATION"
+  // GD-18 (shell-contract v1.13, June 26, 2026) — two FLOWPATH human decisions: a reviewer
+  // approving a FLOWPATH workflow artifact (WORKFLOW_APPROVAL), and an analyst signing off on
+  // an APEX pre-review validation cycle (VALIDATION_SIGN_OFF, DC-5). Synced from shell-contract.ts.
+  | "WORKFLOW_APPROVAL"
+  | "VALIDATION_SIGN_OFF";
 
 /** Runtime value sets, for validation reuse. Must mirror the unions above. */
 export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
@@ -128,6 +134,9 @@ export const HUMAN_DECISION_TYPES: readonly HumanDecisionType[] = [
   "TASK_CANCELLATION",
   // GD-16 (shell-contract v1.12, June 25, 2026) — APEX report attestation before export.
   "REPORT_ATTESTATION",
+  // GD-18 (shell-contract v1.13, June 26, 2026) — FLOWPATH artifact approval + DC-5 validation sign-off.
+  "WORKFLOW_APPROVAL",
+  "VALIDATION_SIGN_OFF",
 ];
 
 /** Shared validation result shape used by every entity validator in this package. */
