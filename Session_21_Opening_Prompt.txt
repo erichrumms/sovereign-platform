@@ -1,0 +1,176 @@
+SESSION 21 OPENING PROMPT
+SOVEREIGN Platform — Stage 5b Completion: FLOWPATH Screen 3 + CPMI-VRS + Item 57
+Date: June 26, 2026
+
+SESSION HEADER
+Session number:       21
+HEAD at session open: eacd418
+Integration Brief:    v1.29
+Shell contract:       v1.13
+Shell contract SHA:   2a3f0b9d8f390c30e23816e4e928cbcd02ccd59f765294f8ed247d9c75d18569
+Total tests at open:  1094 (952 JS + 142 Python)
+Monorepo root:        ~/Developer/sovereign-platform/
+
+This is an AUTONOMOUS session. Read all context documents, confirm each by name, restate the done condition, then begin building immediately. Do not wait for approval between deliverables. Do not stop unless you hit a governance-blocked item.
+
+STEP 1 - CONFIRM CONTEXT DOCUMENTS
+Governance: Integration Brief v1.29, Agent_Identity_Standard.md, SOVEREIGN_Agent_to_Agent_Briefing.md, AGENT_REFERENCE.md
+Shell contract: sovereign-shell/shell-contract.ts (v1.13), shell-contract.ts (root)
+Architecture specs: docs/15_FLOWPATH_Architecture.md (primary), docs/14_HumanReviewerStandard.md, docs/08_CPMI_Architecture.md (Gates tab reference)
+Prior session: SOVEREIGN_Session20_Handoff.md
+FLOWPATH source: module-flowpath/src/index.ts, flowpath-contract.ts, banners.tsx, FlowpathApp.tsx, SessionManager.tsx, ElicitationDialogue.tsx, synthetic-elicitation-data.ts
+FLOWPATH prompts: module-flowpath/prompts/org_elicitation_system.md, completeness_gate_system.md
+Gates tab reference: module-apex/src/GateRunnerPanel.tsx
+Item 57 targets: module-nexus/src/index.ts, module-agentos/src/index.ts
+Shared: sovereign-data/src/shared-types.ts
+E2E: e2e/tests/pipeline.test.tsx
+
+STEP 2 - VERIFY SHELL CONTRACT
+shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts
+Both must match: 2a3f0b9d8f390c30e23816e4e928cbcd02ccd59f765294f8ed247d9c75d18569
+If either does not match: STOP.
+
+STEP 3 - VERIFY AGENT REGISTRATION
+Directly count agent entries in Agent_Identity_Standard.md. Expected: 21 total.
+Do NOT rely on Integration Brief count — verify the file directly.
+If any FLOWPATH agent absent: STOP.
+
+CRITICAL CODEBASE FACTS
+Shell contract v1.13 — UNCHANGED this session. No contract change authorized.
+ESM/Vite: module-flowpath uses import.meta.env via anthropic-key.ts — NOT process.env
+SovereignEventType: NOT mirrored in sovereign-data/src/shared-types.ts
+FLOWPATH minimumRole: AGENT_OPERATOR
+GD-10: UNCLASSIFIED only
+PPBE reserved field names (never use): fiscal_year, lifecycle_cost_estimate, obligation_plan, performance_baseline
+AnalystWorkstyleProfile: data_classification: user, analyst_id hashed, no admin path
+FLOWPATH already in SovereignProduct — no product change needed
+
+UI STANDARD — NON-NEGOTIABLE:
+White content cards (#ffffff, 1px solid #e2e8f0) on #f1f5f9 canvas. contentCardStyle in module-flowpath/src/banners.tsx. Apply to Screen 3 and Gates tab from day one. No screen passes done condition without Gap 5/6 verified. Walkthrough C must find zero contrast gaps. Zero Gap 5/6 failures.
+
+CPMI-VRS GATES TAB:
+Read module-apex/src/GateRunnerPanel.tsx before building FLOWPATH equivalent.
+Gate 3 logs decision_type: GATE_3_ATTESTATION (not REPORT_ATTESTATION).
+Four gates, Gates 1/2 auto-pass, Gate 3 is Project Principal step, Gate 4 follows Gate 3.
+
+ITEM 57 — three options to evaluate:
+Option A: ninth shell export — check current export count first. If count < 8: implement. If count = 8: STOP and document.
+Option B: shared React context — evaluate for rewrite debt (Constraint #3).
+Option C: Logger event bus — requires checking whether event type exists; if new type needed, that is a GD.
+Implement cleanest option without constraint violations. Document choice and rationale in handoff.
+
+NO SHELL-CONTRACT CHANGES AUTHORIZED THIS SESSION.
+
+DONE CONDITION
+
+D1 — Screen 3: Workflow Artifact Review [REQUIRED]
+  Renders WorkflowArtifact in plain prose (Gap 5) — not a schema dump.
+  Each step a paragraph. Each vocabulary entry a sentence. Each data source plain language.
+  Approve button: logs WORKFLOW_APPROVAL (decision_type, actor, actor_name, workflow_step_id) + FLOWPATH_ARTIFACT_APPROVED. Returns to Screen 1 with updated status.
+  Return for Revision button: logs FLOWPATH_GATE_FAILED. Returns to Screen 2 with plain-prose revision note.
+  Gap 5: all content plain prose, no raw schema keys visible.
+  Gap 6: Category 2 blue AI disclosure ("This artifact was produced from AI-assisted elicitation. Review carefully before approving — your approval commits it to the workflow registry."), Category 3 artifact content, Category 1 amber revision notice if applicable.
+  White card pattern applied.
+  Minimum 10 tests: prose render (not JSON), WORKFLOW_APPROVAL logged with decision_type, FLOWPATH_ARTIFACT_APPROVED logged, revision logs correctly, blue banner present, white card applied.
+  All 52 module-flowpath tests pass. tsc clean.
+  Committed: "feat: FLOWPATH Screen 3 — Workflow Artifact Review"
+
+D2 — CPMI-VRS Benchmark Scenarios A/B/C [REQUIRED]
+  Three scenarios producing schema-valid WorkflowArtifact outputs, all gate_passed: true.
+
+  Scenario A — Simple two-step operational workflow:
+    Program analyst submits compliance document for review.
+    Steps: submission (analyst) -> review and sign-off (compliance officer).
+    No branches. All five gate questions answered. schema_valid: true, gate_passed: true.
+
+  Scenario B — Workflow with conditional branch + external system dependency:
+    Program manager initiates budget variance review.
+    Branch: variance > 10% -> escalate to CFO; <= 10% -> self-certify.
+    External dependency: accounting system provides obligation records. DataSourceEntry registered.
+    All five gate questions answered. schema_valid: true, gate_passed: true.
+
+  Scenario C — PPBE Phase 1 workflow with multiple stakeholders:
+    Strategic direction session: program executive, budget analyst, contracting officer.
+    Multiple roles, multiple outputs. OrganizationalVocabulary captured. ValidationCadenceRecord produced.
+    All five gate questions answered. schema_valid: true, gate_passed: true.
+
+  All three: FLOWPATH_SESSION_COMPLETE + FLOWPATH_ARTIFACT_PRODUCED logged. Plain prose output (Gap 5).
+  Minimum 9 tests (3 per scenario): schema valid, gate passed, Logger events correct.
+  Committed: "feat: FLOWPATH CPMI-VRS benchmark scenarios A/B/C"
+
+D3 — FLOWPATH CPMI-VRS Gates Tab [REQUIRED]
+  Fifth tab in FlowpathApp.tsx: "CPMI-VRS Certification". Mirrors APEX GateRunnerPanel pattern.
+
+  Gate 1 (AI Disclosure): PASSED on load, green. Plain prose: "Every elicitation session carries an AI disclosure banner stating that outputs are AI-assisted and require human review before the workflow artifact is committed."
+
+  Gate 2 (Reasoning Transparency): PASSED. Three benchmark scenario cards (A/B/C) each showing: scenario name, workflow type, "Schema validation passed" (plain prose), Five-Question Gate result, step count. "View full output" expandable showing WorkflowArtifact in human-readable prose — not JSON.
+
+  Gate 3 (Human Attestation): PENDING (amber) -> PASSED (green).
+    Attestation note field (min 10 chars). "Attest Gate 3" button.
+    On click: logs HUMAN_DECISION with decision_type: GATE_3_ATTESTATION, actor, actor_name, note, workflow_step_id. Stamps date. Unlocks Gate 4.
+    Prominent placement in natural reading flow after Gate 2.
+
+  Gate 4 (Monitoring Baseline): LOCKED until Gate 3 -> PENDING -> PASSED.
+    Logs HUMAN_DECISION with decision_type: HUMAN_APPROVAL. Document choice in handoff.
+
+  Certification summary: "N of 4 gates complete..." -> "FLOWPATH CPMI-VRS certification is complete. Gate 3 attested [date]. Gate 4 established [date]."
+
+  Gap 5: all text plain prose, no JSON, no schema keys.
+  Gap 6: Category 2 blue banners, Category 3 gate cards, Category 1 amber/gray pending/locked.
+  White card pattern. Five-second orientation test must pass.
+
+  Minimum 10 tests: Gate 1 on load, all three scenario cards, Gate 3 logs GATE_3_ATTESTATION, Gate 4 unlocks after Gate 3, summary progression, blue banners present.
+  All module-flowpath tests pass. tsc clean.
+  Committed: "feat: FLOWPATH CPMI-VRS Gates tab (Walkthrough C ready)"
+
+D4 — Item 57: NEXUS->AgentOS UI Convergence [REQUIRED — resolve or defer with finding]
+  Live backing (createAgentOSBackedPort) exists and is tested. Tasks do not appear in AgentOS UI.
+  Check current shell export count (shell-contract.ts Section 1 exports).
+
+  Option A: if count < 8 — implement ninth shared task surface export. Document.
+  Option B: shared React context — evaluate rewrite debt risk (Constraint #3). If clean, implement.
+  Option C: Logger event bus — check whether event type exists. If new type needed: GD required, STOP.
+
+  Implement cleanest option without constraint violations.
+  Done if resolved: NEXUS submission visible in AgentOS UI, no constraint violations, 3+ integration tests, all NEXUS (52) + AgentOS (86) tests pass.
+  Done if deferred: exact constraint analysis, options evaluated, recommended path, what governance action unblocks it — documented in handoff.
+  Committed if resolved: "feat: NEXUS->AgentOS UI convergence (Item 57)"
+
+D5 — FLOWPATH test suite >= 80 tests [REQUIRED]
+  D1+D2+D3 adds ~29 tests (10+9+10) -> ~81 total if all complete.
+  If still < 80 after D1/D2/D3, add targeted tests: Five-Question Gate edge cases, vocabulary capture, data source registration, validation cadence, boundary conflict detection.
+  Committed with relevant deliverable or separately: "test: FLOWPATH test suite >=80 (Walkthrough C readiness)"
+
+AUTONOMOUS OPERATION RULES
+MAY decide: Screen 3 layout (within Gap 5/6), WorkflowArtifact prose structure, Item 57 option (A/B/C) based on constraint analysis, test structure
+MUST stop: any shell-contract change, Item 57 requires GD, export count already at 8
+NEVER: modify shell-contract, store analyst_id cleartext, create admin path to workstyle data, build PPBE artifacts, use PPBE reserved field names
+
+STANDING CONSTRAINTS — ALL 11
+1. No independent security/governance/audit systems
+2. No field-name divergence — ClearanceLevel not DataClassification
+3. No rewrite debt — connections are configuration changes
+4. Every human decision event carries decision_type
+5. No direct LLM API calls — createSovereignClient() only
+6. workflow_step_id on every Logger event
+7. Shell context frozen at eight exports
+8. shell-contract.ts v1.13 — NO changes this session
+9. 14 approved prompts — no new prompts
+10. 21 registered agents — verify file directly, not Brief count
+11. Five synced copies — no contract change, no propagation needed
+
+CLOSE REQUIREMENTS
+1. npm test — report JS count
+2. python -m pytest sovereign-security/ — report Python count
+3. npx tsc --noEmit — clean across shell, module-flowpath, e2e
+4. shasum -a 256 shell-contract.ts sovereign-shell/shell-contract.ts — confirm v1.13 unchanged
+5. Commit all work per deliverable
+6. Produce SOVEREIGN_Session21_Handoff.md: done condition traceability, SHA confirmation, commit hashes, test counts, Item 57 resolution or deferred finding + recommendation, Gap 5/6 confirmed on Screen 3 and Gates tab, update flags for Integration Brief v1.30: new test total, FLOWPATH Stage 5b complete, Item 57 status, Walkthrough C readiness confirmed, SHA unchanged
+7. Produce SBOM_Session21_Update.md: test totals, new components (Screen 3, benchmark scenarios, GateRunnerPanel, Item 57 outcome), shell-contract v1.13 confirmed unchanged
+8. git add SOVEREIGN_Session21_Handoff.md SBOM_Session21_Update.md && git commit -m "close: Session 21 handoff + SBOM update" && git push
+
+BEGIN NOW.
+Build D1 -> D2 -> D3 -> D4 -> D5 without stopping.
+All five are required. D4 is required as an investigation — resolve or document a clear deferred finding.
+The UI standard is non-negotiable: white card pattern, Gap 5/6 from first line.
+Walkthrough C follows this session.
