@@ -249,3 +249,58 @@ is logged.
 *Session 17 Pre-Build Registration · June 25, 2026*
 *Approved by Project Principal*
 *Pre-Decisional · Internal Working Document*
+
+---
+
+# Agent Identity Standard — FLOWPATH Module Additions
+## Append to Agent_Identity_Standard.md
+
+**Session:** Session 20 Pre-Build Registration (governance correction)
+**Date:** June 26, 2026
+**Approved by:** Project Principal
+**Scope:** Six FLOWPATH agent identities
+
+These entries correct an omission identified at Session 20 open. The six FLOWPATH agents were documented in superseded artifacts as "registered" but were never formally appended to this standard. Claude Code correctly blocked at the Constraint #10 gate. All six agents use the existing Analytical class — no shell-contract change required.
+
+---
+
+## FLOWPATH Agents
+
+| `agent_id` | Class | Status |
+|---|---|---|
+| `flowpath.coordinator` | Analytical | REGISTERED — build may proceed |
+| `flowpath.interviewer` | Analytical | REGISTERED — build may proceed |
+| `flowpath.mapper` | Analytical | REGISTERED — build may proceed |
+| `flowpath.validator` | Analytical | REGISTERED — build may proceed |
+| `flowpath.analyzer` | Analytical | REGISTERED — build may proceed |
+| `flowpath.domain-translator` | Analytical | REGISTERED — build may proceed |
+
+**`flowpath.coordinator`** — Orchestrates the full elicitation lifecycle. Routes between interviewer, mapper, validator, analyzer, and domain-translator. Manages session state. Does not call the LLM for reasoning — routing and state management only. Logger events: FLOWPATH_SESSION_STARTED, FLOWPATH_SESSION_COMPLETE.
+
+**`flowpath.interviewer`** — The primary elicitation agent. Operates in two modes: (1) organizational mode — conducts structured multi-turn dialogue with subject matter experts to surface actual operational workflows (PR-FLOWPATH-001); (2) individual mode — conducts private workstyle elicitation sessions with analysts, delivering the trust statement verbatim before the first question (PR-FLOWPATH-002). All calls route through createSovereignClient().
+
+**`flowpath.mapper`** — Converts interviewer output into structured WorkflowArtifact objects conforming to the SOVEREIGN data dictionary. Also produces OrganizationalVocabulary, DataSourceRegistry, and ValidationCadenceRecord alongside each workflow artifact. Logger events: FLOWPATH_ARTIFACT_PRODUCED, FLOWPATH_VOCABULARY_CAPTURED, FLOWPATH_DATASOURCE_REGISTERED, FLOWPATH_VALIDATION_CADENCE_SET.
+
+**`flowpath.validator`** — Runs the Five-Question Completeness Gate on mapper output. Also validates that individual AnalystWorkstyleProfile thresholds are not looser than organizational defaults. Logger events: FLOWPATH_GATE_FAILED, FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT. Prompt: PR-FLOWPATH-003.
+
+**`flowpath.analyzer`** — Produces bottleneck, exception path, and dependency risk findings from completed, gate-passed WorkflowArtifact objects. Output is advisory only — never modifies the workflow. Prompt: PR-FLOWPATH-004.
+
+**`flowpath.domain-translator`** — Reviews all inter-agent content for vocabulary divergence and maintains the terminology flag log. Flags when an analyst's vocabulary usage differs from the organizational vocabulary standard.
+
+**Scope constraint (all six):** No FLOWPATH agent modifies any upstream product data. No FLOWPATH agent builds PPBE workflow artifacts until governance decisions D-P1 through D-P6 are recorded. AnalystWorkstyleProfile data is data_classification: user — analyst_id hashed before logging, no admin read path.
+
+**Data classification:** OrganizationalVocabulary and WorkflowArtifact records are platform-level governance data. AnalystWorkstyleProfile records are data_classification: user.
+
+**Monitoring tier:** Standard for all six.
+
+---
+
+## Updated Agent Count — 21 Total (15 prior + 6 FLOWPATH)
+
+*Integration Brief v1.28 incorrectly stated 18 registered agents. The correct count after this registration is 21: 15 previously registered (AgentOS 6, CPMI 3, companion suite 4, APEX 2) + 6 FLOWPATH = 21. The Brief will be corrected in v1.29.*
+
+---
+
+*Agent Identity Standard — FLOWPATH Module Additions*
+*June 26, 2026 · Approved by Project Principal*
+*Pre-Decisional · Internal Working Document*
