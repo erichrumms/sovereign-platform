@@ -53,7 +53,9 @@ const ENTRY_POINTS: Array<{ id: WorkstyleEntryPoint; label: string }> = [
 const WORKSTYLE_QUESTIONS = {
   firstLook: "When you look at a program that's flagged as at risk, what do you look at first?",
   trustVsVerify: "Is there a type of finding you trust immediately versus one you always want to verify yourself?",
-  programContext: "Are there programs you know well enough that the history changes how you read the data?",
+  // WC-5: rewritten — the prior phrasing ("know well enough that the history changes how you read
+  // the data") was ambiguous about what was being asked.
+  programContext: "Are there programs you've reviewed long enough that you know what's normal for them?",
   costThreshold: "If you set your own concern threshold for cost variance, what would it be?",
 } as const;
 

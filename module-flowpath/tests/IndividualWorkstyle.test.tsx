@@ -43,6 +43,16 @@ describe("IndividualWorkstyle (Screen 4)", () => {
     expect(screen.getByText(/never shared with administrators/i)).toBeInTheDocument();
   });
 
+  it("WC-5: asks the rewritten, unambiguous program-familiarity question", () => {
+    render(<IndividualWorkstyle ctx={makeCtx({ employee_id: EMP })} />);
+    acknowledge();
+    expect(
+      screen.getByLabelText("Are there programs you've reviewed long enough that you know what's normal for them?")
+    ).toBeInTheDocument();
+    // The prior ambiguous phrasing is gone.
+    expect(screen.queryByLabelText(/the history changes how you read the data/i)).not.toBeInTheDocument();
+  });
+
   it("offers three entry points (initial / post-review / annual refresh)", () => {
     render(<IndividualWorkstyle ctx={makeCtx({ employee_id: EMP })} />);
     expect(screen.getByRole("button", { name: /initial elicitation/i })).toBeInTheDocument();
