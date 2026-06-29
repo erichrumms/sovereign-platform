@@ -9,6 +9,12 @@
  * six product-intake modes; the Output Studio external path is a later deliverable.
  *
  * On approval the hook:
+ *   0. CLEAR export gate (ARIA Suite, GD-20): if the draft targets an existing pipeline
+ *      document (source.context.documentId present), the document must hold a positive
+ *      CLEAR certification on the shell certification surface (ctx.aria.isCertified). An
+ *      uncertified document is blocked from export with a plain-prose notice — a
+ *      compliance reviewer must certify it in the ARIA Suite Certification Queue first.
+ *      Drafts with no documentId (new authored content) are not subject to the gate.
  *   1. Re-validates the (human-edited) draft against the mode's @sovereign/data
  *      schema — defense in depth; never trusts the UI's enable/disable alone.
  *   2. Emits a HUMAN_DECISION Logger event (approved event type) carrying the
@@ -67,6 +73,19 @@ export function useExport(ctx: SovereignShellContext): UseExport {
   const approve = useCallback(
     (input: ExportInput): boolean => {
       setError(null);
+
+      // --- CLEAR export gate (ARIA Suite, GD-20): an existing pipeline document must be
+      // certified by CLEAR before it can leave the platform. New drafts (no documentId)
+      // carry no certifiable pipeline identity and are not gated here. ---
+      const documentId = input.source.context?.documentId;
+      if (documentId && !ctx.aria.isCertified(documentId)) {
+        setError(
+          "Export blocked — this document has not been certified by CLEAR. A compliance reviewer " +
+            "must certify it in the ARIA Suite Certification Queue before it can be exported."
+        );
+        setStatus("error");
+        return false;
+      }
 
       // --- Gate 3: schema must validate before anything is exported ---
       const check = validateModeOutput(input.mode, input.draft);

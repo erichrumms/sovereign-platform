@@ -8,13 +8,14 @@
  *   - TRACER — Traceability and Accountability Chain for Evidence Records (traceability)
  *   - ARC    — Adaptive Regulatory Change engine (regulatory-impact modeling)
  *
- * Session 22 (D4) SCOPE: scaffold only. Each panel is a placeholder describing the component and
- * the Session in which its logic lands (CLEAR S23, TRACER S24, ARC S25 — docs/16 §9). No CLEAR /
- * TRACER / ARC rule logic is built here. Every screen is built to Gap 5/6 from the first line of
- * code: the ARIA determinism notice and GD-10 boundary are Category 2 (permanent, blue);
+ * Session 22 (D4) SCOPE: scaffold only. TRACER and ARC remain placeholders describing the
+ * component and the Session in which their logic lands (TRACER S24, ARC S25 — docs/16 §9).
+ * Session 23 (D2/D3): the CLEAR tab now renders the live ClearPanel — the Compliance Dashboard
+ * and the Certification Queue — replacing its scaffold placeholder. Every screen is built to
+ * Gap 5/6: the ARIA determinism notice and GD-10 boundary are Category 2 (permanent, blue);
  * substantive content sits in white cards on the light page canvas (Category 3 / Primary).
  *
- * Version: 1.0 · Session 22 (D4 scaffold) · June 29, 2026
+ * Version: 1.1 · Session 23 (CLEAR live) · June 29, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -30,6 +31,7 @@ import {
   titleStyle,
   subtitleStyle,
 } from "./banners";
+import { ClearPanel } from "./ClearPanel";
 
 export interface AriaAppProps {
   ctx: SovereignShellContext;
@@ -99,19 +101,8 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
         })}
       </nav>
 
-      {/* Category 3 — substantive content (Primary): one placeholder panel per ARIA component. */}
-      {tab === "clear" && (
-        <PlaceholderPanel
-          heading="CLEAR"
-          summary="Continuous Legal and Regulatory Evaluation and Assessment Review. CLEAR runs continuously, checking platform operations against the applicable regulatory framework and flagging deviations before they cascade — not after a quarterly audit, but as they happen."
-          surfaces={[
-            "A live compliance dashboard across output, process, and data-quality monitoring.",
-            "A certification queue: documents and exhibits awaiting CLEAR clearance before export.",
-            "Each item linked to the specific regulation, the specific output, and the specific deviation.",
-          ]}
-          arrivingIn="Scaffold only this session — CLEAR's rule evaluation engine and its two panels arrive in Session 23."
-        />
-      )}
+      {/* Category 3 — substantive content (Primary). CLEAR is live (S23); TRACER/ARC scaffold. */}
+      {tab === "clear" && <ClearPanel ctx={ctx} />}
       {tab === "tracer" && (
         <PlaceholderPanel
           heading="TRACER"

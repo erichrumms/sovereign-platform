@@ -38,11 +38,12 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     expect(screen.getByRole("tab", { name: "ARC" })).toBeInTheDocument();
   });
 
-  it("defaults to the CLEAR panel", () => {
+  it("defaults to the live CLEAR panel (Compliance Dashboard)", () => {
     render(<AriaApp ctx={makeCtx()} />);
-    expect(screen.getByTestId("aria-panel-clear")).toBeInTheDocument();
+    expect(screen.getByTestId("clear-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("clear-dashboard")).toBeInTheDocument();
     expect(screen.queryByTestId("aria-panel-tracer")).not.toBeInTheDocument();
-    expect(screen.getByText(/Continuous Legal and Regulatory Evaluation/i)).toBeInTheDocument();
+    expect(screen.getByText(/Output compliance/i)).toBeInTheDocument();
   });
 
   it("routes to the TRACER panel via its tab", () => {
@@ -64,8 +65,8 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     const { container } = render(<AriaApp ctx={makeCtx()} />);
     // Category 2 (blue) guardrails present.
     expect(container.querySelectorAll('[data-category="2-governance"]').length).toBeGreaterThanOrEqual(2);
-    // Category 3 (Primary) substantive content in a white card.
-    const card = screen.getByTestId("aria-panel-clear");
+    // Category 3 (Primary) substantive content in a white card (the live CLEAR dashboard surface).
+    const card = screen.getByTestId("clear-surface-output");
     expect(card).toHaveStyle({ background: "#ffffff" });
   });
 
