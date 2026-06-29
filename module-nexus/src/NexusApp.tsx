@@ -9,14 +9,21 @@
  * boundary notice — with two tabs: Request Intake and the Request Queue (which shows the
  * selected request's detail).
  *
- * Version: 1.0 · Session 15 · June 24, 2026
+ * Item 57 (Session 22, D2): the AgentOS hand-off uses the LIVE AgentOS-backed port
+ * (createAgentOSBackedPort) instead of the Session 15 synthetic dev port. The live port creates
+ * a real AgentOS task, emits AGENTOS_TASK_ASSIGNED, and — via GD-19's shared task surface
+ * (ctx.taskSurface, the ninth shell export) — publishes the task so it appears in the AgentOS
+ * Task Registry panel. This is a configuration change at the composition root, not a NEXUS
+ * rewrite (Standing Constraint #3); useRequestRegistry still consumes the injected AgentOSPort.
+ *
+ * Version: 1.1 · Session 22 (D2) · June 29, 2026
  */
 
 import { useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { useRequestRegistry } from "./useRequestRegistry";
-import { createSyntheticAgentOSPort } from "./agentos-port";
+import { createAgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
 import { RequestIntakePanel } from "./RequestIntakePanel";
 import { RequestQueuePanel } from "./RequestQueuePanel";
 
@@ -32,7 +39,10 @@ const TABS: Array<{ id: Tab; label: string }> = [
 ];
 
 export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
-  const port = useMemo(() => createSyntheticAgentOSPort(), []);
+  // Live AgentOS-backed port (Item 57): captures the shell ctx so its submitTask creates a real
+  // AgentOS task and publishes it to ctx.taskSurface. Stable across renders (the request lifecycle
+  // and AgentOS task store live behind it), mirroring the prior synthetic port's identity.
+  const port = useMemo(() => createAgentOSBackedPort(ctx), [ctx]);
   const registry = useRequestRegistry(ctx, port);
   const [tab, setTab] = useState<Tab>("intake");
   const [selectedId, setSelectedId] = useState<string | null>(null);

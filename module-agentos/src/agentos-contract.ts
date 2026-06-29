@@ -19,21 +19,22 @@ import type { ValidationResult } from "@sovereign/data";
 import { CLEARANCE_LEVELS } from "@sovereign/data";
 import type { ClearanceLevel } from "@sovereign/api-client";
 
-import type { SovereignEventType, HumanDecisionType } from "../../sovereign-shell/shell-contract";
+import type {
+  SovereignEventType,
+  HumanDecisionType,
+  SovereignProduct,
+  SharedTaskStatus,
+} from "../../sovereign-shell/shell-contract";
 
 // ============================================================
 // TASK LIFECYCLE STATES (spec §3.2)
 // ============================================================
 
-export type TaskStatus =
-  | "CREATED"
-  | "ASSIGNED"
-  | "PENDING_APPROVAL"
-  | "APPROVED"
-  | "REJECTED"
-  | "IN_PROGRESS"
-  | "COMPLETE"
-  | "CANCELLED";
+// GD-19 (shell-contract v1.14): TaskStatus is the canonical cross-product task-status
+// taxonomy SharedTaskStatus, re-exported here under the AgentOS name. The eight members
+// are unchanged — this is a Constraint #2 alias (one definition, no divergent duplicate),
+// so every existing exhaustive switch over TaskStatus still compiles.
+export type TaskStatus = SharedTaskStatus;
 
 /** Runtime mirror of the TaskStatus union (validation / UI reuse). */
 export const TASK_STATUSES: readonly TaskStatus[] = [
@@ -156,6 +157,13 @@ export interface Task {
   created_at: string;
   updated_at: string;
   workflow_step_id: string;
+  // GD-19 (v1.14) — provenance for a task that arrived from another product via the shared
+  // task surface (e.g. a NEXUS-routed task). Undefined for AgentOS-native tasks created here.
+  // A task with an origin_product is owned by that product: AgentOS displays it but does not
+  // drive its lifecycle (no local Cancel), so the audit trail stays single-owner.
+  origin_product?: SovereignProduct;
+  /** The originating product's native id for this work (e.g. NEXUS request_id) — traceability. */
+  origin_request_id?: string;
 }
 
 /** The fields a caller supplies to create a task; the registry fills in the rest. */

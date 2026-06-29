@@ -42,14 +42,24 @@ describe("NexusApp", () => {
     const row = screen.getByText(/Q3 compliance review/).closest("tr")!;
     expect(within(row).getByText("COMPLETE")).toBeInTheDocument();
 
+    // Item 57 (D2): the live AgentOS-backed port creates a real AgentOS task on the way into
+    // IN_PROGRESS, so AGENTOS_TASK_ASSIGNED now appears in the trail (the Session 15 synthetic
+    // port emitted nothing). This is the convergence: the NEXUS hand-off is a real AgentOS task.
     expect(logSink.map((e) => e.event_type)).toEqual([
       "NEXUS_REQUEST_SUBMITTED",
       "NEXUS_REQUEST_ROUTED",
       "NEXUS_APPROVAL_PENDING",
       "NEXUS_REQUEST_IN_PROGRESS",
+      "AGENTOS_TASK_ASSIGNED",
       "NEXUS_REQUEST_COMPLETE",
     ]);
-    expect(logSink.every((e) => e.workflow_step_id === "nexus-request-req-1")).toBe(true);
+    // The NEXUS lifecycle events all share the request workflow_step_id; the AgentOS task
+    // carries its own (traceable) workflow_step_id that ties the hand-off together (Constraint #6).
+    expect(logSink.filter((e) => e.product === "NEXUS").every((e) => e.workflow_step_id === "nexus-request-req-1")).toBe(true);
+    const assigned = logSink.find((e) => e.event_type === "AGENTOS_TASK_ASSIGNED")!;
+    expect(assigned.product).toBe("AGENTOS");
+    expect(assigned.workflow_step_id).toBe("agentos-task-nexus-req-1");
+    expect(assigned.payload.request_id).toBe("req-1");
   });
 
   it("drives a DOCUMENT_REVIEW request through the no-approval path (Route → Start → Complete)", () => {

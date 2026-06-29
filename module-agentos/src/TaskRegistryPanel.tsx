@@ -92,14 +92,23 @@ export function TaskRegistryPanel({ registry }: TaskRegistryPanelProps): JSX.Ele
           </thead>
           <tbody>
             {registry.tasks.map((task) => (
-              <tr key={task.task_id}>
-                <td style={tdStyle}><strong>{task.task_id}</strong> — {task.title}</td>
+              <tr key={task.task_id} data-origin={task.origin_product ?? "AGENTOS"}>
+                <td style={tdStyle}>
+                  <strong>{task.task_id}</strong> — {task.title}
+                  {task.origin_product ? (
+                    <span style={originTagStyle}>
+                      from {task.origin_product}{task.origin_request_id ? ` · ${task.origin_request_id}` : ""}
+                    </span>
+                  ) : null}
+                </td>
                 <td style={tdStyle}><span style={badgeStyle(task.status)}>{task.status}</span></td>
                 <td style={tdStyle}>{task.data_classification}</td>
                 <td style={tdStyle}>{task.assigned_agent_id ?? "—"}</td>
                 <td style={tdStyle}>{task.requires_approval ? "required" : "not required"}</td>
                 <td style={tdStyle}>
-                  {!isTerminal(task.status) ? (
+                  {/* A task routed in from another product is owned there — AgentOS shows it but
+                      does not drive its lifecycle, so no local Cancel (single-owner audit trail). */}
+                  {!isTerminal(task.status) && !task.origin_product ? (
                     <button type="button" onClick={() => registry.cancel(task.task_id)} style={cancelBtnStyle}>
                       Cancel
                     </button>
@@ -140,5 +149,6 @@ const badgeStyle = (status: TaskStatus): CSSProperties => {
   return { display: "inline-block", padding: "2px 8px", borderRadius: 999, fontSize: 11, fontWeight: 700, color, background };
 };
 const cancelBtnStyle: CSSProperties = { padding: "3px 10px", borderRadius: 6, border: "1px solid #fca5a5", background: "#fff", color: "#b91c1c", cursor: "pointer", fontSize: 12 };
+const originTagStyle: CSSProperties = { display: "inline-block", marginLeft: 8, padding: "1px 6px", borderRadius: 999, fontSize: 10, fontWeight: 700, color: "#1e40af", background: "#dbeafe" };
 
 export default TaskRegistryPanel;

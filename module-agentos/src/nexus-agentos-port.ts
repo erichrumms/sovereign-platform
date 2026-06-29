@@ -22,16 +22,19 @@
  * ungoverned task entry). submitTask never throws (it returns the id string the port contract
  * requires) so it cannot break the NEXUS handler that already logged NEXUS_REQUEST_IN_PROGRESS.
  *
- * SCOPE BOUNDARY (documented, not built this session): this backing makes the hand-off real at
- * the Logger/audit-trail + task-entry level. Surfacing the created task inside the AgentOS UI
- * panel requires a task store shared between this port and module-agentos's `useTaskRegistry`
- * hook — i.e. a shell-level shared-state surface (Standing Constraint #7 — shell context frozen
- * at eight exports) — which is a shell-contract design decision not authorized this session.
+ * SCOPE BOUNDARY CLOSED (Session 22, D2 / GD-19): the Session 18 note said surfacing the created
+ * task inside the AgentOS UI panel needed a task store shared between this port and AgentOS's
+ * `useTaskRegistry` — a shell-level shared-state surface, which shell context did not provide
+ * (then frozen at eight exports). GD-19 (shell-contract v1.14) adds that surface as the ninth
+ * export, `ctx.taskSurface`. This port now PUBLISHES each created AgentOS task to it as a
+ * SharedTask, so the AgentOS Task Registry panel (which subscribes to the surface) shows the
+ * NEXUS-routed task. Publication is additive and carries no governance authority of its own
+ * (Constraint #1) — the AGENTOS_TASK_ASSIGNED emit above is still the governed record.
  *
- * Version: 1.0 · Session 18 · June 26, 2026
+ * Version: 1.1 · Session 22 (D2) · June 29, 2026
  */
 
-import type { SovereignShellContext, SovereignLogEvent, ClearanceLevel } from "../../sovereign-shell/shell-contract";
+import type { SovereignShellContext, SovereignLogEvent, ClearanceLevel, SharedTask } from "../../sovereign-shell/shell-contract";
 import type { AgentOSPort, AgentOSSubmitInput } from "../../module-nexus/src/agentos-port";
 
 import { type Task, type TaskStatus, eventTypeForTransition, taskWorkflowStep } from "./agentos-contract";
@@ -110,6 +113,26 @@ export function createAgentOSBackedPort(ctx: SovereignShellContext): AgentOSBack
       return workflowStep; // not stored; getTaskStatus will report CREATED
     }
     tasksByWorkflowStep.set(workflowStep, assigned);
+
+    // GD-19 (D2): publish the now-governed task to the shared task surface so the AgentOS
+    // Task Registry panel shows it. Optional-chained so a partial test ctx without the ninth
+    // export degrades gracefully (no surface = Logger/task-entry behaviour only, as in S18).
+    const shared: SharedTask = {
+      task_id: assigned.task_id, // nexus-<request_id>
+      title: assigned.title,
+      description: assigned.description,
+      status: assigned.status, // ASSIGNED
+      origin_product: "NEXUS",
+      assigned_agent_id: assigned.assigned_agent_id,
+      requires_approval: assigned.requires_approval,
+      data_classification: assigned.data_classification,
+      workflow_step_id: assigned.workflow_step_id,
+      origin_request_id: input.request_id,
+      created_at: assigned.created_at,
+      updated_at: assigned.updated_at,
+    };
+    ctx.taskSurface?.publish(shared);
+
     return workflowStep;
   };
 

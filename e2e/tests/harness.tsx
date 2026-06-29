@@ -17,6 +17,8 @@ import type {
   SovereignShellContext,
   SovereignRole,
   SovereignLogEvent,
+  SharedTask,
+  TaskSurface,
 } from "../../sovereign-shell/shell-contract";
 
 import { useRequestRegistry } from "../../module-nexus/src/useRequestRegistry";
@@ -26,9 +28,25 @@ import { useAgentDispatcher } from "../../module-agentos/src/useAgentDispatcher"
 import { createAgentOSBackedPort, type AgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "../../module-apex/src/apex-data-adapter";
 
+/** A minimal in-memory TaskSurface (GD-19 ninth export) so the live AgentOS-backed port publishes. */
+function createInMemoryTaskSurface(): TaskSurface {
+  const tasks = new Map<string, SharedTask>();
+  const listeners = new Set<(t: readonly SharedTask[]) => void>();
+  const snapshot = (): readonly SharedTask[] => Array.from(tasks.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (task) => { tasks.set(task.task_id, task); notify(); },
+    update: (id, patch) => { const t = tasks.get(id); if (!t) return; tasks.set(id, { ...t, ...patch, task_id: id }); notify(); },
+    list: () => snapshot(),
+    get: (id) => tasks.get(id),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
 export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
   const role: SovereignRole = "SYSTEM_ADMIN";
   return {
+    taskSurface: createInMemoryTaskSurface(),
     auth: {
       user: { employee_id: "E-001", name: "E2E Operator", org_unit: "Platform", role, clearance_level: "UNCLASSIFIED", cost_code_assignments: [] },
       token: "test-token",

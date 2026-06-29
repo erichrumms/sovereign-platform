@@ -16,9 +16,9 @@
  * Version: 1.0 · Session 14 · June 24, 2026
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { SovereignShellContext, SovereignLogEvent } from "../../sovereign-shell/shell-contract";
+import type { SovereignShellContext, SovereignLogEvent, SharedTask } from "../../sovereign-shell/shell-contract";
 import {
   type Task,
   type TaskStatus,
@@ -54,10 +54,60 @@ export interface UseTaskRegistry {
   clearError: () => void;
 }
 
+/**
+ * True when two SharedTask snapshots are equivalent for rendering (same ids, statuses, and
+ * updated_at, in order). Used to bail out of a state update when the surface hands back an
+ * unchanged set — this keeps the subscribe effect from looping if the ctx (and thus the
+ * surface) identity changes every render (a common renderHook(makeCtx()) test pattern).
+ */
+function sameTaskList(a: readonly SharedTask[], b: readonly SharedTask[]): boolean {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    if (a[i].task_id !== b[i].task_id || a[i].status !== b[i].status || a[i].updated_at !== b[i].updated_at) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Convert a cross-product SharedTask (e.g. a NEXUS-routed task) into a renderable AgentOS Task. */
+function sharedToTask(s: SharedTask): Task {
+  return {
+    task_id: s.task_id,
+    title: s.title,
+    description: s.description,
+    status: s.status,
+    assigned_agent_id: s.assigned_agent_id,
+    requires_approval: s.requires_approval,
+    data_classification: s.data_classification,
+    created_at: s.created_at,
+    updated_at: s.updated_at,
+    workflow_step_id: s.workflow_step_id,
+    origin_product: s.origin_product,
+    origin_request_id: s.origin_request_id,
+  };
+}
+
 export function useTaskRegistry(ctx: SovereignShellContext): UseTaskRegistry {
   const tasksRef = useRef<Task[]>([]);
   const [tasks, setTasksState] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // GD-19 (D2): mirror the shared task surface so tasks routed in from other products
+  // (e.g. a NEXUS work request handed to AgentOS) appear in the Task Registry. The surface
+  // is the ninth shell export; optional-guarded so a partial test ctx degrades to local-only.
+  const surface = ctx.taskSurface;
+  const [surfaceTasks, setSurfaceTasks] = useState<readonly SharedTask[]>(() => surface?.list() ?? []);
+  useEffect(() => {
+    if (!surface) return;
+    // Bail out when the set is unchanged so re-running this effect (e.g. when a test supplies a
+    // fresh ctx/surface every render) never triggers an extra render — no setState, no loop.
+    const sync = (next: readonly SharedTask[]): void =>
+      setSurfaceTasks((prev) => (sameTaskList(prev, next) ? prev : next));
+    sync(surface.list());
+    return surface.subscribe(sync);
+  }, [surface]);
 
   const operatorId = ctx.auth.user.employee_id;
   const operatorName = ctx.auth.user.name;
@@ -145,7 +195,16 @@ export function useTaskRegistry(ctx: SovereignShellContext): UseTaskRegistry {
   const cancel = useCallback((taskId: string) => runTransition(taskId, "CANCELLED"), [runTransition]);
   const clearError = useCallback((): void => setError(null), []);
 
-  return { tasks, error, create, assign, requestApproval, approve, reject, start, complete, cancel, clearError };
+  // Merge local AgentOS tasks with surface-published tasks from other products. Local tasks
+  // win on id collision (AgentOS owns its own task there); external tasks are appended so a
+  // NEXUS-routed task is visible without being locally driveable (see Task.origin_product).
+  const mergedTasks = useMemo<Task[]>(() => {
+    const localIds = new Set(tasks.map((t) => t.task_id));
+    const external = surfaceTasks.filter((s) => !localIds.has(s.task_id)).map(sharedToTask);
+    return external.length === 0 ? tasks : [...tasks, ...external];
+  }, [tasks, surfaceTasks]);
+
+  return { tasks: mergedTasks, error, create, assign, requestApproval, approve, reject, start, complete, cancel, clearError };
 }
 
 function transitionEmitError(to: TaskStatus, err: unknown): string {
