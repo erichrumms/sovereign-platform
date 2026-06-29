@@ -25,6 +25,7 @@ import { agentosModule } from "@sovereign/module-agentos";
 import { nexusModule } from "@sovereign/module-nexus";
 import { apexModule } from "@sovereign/module-apex";
 import { flowpathModule } from "@sovereign/module-flowpath";
+import { ariaModule } from "@sovereign/module-aria";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -75,4 +76,11 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // six FLOWPATH agents (all Analytical), in Agent_Identity_Standard.md (Constraint #10).
   // module-flowpath/FLOWPATH is pre-wired in the loader's MODULE_PRODUCT map.
   loader.register(flowpathModule);
+  // ARIA Suite — compliance / traceability / regulatory-impact layer (primary product, Stage 6),
+  // scaffold (Session 22, D4): AriaApp shell + banners + CLEAR/TRACER/ARC placeholder panels.
+  // Role gate minimumRole PLATFORM_ADMIN → the loader's fail-closed policy admits
+  // PLATFORM_ADMIN/SYSTEM_ADMIN only. Registers the deterministic aria.rules-engine (Governance),
+  // in Agent_Identity_Standard.md (Constraint #10). module-aria/ARIA is pre-wired in the loader's
+  // MODULE_PRODUCT map. CLEAR/TRACER/ARC logic arrives in Sessions 23–25.
+  loader.register(ariaModule);
 }
