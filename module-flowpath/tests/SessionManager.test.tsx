@@ -100,6 +100,16 @@ describe("SessionManager (Screen 1)", () => {
     expect(onOpenSession).not.toHaveBeenCalled();
   });
 
+  it("WC-2: gate-passed sessions are visually prominent; in-progress sessions are muted", () => {
+    render(<SessionManager ctx={makeCtx()} />);
+    const actionable = screen.getByText(/Operational workflow — with the Program Analyst/i).closest("li") as HTMLElement;
+    const muted = screen.getByText(/Validation cadence — with the Senior Program Analyst/i).closest("li") as HTMLElement;
+    // Prominent: white card with a blue accent rail.
+    expect(actionable).toHaveStyle({ background: "#ffffff", borderLeft: "4px solid #2563eb" });
+    // Muted: flat recessed card, no blue accent.
+    expect(muted).toHaveStyle({ background: "#f8fafc", borderLeft: "4px solid #e2e8f0" });
+  });
+
   it("isActionableSession is true only for a gate-passed COMPLETE session", () => {
     expect(isActionableSession({ ...SYNTHETIC_SESSIONS[0], status: "COMPLETE", gate_passed: true })).toBe(true);
     expect(isActionableSession({ ...SYNTHETIC_SESSIONS[0], status: "GATE_PENDING", gate_passed: false })).toBe(false);

@@ -144,7 +144,9 @@ export function SessionManager({ ctx, initialSessions, approvedSessionIds = [], 
               return (
                 <li
                   key={s.session_id}
-                  style={{ ...rowStyle, cursor: open ? "pointer" : "default" }}
+                  // WC-2: gate-passed sessions are visually prominent (actionable); in-progress /
+                  // gate-pending sessions are muted, so a reviewer sees what to act on at a glance.
+                  style={{ ...(actionable ? actionableRowStyle : mutedRowStyle), cursor: open ? "pointer" : "default" }}
                   data-session-id={s.session_id}
                   data-actionable={actionable}
                   onClick={open}
@@ -184,7 +186,25 @@ export function SessionManager({ ctx, initialSessions, approvedSessionIds = [], 
 const headerRowStyle: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 4 };
 const primaryButtonStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, fontWeight: 600, color: "#fff", background: "#2563eb", border: "1px solid #1d4ed8", borderRadius: 8, cursor: "pointer" };
 const listStyle: CSSProperties = { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 };
-const rowStyle: CSSProperties = { padding: "12px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, color: "#0f172a" };
+// WC-2 — actionable (gate-passed): prominent white card with a blue accent rail and a soft lift.
+const actionableRowStyle: CSSProperties = {
+  padding: "12px 14px",
+  background: "#ffffff",
+  border: "1px solid #bfdbfe",
+  borderLeft: "4px solid #2563eb",
+  borderRadius: 8,
+  color: "#0f172a",
+  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
+};
+// WC-2 — non-actionable (in-progress / gate-pending): muted, flat, recessed; still AA-legible.
+const mutedRowStyle: CSSProperties = {
+  padding: "12px 14px",
+  background: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderLeft: "4px solid #e2e8f0",
+  borderRadius: 8,
+  color: "#475569",
+};
 const metaStyle: CSSProperties = { color: "#475569", fontSize: 13, marginTop: 2 };
 const openCueStyle: CSSProperties = { color: "#2563eb", fontSize: 13, fontWeight: 600, marginTop: 6 };
 
