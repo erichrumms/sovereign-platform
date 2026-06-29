@@ -40,13 +40,18 @@ export interface ElicitationDialogueProps {
   complete?: MapperDeps["complete"];
 }
 
-/** The interviewer's questions, in plain domain language (Gap 5 — no SOVEREIGN internals). */
+/**
+ * The interviewer's questions, in plain domain language (Gap 5 — no SOVEREIGN internals).
+ * WC-4: phrased for knowledge work as a federal program analyst experiences it (program review
+ * and oversight), not a production line. The five map to WHO / SEQUENCE / CONDITIONS /
+ * INPUTS_OUTPUTS / TERMINAL.
+ */
 const QUESTION_PROMPTS: Record<FiveQuestionId, string> = {
-  WHO: "Who does the work — which role is responsible for each step?",
-  SEQUENCE: "In what order do the steps happen?",
-  CONDITIONS: "What has to be true for the work to start, and what decisions branch it?",
-  INPUTS_OUTPUTS: "What does the work take in, and what does it produce?",
-  TERMINAL: "How do you know the work is finished?",
+  WHO: "Which role is responsible for each part of this work?",
+  SEQUENCE: "In what order do these steps happen across a review cycle?",
+  CONDITIONS: "What needs to be in place before the work can begin, and what decisions send it down a different path?",
+  INPUTS_OUTPUTS: "What information and records does each step rely on, and what does it produce?",
+  TERMINAL: "How do you know the work is complete and ready to hand off?",
 };
 
 export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDialogueProps): JSX.Element {

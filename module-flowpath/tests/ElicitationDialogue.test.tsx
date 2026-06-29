@@ -13,12 +13,13 @@ import { artifactWorkflowStep } from "../src/flowpath-contract";
 import { SYNTHETIC_SESSION_ID } from "../src/synthetic-elicitation";
 import { makeCtx } from "./test-helpers";
 
+// WC-4: knowledge-work phrasing (federal program analyst), not production-line language.
 const QUESTIONS = [
-  "Who does the work — which role is responsible for each step?",
-  "In what order do the steps happen?",
-  "What has to be true for the work to start, and what decisions branch it?",
-  "What does the work take in, and what does it produce?",
-  "How do you know the work is finished?",
+  "Which role is responsible for each part of this work?",
+  "In what order do these steps happen across a review cycle?",
+  "What needs to be in place before the work can begin, and what decisions send it down a different path?",
+  "What information and records does each step rely on, and what does it produce?",
+  "How do you know the work is complete and ready to hand off?",
 ];
 
 /** A deterministic offline LLM call: provider fallback → the static mapper tier. */
