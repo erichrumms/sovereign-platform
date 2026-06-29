@@ -428,3 +428,64 @@ class TestConfigurationFallback:
 
     def test_remote_sink_not_configured_by_default(self, logger):
         assert logger.remote_sink_configured is False
+
+
+# ─────────────────────────────────────────────────────────────
+# GD-20 — ARIA Suite / CLEAR taxonomy (shell-contract v1.15, June 29, 2026)
+# Four ARIA CLEAR event types + COMPLIANCE_CERTIFICATION, synced per Constraint #11.
+# ─────────────────────────────────────────────────────────────
+
+ARIA_CLEAR_EVENT_TYPES = [
+    "ARIA_COMPLIANCE_CHECK",
+    "ARIA_CERTIFICATION_ISSUED",
+    "ARIA_VIOLATION_FLAGGED",
+    "ARIA_CALENDAR_ALERT",
+]
+
+
+class TestGD20AriaClearTaxonomy:
+
+    def test_four_aria_event_types_in_taxonomy(self):
+        for event_type in ARIA_CLEAR_EVENT_TYPES:
+            assert event_type in APPROVED_EVENT_TYPES
+
+    def test_compliance_certification_in_decision_taxonomy(self):
+        assert "COMPLIANCE_CERTIFICATION" in APPROVED_DECISION_TYPES
+
+    def test_taxonomy_counts_advanced_to_v1_15(self):
+        # v1.14 held 75 event types and 18 decision types; GD-20 advances them to 79 / 19.
+        assert len(APPROVED_EVENT_TYPES) == 79
+        assert len(APPROVED_DECISION_TYPES) == 19
+
+    def test_aria_event_types_accepted_under_product_aria(self, logger):
+        for event_type in ARIA_CLEAR_EVENT_TYPES:
+            entry = logger.log(**minimal_event({
+                "event_type": event_type,
+                "product": "ARIA",
+                "workflow_step_id": "aria-clear-DOC-1",
+                "actor_id": "aria.rules-engine",
+                "outcome": "compliant",
+            }))
+            assert entry["event_type"] == event_type
+            assert entry["product"] == "ARIA"
+
+    def test_compliance_certification_accepted_on_human_decision(self, logger):
+        entry = logger.log(**minimal_event({
+            "event_type": "HUMAN_DECISION",
+            "product": "ARIA",
+            "workflow_step_id": "aria-clear-DOC-1",
+            "decision_type": "COMPLIANCE_CERTIFICATION",
+            "actor": "human",
+            "actor_name": "Robin Compliance",
+            "outcome": "certified",
+        }))
+        assert entry["decision_type"] == "COMPLIANCE_CERTIFICATION"
+        assert entry["actor"] == "human"
+
+    def test_no_regression_existing_types_still_present(self):
+        # A spot check that the GD-20 additions did not displace prior taxonomy members.
+        for prior in ["HUMAN_DECISION", "VOICE_CAPTURE_COMPLETED", "FLOWPATH_SESSION_STARTED",
+                      "APEX_REPORT_GENERATED"]:
+            assert prior in APPROVED_EVENT_TYPES
+        for prior in ["HUMAN_APPROVAL", "REPORT_ATTESTATION", "VALIDATION_SIGN_OFF"]:
+            assert prior in APPROVED_DECISION_TYPES
