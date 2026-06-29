@@ -5,12 +5,12 @@
  * plain prose (Gap 5); the new-session button is present and logs FLOWPATH_SESSION_STARTED and adds
  * a row; substantive content renders in a white card (contrast / Gap 6 Category 3).
  */
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
-import { SessionManager, gateStatusProse } from "../src/SessionManager";
+import { SessionManager, gateStatusProse, isActionableSession } from "../src/SessionManager";
 import { sessionWorkflowStep, FLOWPATH_COORDINATOR } from "../src/flowpath-contract";
-import { SYNTHETIC_SESSIONS } from "../src/synthetic-elicitation";
+import { SYNTHETIC_SESSIONS, SYNTHETIC_SESSION_ID } from "../src/synthetic-elicitation";
 import { makeCtx } from "./test-helpers";
 
 describe("SessionManager (Screen 1)", () => {
@@ -78,6 +78,32 @@ describe("SessionManager (Screen 1)", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(before + 1);
     // The new row plus the pre-existing in-progress session both read "Elicitation in progress."
     expect(screen.getAllByText(/Elicitation in progress\./i).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("WC-1: clicking a gate-passed session opens it for artifact review", () => {
+    const onOpenSession = jest.fn();
+    render(<SessionManager ctx={makeCtx()} onOpenSession={onOpenSession} />);
+    // The operational synthetic session is gate-passed (actionable).
+    const row = screen.getByText(/Operational workflow — with the Program Analyst/i).closest("li")!;
+    expect(row.getAttribute("data-actionable")).toBe("true");
+    expect(within(row).getByText(/Open for artifact review/i)).toBeInTheDocument();
+    fireEvent.click(row);
+    expect(onOpenSession).toHaveBeenCalledWith(SYNTHETIC_SESSION_ID);
+  });
+
+  it("WC-1: a gate-pending session is not actionable and does not open a review", () => {
+    const onOpenSession = jest.fn();
+    render(<SessionManager ctx={makeCtx()} onOpenSession={onOpenSession} />);
+    const row = screen.getByText(/Validation cadence — with the Senior Program Analyst/i).closest("li")!;
+    expect(row.getAttribute("data-actionable")).toBe("false");
+    fireEvent.click(row);
+    expect(onOpenSession).not.toHaveBeenCalled();
+  });
+
+  it("isActionableSession is true only for a gate-passed COMPLETE session", () => {
+    expect(isActionableSession({ ...SYNTHETIC_SESSIONS[0], status: "COMPLETE", gate_passed: true })).toBe(true);
+    expect(isActionableSession({ ...SYNTHETIC_SESSIONS[0], status: "GATE_PENDING", gate_passed: false })).toBe(false);
+    expect(isActionableSession({ ...SYNTHETIC_SESSIONS[0], status: "IN_PROGRESS", gate_passed: false })).toBe(false);
   });
 
   it("renders substantive content in a white card on the light canvas (Gap 6 Category 3)", () => {

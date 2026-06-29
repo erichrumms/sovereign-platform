@@ -21,4 +21,13 @@ describe("FlowpathApp", () => {
     fireEvent.click(screen.getByRole("tab", { name: /elicitation dialogue/i }));
     expect(screen.getByRole("list", { name: /five-question gate status/i })).toBeInTheDocument();
   });
+
+  it("WC-1: clicking a gate-passed session card navigates to the Artifact Review screen", () => {
+    render(<FlowpathApp ctx={makeCtx()} />);
+    // Default surface is the Session Manager; click the gate-passed (actionable) session.
+    const row = screen.getByText(/Operational workflow — with the Program Analyst/i).closest("li")!;
+    fireEvent.click(row);
+    // Artifact Review (Screen 3) is now shown.
+    expect(screen.getByTestId("artifact-review")).toBeInTheDocument();
+  });
 });

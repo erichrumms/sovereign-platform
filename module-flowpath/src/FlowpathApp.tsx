@@ -51,6 +51,10 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
   const onReturnForRevision = (): void => {
     setTab("dialogue");
   };
+  // WC-1: opening a gate-passed session card on Screen 1 navigates to its Artifact Review (Screen 3).
+  const onOpenSession = (_sessionId: string): void => {
+    setTab("review");
+  };
 
   return (
     <section style={shellStyle}>
@@ -78,7 +82,7 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
           <p style={subtitleStyle}>Workflow Elicitation and Process Intelligence — the entry point to the SOVEREIGN pipeline.</p>
         </header>
 
-        {tab === "sessions" && <SessionManager ctx={ctx} approvedSessionIds={approvedSessionIds} />}
+        {tab === "sessions" && <SessionManager ctx={ctx} approvedSessionIds={approvedSessionIds} onOpenSession={onOpenSession} />}
         {tab === "dialogue" && <ElicitationDialogue ctx={ctx} />}
         {tab === "review" && <WorkflowArtifactReview ctx={ctx} onApproved={onApproved} onReturnForRevision={onReturnForRevision} />}
         {tab === "workstyle" && <IndividualWorkstyle ctx={ctx} />}

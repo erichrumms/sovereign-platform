@@ -36,6 +36,20 @@ export interface SessionManagerProps {
   initialSessions?: ElicitationSession[];
   /** Session ids whose artifact has been approved on Screen 3 (committed to the registry). */
   approvedSessionIds?: string[];
+  /**
+   * WC-1: invoked when a gate-passed session card is opened (click or keyboard) — the shell
+   * navigates to the Artifact Review screen for that session. In-progress sessions are not
+   * actionable and do not call this.
+   */
+  onOpenSession?: (sessionId: string) => void;
+}
+
+/**
+ * WC-1/WC-2: a session is actionable when it has passed the Five-Question Gate — it is ready for
+ * artifact review. In-progress / gate-pending sessions are not yet actionable.
+ */
+export function isActionableSession(s: ElicitationSession): boolean {
+  return s.status === "COMPLETE" && s.gate_passed;
 }
 
 /** Workflow type rendered in plain language (Gap 5) — never the raw enum. */
@@ -71,7 +85,7 @@ function readableDate(iso: string): string {
   return `${months[m - 1]} ${d}, ${y}`;
 }
 
-export function SessionManager({ ctx, initialSessions, approvedSessionIds = [] }: SessionManagerProps): JSX.Element {
+export function SessionManager({ ctx, initialSessions, approvedSessionIds = [], onOpenSession }: SessionManagerProps): JSX.Element {
   const [sessions, setSessions] = useState<ElicitationSession[]>(initialSessions ?? SYNTHETIC_SESSIONS);
   const [newCount, setNewCount] = useState(0);
   const approved = new Set(approvedSessionIds);
@@ -123,19 +137,43 @@ export function SessionManager({ ctx, initialSessions, approvedSessionIds = [] }
           <p style={bodyTextStyle}>No elicitation sessions yet. Start a new session to begin.</p>
         ) : (
           <ul style={listStyle} aria-label="Elicitation sessions">
-            {sessions.map((s) => (
-              <li key={s.session_id} style={rowStyle} data-session-id={s.session_id}>
-                <div style={{ fontWeight: 600 }}>
-                  {workflowTypeLabel(s.workflow_type)} — with the {s.expert_role}
-                </div>
-                <div style={metaStyle}>Conducted on {readableDate(s.date)}.</div>
-                <div style={metaStyle}>
-                  {approved.has(s.session_id)
-                    ? "Approved and committed to the workflow registry."
-                    : gateStatusProse(s)}
-                </div>
-              </li>
-            ))}
+            {sessions.map((s) => {
+              // WC-1: a gate-passed session card opens its artifact review on click / Enter / Space.
+              const actionable = isActionableSession(s);
+              const open = actionable && onOpenSession ? () => onOpenSession(s.session_id) : undefined;
+              return (
+                <li
+                  key={s.session_id}
+                  style={{ ...rowStyle, cursor: open ? "pointer" : "default" }}
+                  data-session-id={s.session_id}
+                  data-actionable={actionable}
+                  onClick={open}
+                  onKeyDown={
+                    open
+                      ? (e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            open();
+                          }
+                        }
+                      : undefined
+                  }
+                  tabIndex={open ? 0 : undefined}
+                  aria-label={open ? `Open ${workflowTypeLabel(s.workflow_type)} session for artifact review` : undefined}
+                >
+                  <div style={{ fontWeight: 600 }}>
+                    {workflowTypeLabel(s.workflow_type)} — with the {s.expert_role}
+                  </div>
+                  <div style={metaStyle}>Conducted on {readableDate(s.date)}.</div>
+                  <div style={metaStyle}>
+                    {approved.has(s.session_id)
+                      ? "Approved and committed to the workflow registry."
+                      : gateStatusProse(s)}
+                  </div>
+                  {open ? <div style={openCueStyle}>Open for artifact review →</div> : null}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
@@ -148,5 +186,6 @@ const primaryButtonStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, f
 const listStyle: CSSProperties = { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 };
 const rowStyle: CSSProperties = { padding: "12px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, color: "#0f172a" };
 const metaStyle: CSSProperties = { color: "#475569", fontSize: 13, marginTop: 2 };
+const openCueStyle: CSSProperties = { color: "#2563eb", fontSize: 13, fontWeight: 600, marginTop: 6 };
 
 export default SessionManager;
