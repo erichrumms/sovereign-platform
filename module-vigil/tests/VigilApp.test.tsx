@@ -20,12 +20,13 @@ describe("VigilApp (scaffold)", () => {
     expect(screen.getByText(/Pat Operator/)).toBeInTheDocument();
   });
 
-  it("renders the Alert Queue stub with the null-endpoint configuration notice", () => {
+  it("renders the Alert Queue with the seeded ARIA Suite CLEAR alerts (S23 · D5)", () => {
     render(<VigilApp ctx={makeCtx()} />);
     const queue = screen.getByLabelText("Alert Queue");
-    expect(queue).toHaveTextContent(/No alert endpoint configured/i);
-    // Honest framing: empty does NOT mean secure.
-    expect(queue).toHaveTextContent(/not.*because the platform is known to be secure/i);
+    // ARIA CLEAR alerts are routed into the queue alongside existing alert types, and are
+    // identifiable by source (the ARIA · CLEAR tag and the "ARIA" source meta).
+    expect(queue).toHaveTextContent(/ARIA · CLEAR/);
+    expect(queue.querySelectorAll('[data-source-product="ARIA"]').length).toBeGreaterThan(0);
   });
 
   it("shows the pending-approvals count from the synthetic/dev port in the command center", () => {

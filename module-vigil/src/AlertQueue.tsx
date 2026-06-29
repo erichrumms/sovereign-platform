@@ -64,22 +64,28 @@ function AlertCard({
 }): JSX.Element {
   const unackP1 = alert.status === "UNACKNOWLEDGED" && alert.alertLevel === "P1";
   const isCpmiDrift = alert.alertType === "CPMI_DRIFT_DETECTED";
+  // ARIA Suite CLEAR alerts (S23 · D5) — made visually identifiable by source within the
+  // existing card pattern: an ARIA source tag and a governance-blue accent. No new component.
+  const isAria = alert.sourceProduct === "ARIA";
   return (
     <li>
       <button
         type="button"
         onClick={() => onSelect(alert.alertId)}
         aria-pressed={selected}
+        data-source-product={alert.sourceProduct}
         style={{
           ...cardStyle,
           ...(selected ? cardSelectedStyle : null),
           ...(isCpmiDrift ? cardCpmiStyle : null),
+          ...(isAria ? cardAriaStyle : null),
         }}
       >
         <span style={{ ...badgeStyle, ...levelBadgeStyle(alert.alertLevel) }}>{alert.alertLevel}</span>
         <span style={cardMainStyle}>
           <span style={cardTypeStyle}>
             {alert.alertType}
+            {isAria && <span style={ariaTagStyle}>ARIA · CLEAR</span>}
             {unackP1 && <span style={p1DotStyle} aria-label="unacknowledged P1" title="Unacknowledged P1" />}
           </span>
           <span style={cardMetaStyle}>
@@ -121,6 +127,11 @@ const cardStyle: CSSProperties = {
 };
 const cardSelectedStyle: CSSProperties = { borderColor: "#0c4a6e", background: "#e0f2fe" };
 const cardCpmiStyle: CSSProperties = { borderColor: "#fecaca" };
+const cardAriaStyle: CSSProperties = { borderLeft: "3px solid #2563eb" };
+const ariaTagStyle: CSSProperties = {
+  fontSize: 10, fontWeight: 700, color: "#1e40af", background: "#eff6ff",
+  border: "1px solid #bfdbfe", borderRadius: 999, padding: "1px 6px",
+};
 const cardMainStyle: CSSProperties = { display: "flex", flexDirection: "column", gap: 2 };
 const cardTypeStyle: CSSProperties = {
   fontSize: 13, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6,

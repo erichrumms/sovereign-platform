@@ -26,6 +26,7 @@ import { ApprovalQueue } from "./ApprovalQueue";
 import { ApprovalDetail } from "./ApprovalDetail";
 import { useAlertQueue } from "./useAlertQueue";
 import { useApprovalQueue } from "./useApprovalQueue";
+import { DEMO_ARIA_ALERTS } from "./aria-alert-routing";
 
 export interface VigilAppProps {
   ctx: SovereignShellContext;
@@ -37,7 +38,11 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
   const operatorRole = "BOTH"; // reaching here means the gate passed (spec §3)
   const [tab, setTab] = useState<Tab>("alerts");
 
-  const alerts = useAlertQueue(ctx);
+  // ARIA Suite CLEAR routes compliance violations and governance-calendar timing alerts to
+  // the VIGIL Alert Queue (Session 23 · D5). Until the live Alert Dispatcher endpoint is
+  // wired (Stage 2), they are seeded on the synthetic/dev backing — the sanctioned dev path
+  // (useAlertQueue.initialAlerts), the same pattern as the synthetic approval port.
+  const alerts = useAlertQueue(ctx, { initialAlerts: DEMO_ARIA_ALERTS });
   const approvals = useApprovalQueue(ctx);
 
   // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
@@ -56,9 +61,10 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
 
       <div style={bannerStyle}>
         Alert response (vigil-triage-analyst, PR-VIGIL-001) and Agent Approval
-        (vigil-approval-agent, PR-VIGIL-002) are both wired. The live alert feed and the
-        live AgentOS approval port activate by configuration; this session both run on
-        synthetic/dev backings. Operator: <strong>{ctx.auth.user.name}</strong> · scope{" "}
+        (vigil-approval-agent, PR-VIGIL-002) are both wired. ARIA Suite CLEAR routes
+        compliance and governance-calendar alerts into the Alert Queue (source ARIA). The
+        live alert feed and the live AgentOS approval port activate by configuration; this
+        session all run on synthetic/dev backings. Operator: <strong>{ctx.auth.user.name}</strong> · scope{" "}
         <strong>{operatorRole}</strong>.
       </div>
 
