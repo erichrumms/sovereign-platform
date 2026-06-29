@@ -26,10 +26,11 @@
  * decision + version increment. It is not performed in Session 3.
  *
  * Source of truth (current): sovereign-shell/shell-contract.ts
- * Version: 1.2 — synced to shell-contract v1.13, Session 20, June 26, 2026
+ * Version: 1.3 — synced to shell-contract v1.15, Session 23, June 29, 2026
  *   (HumanDecisionType: + AGENT_APPROVAL v1.4, + GATE_3_ATTESTATION / WORLD_MODEL_UPDATE
  *    v1.5, + TASK_APPROVAL / TASK_CANCELLATION v1.7, + REPORT_ATTESTATION v1.12,
- *    + WORKFLOW_APPROVAL / VALIDATION_SIGN_OFF v1.13 (GD-18) — 18 members)
+ *    + WORKFLOW_APPROVAL / VALIDATION_SIGN_OFF v1.13 (GD-18), + COMPLIANCE_CERTIFICATION
+ *    v1.15 (GD-20) — 19 members)
  */
 
 /** Canonical platform roles. Synced to shell-contract.ts v1.3 (incl. GD-5 PLATFORM_ADMIN). */
@@ -85,7 +86,11 @@ export type HumanDecisionType =
   // approving a FLOWPATH workflow artifact (WORKFLOW_APPROVAL), and an analyst signing off on
   // an APEX pre-review validation cycle (VALIDATION_SIGN_OFF, DC-5). Synced from shell-contract.ts.
   | "WORKFLOW_APPROVAL"
-  | "VALIDATION_SIGN_OFF";
+  | "VALIDATION_SIGN_OFF"
+  // GD-20 (shell-contract v1.15, June 29, 2026) — a human reviewer certifying an output as
+  // compliant in the ARIA Suite CLEAR Certification Queue (opens the SCRIBE/PPBE export gate).
+  // Synced from shell-contract.ts Section 2.
+  | "COMPLIANCE_CERTIFICATION";
 
 /** Runtime value sets, for validation reuse. Must mirror the unions above. */
 export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
@@ -137,6 +142,8 @@ export const HUMAN_DECISION_TYPES: readonly HumanDecisionType[] = [
   // GD-18 (shell-contract v1.13, June 26, 2026) — FLOWPATH artifact approval + DC-5 validation sign-off.
   "WORKFLOW_APPROVAL",
   "VALIDATION_SIGN_OFF",
+  // GD-20 (shell-contract v1.15, June 29, 2026) — ARIA Suite CLEAR compliance certification.
+  "COMPLIANCE_CERTIFICATION",
 ];
 
 /** Shared validation result shape used by every entity validator in this package. */

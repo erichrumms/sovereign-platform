@@ -154,9 +154,19 @@ and the certification decision. Approve/flag with required decision note.
 | `ARIA_VIOLATION_FLAGGED` | Every compliance deviation surfaced |
 | `ARIA_CALENDAR_ALERT` | Every governance calendar timing violation |
 
-These event types extend `sovereign_logger.py` `APPROVED_EVENT_TYPES`. They are
-**not** shell-contract additions — they live in the Python Logger taxonomy only.
-A GD is not required for Logger-only additions; they are recorded in the SBOM.
+> **AMENDED — GD-20 (June 29, 2026, shell-contract v1.15).** The statement below
+> ("not shell-contract additions … Python Logger only") held while ARIA events were
+> emitted Python-side. The Session 23 CLEAR build emits these events from the
+> **TypeScript** layer (the React Certification Queue and `clear-engine.ts` call
+> `ctx.logger.log()`), so the four event types **were** added to
+> `shell-contract.ts` `SovereignEventType` (and propagated to `sovereign_logger.py`)
+> under GD-20. `COMPLIANCE_CERTIFICATION` was likewise added to `HumanDecisionType`,
+> and a tenth shell export `aria` (`AriaCertificationSurface`) was added for the
+> SCRIBE export gate. See GD-20 and the shell-contract v1.15 changelog.
+
+These four event types are now defined in `shell-contract.ts` `SovereignEventType`
+(GD-20) and synced to `sovereign_logger.py` `APPROVED_EVENT_TYPES` (Constraint #11).
+They are recorded in the SBOM.
 
 ---
 
@@ -245,18 +255,38 @@ the impact is significant, and routes action items to NEXUS.
 
 ## 7. Shell-Contract Impact
 
-**No shell-contract changes required for ARIA Suite.**
+> **AMENDED — GD-20 (June 29, 2026, shell-contract v1.15).** This section originally
+> stated "No shell-contract changes required for ARIA Suite." That was correct only
+> under a Python-side emission design. The Session 23 CLEAR deliverables place ARIA
+> Logger emission and the certification gate in the **TypeScript** layer, which TS can
+> only do through the typed `ctx.logger` / `ctx.aria` contract. Session 23 paused at
+> open, surfaced the conflict per the STOP rule below, and GD-20 was approved. ARIA
+> Suite **does** take a shell-contract change.
+
+**Shell-contract changes made for ARIA Suite (GD-20, v1.15 — all additive):**
+
+- `SovereignEventType` += four ARIA CLEAR event types (`ARIA_COMPLIANCE_CHECK`,
+  `ARIA_CERTIFICATION_ISSUED`, `ARIA_VIOLATION_FLAGGED`, `ARIA_CALENDAR_ALERT`) —
+  emitted from the TS layer, not Python-only.
+- `HumanDecisionType` += `COMPLIANCE_CERTIFICATION` — a human certifying an output in
+  the CLEAR Certification Queue.
+- A tenth shell context export `aria` (`AriaCertificationSurface`) — the Certification
+  Queue records decisions; the SCRIBE export gate reads `isCertified()`. Constraint #7
+  advances 9 → 10.
+
+**Unchanged:**
 
 - `aria.rules-engine` is registered in `Agent_Identity_Standard.md` — no new
   `AgentClass` is needed (it is `Governance`, already present).
-- ARIA Logger events extend `sovereign_logger.py` only — not `shell-contract.ts`.
 - ARIA Suite connects to existing SOVEREIGN infrastructure through existing
-  interfaces — VIGIL (alert routing), SCRIBE (export certification), NEXUS
-  (action item routing), COUNSEL (adaptation decisions).
-- The `SovereignProduct` union already covers ARIA Suite (verify at session open).
+  interfaces — VIGIL (alert routing, `sourceProduct: "ARIA"`), SCRIBE (export
+  certification via `ctx.aria`), NEXUS (action item routing), COUNSEL (adaptation
+  decisions).
+- The `SovereignProduct` union already covers ARIA Suite. No `SovereignRole` change.
 
-**If a shell-contract change is discovered during build:** Stop. Surface the
-finding in the handoff. Do not proceed with the change. A GD is required.
+**If a FURTHER shell-contract change is discovered during build:** Stop. Surface the
+finding in the handoff. Do not proceed with the change. A new GD is required (GD-20
+authorizes only the three additive changes above).
 
 ---
 

@@ -157,6 +157,14 @@ APPROVED_EVENT_TYPES = frozenset({
     "FLOWPATH_VALIDATION_CADENCE_SET",
     "FLOWPATH_WORKSTYLE_ELICITED",
     "FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT",
+    # GD-20 / shell-contract v1.15 (June 29, 2026) — four ARIA Suite / CLEAR event types
+    # (module-aria). Synced from shell-contract.ts SovereignEventType (Constraint #11). The set
+    # now holds 79 members, identical to shell-contract v1.15. Emitted by module-aria's clear-engine
+    # and Certification Queue and by the deterministic aria.rules-engine.
+    "ARIA_COMPLIANCE_CHECK",       # every automated compliance evaluation
+    "ARIA_CERTIFICATION_ISSUED",   # every export gate opened by CLEAR certification
+    "ARIA_VIOLATION_FLAGGED",      # every compliance deviation surfaced (engine or human)
+    "ARIA_CALENDAR_ALERT",         # every governance-calendar timing violation
 })
 
 # NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary
@@ -203,6 +211,10 @@ APPROVED_DECISION_TYPES = frozenset({
     # sign-off. Synced from shell-contract.ts HumanDecisionType (Constraint #11). 18 members total.
     "WORKFLOW_APPROVAL",       # GD-18 / v1.13 — reviewer approves a FLOWPATH workflow artifact
     "VALIDATION_SIGN_OFF",     # GD-18 / v1.13 — analyst signs off an APEX pre-review validation cycle
+    # GD-20 / shell-contract v1.15 (June 29, 2026) — ARIA Suite CLEAR compliance certification.
+    # Synced from shell-contract.ts HumanDecisionType (Constraint #11). 19 members total. A human
+    # reviewer certifying an output as compliant in the CLEAR Certification Queue.
+    "COMPLIANCE_CERTIFICATION",
 })
 
 APPROVED_AGENT_CLASSES = frozenset({

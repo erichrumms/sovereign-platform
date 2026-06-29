@@ -22,8 +22,10 @@
  *   originally "the shell provides eight exports ... this is the complete list").
  *   GD-19 (shell-contract v1.14, Session 22) formally relaxed Standing Constraint #7
  *   from eight to nine exports, adding `taskSurface` — the shared cross-product task
- *   surface. This file implements exactly those NINE and adds nothing further to the
- *   context surface. In particular it exposes NO LLM client on the context:
+ *   surface. GD-20 (shell-contract v1.15, Session 23) further relaxed it from nine to
+ *   ten, adding `aria` — the ARIA Suite CLEAR certification surface. This file implements
+ *   exactly those TEN and adds nothing further to the context surface. In particular it
+ *   exposes NO LLM client on the context:
  *   per the Section 6 standing constraint, modules obtain LLM access by
  *   calling createSovereignClient() from @sovereign/api-client themselves —
  *   the shell does not proxy it. The api-client is therefore not imported
@@ -65,6 +67,8 @@ import type {
   AGUISubscription,
   TaskSurface,
   SharedTask,
+  AriaCertificationSurface,
+  AriaCertification,
 } from "../shell-contract";
 
 // Canonical shared data package (Session 4 — npm workspace linkage). Value
@@ -563,6 +567,53 @@ class ShellTaskSurface implements TaskSurface {
 }
 
 // ============================================================
+// ARIA CLEAR CERTIFICATION SURFACE — the tenth export (GD-20, shell-contract v1.15)
+// A shell-owned, in-memory record of CLEAR certification decisions. module-aria's
+// Certification Queue records a decision here (record()); module-scribe's export gate
+// reads isCertified() before opening export. It carries no governance authority of its
+// own (Constraint #1): recording a certification does not log, approve, or route —
+// the Certification Queue still emits its own governed ARIA_CERTIFICATION_ISSUED /
+// ARIA_VIOLATION_FLAGGED Logger event. The surface only makes a certification visible
+// across products. Last-write-wins by document_id (mirrors the task-surface semantics):
+// a re-certification or a flag replaces the prior decision for that document. State lives
+// for the lifetime of the shell context (one platform session). subscribe() lets the
+// Compliance Dashboard re-render as decisions are recorded.
+// ============================================================
+
+class ShellAriaSurface implements AriaCertificationSurface {
+  private readonly certs: Map<string, AriaCertification> = new Map();
+  private readonly listeners: Set<(certs: readonly AriaCertification[]) => void> = new Set();
+
+  record = (certification: AriaCertification): void => {
+    // Last-write-wins by document_id: a later flag/cert supersedes the prior decision.
+    this.certs.set(certification.document_id, certification);
+    this.notify();
+  };
+
+  isCertified = (document_id: string): boolean => {
+    return this.certs.get(document_id)?.certified === true;
+  };
+
+  get = (document_id: string): AriaCertification | undefined => this.certs.get(document_id);
+
+  list = (): readonly AriaCertification[] => Array.from(this.certs.values());
+
+  subscribe = (listener: (certs: readonly AriaCertification[]) => void): (() => void) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
+
+  private notify(): void {
+    const snapshot = this.list();
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -607,6 +658,7 @@ export class SovereignShell implements SovereignShellContext {
   readonly a2a: SovereignA2AInterface;
   readonly agui: SovereignAGUIInterface;
   readonly taskSurface: TaskSurface;
+  readonly aria: AriaCertificationSurface;
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
@@ -656,6 +708,8 @@ export class SovereignShell implements SovereignShellContext {
     this.agui = new ShellAGUI();
     // Ninth export (GD-19, v1.14) — the shared cross-product task surface.
     this.taskSurface = new ShellTaskSurface();
+    // Tenth export (GD-20, v1.15) — the ARIA Suite CLEAR certification surface.
+    this.aria = new ShellAriaSurface();
   }
 
   /**

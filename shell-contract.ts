@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.14
+ * Version: 1.15
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,29 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.15 (June 2026) — GD-20 (ARIA Suite / CLEAR shell-contract enablement, approved
+ *                       June 29, 2026). +4 SovereignEventType (ARIA_COMPLIANCE_CHECK,
+ *                       ARIA_CERTIFICATION_ISSUED, ARIA_VIOLATION_FLAGGED, ARIA_CALENDAR_ALERT),
+ *                       +1 HumanDecisionType (COMPLIANCE_CERTIFICATION), +tenth export aria
+ *                       (AriaCertificationSurface). All additive. Constraint #7 advances 9->10
+ *                       (the tenth export is `aria` only; future exports require a new GD). This
+ *                       GD supersedes docs/16 §4/§7's statement that ARIA Suite requires no
+ *                       shell-contract change — that held only while ARIA events were emitted
+ *                       Python-side; the Session 23 build emits them from the TypeScript layer.
+ *                       Impact assessment: the four event types are emitted only by module-aria
+ *                       (clear-engine + Certification Queue) and the deterministic aria.rules-engine;
+ *                       COMPLIANCE_CERTIFICATION propagates to the synced HumanDecisionType copy in
+ *                       sovereign-data/src/shared-types.ts (type + HUMAN_DECISION_TYPES const,
+ *                       18 -> 19) and its test (Constraint #11); the aria export is read by
+ *                       module-scribe (export gate) and written by module-aria (Certification Queue)
+ *                       only. Per Constraint #11 the four event types and the decision type are
+ *                       synced to the Python logger (APPROVED_EVENT_TYPES 75 -> 79,
+ *                       APPROVED_DECISION_TYPES 18 -> 19). SovereignEventType is NOT mirrored in
+ *                       shared-types (only SovereignRole / ClearanceLevel / HumanDecisionType are);
+ *                       AriaCertification is NOT mirrored in shared-types (entity/context types are
+ *                       not). NO SovereignProduct / SovereignRole / AgentClass change. Both
+ *                       shell-contract copies SHA-256 re-verified identical at v1.15. See GD-20
+ *                       record for full detail.
  *   v1.14 (June 29, 2026) — GD-19 (shared task surface, pre-approved Session 22 opening prompt
  *                       per Integration Brief v1.31 + 16_ARIA_Suite_Architecture.md cross-product
  *                       wiring; closes the Session 18 nexus-agentos-port.ts SCOPE BOUNDARY note).
@@ -452,7 +475,14 @@ export type SovereignEventType =
   | "FLOWPATH_DATASOURCE_REGISTERED"
   | "FLOWPATH_VALIDATION_CADENCE_SET"
   | "FLOWPATH_WORKSTYLE_ELICITED"
-  | "FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT";
+  | "FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT"
+  // GD-20 — June 2026 (shell-contract v1.15) — four ARIA Suite / CLEAR event types
+  // (continuous compliance monitoring + export certification). Emitted by module-aria
+  // (clear-engine + Certification Queue) and by the deterministic aria.rules-engine.
+  | "ARIA_COMPLIANCE_CHECK"      // every automated compliance evaluation
+  | "ARIA_CERTIFICATION_ISSUED"  // every export gate opened by CLEAR certification
+  | "ARIA_VIOLATION_FLAGGED"     // every compliance deviation surfaced (engine or human)
+  | "ARIA_CALENDAR_ALERT";       // every governance-calendar timing violation
 
 export type HumanDecisionType =
   | "HUMAN_APPROVAL"
@@ -485,7 +515,11 @@ export type HumanDecisionType =
   // (WORKFLOW_APPROVAL, Screen 3), and an analyst signing off on an APEX pre-review validation
   // cycle (VALIDATION_SIGN_OFF, DC-5). Both synced to sovereign-data/src/shared-types.ts.
   | "WORKFLOW_APPROVAL"
-  | "VALIDATION_SIGN_OFF";
+  | "VALIDATION_SIGN_OFF"
+  // GD-20 — June 2026 (shell-contract v1.15) — a human reviewer certifying an output as
+  // compliant in the CLEAR Certification Queue (opens the SCRIBE/PPBE export gate).
+  // Synced to sovereign-data/src/shared-types.ts (18 -> 19 members).
+  | "COMPLIANCE_CERTIFICATION";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;
@@ -963,10 +997,53 @@ export interface TaskSurface {
 }
 
 
+// ------------------------------------------------------------
+// ARIA CLEAR CERTIFICATION SURFACE (shell-contract v1.15 — GD-20)
+// A shell-owned, in-memory record of CLEAR certification decisions. module-aria's
+// Certification Queue records a decision here; module-scribe's export gate reads
+// isCertified() before opening export. Carries no governance authority of its own
+// (Constraint #1) — recording a certification does not itself log; the Certification
+// Queue still emits its own governed ARIA_CERTIFICATION_ISSUED / ARIA_VIOLATION_FLAGGED
+// Logger event. The surface only makes a certification visible across products.
+// Determinism (docs/16 §1/§3): a certification is a human decision recorded against a
+// deterministic CLEAR evaluation — no AI inference is involved at any point.
+// Governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+export interface AriaCertification {
+  document_id: string;
+  /** true = certified (export gate opens); false = flagged (export blocked). */
+  certified: boolean;
+  certifying_actor_id: string;
+  certifying_actor_name: string;
+  /** Required, >= 10 chars — consistent with the VIGIL decision-note minimum. */
+  decision_note: string;
+  /** Regulatory sources the CLEAR engine evaluated against for this document. */
+  applicable_sources: string[];
+  workflow_step_id: string;
+  /** ISO 8601 — when the human recorded the certification decision. */
+  certified_at: string;
+}
+
+export interface AriaCertificationSurface {
+  /** Record a CLEAR certification or flag for a document (Certification Queue). */
+  record: (certification: AriaCertification) => void;
+  /** Whether a document currently holds a positive CLEAR certification (SCRIBE export gate). */
+  isCertified: (document_id: string) => boolean;
+  /** The full certification record for a document, if any. */
+  get: (document_id: string) => AriaCertification | undefined;
+  /** Read-only snapshot of every recorded certification (Compliance Dashboard). */
+  list: () => readonly AriaCertification[];
+  /** Subscribe to certification-set changes; returns an unsubscribe function. */
+  subscribe: (listener: (certs: readonly AriaCertification[]) => void) => () => void;
+}
+
+
 // ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
-// As of shell-contract v1.14 (GD-19) the context provides NINE exports
-// (Standing Constraint #7 relaxed from eight to nine for taskSurface).
+// As of shell-contract v1.15 (GD-20) the context provides TEN exports
+// (Standing Constraint #7 relaxed from nine to ten for aria; taskSurface was
+// the ninth at v1.14 / GD-19). No further export without a new GD.
 // ============================================================
 
 export interface SovereignShellContext {
@@ -999,6 +1076,8 @@ export interface SovereignShellContext {
   agui: SovereignAGUIInterface;
   // Ninth export — GD-19 (shell-contract v1.14). The shared cross-product task surface.
   taskSurface: TaskSurface;
+  // Tenth export — GD-20 (shell-contract v1.15). The CLEAR certification surface.
+  aria: AriaCertificationSurface;
 }
 
 
