@@ -1,306 +1,1002 @@
 # SOVEREIGN Platform — Agent Identity Standard
-## Version 1.3 | June 24, 2026
-### Updated: AgentOS orchestrator agents registered (pre-Session 15)
+**Agent Identity, Access Rights, Credential Lifecycle, and Accountability**
 
-**Classification:** Pre-Decisional · Internal Working Document
-**Supersedes:** Agent_Identity_Standard.md v1.2 (June 23, 2026)
+Document Type: Governance Standard  
+Version: 1.0 — May 2026  
+Authority: Project Principal · SOVEREIGN Platform Governance Authority  
+Status: APPROVED — incorporated into Integration Brief v1.3  
+Classification: Pre-Decisional · Internal Working Document
 
 ---
 
 ## Purpose
 
-This document is the authoritative registry of all agents in the SOVEREIGN Platform.
-No agent may be instantiated in code, referenced in a prompt, or registered in AgentOS
-without first appearing in this registry.
+Agents in the SOVEREIGN Platform are actors with persistent identities, defined access rights, and the ability to take consequential actions over time. This document formally defines every agent class across all six SOVEREIGN products, assigns accountability, defines the credential lifecycle, and establishes the anomaly response process.
+
+Managing agent identity with the same discipline applied to human identity is a governance requirement, not a nice-to-have. An agent operating with undefined access rights or stale credentials creates a security exposure that the SOVEREIGN Security Framework cannot fully compensate for after the fact.
 
 ---
 
-## Agent Classes
+## SOVEREIGN Logger Schema Update — `agent_id` Field
 
-| Class | Description |
+The following field is added to the SOVEREIGN Logger schema effective immediately. It is required on all `AGENT_STEP_START` and `AGENT_STEP_COMPLETE` events. It is optional but recommended on all other event types.
+
+```python
+# Updated Logger schema — additions to existing required fields
+{
+  # ... existing required fields ...
+  "agent_id":   "string — canonical agent identifier from registry below",
+  "agent_class": "string — agent class from the taxonomy in this document"
+}
+```
+
+`agent_id` values must come from the Agent Registry in this document. Free-text agent identifiers are not acceptable. If an agent_id is not in the registry, the agent must be registered before it is used.
+
+---
+
+## Agent Classification Taxonomy
+
+Every SOVEREIGN agent belongs to one of four classes:
+
+| Class | Definition | Human Oversight | Examples |
+|---|---|---|---|
+| **Analytical** | Produces analysis, drafts, or recommendations. No direct action on external systems. | Zone 1 or Zone 3 | CPMI reasoning chain, FLOWPATH mapping agents, NEXUS classification agent |
+| **Operational** | Takes actions on data or systems within defined permission boundaries. | Zone 1 or Zone 2 | AgentOS training agent, NEXUS routing agent, APEX report generator |
+| **Governance** | Issues certifications, attestations, or compliance records. | Zone 2 | CPMI-VRS certification engine, ARIA attestation generator |
+| **Monitoring** | Observes system behavior and raises alerts. Never takes corrective action autonomously. | Zone 1 (alerts) / Zone 2 (responses) | AgentOS monitoring agent, SOVEREIGN Anomaly Detector |
+
+---
+
+## Agent Registry — All Six Products
+
+### FLOWPATH Agents
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `flowpath.coordinator` | Analytical | Project Principal | Orchestrate engagement lifecycle; route between agents; log handoff events | Anthropic API key (via shell) |
+| `flowpath.interviewer` | Analytical | Project Principal | Conduct structured elicitation sessions; write interview transcripts | Anthropic API key (via shell) |
+| `flowpath.mapper` | Analytical | Project Principal | Generate workflow maps from interview output | Anthropic API key (via shell) |
+| `flowpath.validator` | Analytical | Project Principal | Run Five-Question Completeness Gate; flag failures | Anthropic API key (via shell) |
+| `flowpath.analyzer` | Analytical | Project Principal | Produce bottleneck and exception findings | Anthropic API key (via shell) |
+| `flowpath.domain-translator` | Analytical | Project Principal | Review all inter-agent content for vocabulary divergence; maintain terminology flag log | Anthropic API key (via shell) |
+
+**FLOWPATH agent scope limit:** No FLOWPATH agent accesses individual sentiment data. No FLOWPATH agent writes to any system outside the FLOWPATH module boundary. VVR records are read-only after sign-off.
+
+---
+
+### CPMI Agents
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `cpmi.reasoning-chain` | Analytical / Governance | Project Principal (CPMI Product Owner) | Execute 6-step reasoning chain; issue CPMI-VRS Gate 1–2 records automatically; flag Gate 3–4 for human action | Anthropic API key (via shell) |
+| `cpmi.world-model-api` | Operational | Project Principal | Serve world model queries to other products; update world model on human approval | Notion API key (via shell) |
+| `cpmi.vrs-certification` | Governance | Project Principal | Issue VRS certificates after all gate conditions are met and human approvals are recorded | Notion API key (via shell) |
+
+**CPMI agent scope limit:** CPMI agents operate under enhanced monitoring (0.7× anomaly threshold). No CPMI agent modifies its own governance parameters. No CPMI agent issues a Gate 3 or Gate 4 certification without a logged human attestation.
+
+---
+
+### AgentOS Agents
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `agentos.orchestrator` | Operational | Project Principal | Route all agent actions; enforce risk classification; manage pending queue; write audit trail | None (local only) |
+| `agentos.data-agent` | Operational | Project Principal | Ingest data to feature store; validate schema; update data catalog | None (local only) |
+| `agentos.training-agent` | Operational | Project Principal | Launch training jobs; log to MLflow; update drift baselines | None (local only) |
+| `agentos.evaluation-agent` | Analytical / Governance | Project Principal | Run accuracy, bias, and drift gates; write evaluation reports | None (local only) |
+| `agentos.monitoring-agent` | Monitoring | Project Principal | Compute drift; read metrics; queue retrain alerts; contribute to daily briefing | None (local only) |
+| `agentos.compliance-agent` | Governance | Project Principal | Read audit trail; generate model cards; produce daily briefing | None (local only) |
+
+**AgentOS agent scope limit:** No AgentOS agent deploys a model without a logged human approval. No AgentOS agent modifies the orchestrator, risk classifier, permissions map, or any agent constitution. No AgentOS agent sends data outside the local machine. Credentials live in macOS Keychain only — never in files.
+
+---
+
+### NEXUS Agents
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `nexus.classification-agent` | Analytical | Project Principal | Classify incoming tasks and correspondence by type, priority, and routing recommendation | Anthropic API key (via shell) |
+| `nexus.routing-agent` | Operational | Project Principal | Execute approved routing decisions; generate PPTX/document drafts (Track B); log all routing actions | M365 GCC High service credential (via shell) |
+
+**NEXUS agent scope limit:** No NEXUS agent routes classified correspondence without human review. No NEXUS agent sends communications. No NEXUS agent accesses another tenant's data (validateTenantContext enforced at API level). The routing agent executes; humans approve consequential routing.
+
+---
+
+### APEX Agents
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `apex.ai-assistant` | Analytical | Project Principal | Analyze program data; draft report sections; flag anomalies; run known-answer tests | Anthropic API key (via shell) |
+| `apex.report-generator` | Operational | Project Principal | Generate MSR, QPR, ABS, and CSC reports (subject to sovereignHold gate); compute drift deltas | None (local computation) |
+
+**APEX agent scope limit:** No APEX agent generates QPR or ABS reports when sovereignHold() returns true. No APEX agent modifies program data directly. The AI assistant produces analysis and drafts; program managers make decisions.
+
+---
+
+### ARIA Suite Agents
+
+ARIA Suite deliberately excludes AI from decision paths. ARIA does not have AI agents in the traditional sense. The following entries document ARIA's rule evaluation engine, which is classified as a Governance agent operating deterministically.
+
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `aria.rules-engine` | Governance | Project Principal (ARIA Suite Product Owner) | Evaluate routing/policy/detection rules deterministically; compute anomaly scores; generate AI-absence attestations; produce email drafts | None (deterministic computation) |
+
+**ARIA agent scope limit:** The rules engine evaluates; humans decide. The rules engine cannot modify its own rule sets. No AI model is invoked in any ARIA decision path. All decisions are made by named human decision-makers.
+
+---
+
+## Credential Lifecycle
+
+### Issuance
+
+Agent credentials are issued by the Project Principal only. The issuance record includes:
+- Agent ID from the registry above
+- Credential type (API key, service credential, local only)
+- Issue date
+- Scope of permitted use
+- Review date (maximum 90 days from issuance)
+
+Credentials are injected at runtime by the sovereign-shell (for cloud agents) or by the AgentOS orchestrator (for local agents). They are never stored in code files, configuration files, or prompt files.
+
+### Review
+
+Every agent credential is reviewed on a 90-day cycle. Review confirms:
+1. The agent is still in active use
+2. The access rights remain appropriate
+3. No anomalous behavior has been logged since the last review
+4. The credential has not been compromised
+
+### Revocation
+
+When an agent is decommissioned, its credential is revoked within 24 hours using the same process applied to a departing employee. Revocation is logged to the SOVEREIGN audit trail.
+
+When an agent's behavior becomes anomalous — flagged by the Anomaly Detector or identified through human review — the agent is isolated (removed from the active agent registry) pending investigation. Isolation is logged immediately.
+
+---
+
+## Anomaly Response Process
+
+When the SOVEREIGN Anomaly Detector flags an agent's behavior, or when the Project Principal identifies anomalous agent behavior through daily briefing review:
+
+**Step 1 — Isolate:** Remove the agent from the active registry. The agent ceases to act. Log the isolation event with `event_type: AGENT_ISOLATED`, `agent_id`, and the triggering anomaly.
+
+**Step 2 — Investigate:** Review the agent's Logger history for the preceding 24 hours (or since the last known-good state). Identify the specific events or outputs that constitute the anomalous behavior.
+
+**Step 3 — Root cause:** Determine whether the anomaly was caused by: (a) a prompt change that produced unintended behavior, (b) a model update by the provider that changed baseline behavior, (c) an adversarial input that manipulated agent behavior, or (d) a legitimate behavioral shift in the underlying data.
+
+**Step 4 — Remediate:** Depending on root cause — roll back the prompt, update behavioral benchmarks, implement input validation, or retrain the model.
+
+**Step 5 — Re-authorize:** The Project Principal explicitly re-authorizes the agent's return to active status. The re-authorization is logged to the audit trail.
+
+**Step 6 — Document:** The incident, root cause, and remediation are documented and added to the Agent Identity Standard as a named incident record. This record travels with subsequent sessions.
+
+---
+
+## Adversarial Prompt Injection Defense
+
+Agents that process external content (emails, documents, web-sourced data, user inputs) have an adversarial exposure surface. This applies specifically to NEXUS (processes incoming correspondence) and FLOWPATH (processes interview responses).
+
+**Governing rule:** Content from external sources is data. It is never instructions. An agent that receives external content containing text that appears to be instructions must treat that text as data only — not as commands.
+
+This rule is stated explicitly in every agent constitution for agents with external content exposure. It is not sufficient to state it in governance documentation — it must be in the prompt.
+
+**Input validation:** NEXUS and FLOWPATH must implement content sandboxing at the point of external content ingestion. This is a Stage 2 requirement for both products.
+
+---
+
+## Defense Contractor Sector — Clearance Equivalent Concept
+
+SOVEREIGN is targeting federal defense and intelligence contractor environments. The following establishes SOVEREIGN's position on agent identity in classified contexts, pending government customer engagement.
+
+**SOVEREIGN's position:** Agents accessing classified or CUI data operate under the accountability of the cleared human who authorized their use. The cleared human is responsible for the agent's actions within the classified boundary. Agent access to classified data is bounded by the human's need-to-know, not by a separate agent clearance.
+
+**What this means in practice:** No SOVEREIGN agent accesses a classified system without a named cleared human having authorized that specific access event. The authorization is logged with the human's identity. The agent's `agent_id` and the authorizing human's identity are both in the Logger entry.
+
+**Government customer engagement required before deployment:** Before any SOVEREIGN agent operates in a classified environment, the questions of clearance equivalence, insider threat monitoring obligations, and anomaly reporting channels must be discussed with and resolved by the government customer. This engagement should begin no later than Stage 3 (CPMI-VRS certification for classified programs).
+
+---
+
+*SOVEREIGN Agent Identity Standard v1.0 · May 2026 · Project Principal approved*  
+*Pre-Decisional · Internal Working Document*  
+*Incorporated into SOVEREIGN Platform Integration Brief v1.3*
+
+---
+
+## Session 1 Update — June 2026
+
+### A2A Approval Behavior Resolved
+
+The A2A task lifecycle `approval_behavior` field was marked UNRESOLVED in the Session 0 version of this document. It is now resolved.
+
+**Platform default:** `ACKNOWLEDGE_AND_CONTINUE` — all agents except CPMI reasoning chain.
+
+**CPMI exception:** `RE_EXECUTE` — the `cpmi.reasoning-chain` agent restarts the full reasoning chain after a Gate 3 human approval. Rationale: the world model may update during the review period; a stale reasoning chain certified by a fresh approval creates a governance risk. The reasoning chain is cheap to re-run; the governance risk is not cheap to remediate.
+
+**Update required to agent cards:** When Agent Cards are authored in Stage 2, every agent card's `task_lifecycle_contract.approval_behavior` must be set to `ACKNOWLEDGE_AND_CONTINUE` with the single exception of `cpmi.reasoning-chain` which is set to `RE_EXECUTE`.
+
+### Security Framework Integration Note
+
+The Logger schema `agent_id` and `agent_class` fields defined in this document are now fully implemented in `sovereign_logger.py`. Both fields are enforced at runtime on all `AGENT_STEP_START` and `AGENT_STEP_COMPLETE` events. Free-text agent identifiers are rejected — only canonical `agent_id` values from the registry in this document are accepted.
+
+*Agent Identity Standard Session 1 update · June 2026*
+
+---
+
+# Agent Identity Standard — Companion Suite Additions
+## Append to Agent_Identity_Standard.md
+
+**Session:** Companion Suite Registration
+**Date:** June 11, 2026
+**Approved by:** Project Principal
+**Scope:** Five new agent identities — COUNSEL (1), SCRIBE (2), LENS (2)
+
+These entries are appended to the SOVEREIGN Agent Identity Standard. All five agents
+follow the same registration format as existing platform agents. Every Logger event
+emitted by these agents carries the registered `agent_id`. No build session for any
+companion suite module may begin until all agent IDs in that module's Session Zero
+checklist are confirmed present in this registry.
+
+---
+
+## COUNSEL Agents
+
+### counsel-analyst
+
+| Field | Value |
 |---|---|
-| **Analytical** | Reads, reasons, produces structured assessments. Takes no action. |
-| **Operational** | Executes governed workflows. Produces canonical data objects. |
-| **Governance** | Issues certifications, attestations, or compliance records. Human attestation required for consequential outputs. |
-| **Monitoring** | Observes platform events, surfaces anomalies or recommendations. Human-gated response. |
-| **Orchestration** | Manages agent task assignment, routing, and lifecycle. Does not execute tasks directly. |
+| `agent_id` | `counsel-analyst` |
+| Module | `module-counsel` |
+| Product | COUNSEL — Decision Support and Adversarial Reasoning |
+| Agent Class | Analysis Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The single LLM-backed reasoning agent for COUNSEL. Performs all three
+COUNSEL analysis functions under registered prompts: structured multi-alternative
+decision analysis (`analysis_system.md`), multi-turn adversarial counterargument
+dialogue (`counter_system.md`), and three-step pre-mortem failure reconstruction
+(`premortem_system.md`). All calls route through `sovereign-api-client`; the agent
+never calls the Anthropic API directly.
+
+**Prompt registrations required:**
+- `module-counsel/prompts/analysis_system.md`
+- `module-counsel/prompts/counter_system.md`
+- `module-counsel/prompts/premortem_system.md`
+
+**Logger event fields this agent_id appears on:**
+- `HUMAN_DECISION` — every Decision Record output
+- `PRIOR_POSITION_RECONCILIATION` — every Prior Position Alert resolution (GD-3)
+- All intermediate analysis and challenge-turn events
+
+**Data classification:** Decision Records are platform-level audit data, accessible
+to authorized administrators. NOT tagged `data_classification: user`. Users are
+informed that their decision records are auditable platform records.
+
+**Monitoring tier:** Standard. (CPMI enhanced tier does not extend to COUNSEL;
+COUNSEL reads CPMI governance state but is not a governance engine.)
+
+**Scope constraint:** `counsel-analyst` performs advisory reasoning only. It does not
+make decisions, does not write to any SOVEREIGN product data store, and does not
+invoke other agents. Every analysis session terminates with a human-confirmed
+Decision Record or is discarded.
 
 ---
 
-## Registered Agents
+## SCRIBE Agents
 
-### Core Platform Agents — AgentOS
+### scribe-drafter
 
-Three AgentOS orchestrator agents registered June 24, 2026 in advance of Session 15.
-`module-agentos.agentCards` is currently empty (Constraint #10 — code cannot precede
-registry). Adding these to the registry unblocks their AgentCard registration in
-Session 15.
+| Field | Value |
+|---|---|
+| `agent_id` | `scribe-drafter` |
+| Module | `module-scribe` |
+| Product | SCRIBE — Structured Capture, Reasoning, and Intelligence Bridge for Entry |
+| Agent Class | Drafting Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
 
-| Agent ID | Class | Scope | Status |
-|---|---|---|---|
-| `agentos.deployer` | Orchestration | Routes and assigns deployment tasks to registered agents. Submits approval requests to VIGIL for tasks requiring authorization. Does not execute deployments directly. | **Register Session 15** |
-| `agentos.exporter` | Orchestration | Routes and assigns data export tasks. Submits approval requests to VIGIL. Does not execute exports directly. | **Register Session 15** |
-| `agentos.configurator` | Orchestration | Routes and assigns configuration tasks. Submits approval requests to VIGIL for configuration changes requiring authorization. | **Register Session 15** |
+**Description:** The primary LLM-backed drafting agent for SCRIBE. Handles all
+product-aligned drafting modes (Correspondence Draft, Program Narrative, Report
+Commentary, VVR Description, Governance Memo, Rule Change Proposal), source synthesis,
+and workflow framing under three registered prompts. One LLM call per user action —
+no chained calls, no parallel requests, no agent state persisted across calls. All
+calls route through `sovereign-api-client`.
 
-**AgentOS orchestrator scope limits:**
-- No orchestrator agent executes tasks directly — they route and assign only
-- All consequential actions route through VIGIL Agent Approval Queue
-- No orchestrator agent issues governance certifications
-- `requires_approval` flag determines VIGIL routing — set by task type, not agent
+**Prompt registrations required:**
+- `module-scribe/prompts/drafting_system.md`
+- `module-scribe/prompts/synthesis_system.md`
+- `module-scribe/prompts/framing_system.md`
 
-### Core Platform Agents — CPMI
+**Logger event fields this agent_id appears on:**
+- `SCRIBE_DRAFT_CREATED`
+- `SCRIBE_SYNTHESIS_PRODUCED`
+- `SCRIBE_FRAMING_COMPLETED`
+- `SCRIBE_EXPORT_APPROVED`
+- `SCRIBE_EXPORT_EXTERNAL`
+- `VOICE_CAPTURE_COMPLETED` (pending GD-2 — approved 2026-06-11)
 
-| Agent ID | Class | Status |
-|---|---|---|
-| `cpmi.reasoning-chain` | Governance (RE_EXECUTE) | Implemented — Session 11 |
-| `cpmi.world-model-api` | Operational | Implemented — Session 11 |
-| `cpmi.vrs-certification` | Governance | Implemented — Session 11 |
+**Data classification:** SCRIBE draft events are tagged per content type. Output Studio
+external export events carry `data_classification_confirmed: true`. Internal pipeline
+export events carry the data classification of the target product content.
 
-### Core Platform Agents — Other Products
+**Monitoring tier:** Standard.
 
-No other core platform agents registered through Session 14. Agents for NEXUS,
-APEX, FLOWPATH, and ARIA Suite registered in their respective product build sessions.
-
----
-
-### Companion Suite Agents
-
-| Agent ID | Module | Class | Status |
-|---|---|---|---|
-| `counsel-analyst` | COUNSEL | Analytical | Implemented |
-| `scribe-drafter` | SCRIBE | Operational | Implemented |
-| `scribe-style-analyst` | SCRIBE | Analytical | Implemented |
-| `vigil-triage-analyst` | VIGIL | Monitoring | Implemented |
-| `vigil-approval-agent` | VIGIL | Monitoring | Implemented |
-| `lens-explainer` | LENS | Analytical | Implemented |
-| `lens-orientation` | LENS | Analytical | Registered — scaffold only |
-
-**Total registered: 3 AgentOS + 3 CPMI + 7 companion = 13 agents**
+**Scope constraint:** `scribe-drafter` produces structured draft artifacts only. It
+does not export to any SOVEREIGN product without explicit human approval at the
+`ExportPanel` gate. It does not write to `ctx.data` directly — exports route through
+`ctx.navigation` to the target product's own intake path. The Output Studio web
+publishing path is disabled by platform config for federal deployments.
 
 ---
 
-## Governance
+### scribe-style-analyst
 
-Every new agent registration requires:
-1. Entry in this document before any build work begins (Constraint #10)
-2. A registered prompt — or explicit record that the agent uses no prompt
-   (AgentOS orchestrators use no AI reasoning prompt — they are routing logic)
-3. Agent class declared and justified
-4. Project Principal acknowledgment before the session that implements it
+| Field | Value |
+|---|---|
+| `agent_id` | `scribe-style-analyst` |
+| Module | `module-scribe` |
+| Product | SCRIBE — Structured Capture, Reasoning, and Intelligence Bridge for Entry |
+| Agent Class | Profile Analysis Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed (Style DNA feature pending `sovereign-data` StyleProfile entity build) |
+
+**Description:** The style profile analysis agent for SCRIBE's Style DNA feature.
+Analyzes user-provided writing samples and produces a structured `StyleProfile` entity
+conforming to the GD-1-approved schema. Called only during Style DNA profile creation
+or update — not on every draft. The resulting profile is stored in `sovereign-data`
+via `ctx.data`, not in browser storage or a private SCRIBE data store, making it
+available across devices and sessions.
+
+**Prompt registrations required:**
+- `module-scribe/prompts/style_analysis_system.md`
+
+**Logger event fields this agent_id appears on:**
+- `STYLE_PROFILE_UPDATED`
+
+**Data classification:** `StyleProfile` entities and all `STYLE_PROFILE_UPDATED`
+Logger events are tagged `data_classification: user`. The AgentOS privacy boundary
+prevents this data from being ingested by AgentOS pipelines without explicit user
+consent. Do not remove or downgrade this tag.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `scribe-style-analyst` performs writing sample analysis only.
+It produces a `StyleProfile` JSON object, validates it against the GD-1-approved
+schema, and writes the approved profile to `sovereign-data`. It does not perform
+drafting, synthesis, or any other function. Build this agent only after GD-1 is
+confirmed implemented in `sovereign-data`.
+
+**Build dependency:** `sovereign-data` `StyleProfile` entity must be implemented
+before this agent's output can be stored. The agent can be scaffolded before that
+point; the `ctx.data` write path requires `sovereign-data` to be ready.
 
 ---
 
-## Version History
+## LENS Agents
 
-| Version | Date | Changed |
-|---|---|---|
-| v1.0 | May 2026 | Initial standard |
-| v1.1 | June 23, 2026 | Companion suite agents; lens-explainer corrected to Analytical |
-| v1.2 | June 23, 2026 | CPMI agents restored (pre-Session 11) |
-| **v1.3** | **June 24, 2026** | **Three AgentOS orchestrator agents registered (pre-Session 15, Constraint #10)** |
+### lens-explainer
+
+| Field | Value |
+|---|---|
+| `agent_id` | `lens-explainer` |
+| Module | `module-lens` |
+| Product | LENS — Learning, Enrichment, and Navigator for SOVEREIGN |
+| Agent Class | Governance Explanation Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed (requires governance explanation source documents before explainer content is complete) |
+
+**Description:** The governance explanation agent for LENS. Produces plain-language
+explanations of SOVEREIGN governance constraints and notices, grounded in source
+documents from `data/governance_explanations/`. Does not generate from general
+training knowledge — every explanation is anchored to a specific governance source
+document loaded into the prompt context. Called by `GovernanceExplainer.tsx` and
+by the Daily Brief when governance notices are present.
+
+**Prompt registrations required:**
+- `module-lens/prompts/explainer_system.md`
+
+**Logger event fields this agent_id appears on:**
+- `LENS_EXPLAINER_TRIGGERED`
+- `LENS_DAILY_BRIEF_OPENED` (when governance notices trigger an explainer call)
+
+**Data classification:** All LENS Logger events are tagged `data_classification: user`
+without exception. This is a privacy architecture requirement, not a style choice.
+Violation = privacy breach, not a bug.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `lens-explainer` produces read-only explanations only. It has
+no write path to any SOVEREIGN product data. It does not interpret governance policy —
+it explains it. If a governance source document does not exist for a given constraint,
+the explainer surfaces a placeholder directing the user to the relevant SOVEREIGN
+product rather than generating an explanation from training knowledge.
+
+**Build dependency:** Six governance explanation source documents must exist in
+`module-lens/data/governance_explanations/` before the explainer is complete:
+`integration_brief.md`, `decision_matrix.md`, `cpmi_vrs.md`, `aria_boundary.md`,
+`scribe_voice_capture.md`, `counsel_prior_position.md`. The last two are new
+documents required before full LENS build; the first four may already exist in
+SOVEREIGN governance records and are sourced from them.
 
 ---
 
-*SOVEREIGN Platform Agent Identity Standard v1.3 · June 24, 2026*
+### lens-orientation
+
+| Field | Value |
+|---|---|
+| `agent_id` | `lens-orientation` |
+| Module | `module-lens` |
+| Product | LENS — Learning, Enrichment, and Navigator for SOVEREIGN |
+| Agent Class | Orientation Dialogue Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The interactive orientation agent for LENS's role-based orientation
+tracks. Runs structured learning module dialogue using synthetic data for exercises.
+Role assignment from `ctx.auth` determines which orientation track is offered.
+Platform Administrators receive an additional module covering shell contract governance
+and Logger architecture. All orientation dialogue is grounded in SOVEREIGN governance
+documents — the agent does not describe SOVEREIGN from general training knowledge.
+
+**Prompt registrations required:**
+- `module-lens/prompts/orientation_system.md`
+
+**Logger event fields this agent_id appears on:**
+- `LENS_ORIENTATION_COMPLETED`
+
+**Data classification:** All LENS Logger events including orientation completions are
+tagged `data_classification: user`. Orientation completion records are visible in
+the SOF Logger for audit purposes (confirming training completed before a high-risk
+role assignment), but the content of a user's learning patterns is not accessible
+to platform administrators.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `lens-orientation` runs orientation dialogue only. It does not
+access live pipeline data, does not read actual work item content, and does not
+modify any user role or permission. Exercises use synthetic data. Completion status
+is derived from Logger events at query time — it is not stored in a separate
+completion record or database.
+
+**IL contribution:** Orientation completion events feed the Intelligence Layer's
+Judgment Detection calibration. A decision made by a user who has completed the
+orientation track for their role is interpreted with that capability context. The
+`agent_id` on orientation completion events allows the IL to join decision records
+with completion status at the AgentOS aggregation layer.
+
+---
+
+## Summary — All Five Registered Agents
+
+| `agent_id` | Module | Class | Prompts | Data Classification | Build Status |
+|---|---|---|---|---|---|
+| `counsel-analyst` | module-counsel | Analysis | 3 | Audit (not user) | Ready |
+| `scribe-drafter` | module-scribe | Drafting | 3 | Per content type | Ready |
+| `scribe-style-analyst` | module-scribe | Profile Analysis | 1 | `user` | Ready (Style DNA pending `sovereign-data`) |
+| `lens-explainer` | module-lens | Governance Explanation | 1 | `user` | Ready (source docs required) |
+| `lens-orientation` | module-lens | Orientation Dialogue | 1 | `user` | Ready |
+
+**Total new prompts requiring Prompt Registry entries: 9**
+See `Prompt_Registry_CompanionSuite_Additions.md` for all nine entries.
+
+---
+
+*Agent Identity Standard — Companion Suite Additions*
+*Session: Companion Suite Registration · June 11, 2026*
+*Approved by Project Principal*
 *Pre-Decisional · Internal Working Document*
+*Append to Agent_Identity_Standard.md*
 
 ---
 
-# Agent Identity Standard — APEX Module Additions
+# Agent Identity Standard — VIGIL Module Additions
 ## Append to Agent_Identity_Standard.md
 
-**Session:** Session 17 Pre-Build Registration
-**Date:** June 25, 2026
+**Session:** VIGIL Module Registration
+**Date:** June 11, 2026
 **Approved by:** Project Principal
-**Scope:** Two new agent identities — APEX (2)
+**Scope:** Two new agent identities — VIGIL (2)
+
+These entries are appended to the SOVEREIGN Agent Identity Standard following the
+companion suite additions recorded on the same date. Both agents follow the same
+registration format as all platform agents. No build session for VIGIL may begin
+until both agent IDs are confirmed present in this registry.
 
 ---
 
-## APEX Agents
+## VIGIL Agents
 
-### apex.ai-assistant
+### vigil-triage-analyst
 
 | Field | Value |
 |---|---|
-| `agent_id` | `apex.ai-assistant` |
-| Module | `module-apex` |
-| Product | APEX — Analytics and Program Executive Suite |
-| Agent Class | Analytical |
-| Registered | 2026-06-25 |
+| `agent_id` | `vigil-triage-analyst` |
+| Module | `module-vigil` |
+| Product | VIGIL — Visibility, Intelligence, and Governance Interface Layer |
+| Agent Class | Security Triage Analysis Agent |
+| Registered | 2026-06-11 |
 | Registered By | Project Principal |
 | Status | REGISTERED — build may proceed |
 
-**Description:** The LLM-backed analysis agent for APEX. Receives a structured
-context packet containing the CPMI World Model record, reasoning chain history,
-AgentOS task records, and governance decisions for a given program. Produces a
-structured `ApexAnalysisOutput` object containing a plain-prose status narrative,
-risk findings with DC-3 provenance fields, and human-addressed recommendations.
-All LLM calls route through `createSovereignClient()`. One analysis run per report
-generation request — no chained calls, no parallel requests.
+**Description:** The LLM-backed triage analysis agent for VIGIL's Anomaly Triage
+Assistant. Called at most once per triage session, under a single registered prompt
+(`triage_system.md`). Assembles structured context from surrounding Logger events,
+product baseline, and prior similar alerts, then produces a triage brief: likely
+causes ranked by likelihood, recommended investigation steps, and a
+`FALSE_POSITIVE_LIKELIHOOD` score (0–100) with explanation. All calls route through
+`sovereign-api-client`; the agent never calls the Anthropic API directly.
 
-**Prompt:** PR-APEX-001 (approved by Project Principal June 25, 2026)
+**Prompt registrations required:**
+- `module-vigil/agents/vigil-triage-analyst/prompts/triage_system.md`
 
-**Logger events:** `APEX_ANALYSIS_STARTED`, `APEX_ANALYSIS_COMPLETE`
+**Logger event fields this agent_id appears on:**
+- `ALERT_RECEIVED` — every alert entering the VIGIL queue
+- `ALERT_ACKNOWLEDGED` — every operator acknowledgment
+- `ALERT_RESOLVED` — every operator resolution
+- `ALERT_ESCALATED` — every operator escalation
+- `ALERT_FALSE_POSITIVE` — every false positive classification
+- `TRIAGE_ANALYSIS_PRODUCED` — every triage brief produced (GD-4-F)
 
-**Data classification:** Platform-level audit data. Program analysis records
-accessible to authorized platform administrators.
+**Data classification:** All VIGIL security alert events are platform-level audit
+data. NOT tagged `data_classification: user`. Security and triage records are
+operational security records accessible to authorized platform administrators.
+Operators are informed their response decisions and reasoning notes are permanent
+auditable platform records.
 
-**Monitoring tier:** Standard (not enhanced — APEX is an
-cat >> ~/Developer/sovereign-platform/Agent_Identity_Standard.md << 'ENDOFENTRIES'
+**Monitoring tier:** Standard. (VIGIL itself is not in the CPMI enhanced tier —
+it is an operator interface, not a governance engine. CPMI_DRIFT_DETECTED alerts
+it receives are subject to enhanced treatment in the UI but the VIGIL module's own
+behavior is monitored at the standard threshold.)
+
+**Scope constraint:** `vigil-triage-analyst` produces advisory triage analysis only.
+It does not resolve, escalate, or close alerts. It does not invoke other agents. It
+does not write to any SOVEREIGN product data store. The operator's explicit response
+action is the action of record — not the triage brief.
+
+**Restricted access:** `vigil-triage-analyst` is only callable from `module-vigil`,
+which is only accessible to `PLATFORM_ADMIN` and `SYSTEM_ADMIN` roles. This is
+enforced at module mount, not at the agent level.
+
+**Fallback behavior:** Tier 3 static fallback is a structured investigation checklist
+appropriate to the alert type — not an empty stub. Static templates must be defined
+for each `VIGILAlertType` before the Anomaly Triage Assistant feature is declared
+complete.
 
 ---
 
-# Agent Identity Standard — APEX Module Additions
+### vigil-approval-agent
+
+| Field | Value |
+|---|---|
+| `agent_id` | `vigil-approval-agent` |
+| Module | `module-vigil` |
+| Product | VIGIL — Visibility, Intelligence, and Governance Interface Layer |
+| Agent Class | Operator Decision Recording Agent |
+| Registered | 2026-06-11 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed |
+
+**Description:** The agent identity on all AgentOS approval decision Logger events
+produced by VIGIL. This is not an LLM-backed agent — it is a registered identity
+used to attribute operator approval decisions in the audit trail. Every
+`AgentApprovalDecision` emitted as a `HUMAN_DECISION` Logger event carries this
+`agent_id` alongside the human operator's `actor` and `actor_name` fields. The
+design separates the attribution of the decision instrument (VIGIL's approval
+panel, identified by this agent_id) from the attribution of the human who decided
+(identified by `actor_name`).
+
+**Prompt registrations required:** None. `vigil-approval-agent` is a record-keeping
+identity, not an LLM agent. It does not call `sovereign-api-client`.
+
+**Logger event fields this agent_id appears on:**
+- `APPROVAL_REQUEST_RECEIVED` — every AgentOS approval request entering the queue
+- `HUMAN_DECISION` — every operator approval/rejection/deferral decision
+
+**IL contribution:** Every `HUMAN_DECISION` event tagged with `vigil-approval-agent`
+is Intelligence Layer training data for the Judgment Detection component — labeled
+human oversight decisions on agent behavior. The `decision_type` field is required
+on all such events (enforced in `useApprovalDecision.ts` — the decision panel submit
+action is inactive until `decision_type` is selected). Combined with optional
+attached COUNSEL Decision Record IDs on high-stakes approvals, these events produce
+the richest oversight-decision training data in the platform.
+
+**Data classification:** Platform-level audit data. NOT `data_classification: user`.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `vigil-approval-agent` records decisions; it does not make
+them. The human operator selects Approve, Reject, or Defer. The agent identity
+is the instrument attribution in the audit trail.
+
+---
+
+## Updated Summary — All VIGIL + Companion Suite Agents
+
+| `agent_id` | Module | Class | LLM-Backed | Data Classification |
+|---|---|---|---|---|
+| `counsel-analyst` | module-counsel | Analysis | Yes | Platform audit |
+| `scribe-drafter` | module-scribe | Drafting | Yes | Per content type |
+| `scribe-style-analyst` | module-scribe | Profile Analysis | Yes | `user` |
+| `lens-explainer` | module-lens | Governance Explanation | Yes | `user` |
+| `lens-orientation` | module-lens | Orientation Dialogue | Yes | `user` |
+| `vigil-triage-analyst` | module-vigil | Security Triage Analysis | Yes | Platform audit |
+| `vigil-approval-agent` | module-vigil | Decision Recording | **No** | Platform audit |
+
+**Total companion suite agents: 7**
+
+---
+
+*Agent Identity Standard — VIGIL Module Additions*
+*Session: VIGIL Module Registration · June 11, 2026*
+*Approved by Project Principal*
+*Pre-Decisional · Internal Working Document*
+*Append to Agent_Identity_Standard.md after existing companion suite entries*
+
+---
+
+# Agent Identity Standard — AgentOS Orchestration Additions
 ## Append to Agent_Identity_Standard.md
 
-**Session:** Session 17 Pre-Build Registration
+**Session:** Session 16 — AgentOS Orchestration
 **Date:** June 25, 2026
 **Approved by:** Project Principal
-**Scope:** Two new agent identities — APEX (2)
+**Scope:** Three new agent identities — AgentOS Orchestration class (3)
+**Governance Decision:** GD-12 — `Orchestration` AgentClass added to shell-contract v1.9
+
+These entries are appended to the SOVEREIGN Agent Identity Standard. All three agents
+follow the same registration format as existing platform agents. The `Orchestration`
+AgentClass was added in GD-12 (Session 16) to support these agents. All AgentCards
+are active.
 
 ---
 
-## APEX Agents
+## AgentOS Orchestration Agents
 
-### apex.ai-assistant
+| Agent ID | Agent Class | Accountable Human | Permitted Actions | Credential Required |
+|---|---|---|---|---|
+| `agentos.deployer` | Orchestration | Project Principal | Deploy models to target surfaces following human approval from VIGIL; log all deployment events with workflow_step_id | None (local only) |
+| `agentos.exporter` | Orchestration | Project Principal | Export data artifacts and reports following human approval from VIGIL; enforce classification boundary (GD-10); log all export events | None (local only) |
+| `agentos.configurator` | Orchestration | Project Principal | Apply configuration changes to AgentOS components following human approval from VIGIL; log all configuration events | None (local only) |
 
-| Field | Value |
-|---|---|
-| `agent_id` | `apex.ai-assistant` |
-| Module | `module-apex` |
-| Product | APEX — Analytics and Program Executive Suite |
-| Agent Class | Analytical |
-| Registered | 2026-06-25 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed |
+**AgentOS Orchestration agent scope limit:** All three orchestration agents require
+explicit human approval through the VIGIL Agent Approval Queue before executing any
+action. No orchestration agent deploys, exports, or configures without a logged
+`HUMAN_DECISION` event with `decision_type` set. No orchestration agent modifies
+its own task routing logic, risk classification, or permissions map. All credentials
+local only — never in files.
 
-**Description:** The LLM-backed analysis agent for APEX. Receives a structured
-context packet containing the CPMI World Model record, reasoning chain history,
-AgentOS task records, and governance decisions for a given program. Produces a
-structured `ApexAnalysisOutput` object containing a plain-prose status narrative,
-risk findings with DC-3 provenance fields, and human-addressed recommendations.
-All LLM calls route through `createSovereignClient()`. One analysis run per report
-generation request — no chained calls, no parallel requests.
-
-**Prompt:** PR-APEX-001 (approved by Project Principal June 25, 2026)
-
-**Logger events:** `APEX_ANALYSIS_STARTED`, `APEX_ANALYSIS_COMPLETE`
-
-**Data classification:** Platform-level audit data. Program analysis records
-accessible to authorized platform administrators.
-
-**Monitoring tier:** Standard (not enhanced — APEX is an analytics product,
-not a governance engine).
-
-**Scope constraint:** `apex.ai-assistant` produces advisory analysis only. It does
-not modify any upstream data, does not make governance decisions, and does not
-invoke other agents. Every analysis run produces either a valid `ApexAnalysisOutput`
-or logs a structured error.
+**A2A approval behavior:** `ACKNOWLEDGE_AND_CONTINUE` — consistent with platform
+default (see Session 1 Update above). The orchestration agents proceed after
+acknowledgment of approval; they do not re-execute from the start.
 
 ---
 
-### apex.report-generator
+*Agent Identity Standard — AgentOS Orchestration Additions*
+*Session 16 · June 25, 2026 · Project Principal approved*
+*Pre-Decisional · Internal Working Document*
+*Append to Agent_Identity_Standard.md after VIGIL module additions*
+
+---
+
+# Agent Identity Standard — PPBE Workflow Layer Additions
+## Append to Agent_Identity_Standard.md
+
+**Session:** PPBE Governance Session — Post-Walkthrough C
+**Date:** June 29, 2026
+**Approved by:** Project Principal (Governance Decision Record D-P5)
+**Scope:** Six new agent identities — PPBE workflow layer
+
+These entries are appended to the SOVEREIGN Agent Identity Standard. All six agents
+follow the same registration format as existing platform agents. No PPBE build
+session may begin until all six agent IDs are confirmed present in this registry.
+
+**ALWAYS verify this document directly at session open — count the entries in the
+file. The Integration Brief's count claim is not authoritative. (Lesson 12)**
+
+---
+
+## PPBE Workflow Layer Agents
+
+### ppbe-ledger-monitor
 
 | Field | Value |
 |---|---|
-| `agent_id` | `apex.report-generator` |
-| Module | `module-apex` |
-| Product | APEX — Analytics and Program Executive Suite |
-| Agent Class | Operational |
-| Registered | 2026-06-25 |
+| `agent_id` | `ppbe-ledger-monitor` |
+| Module | PPBE workflow layer (runs on APEX / Logger infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Monitoring |
+| Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed |
+| Status | REGISTERED — build may proceed when PPBE Phase II opens |
 
-**Description:** The document assembly agent for APEX. Takes a valid
-`ApexAnalysisOutput` from `apex.ai-assistant` and produces a formatted report
-artifact (MSR, QPR, or program dossier). Does not call the LLM — performs
-deterministic structured document assembly from governed data objects. Enforces
-the `sovereignHold()` gate before any document is produced. Logs
-`REPORT_GENERATION_HELD` if hold is active.
+**Description:** Continuously analyzes obligation records and performance data for
+anomalies, deviation patterns, and early warning signals. Routes `PPBE_ANOMALY`
+Logger events to the VIGIL Alert Queue with structured context for human operator
+review. Does not resolve anomalies — observation and alerting only. Operates on
+APEX's data infrastructure without requiring a separate data store.
 
-**Prompt:** None — deterministic document assembly, no LLM calls.
+**Prompt registrations required:** None. `ppbe-ledger-monitor` is a rule-based
+monitoring agent. It does not call `sovereign-api-client` or the Anthropic API.
+Its anomaly detection logic is deterministic thresholds configured at deployment.
 
-**Logger events:** `APEX_REPORT_GENERATED`, `APEX_DOSSIER_EXPORTED`,
-`REPORT_GENERATION_HELD`, `APEX_EVENT_RECEIVED`
+**Logger event fields this agent_id appears on:**
+- `PPBE_ANOMALY` — every threshold breach routed to VIGIL
+- `PPBE_PHASE_TRANSITION` — health check contribution at each phase handoff
+
+**Data classification:** Platform-level audit data. NOT `data_classification: user`.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `ppbe-ledger-monitor` observes and alerts only. It does not
+modify obligation records, resolve anomalies, or authorize corrective actions. All
+anomaly responses require a human decision in VIGIL. It does not invoke other agents.
+
+---
+
+### ppbe-dependency-tracker
+
+| Field | Value |
+|---|---|
+| `agent_id` | `ppbe-dependency-tracker` |
+| Module | PPBE workflow layer (runs on NEXUS / FLOWPATH infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Monitoring |
+| Registered | 2026-06-29 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed when PPBE Phase II opens |
+
+**Description:** Tracks inter-workflow dependencies and handoff health across the
+six PPBE phases. Flags timing violations and quality threshold failures before
+they cascade downstream. Monitors `DependencyMap` entities registered in the data
+dictionary and routes health failures to VIGIL as `PPBE_ANOMALY` events. Reads
+FLOWPATH-produced workflow artifacts to understand the dependency structure; does
+not modify them.
+
+**Prompt registrations required:** None. `ppbe-dependency-tracker` is deterministic.
+It evaluates dependency health against defined thresholds — it does not call
+`sovereign-api-client`.
+
+**Logger event fields this agent_id appears on:**
+- `PPBE_ANOMALY` — every dependency health failure or timing violation
+- `PPBE_PHASE_TRANSITION` — dependency readiness check at each phase handoff
 
 **Data classification:** Platform-level audit data.
 
 **Monitoring tier:** Standard.
 
-**Scope constraint:** `apex.report-generator` assembles documents only. It does
-not perform analysis, does not call the LLM, and does not export any document
-until `sovereignHold()` returns false and human attestation (`REPORT_ATTESTATION`)
-is logged.
+**Scope constraint:** `ppbe-dependency-tracker` reads dependency and workflow
+artifact data only. It does not modify workflow artifacts, DependencyMap entities,
+or any FLOWPATH data. Flags go to VIGIL; humans decide the response.
 
 ---
 
-## Updated Agent Count — 18 Total
+### ppbe-evidence-synthesizer
 
-| `agent_id` | Module | Class | LLM-Backed | Status |
+| Field | Value |
+|---|---|
+| `agent_id` | `ppbe-evidence-synthesizer` |
+| Module | PPBE workflow layer (runs on APEX / ARIA infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Analytical |
+| Registered | 2026-06-29 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+
+**Description:** Aggregates evaluation findings, audit results, and performance
+data across programs to support planning and programming reviews. Produces
+structured synthesis reports from `EvaluationFinding` records and APEX program
+data. Output is always labeled as AI-generated recommendation — human review is
+required before any synthesis report influences a PPBE decision. Calls
+`sovereign-api-client` under a registered prompt; never calls the Anthropic API
+directly. Requires Tier A authorization.
+
+**Prompt registrations required:**
+- `ppbe/prompts/evidence_synthesis_system.md` — to be authored in Claude Chat
+  and approved by Project Principal before PPBE Phase III build session opens.
+
+**Logger event fields this agent_id appears on:**
+- `PPBE_DECISION` — when synthesis report is accepted and influences a decision
+
+**Data classification:** Platform-level audit data.
+
+**Monitoring tier:** Standard, with CPMI enhanced monitoring applied given analytical
+output relevance to resource decisions.
+
+**Scope constraint:** `ppbe-evidence-synthesizer` produces advisory synthesis
+reports only. It does not modify `EvaluationFinding` records, program data, or
+any APEX data store. It does not invoke other agents. Every synthesis report that
+influences a decision requires a human to record that decision with a `PPBE_DECISION`
+Logger event.
+
+---
+
+### ppbe-scenario-analyst
+
+| Field | Value |
+|---|---|
+| `agent_id` | `ppbe-scenario-analyst` |
+| Module | PPBE workflow layer (runs on APEX / AgentOS infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Analytical |
+| Registered | 2026-06-29 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+
+**Description:** Models alternative resource allocations and their projected
+performance and risk implications across program portfolios. Produces scenario
+analysis reports that feed COUNSEL's decision framing for high-stakes programming
+decisions. Requires Tier A authorization. Output is always advisory — labeled
+clearly as AI-generated scenario modeling, not a decision or recommendation to
+execute. Calls `sovereign-api-client` under a registered prompt. Never calls the
+Anthropic API directly.
+
+**Prompt registrations required:**
+- `ppbe/prompts/scenario_analysis_system.md` — to be authored in Claude Chat
+  and approved by Project Principal before PPBE Phase III build session opens.
+
+**Logger event fields this agent_id appears on:**
+- `PPBE_DECISION` — when scenario analysis informs a programming decision
+
+**Data classification:** Platform-level audit data.
+
+**Monitoring tier:** Standard, with CPMI enhanced monitoring applied.
+
+**Scope constraint:** `ppbe-scenario-analyst` models scenarios and produces
+advisory analysis only. It does not execute resource allocations, modify program
+data, or authorize any action. All programming decisions require human approval.
+It does not invoke other agents — its output is consumed by COUNSEL and human
+decision-makers.
+
+**IL contribution:** Scenario analysis outputs that lead to programming decisions
+contribute to the Intelligence Layer's Risk Modeler when built.
+
+---
+
+### ppbe-exhibit-drafter
+
+| Field | Value |
+|---|---|
+| `agent_id` | `ppbe-exhibit-drafter` |
+| Module | PPBE workflow layer (runs on SCRIBE infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Operational |
+| Registered | 2026-06-29 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+
+**Description:** Drafts budget exhibits and justification narratives from governed
+`ProgramRecord` and `ObligationRecord` data. Extends SCRIBE's existing drafting
+engine with three PPBE-specific document modes: Budget Exhibit Mode, Congressional
+Justification Mode, and Evaluation Report Mode. Every figure in a produced exhibit
+is traceable to its source record in the Logger. Export from any PPBE document mode
+is gated on ARIA Suite CLEAR certification — no PPBE exhibit may be exported
+without clearance. Human review and sign-off required before export of any
+congressional justification or evaluation report. Calls `sovereign-api-client`
+under a registered prompt; never calls the Anthropic API directly.
+
+**Prompt registrations required:**
+- `ppbe/prompts/exhibit_drafting_system.md` — to be authored in Claude Chat
+  and approved by Project Principal before PPBE Phase III build session opens.
+
+**Logger event fields this agent_id appears on:**
+- `SCRIBE_DRAFT_CREATED` — every PPBE exhibit or justification draft produced
+- `SCRIBE_EXPORT_APPROVED` — every PPBE document export after human sign-off
+- `SCRIBE_EXPORT_EXTERNAL` — every PPBE document released externally
+
+**Data classification:** PPBE draft events tagged per content type. Congressional
+justification export events carry `data_classification_confirmed: true` and
+`aria_clear_certified: true`.
+
+**Monitoring tier:** Standard, with CPMI enhanced monitoring applied.
+
+**Scope constraint:** `ppbe-exhibit-drafter` produces draft artifacts only. It does
+not export without explicit human approval and ARIA Suite CLEAR certification. It
+does not modify `ProgramRecord` or `ObligationRecord` data. The Output Studio web
+publishing path is disabled for PPBE document modes in federal deployments.
+
+---
+
+### ppbe-coordination-assistant
+
+| Field | Value |
+|---|---|
+| `agent_id` | `ppbe-coordination-assistant` |
+| Module | PPBE workflow layer (runs on NEXUS / VIGIL infrastructure) |
+| Product | PPBE — governed workflow layer |
+| Agent Class | Operational |
+| Registered | 2026-06-29 |
+| Registered By | Project Principal |
+| Status | REGISTERED — build may proceed when PPBE Phase II opens; prompt required before build |
+
+**Description:** Tracks action items, decision commitments, and governance calendar
+obligations across the PPBE cycle. Monitors the governance calendar for timing
+violations — missed decision deadlines, overdue phase transitions, lapsed commitment
+records. Routes coordination failures to VIGIL as `PPBE_ANOMALY` events for human
+operator response. Does not send communications on behalf of any human. Does not
+reassign or close action items without human authorization. Calls `sovereign-api-client`
+under a registered prompt for natural language coordination tracking; never calls the
+Anthropic API directly.
+
+**Prompt registrations required:**
+- `ppbe/prompts/coordination_system.md` — to be authored in Claude Chat and
+  approved by Project Principal before PPBE Phase II build session opens.
+
+**Logger event fields this agent_id appears on:**
+- `PPBE_ANOMALY` — every coordination failure, missed deadline, or calendar violation
+- `PPBE_PHASE_TRANSITION` — coordination readiness contribution at each handoff
+
+**Data classification:** Platform-level audit data.
+
+**Monitoring tier:** Standard.
+
+**Scope constraint:** `ppbe-coordination-assistant` tracks and alerts only. It does
+not send communications, close action items, modify governance calendar records, or
+authorize any action. All coordination responses require a human decision. It does
+not invoke other agents.
+
+---
+
+## Complete Agent Registry — As of June 29, 2026
+
+**Count the entries in this file directly at every session open. Do not rely on the
+Integration Brief's count. This table is the authoritative count.**
+
+| `agent_id` | Module / Layer | Class | LLM-Backed | Status |
 |---|---|---|---|---|
-| `apex.ai-assistant` | module-apex | Analytical | Yes | Registered |
-| `apex.report-generator` | module-apex | Operational | No | Registered |
+| `flowpath.coordinator` | module-flowpath | Analytical | Yes | Implemented |
+| `flowpath.interviewer` | module-flowpath | Analytical | Yes | Implemented |
+| `flowpath.mapper` | module-flowpath | Analytical | Yes | Implemented |
+| `flowpath.validator` | module-flowpath | Analytical | Yes | Implemented |
+| `flowpath.analyzer` | module-flowpath | Analytical | Yes | Implemented |
+| `flowpath.domain-translator` | module-flowpath | Analytical | Yes | Implemented |
+| `cpmi.reasoning-chain` | module-cpmi | Analytical / Governance | Yes | Implemented |
+| `cpmi.world-model-api` | module-cpmi | Operational | Yes | Implemented |
+| `cpmi.vrs-certification` | module-cpmi | Governance | No | Implemented |
+| `agentos.orchestrator` | module-agentos | Operational | No | Implemented |
+| `agentos.data-agent` | module-agentos | Operational | No | Implemented |
+| `agentos.training-agent` | module-agentos | Operational | No | Implemented |
+| `agentos.evaluation-agent` | module-agentos | Analytical / Governance | No | Implemented |
+| `agentos.monitoring-agent` | module-agentos | Monitoring | No | Implemented |
+| `agentos.compliance-agent` | module-agentos | Governance | No | Implemented |
+| `agentos.deployer` | module-agentos | Orchestration | No | Implemented (S16) |
+| `agentos.exporter` | module-agentos | Orchestration | No | Implemented (S16) |
+| `agentos.configurator` | module-agentos | Orchestration | No | Implemented (S16) |
+| `nexus.classification-agent` | module-nexus | Analytical | Yes | Implemented |
+| `nexus.routing-agent` | module-nexus | Operational | Yes | Implemented |
+| `apex.ai-assistant` | module-apex | Analytical | Yes | Implemented |
+| `apex.report-generator` | module-apex | Operational | No | Implemented |
+| `aria.rules-engine` | module-aria | Governance | No | Registered (S22 scaffold) |
+| `counsel-analyst` | module-counsel | Analytical | Yes | Implemented |
+| `scribe-drafter` | module-scribe | Operational | Yes | Implemented |
+| `scribe-style-analyst` | module-scribe | Analytical | Yes | Implemented |
+| `lens-explainer` | module-lens | Analytical | Yes | Implemented |
+| `lens-orientation` | module-lens | Analytical | Yes | Implemented |
+| `vigil-triage-analyst` | module-vigil | Monitoring | Yes | Implemented |
+| `vigil-approval-agent` | module-vigil | Monitoring | No | Implemented |
+| `ppbe-ledger-monitor` | PPBE layer | Monitoring | No | Registered (Phase II) |
+| `ppbe-dependency-tracker` | PPBE layer | Monitoring | No | Registered (Phase II) |
+| `ppbe-evidence-synthesizer` | PPBE layer | Analytical | Yes | Registered (Phase III) |
+| `ppbe-scenario-analyst` | PPBE layer | Analytical | Yes | Registered (Phase III) |
+| `ppbe-exhibit-drafter` | PPBE layer | Operational | Yes | Registered (Phase III) |
+| `ppbe-coordination-assistant` | PPBE layer | Operational | Yes | Registered (Phase II) |
 
-*All prior agents (16) remain active. APEX additions bring total to 18.*
+**Total registered agents: 36**
+
+Note on prior count discrepancy: Integration Brief v1.30 claimed 21 agents. The
+actual count in this file as of June 29, 2026 is 36. The discrepancy arose from
+count drift across multiple sessions (Lesson 12). The count in this table is
+authoritative. Claude Code must count file entries directly at every session open
+and record the verified count in the session handoff. Do not propagate the Brief's
+count forward without verifying.
 
 ---
 
-*Agent Identity Standard — APEX Module Additions*
-*Session 17 Pre-Build Registration · June 25, 2026*
-*Approved by Project Principal*
+*Agent Identity Standard — PPBE Workflow Layer Additions*
+*June 29, 2026 · Project Principal approved (Governance Decision Record D-P5)*
 *Pre-Decisional · Internal Working Document*
-
----
-
-# Agent Identity Standard — FLOWPATH Module Additions
-## Append to Agent_Identity_Standard.md
-
-**Session:** Session 20 Pre-Build Registration (governance correction)
-**Date:** June 26, 2026
-**Approved by:** Project Principal
-**Scope:** Six FLOWPATH agent identities
-
-These entries correct an omission identified at Session 20 open. The six FLOWPATH agents were documented in superseded artifacts as "registered" but were never formally appended to this standard. Claude Code correctly blocked at the Constraint #10 gate. All six agents use the existing Analytical class — no shell-contract change required.
-
----
-
-## FLOWPATH Agents
-
-| `agent_id` | Class | Status |
-|---|---|---|
-| `flowpath.coordinator` | Analytical | REGISTERED — build may proceed |
-| `flowpath.interviewer` | Analytical | REGISTERED — build may proceed |
-| `flowpath.mapper` | Analytical | REGISTERED — build may proceed |
-| `flowpath.validator` | Analytical | REGISTERED — build may proceed |
-| `flowpath.analyzer` | Analytical | REGISTERED — build may proceed |
-| `flowpath.domain-translator` | Analytical | REGISTERED — build may proceed |
-
-**`flowpath.coordinator`** — Orchestrates the full elicitation lifecycle. Routes between interviewer, mapper, validator, analyzer, and domain-translator. Manages session state. Does not call the LLM for reasoning — routing and state management only. Logger events: FLOWPATH_SESSION_STARTED, FLOWPATH_SESSION_COMPLETE.
-
-**`flowpath.interviewer`** — The primary elicitation agent. Operates in two modes: (1) organizational mode — conducts structured multi-turn dialogue with subject matter experts to surface actual operational workflows (PR-FLOWPATH-001); (2) individual mode — conducts private workstyle elicitation sessions with analysts, delivering the trust statement verbatim before the first question (PR-FLOWPATH-002). All calls route through createSovereignClient().
-
-**`flowpath.mapper`** — Converts interviewer output into structured WorkflowArtifact objects conforming to the SOVEREIGN data dictionary. Also produces OrganizationalVocabulary, DataSourceRegistry, and ValidationCadenceRecord alongside each workflow artifact. Logger events: FLOWPATH_ARTIFACT_PRODUCED, FLOWPATH_VOCABULARY_CAPTURED, FLOWPATH_DATASOURCE_REGISTERED, FLOWPATH_VALIDATION_CADENCE_SET.
-
-**`flowpath.validator`** — Runs the Five-Question Completeness Gate on mapper output. Also validates that individual AnalystWorkstyleProfile thresholds are not looser than organizational defaults. Logger events: FLOWPATH_GATE_FAILED, FLOWPATH_WORKSTYLE_BOUNDARY_CONFLICT. Prompt: PR-FLOWPATH-003.
-
-**`flowpath.analyzer`** — Produces bottleneck, exception path, and dependency risk findings from completed, gate-passed WorkflowArtifact objects. Output is advisory only — never modifies the workflow. Prompt: PR-FLOWPATH-004.
-
-**`flowpath.domain-translator`** — Reviews all inter-agent content for vocabulary divergence and maintains the terminology flag log. Flags when an analyst's vocabulary usage differs from the organizational vocabulary standard.
-
-**Scope constraint (all six):** No FLOWPATH agent modifies any upstream product data. No FLOWPATH agent builds PPBE workflow artifacts until governance decisions D-P1 through D-P6 are recorded. AnalystWorkstyleProfile data is data_classification: user — analyst_id hashed before logging, no admin read path.
-
-**Data classification:** OrganizationalVocabulary and WorkflowArtifact records are platform-level governance data. AnalystWorkstyleProfile records are data_classification: user.
-
-**Monitoring tier:** Standard for all six.
-
----
-
-## Updated Agent Count — 21 Total (15 prior + 6 FLOWPATH)
-
-*Integration Brief v1.28 incorrectly stated 18 registered agents. The correct count after this registration is 21: 15 previously registered (AgentOS 6, CPMI 3, companion suite 4, APEX 2) + 6 FLOWPATH = 21. The Brief will be corrected in v1.29.*
-
----
-
-*Agent Identity Standard — FLOWPATH Module Additions*
-*June 26, 2026 · Approved by Project Principal*
-*Pre-Decisional · Internal Working Document*
+*Append to Agent_Identity_Standard.md after AgentOS Orchestration additions*
