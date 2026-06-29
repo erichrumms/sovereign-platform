@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.13
+ * Version: 1.14
  * Date: June 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,36 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.14 (June 29, 2026) — GD-19 (shared task surface, pre-approved Session 22 opening prompt
+ *                       per Integration Brief v1.31 + 16_ARIA_Suite_Architecture.md cross-product
+ *                       wiring; closes the Session 18 nexus-agentos-port.ts SCOPE BOUNDARY note).
+ *                       STANDING CONSTRAINT #7 CHANGE: the shell context advances from EIGHT to
+ *                       NINE exports. Added `taskSurface` (SovereignShellContext, Section 7) — a
+ *                       shell-owned, in-memory shared task surface that any product publishes
+ *                       cross-product tasks to and reads back, so a NEXUS-routed AgentOS task
+ *                       (created via the live createAgentOSBackedPort) becomes visible in the
+ *                       AgentOS Task Registry panel without either module reaching into the
+ *                       other (Constraints #1 / #3 preserved — connection is configuration, not
+ *                       rewrite). Constraint #7 is formally relaxed from 8 to 9 exports for this
+ *                       addition only; the count is now nine and no further export may be added
+ *                       without another GD. Added two exported shared types: SharedTask (the
+ *                       governance-frozen cross-product task shape) and TaskSurface (the ninth
+ *                       export's interface), plus the supporting SharedTaskStatus union. Impact
+ *                       assessment: module-nexus + module-agentos only — NEXUS publishes to the
+ *                       surface through its AgentOS-backed port; AgentOS reads the surface in
+ *                       useTaskRegistry. SharedTaskStatus is the canonical cross-product task
+ *                       status taxonomy; module-agentos's TaskStatus aliases it (Constraint #2 —
+ *                       no divergent duplicate; identical eight members, no exhaustive switch
+ *                       breaks). NO SovereignEventType / HumanDecisionType change (the surface
+ *                       carries no new event or decision — publication rides the EXISTING
+ *                       AGENTOS_TASK_ASSIGNED emit), so NO sovereign-data shared-types
+ *                       propagation and NO Python logger taxonomy change. NO SovereignProduct /
+ *                       SovereignRole / AgentClass change. Synced artifact propagation
+ *                       (Constraint #11): the two shell-contract.ts copies only — these are the
+ *                       sole synced copies of THIS artifact; shared-types.ts mirrors only the
+ *                       three enums (not entity/context types) and is therefore untouched. Full
+ *                       tsc --noEmit clean; both shell-contract copies SHA-256 verified identical
+ *                       at v1.14.
  *   v1.13 (June 26, 2026) — GD-18 (FLOWPATH event types + workstyle entity, pre-approved
  *                       Session 20 opening prompt + Integration Brief v1.28 §6/GD-18, per
  *                       15_FLOWPATH_Architecture.md §8 / §10). Added ten SovereignEventType
@@ -864,8 +894,79 @@ export interface SovereignAGUIInterface {
 }
 
 
+// ------------------------------------------------------------
+// SHARED TASK SURFACE TYPES (shell-contract v1.14 — GD-19)
+// The cross-product task surface shape. A SharedTask is the governance-frozen,
+// self-contained representation of a unit of work that one product publishes for
+// another to observe (e.g. NEXUS routes a work request to AgentOS; the resulting
+// AgentOS task is published here so the AgentOS Task Registry panel can show it).
+// The surface is intentionally minimal and module-independent: the shell contract
+// never imports a module's internal Task type, so SharedTask carries exactly the
+// fields a cross-product reader needs to render and trace a task. SharedTaskStatus
+// is the CANONICAL cross-product task-status taxonomy — module-agentos's TaskStatus
+// aliases it (Standing Constraint #2, no divergent duplicate). These are
+// governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+/** The canonical cross-product task lifecycle status (module-agentos TaskStatus aliases this). */
+export type SharedTaskStatus =
+  | "CREATED"
+  | "ASSIGNED"
+  | "PENDING_APPROVAL"
+  | "APPROVED"
+  | "REJECTED"
+  | "IN_PROGRESS"
+  | "COMPLETE"
+  | "CANCELLED";
+
+/**
+ * A cross-product unit of work published to the shared task surface. `origin_product`
+ * names the product that published it (e.g. "NEXUS"); `origin_request_id` carries the
+ * publishing product's own id for traceability (e.g. the NEXUS request_id). Every task
+ * carries workflow_step_id so a reader can join it to the audit trail (Constraint #6).
+ */
+export interface SharedTask {
+  task_id: string;
+  title: string;
+  description: string;
+  status: SharedTaskStatus;
+  origin_product: SovereignProduct;
+  assigned_agent_id?: string;
+  requires_approval: boolean;
+  data_classification: ClearanceLevel;
+  workflow_step_id: string;
+  /** The publishing product's native id for this work (e.g. NEXUS request_id) — traceability. */
+  origin_request_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * The shared task surface — the ninth shell export (GD-19). A shell-owned, in-memory
+ * registry of SharedTasks that products publish to and read from. It carries no
+ * governance authority of its own (Constraint #1): publishing a task does not log,
+ * approve, or route it — the publishing product still emits its own governed Logger
+ * events. The surface only makes a published task visible to other products. Reads are
+ * snapshots; subscribe() notifies a listener whenever the task set changes.
+ */
+export interface TaskSurface {
+  /** Publish (or replace, by task_id) a task on the shared surface. */
+  publish: (task: SharedTask) => void;
+  /** Patch an existing task by id. No-op if the id is not present. */
+  update: (task_id: string, patch: Partial<Omit<SharedTask, "task_id">>) => void;
+  /** A read-only snapshot of every published task (publication order). */
+  list: () => readonly SharedTask[];
+  /** Look up one published task by id. */
+  get: (task_id: string) => SharedTask | undefined;
+  /** Subscribe to surface changes; returns an unsubscribe function. */
+  subscribe: (listener: (tasks: readonly SharedTask[]) => void) => () => void;
+}
+
+
 // ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
+// As of shell-contract v1.14 (GD-19) the context provides NINE exports
+// (Standing Constraint #7 relaxed from eight to nine for taskSurface).
 // ============================================================
 
 export interface SovereignShellContext {
@@ -896,6 +997,8 @@ export interface SovereignShellContext {
   mcp: SovereignMCPInterface;
   a2a: SovereignA2AInterface;
   agui: SovereignAGUIInterface;
+  // Ninth export — GD-19 (shell-contract v1.14). The shared cross-product task surface.
+  taskSurface: TaskSurface;
 }
 
 

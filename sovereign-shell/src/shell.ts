@@ -18,9 +18,11 @@
  *   governance/         ← React CPMI-VRS dashboard placeholder reading ctx.governance
  *
  * CONTRACT FIDELITY (governance):
- *   The shape of SovereignShellContext is frozen by shell-contract.ts v1.0
- *   (Decision 18 — "the shell provides eight exports ... this is the complete
- *   list"). This file implements exactly those eight and adds nothing to the
+ *   The shape of SovereignShellContext is frozen by shell-contract.ts (Decision 18 —
+ *   originally "the shell provides eight exports ... this is the complete list").
+ *   GD-19 (shell-contract v1.14, Session 22) formally relaxed Standing Constraint #7
+ *   from eight to nine exports, adding `taskSurface` — the shared cross-product task
+ *   surface. This file implements exactly those NINE and adds nothing further to the
  *   context surface. In particular it exposes NO LLM client on the context:
  *   per the Section 6 standing constraint, modules obtain LLM access by
  *   calling createSovereignClient() from @sovereign/api-client themselves —
@@ -61,6 +63,8 @@ import type {
   SovereignAGUIInterface,
   AGUIEvent,
   AGUISubscription,
+  TaskSurface,
+  SharedTask,
 } from "../shell-contract";
 
 // Canonical shared data package (Session 4 — npm workspace linkage). Value
@@ -512,6 +516,53 @@ class ShellAGUI implements SovereignAGUIInterface {
 }
 
 // ============================================================
+// TASK SURFACE — the ninth export (GD-19, shell-contract v1.14)
+// A shell-owned, in-memory registry of cross-product SharedTasks. It carries no
+// governance authority of its own (Constraint #1): publishing a task does not log,
+// approve, or route it — the publishing product still emits its own governed Logger
+// events. The surface only makes a published task visible to other products. State
+// lives for the lifetime of the shell context (one platform session), mirroring the
+// other in-memory Stage-1 providers. subscribe() lets a module re-render when the set
+// changes (e.g. AgentOS's Task Registry refreshing as NEXUS routes work in).
+// ============================================================
+
+class ShellTaskSurface implements TaskSurface {
+  private readonly tasks: Map<string, SharedTask> = new Map();
+  private readonly listeners: Set<(tasks: readonly SharedTask[]) => void> = new Set();
+
+  publish = (task: SharedTask): void => {
+    // Last-write-wins by task_id (mirrors the A2A registry semantics).
+    this.tasks.set(task.task_id, task);
+    this.notify();
+  };
+
+  update = (task_id: string, patch: Partial<Omit<SharedTask, "task_id">>): void => {
+    const existing = this.tasks.get(task_id);
+    if (!existing) return; // no-op for an unknown id (never invents a task)
+    this.tasks.set(task_id, { ...existing, ...patch, task_id });
+    this.notify();
+  };
+
+  list = (): readonly SharedTask[] => Array.from(this.tasks.values());
+
+  get = (task_id: string): SharedTask | undefined => this.tasks.get(task_id);
+
+  subscribe = (listener: (tasks: readonly SharedTask[]) => void): (() => void) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
+
+  private notify(): void {
+    const snapshot = this.list();
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -555,6 +606,7 @@ export class SovereignShell implements SovereignShellContext {
   readonly mcp: SovereignMCPInterface;
   readonly a2a: SovereignA2AInterface;
   readonly agui: SovereignAGUIInterface;
+  readonly taskSurface: TaskSurface;
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
@@ -602,6 +654,8 @@ export class SovereignShell implements SovereignShellContext {
     this.mcp = new ShellMCP();
     this.a2a = new ShellA2A();
     this.agui = new ShellAGUI();
+    // Ninth export (GD-19, v1.14) — the shared cross-product task surface.
+    this.taskSurface = new ShellTaskSurface();
   }
 
   /**
