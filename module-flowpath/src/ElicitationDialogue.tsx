@@ -15,7 +15,7 @@
  * Version: 1.0 · Session 20 (D4) · June 26, 2026
  */
 
-import { type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
@@ -58,14 +58,27 @@ export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDia
 
   const remaining = gate.filter((g) => !g.answered);
 
+  // WC-3: the gate-not-met notice must NOT greet the user on first load. It appears only after the
+  // user actually attempts to produce an artifact with questions still open. `attempted` records
+  // that an attempt was made; the notice clears automatically once all five are answered.
+  const [attempted, setAttempted] = useState(false);
+  const onProduce = (): void => {
+    if (!allAnswered) {
+      setAttempted(true); // surface the gate notice; do not produce
+      return;
+    }
+    void produceArtifact();
+  };
+
   return (
     <div>
       {/* Category 2 — permanent governance guardrails. */}
       <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
-      {/* Category 1 — temporary gate-failure notice (amber), while the gate is not yet satisfied. */}
-      {!allAnswered && (
+      {/* Category 1 — temporary gate-failure notice (amber). WC-3: shown only AFTER a produce
+          attempt that still has gaps — never on first load. */}
+      {attempted && !allAnswered && (
         <StatusNotice label="Five-Question Gate not yet met:">
           Still needed — {remaining.map((g) => g.label).join(" ")} A workflow artifact cannot be
           produced until all five questions are answered.
@@ -115,9 +128,9 @@ export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDia
         </ul>
         <button
           type="button"
-          onClick={() => void produceArtifact()}
-          disabled={!allAnswered || status === "running"}
-          style={{ ...produceButtonStyle, opacity: allAnswered ? 1 : 0.5, cursor: allAnswered ? "pointer" : "not-allowed" }}
+          onClick={onProduce}
+          disabled={status === "running"}
+          style={{ ...produceButtonStyle, cursor: status === "running" ? "wait" : "pointer" }}
         >
           Produce workflow artifact
         </button>

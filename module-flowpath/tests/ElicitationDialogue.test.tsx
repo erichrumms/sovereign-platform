@@ -62,19 +62,21 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
     expect(within(list).getAllByText(/Answered/i)).toHaveLength(1);
   });
 
-  it("disables Produce until all five questions are answered", () => {
-    render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
-    expect(screen.getByRole("button", { name: /produce workflow artifact/i })).toBeDisabled();
+  it("WC-3: no amber gate notice on first load; attempting Produce with gaps shows it and does not produce", () => {
+    const sink: SovereignLogEvent[] = [];
+    render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
+    // First load — the gate warning does not greet the user.
+    expect(screen.queryByText(/Five-Question Gate not yet met/i)).not.toBeInTheDocument();
+    // Attempt to produce with questions still open — the notice now appears, nothing is produced.
+    fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
+    expect(screen.getByText(/Five-Question Gate not yet met/i)).toBeInTheDocument();
+    expect(sink.some((e) => e.event_type === "FLOWPATH_ARTIFACT_PRODUCED")).toBe(false);
+    expect(screen.queryByTestId("artifact-preview")).not.toBeInTheDocument();
   });
 
-  it("enables Produce once all five are answered", () => {
+  it("WC-3: the amber gate notice clears once all five are answered", () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
-    fillAllAnswers();
-    expect(screen.getByRole("button", { name: /produce workflow artifact/i })).toBeEnabled();
-  });
-
-  it("shows the amber gate-not-met notice (Category 1) until the gate is satisfied", () => {
-    render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i })); // attempt with gaps
     expect(screen.getByText(/Five-Question Gate not yet met/i)).toBeInTheDocument();
     fillAllAnswers();
     expect(screen.queryByText(/Five-Question Gate not yet met/i)).not.toBeInTheDocument();
@@ -126,7 +128,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
   it("does not produce or log before the gate is met", () => {
     const sink: SovereignLogEvent[] = [];
     render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
-    // Button is disabled; no artifact events without all five answers.
+    // Untouched load: no artifact events and no preview without all five answers.
     expect(sink.some((e) => e.event_type === "FLOWPATH_ARTIFACT_PRODUCED")).toBe(false);
     expect(screen.queryByTestId("artifact-preview")).not.toBeInTheDocument();
   });
