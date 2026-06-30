@@ -1014,7 +1014,13 @@ Claude Code requires these files at session open:
 - `SOVEREIGN_PPBE_Integration_Architecture_Draft1.md` (PPBE artifact types)
 
 **Prior session handoff:**
-- `SOVEREIGN_Session19_Handoff.md`
+- `SOVEREIGN_SessionNN_Handoff.md` (most recent session — check repo root for current filename)
+
+**Note on gather script file paths:** Before writing any gather script for a
+FLOWPATH session, read the prior session's SBOM §New Components and use the exact
+filenames Claude Code recorded. The spec uses logical names for files; Claude Code
+may name them slightly differently. The SBOM is the source of truth. (Lesson 11 —
+AGENT_REFERENCE.md)
 
 **FLOWPATH prompt files** (must be authored and approved before Session 20):
 - `docs/flowpath_prompts/` (to be produced by Governance Agent)
