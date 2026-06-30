@@ -2,8 +2,8 @@
 /**
  * module-aria — AriaApp.test.tsx (D4 scaffold)
  * The composition root renders the ARIA chrome with the determinism + GD-10 governance banners
- * (Category 2, blue), routes between the CLEAR / TRACER / ARC placeholder panels, and keeps every
- * surface in plain prose (Gap 5) with the three Gap-6 content categories visually present.
+ * (Category 2, blue), routes between the live CLEAR and TRACER panels and the ARC scaffold, and
+ * keeps every surface in plain prose (Gap 5) with the three Gap-6 content categories visually present.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -46,12 +46,14 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     expect(screen.getByText(/Output compliance/i)).toBeInTheDocument();
   });
 
-  it("routes to the TRACER panel via its tab", () => {
+  it("routes to the live TRACER panel (Traceability Explorer) via its tab", () => {
     render(<AriaApp ctx={makeCtx()} />);
     fireEvent.click(screen.getByRole("tab", { name: "TRACER" }));
-    expect(screen.getByTestId("aria-panel-tracer")).toBeInTheDocument();
-    expect(screen.queryByTestId("aria-panel-clear")).not.toBeInTheDocument();
-    expect(screen.getByText(/Traceability and Accountability Chain/i)).toBeInTheDocument();
+    // Session 24 (D2): TRACER is live — the Explorer replaces the scaffold placeholder.
+    expect(screen.getByTestId("tracer-explorer")).toBeInTheDocument();
+    expect(screen.queryByTestId("aria-panel-tracer")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("clear-panel")).not.toBeInTheDocument();
+    expect(screen.getByText(/How TRACER works:/)).toBeInTheDocument();
   });
 
   it("routes to the ARC panel via its tab", () => {

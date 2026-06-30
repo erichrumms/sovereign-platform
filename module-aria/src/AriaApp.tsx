@@ -14,8 +14,10 @@
  * and the Certification Queue — replacing its scaffold placeholder. Every screen is built to
  * Gap 5/6: the ARIA determinism notice and GD-10 boundary are Category 2 (permanent, blue);
  * substantive content sits in white cards on the light page canvas (Category 3 / Primary).
+ * Session 24 (D2): the TRACER tab now renders the live TracerExplorer — the Traceability
+ * Explorer — replacing its scaffold placeholder. ARC remains a scaffold until Session 25.
  *
- * Version: 1.1 · Session 23 (CLEAR live) · June 29, 2026
+ * Version: 1.2 · Session 24 (TRACER live) · June 29, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -32,6 +34,7 @@ import {
   subtitleStyle,
 } from "./banners";
 import { ClearPanel } from "./ClearPanel";
+import { TracerExplorer } from "./TracerExplorer";
 
 export interface AriaAppProps {
   ctx: SovereignShellContext;
@@ -103,18 +106,7 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
 
       {/* Category 3 — substantive content (Primary). CLEAR is live (S23); TRACER/ARC scaffold. */}
       {tab === "clear" && <ClearPanel ctx={ctx} />}
-      {tab === "tracer" && (
-        <PlaceholderPanel
-          heading="TRACER"
-          summary="Traceability and Accountability Chain for Evidence Records. TRACER traces every significant decision, document, and obligation back to its authoritative regulatory or policy basis — an unbroken chain from action to authority."
-          surfaces={[
-            "A traceability explorer: select any output and see its complete chain of authority.",
-            "Decision, document, and obligation chains — each node cited to a source document or Logger event.",
-            "Orphan findings: any output lacking a traceable regulatory basis.",
-          ]}
-          arrivingIn="Scaffold only this session — the Traceability Explorer arrives in Session 24."
-        />
-      )}
+      {tab === "tracer" && <TracerExplorer ctx={ctx} />}
       {tab === "arc" && (
         <PlaceholderPanel
           heading="ARC"
