@@ -18,8 +18,10 @@
  * Explorer — replacing its scaffold placeholder.
  * Session 25 (D2): the ARC tab now renders the live ArcImpactModeler — the Regulatory Impact
  * Modeler — replacing the last scaffold placeholder. All three ARIA components are now live.
+ * Session 25 (D4): a fourth tab, CPMI-VRS, renders AriaVrsGates — the determinism-verification
+ * benchmark plus the Gate 3/4 certification UI, ready for Project Principal action before Walkthrough D.
  *
- * Version: 1.3 · Session 25 (ARC live — ARIA Suite feature-complete) · June 29, 2026
+ * Version: 1.3 · Session 25 (ARC live + VRS Gates — ARIA Suite feature-complete) · June 29, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -35,17 +37,19 @@ import {
 import { ClearPanel } from "./ClearPanel";
 import { TracerExplorer } from "./TracerExplorer";
 import { ArcImpactModeler } from "./ArcImpactModeler";
+import { AriaVrsGates } from "./AriaVrsGates";
 
 export interface AriaAppProps {
   ctx: SovereignShellContext;
 }
 
-type Tab = "clear" | "tracer" | "arc";
+type Tab = "clear" | "tracer" | "arc" | "vrs";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "clear", label: "CLEAR" },
   { id: "tracer", label: "TRACER" },
   { id: "arc", label: "ARC" },
+  { id: "vrs", label: "CPMI-VRS" },
 ];
 
 
@@ -87,6 +91,7 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
       {tab === "clear" && <ClearPanel ctx={ctx} />}
       {tab === "tracer" && <TracerExplorer ctx={ctx} />}
       {tab === "arc" && <ArcImpactModeler ctx={ctx} />}
+      {tab === "vrs" && <AriaVrsGates ctx={ctx} />}
     </section>
   );
 }
