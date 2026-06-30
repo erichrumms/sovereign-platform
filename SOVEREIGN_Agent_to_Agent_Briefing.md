@@ -1,6 +1,6 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
 ## For Any Claude Instance Opening a SOVEREIGN Session
-## Updated June 29, 2026 — reflects Session 24 complete, TRACER live, repo cleanup
+## Updated June 29, 2026 — Stage 6 feature-complete, Walkthrough D ready to schedule
 
 ---
 
@@ -21,50 +21,52 @@ ARIA Suite) plus four companion modules (COUNSEL, SCRIBE, LENS, VIGIL) and a fut
 seventh product called the Intelligence Layer that must never be lost. Two governed
 workflow layers (not products): PPBE and Time & Travel.
 
+**All six primary products are now feature-complete.**
+
 ---
 
-## Current Build State — As of Session 24 (June 29, 2026)
+## Current Build State — As of Session 25 (June 29, 2026)
 
 | Item | State |
 |---|---|
-| Last completed session | Session 24 — TRACER core |
-| HEAD / origin/main | `1888e48` (includes post-session repo cleanup) |
-| shell-contract.ts | v1.15 · SHA `939c2441a1b4a6af16fefae4cbf8269585260646e84d830b4e0529ca8bfa5876` — **unchanged since Session 23** |
-| Integration Brief | v1.37 |
-| SBOM Registry | v1.25 |
-| JS/TS tests passing | 1062 (+ 153 Python = 1215 total) |
-| Stages 1–5b | COMPLETE |
+| Last completed session | Session 25 — ARC core + CPMI-VRS certification |
+| HEAD / origin/main | `cb49c9c` |
+| shell-contract.ts | v1.15 · SHA `939c2441a1b4a6af16fefae4cbf8269585260646e84d830b4e0529ca8bfa5876` — unchanged since Session 23 |
+| Integration Brief | v1.38 |
+| SBOM Registry | v1.26 |
+| JS/TS tests passing | 1109 (+ 158 Python = 1267 total) |
+| **Stage 6 (ARIA Suite)** | **FEATURE-COMPLETE — CLEAR + TRACER + ARC all live** |
 | Walkthroughs A, B, C | COMPLETE |
-| Stage 6 (ARIA Suite) | IN PROGRESS — CLEAR + TRACER live, ARC next |
+| **Walkthrough D** | **READY TO SCHEDULE** |
 | Registered agents | 44 |
 | Approved prompts | 14 |
 | All data | SYNTHETIC — Governance Clock not activated |
 
-**Session 24 deliverables (no shell-contract change — TRACER needed none):**
-- D1: TRACER domain types + deterministic chain assembly engine
-- D4: COUNSEL + SCRIBE integration (built against real data, not idealized spec)
-- D2: Traceability Explorer panel — live, replacing scaffold
-- D3: Three TRACER Logger event types — Python-only by design
-- D5: 28 new tests — 1215 total
+**Session 25 deliverables (no shell-contract change):**
+- D1: ARC domain types + deterministic dependency-model engine (14-item registry)
+- D2: Regulatory Impact Modeler panel — live, replacing last ARIA scaffold
+- D3: Two ARC Logger event types — Python-only, following TRACER precedent
+- D4: CPMI-VRS determinism verification (6 scenarios) + Gates tab — Gate 3/4 left
+  pending for Project Principal
+- D5: 46 new tests — 1267 total
 
-**Post-session: repo housekeeping pass** (June 29–30) — removed 24 untracked stray
-files from the git working tree; one genuine improvement to `docs/15` recovered and
-merged before its duplicate was discarded. See Lesson 13 below.
+**Two STOP-discipline checks resolved correctly, no GD needed:**
+- docs/16 §6/§7 confirmed NOT ambiguous — ARC events correctly Python-only
+- ARC outputs deliberately NOT routed through `ctx.aria` — a projection is not a
+  document awaiting export clearance
 
-**Next session:** Session 25 — ARC core + CPMI-VRS certification (final ARIA Suite
-deliverable before Walkthrough D)
+**Next action: Walkthrough D — NOT a Claude Code build session.** Live validation,
+Project Principal in browser, Governance Agent guiding. First Walkthrough where the
+Supervision Efficiency Standard applies formally alongside Gap 5/6.
 
 ---
 
-## ⚠️ Important: Intentional Logger Taxonomy Divergence
+## ⚠️ Cumulative Intentional Logger Divergence
 
-As of Session 24, Python `APPROVED_EVENT_TYPES` (82) is **permanently** 3 members
-ahead of TypeScript `SovereignEventType` (79). This is by design — TRACER's three
-event types (`ARIA_TRACE_REQUESTED`, `ARIA_TRACE_PRODUCED`, `ARIA_ORPHAN_FLAGGED`)
-are Python-only; TRACER emits nothing from the TypeScript layer. **Do not treat this
-as drift to reconcile.** The prior assumption that the Python set mirrors the
-shell-contract exactly is retired. Any future TS-side TRACER emission requires a new
-GD.
+Python `APPROVED_EVENT_TYPES` (84) is **permanently 5 members ahead** of TypeScript
+`SovereignEventType` (79): 3 TRACER events + 2 ARC events, all Python-only by design.
+**Do not treat this as drift.** `ARIA_ADAPTATION_DECISION` is an event type, not a
+`HumanDecisionType` — reserved, not yet wired to live routing.
 
 ---
 
@@ -74,53 +76,35 @@ GD.
 |---|---|
 | **Current (v1.15)** | `939c2441a1b4a6af16fefae4cbf8269585260646e84d830b4e0529ca8bfa5876` |
 
-No GD in Session 24. Ten shell exports, 79 `SovereignEventType` members, 19
-`HumanDecisionType` members — all unchanged from Session 23 close.
+No GD in Sessions 24 or 25. Ten shell exports, 79 `SovereignEventType` members, 19
+`HumanDecisionType` members.
 
 ---
 
-## Key Codebase Facts (updated through Session 24)
+## Key Codebase Facts (updated through Session 25)
 
-- `ctx.aria.isCertified(documentId)` / `ctx.aria.record()` — LIVE (CLEAR)
-- TRACER's three chain types (Decision, Document, Obligation) are deterministic —
-  no LLM, no `sovereign-api-client` call anywhere in the TRACER path
-- `ctx.data` is `{ types: unknown }` — no structured read API yet. `ctx.logger` is
-  write-only. TRACER and CLEAR both use synthetic demo records / explicit input as
-  a workaround pending a real read API.
-- COUNSEL Decision Records carry no `regulation_basis` field — DecisionChain's
-  regulation/source nodes orphan until a future COUNSEL extension adds it
-- SCRIBE has no `SCRIBE_DRAFT_CREATED` event — DocumentChain uses the real
-  `AGENT_STEP_COMPLETE` event instead
-- `aria.rules-engine` powers both CLEAR and TRACER — deterministic, no prompt
-- module-aria uses `import.meta.env` via anthropic-key.ts + jest stub (ESM pattern)
-
----
-
-## ⚠️ Lesson 13 — Repo Hygiene (New, June 30, 2026)
-
-The monorepo root and `docs/` hold only **current-version** governing documents.
-The following document types are **iCloud-archival only — never commit to git**:
-- `SBOM_Registry_vNN_MERGED.md` snapshots (per-session `SBOM_SessionNN_Update.md`
-  files ARE committed — only the cumulative merged registry is iCloud-only)
-- `SOVEREIGN_System_Prompt_vNN.md` dated snapshots
-- `SOVEREIGN_Agent_to_Agent_Briefing_YYYYMMDD.md` dated snapshots
-- Already-merged governance decision records once their content is in
-  `Agent_Identity_Standard.md` or the Integration Brief
-
-If any of these appear as untracked files in `git status`, they are stray copies
-from the download-and-place workflow — verify against the canonical committed file
-before deleting (check for genuine content divergence, not just assume duplication).
+- `aria.rules-engine` now powers all three ARIA components — CLEAR, TRACER, ARC —
+  fully deterministic, no LLM call, no prompt
+- ARC's dependency model: a committed in-code registry of 14 platform items (7
+  CLEAR rules, 3 workflows, 2 TRACER chains, 2 SCRIBE templates) bound to the same
+  four regulatory sources CLEAR loads
+- ARC→COUNSEL/NEXUS routing is UI-recommendation-only — real cross-module routing
+  deferred, would benefit from a COUNSEL `regulation_basis` GD (now reinforced by
+  both TRACER and ARC findings — strong candidate for the next GD)
+- CPMI-VRS for ARIA Suite uses a modified gate structure: determinism verification
+  replaces Gates 1–2 accuracy benchmarks; Gates 3/4 remain Project Principal steps
+- `AriaVrsGates.tsx` is built and ready — Gate 3 attestation and Gate 4 monitoring
+  baseline are pending, intentionally left for the Project Principal
 
 ---
 
-## Open Governance Items — Priority for Session 25
+## Open Governance Items — Priority
 
-1. **ARC core + CPMI-VRS certification** — Session 25 build scope
-2. **Walkthrough D** — after Session 25 (live, with Project Principal)
-3. **docs/16 retroactive update** — reflect Session 24's G.1–G.4 reconciliations
-4. **COUNSEL-GD candidate** — `regulation_basis` field, not yet actioned
-5. **PPBE-SPEC** — `docs/18_PPBE_Workflow_Architecture.md` (renumbered, since 17 is Time & Travel)
-6. **TT-PROMPTS / TT-GD** — before Time & Travel Phase II
+1. **Walkthrough D** — schedule and run (next action, not a build session)
+2. **Gate 3/4 attestation** — Project Principal step, can happen any time
+3. **COUNSEL `regulation_basis` GD** — strong candidate, reinforced by two sessions' findings
+4. **docs/16 retroactive update** — reflect Session 24/25 reconciliations
+5. **PPBE-SPEC / TT-PROMPTS** — workflow layer prep, sequenced after Walkthrough D
 
 ---
 
@@ -131,14 +115,14 @@ before deleting (check for genuine content divergence, not just assume duplicati
 | Wrong shell-contract hash | Verify v1.15 hash `939c2441…bfa5876` — unchanged since Session 23 |
 | Agent count wrong | Count Agent_Identity_Standard.md directly — expected 44 |
 | Gather script wrong filename | Read prior SBOM §4. Use exact filenames. (Lesson 11) |
-| "Fixing" the Logger divergence | 82 vs 79 is permanent and intentional — do not reconcile |
-| Committing iCloud-archival files to git | Check document type against Lesson 13 list before committing |
-| Re-running a session that already closed | Verify HEAD and recent commit log before building — check for stale opening prompts |
+| "Fixing" the Logger divergence | 84 vs 79 is permanent and intentional — do not reconcile |
+| Committing iCloud-archival files to git | Check document type against Lesson 13 list |
+| Treating Walkthrough D as a Claude Code session | It is live, human-in-the-loop, Governance Agent guided — not autonomous build |
 | Session closes without handoff | Non-negotiable — always produce the handoff |
 
 ---
 
 *SOVEREIGN Platform · Agent-to-Agent Briefing · Updated June 29, 2026*
-*Supersedes June 29, 2026 (Session 23) version — Session 24 complete, TRACER live,
-repo cleanup complete*
+*Supersedes June 29, 2026 (Session 24) version — Stage 6 feature-complete,
+Walkthrough D ready to schedule*
 *Pre-Decisional · Internal Working Document*
