@@ -15,9 +15,11 @@
  * Gap 5/6: the ARIA determinism notice and GD-10 boundary are Category 2 (permanent, blue);
  * substantive content sits in white cards on the light page canvas (Category 3 / Primary).
  * Session 24 (D2): the TRACER tab now renders the live TracerExplorer — the Traceability
- * Explorer — replacing its scaffold placeholder. ARC remains a scaffold until Session 25.
+ * Explorer — replacing its scaffold placeholder.
+ * Session 25 (D2): the ARC tab now renders the live ArcImpactModeler — the Regulatory Impact
+ * Modeler — replacing the last scaffold placeholder. All three ARIA components are now live.
  *
- * Version: 1.2 · Session 24 (TRACER live) · June 29, 2026
+ * Version: 1.3 · Session 25 (ARC live — ARIA Suite feature-complete) · June 29, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -26,15 +28,13 @@ import type { SovereignShellContext } from "../../sovereign-shell/shell-contract
 import {
   DeterminismBanner,
   ClassificationBoundaryBanner,
-  contentCardStyle,
-  sectionHeadingStyle,
-  bodyTextStyle,
   rootStyle,
   titleStyle,
   subtitleStyle,
 } from "./banners";
 import { ClearPanel } from "./ClearPanel";
 import { TracerExplorer } from "./TracerExplorer";
+import { ArcImpactModeler } from "./ArcImpactModeler";
 
 export interface AriaAppProps {
   ctx: SovereignShellContext;
@@ -48,27 +48,6 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: "arc", label: "ARC" },
 ];
 
-/** A scaffold placeholder for an ARIA component panel (Session 22 — logic lands in a later session). */
-function PlaceholderPanel({ heading, summary, surfaces, arrivingIn }: {
-  heading: string;
-  summary: string;
-  surfaces: string[];
-  arrivingIn: string;
-}): JSX.Element {
-  return (
-    <div style={contentCardStyle} data-testid={`aria-panel-${heading.toLowerCase()}`}>
-      <h2 style={sectionHeadingStyle}>{heading}</h2>
-      <p style={bodyTextStyle}>{summary}</p>
-      <p style={{ ...bodyTextStyle, fontWeight: 600, marginBottom: 4 }}>What it will surface for a reviewer:</p>
-      <ul style={listStyle}>
-        {surfaces.map((s) => (
-          <li key={s} style={{ marginBottom: 4 }}>{s}</li>
-        ))}
-      </ul>
-      <p style={{ ...bodyTextStyle, color: "#64748b", margin: 0 }}>{arrivingIn}</p>
-    </div>
-  );
-}
 
 export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
   const [tab, setTab] = useState<Tab>("clear");
@@ -104,27 +83,15 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
         })}
       </nav>
 
-      {/* Category 3 — substantive content (Primary). CLEAR is live (S23); TRACER/ARC scaffold. */}
+      {/* Category 3 — substantive content (Primary). CLEAR (S23), TRACER (S24), ARC (S25) all live. */}
       {tab === "clear" && <ClearPanel ctx={ctx} />}
       {tab === "tracer" && <TracerExplorer ctx={ctx} />}
-      {tab === "arc" && (
-        <PlaceholderPanel
-          heading="ARC"
-          summary="Adaptive Regulatory Change engine. ARC answers 'if this regulation changes, what breaks?' — it models the operational impact of a proposed regulatory change before it is implemented, so adaptation is proactive rather than reactive."
-          surfaces={[
-            "A regulatory impact modeler: enter a proposed change and see what it affects.",
-            "Impacted workflows, rules, chains, and templates, scored by severity (breaking / significant / minor).",
-            "An impact report that feeds COUNSEL for adaptation decisions and NEXUS for action items.",
-          ]}
-          arrivingIn="Scaffold only this session — the Regulatory Impact Modeler arrives in Session 25."
-        />
-      )}
+      {tab === "arc" && <ArcImpactModeler ctx={ctx} />}
     </section>
   );
 }
 
 const tabBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 16 };
 const tabStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
-const listStyle: CSSProperties = { margin: "0 0 10px", paddingLeft: 20, color: "#334155", fontSize: 14, lineHeight: 1.5, maxWidth: 820 };
 
 export default AriaApp;
