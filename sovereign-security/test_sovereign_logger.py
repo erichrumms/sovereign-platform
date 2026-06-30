@@ -453,8 +453,12 @@ class TestGD20AriaClearTaxonomy:
         assert "COMPLIANCE_CERTIFICATION" in APPROVED_DECISION_TYPES
 
     def test_taxonomy_counts_advanced_to_v1_15(self):
-        # v1.14 held 75 event types and 18 decision types; GD-20 advances them to 79 / 19.
-        assert len(APPROVED_EVENT_TYPES) == 79
+        # v1.14 held 75 event types and 18 decision types; GD-20 advances decision types to 19 and
+        # added 4 ARIA CLEAR event types (-> 79, in parity with shell-contract v1.15 SovereignEventType).
+        # Session 24 TRACER then added 3 PYTHON-ONLY event types (-> 82); those are deliberately NOT in
+        # shell-contract (no GD), so APPROVED_EVENT_TYPES now intentionally holds 3 more than
+        # SovereignEventType. Decision types remain at 19 (TRACER adds no human-decision type).
+        assert len(APPROVED_EVENT_TYPES) == 82
         assert len(APPROVED_DECISION_TYPES) == 19
 
     def test_aria_event_types_accepted_under_product_aria(self, logger):
@@ -489,3 +493,60 @@ class TestGD20AriaClearTaxonomy:
             assert prior in APPROVED_EVENT_TYPES
         for prior in ["HUMAN_APPROVAL", "REPORT_ATTESTATION", "VALIDATION_SIGN_OFF"]:
             assert prior in APPROVED_DECISION_TYPES
+
+
+# ─────────────────────────────────────────────────────────────
+# Session 24 — ARIA Suite / TRACER taxonomy (June 29, 2026)
+# Three TRACER event types — PYTHON-ONLY (not shell-contract.ts). TRACER's Traceability
+# Explorer and chain-assembly engine are read-only and emit nothing from the TypeScript
+# layer; these types exist for Python-side / CLI emission of traceability records.
+# ─────────────────────────────────────────────────────────────
+
+ARIA_TRACER_EVENT_TYPES = [
+    "ARIA_TRACE_REQUESTED",
+    "ARIA_TRACE_PRODUCED",
+    "ARIA_ORPHAN_FLAGGED",
+]
+
+
+class TestSession24TracerTaxonomy:
+
+    def test_three_tracer_event_types_in_taxonomy(self):
+        for event_type in ARIA_TRACER_EVENT_TYPES:
+            assert event_type in APPROVED_EVENT_TYPES
+
+    def test_tracer_event_types_accepted_under_product_aria(self, logger):
+        for event_type in ARIA_TRACER_EVENT_TYPES:
+            entry = logger.log(**minimal_event({
+                "event_type": event_type,
+                "product": "ARIA",
+                "workflow_step_id": "aria-tracer-DR-COUNSEL-0007",
+                "actor_id": "aria.rules-engine",
+                "outcome": "trace_produced",
+            }))
+            assert entry["event_type"] == event_type
+            assert entry["product"] == "ARIA"
+
+    def test_orphan_flagged_carries_workflow_step_id(self, logger):
+        # ARIA_ORPHAN_FLAGGED records an output lacking a traceable basis; it must carry the
+        # frozen Intelligence Layer field workflow_step_id like every Logger event (Constraint #6).
+        entry = logger.log(**minimal_event({
+            "event_type": "ARIA_ORPHAN_FLAGGED",
+            "product": "ARIA",
+            "workflow_step_id": "aria-tracer-DR-COUNSEL-0007",
+            "actor_id": "aria.rules-engine",
+            "outcome": "orphan_flagged",
+            "payload": {"orphan_reason": "Decision Record does not cite a governing regulation."},
+        }))
+        assert entry["workflow_step_id"] == "aria-tracer-DR-COUNSEL-0007"
+        assert entry["payload"]["orphan_reason"]
+
+    def test_tracer_types_are_not_a_human_decision_type(self):
+        # TRACER adds no human-decision type — it records queries/results, not human decisions.
+        for event_type in ARIA_TRACER_EVENT_TYPES:
+            assert event_type not in APPROVED_DECISION_TYPES
+
+    def test_no_regression_clear_types_still_present(self):
+        # The Session 24 TRACER additions must not displace the GD-20 CLEAR event types.
+        for prior in ARIA_CLEAR_EVENT_TYPES:
+            assert prior in APPROVED_EVENT_TYPES
