@@ -165,6 +165,17 @@ APPROVED_EVENT_TYPES = frozenset({
     "ARIA_CERTIFICATION_ISSUED",   # every export gate opened by CLEAR certification
     "ARIA_VIOLATION_FLAGGED",      # every compliance deviation surfaced (engine or human)
     "ARIA_CALENDAR_ALERT",         # every governance-calendar timing violation
+    # Session 24 / Stage 6 TRACER (June 29, 2026) — three ARIA Suite / TRACER event types
+    # (module-aria). PYTHON-ONLY additions — NOT added to shell-contract.ts SovereignEventType.
+    # TRACER's Traceability Explorer and chain-assembly engine are read-only and emit NOTHING from
+    # the TypeScript layer (ctx.logger.log() is typed to SovereignEventType, which deliberately does
+    # not carry these — emitting them from TS would require a shell-contract change, which this
+    # session has no GD for; see docs/16 §5/§7 and the TRACER STOP discipline). These types exist so
+    # a Python-side / CLI emitter records traceability queries and their results. The set now holds
+    # 82 members; shell-contract.ts SovereignEventType is UNCHANGED at v1.15 (79 members) by design.
+    "ARIA_TRACE_REQUESTED",        # every manual traceability query
+    "ARIA_TRACE_PRODUCED",         # every completed traceability chain
+    "ARIA_ORPHAN_FLAGGED",         # any output or decision lacking a traceable basis
 })
 
 # NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary
