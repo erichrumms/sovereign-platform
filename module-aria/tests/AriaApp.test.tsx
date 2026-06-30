@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 /**
- * module-aria — AriaApp.test.tsx (D4 scaffold)
+ * module-aria — AriaApp.test.tsx (Session 25 — ARC live + VRS Gates)
  * The composition root renders the ARIA chrome with the determinism + GD-10 governance banners
- * (Category 2, blue), routes between the live CLEAR and TRACER panels and the ARC scaffold, and
- * keeps every surface in plain prose (Gap 5) with the three Gap-6 content categories visually present.
+ * (Category 2, blue), routes between the live CLEAR, TRACER, ARC panels and the CPMI-VRS Gates tab,
+ * and keeps every surface in plain prose (Gap 5) with the three Gap-6 content categories present.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -31,11 +31,12 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     expect(screen.getByText(/UNCLASSIFIED data only/i)).toBeInTheDocument();
   });
 
-  it("offers the three ARIA components as tabs (CLEAR / TRACER / ARC)", () => {
+  it("offers the three ARIA components plus the CPMI-VRS tab (CLEAR / TRACER / ARC / CPMI-VRS)", () => {
     render(<AriaApp ctx={makeCtx()} />);
     expect(screen.getByRole("tab", { name: "CLEAR" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "TRACER" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "ARC" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "CPMI-VRS" })).toBeInTheDocument();
   });
 
   it("defaults to the live CLEAR panel (Compliance Dashboard)", () => {
@@ -56,11 +57,20 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     expect(screen.getByText(/How TRACER works:/)).toBeInTheDocument();
   });
 
-  it("routes to the ARC panel via its tab", () => {
+  it("routes to the live ARC panel (Regulatory Impact Modeler) via its tab", () => {
     render(<AriaApp ctx={makeCtx()} />);
     fireEvent.click(screen.getByRole("tab", { name: "ARC" }));
-    expect(screen.getByTestId("aria-panel-arc")).toBeInTheDocument();
-    expect(screen.getByText(/Adaptive Regulatory Change engine/i)).toBeInTheDocument();
+    // Session 25 (D2): ARC is live — the Impact Modeler replaces the scaffold placeholder.
+    expect(screen.getByTestId("arc-impact-modeler")).toBeInTheDocument();
+    expect(screen.queryByTestId("aria-panel-arc")).not.toBeInTheDocument();
+    expect(screen.getByText(/How ARC works:/)).toBeInTheDocument();
+  });
+
+  it("routes to the CPMI-VRS Gates tab via its tab", () => {
+    render(<AriaApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByRole("tab", { name: "CPMI-VRS" }));
+    expect(screen.getByTestId("aria-vrs-gates")).toBeInTheDocument();
+    expect(screen.getByText(/Determinism Verification/)).toBeInTheDocument();
   });
 
   it("Gap 6: the three content categories are visually present (blue governance + white card)", () => {
