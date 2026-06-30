@@ -455,10 +455,11 @@ class TestGD20AriaClearTaxonomy:
     def test_taxonomy_counts_advanced_to_v1_15(self):
         # v1.14 held 75 event types and 18 decision types; GD-20 advances decision types to 19 and
         # added 4 ARIA CLEAR event types (-> 79, in parity with shell-contract v1.15 SovereignEventType).
-        # Session 24 TRACER then added 3 PYTHON-ONLY event types (-> 82); those are deliberately NOT in
-        # shell-contract (no GD), so APPROVED_EVENT_TYPES now intentionally holds 3 more than
-        # SovereignEventType. Decision types remain at 19 (TRACER adds no human-decision type).
-        assert len(APPROVED_EVENT_TYPES) == 82
+        # Session 24 TRACER then added 3 PYTHON-ONLY event types (-> 82) and Session 25 ARC added 2 more
+        # PYTHON-ONLY event types (-> 84); those 5 are deliberately NOT in shell-contract (no GD), so
+        # APPROVED_EVENT_TYPES now intentionally holds 5 more than SovereignEventType (79). Decision
+        # types remain at 19 (neither TRACER nor ARC adds a human-decision type).
+        assert len(APPROVED_EVENT_TYPES) == 84
         assert len(APPROVED_DECISION_TYPES) == 19
 
     def test_aria_event_types_accepted_under_product_aria(self, logger):
@@ -549,4 +550,63 @@ class TestSession24TracerTaxonomy:
     def test_no_regression_clear_types_still_present(self):
         # The Session 24 TRACER additions must not displace the GD-20 CLEAR event types.
         for prior in ARIA_CLEAR_EVENT_TYPES:
+            assert prior in APPROVED_EVENT_TYPES
+
+
+# ─────────────────────────────────────────────────────────────
+# Session 25 — ARIA Suite / ARC taxonomy (June 29, 2026)
+# Two ARC event types — PYTHON-ONLY (not shell-contract.ts), following the TRACER precedent.
+# ARC's Regulatory Impact Modeler and dependency-model engine are deterministic and emit
+# nothing from the TypeScript layer; these types exist for Python-side / CLI emission of
+# impact-modeling runs and any adaptation decision recorded against an ARC report.
+# ─────────────────────────────────────────────────────────────
+
+ARIA_ARC_EVENT_TYPES = [
+    "ARIA_IMPACT_MODELED",
+    "ARIA_ADAPTATION_DECISION",
+]
+
+
+class TestSession25ArcTaxonomy:
+
+    def test_two_arc_event_types_in_taxonomy(self):
+        for event_type in ARIA_ARC_EVENT_TYPES:
+            assert event_type in APPROVED_EVENT_TYPES
+
+    def test_arc_event_types_are_python_only_not_decision_types(self):
+        # ARC adds no human-decision type. ARIA_ADAPTATION_DECISION is an EVENT type that records
+        # that a human decision was made in response to an ARC report — it is not itself a
+        # HumanDecisionType (adding one would be a shell-contract change; no GD this session).
+        for event_type in ARIA_ARC_EVENT_TYPES:
+            assert event_type not in APPROVED_DECISION_TYPES
+
+    def test_arc_event_types_accepted_under_product_aria(self, logger):
+        for event_type in ARIA_ARC_EVENT_TYPES:
+            entry = logger.log(**minimal_event({
+                "event_type": event_type,
+                "product": "ARIA",
+                "workflow_step_id": "aria-arc-omba11",
+                "actor_id": "aria.rules-engine",
+                "outcome": "impact_modeled",
+            }))
+            assert entry["event_type"] == event_type
+            assert entry["product"] == "ARIA"
+
+    def test_impact_modeled_carries_workflow_step_id(self, logger):
+        # ARIA_IMPACT_MODELED records one ARC modeling run; it must carry the frozen Intelligence
+        # Layer field workflow_step_id like every Logger event (Constraint #6).
+        entry = logger.log(**minimal_event({
+            "event_type": "ARIA_IMPACT_MODELED",
+            "product": "ARIA",
+            "workflow_step_id": "aria-arc-omba11",
+            "actor_id": "aria.rules-engine",
+            "outcome": "impact_modeled",
+            "payload": {"affected_source": "omba11", "overall_severity": "breaking"},
+        }))
+        assert entry["workflow_step_id"] == "aria-arc-omba11"
+        assert entry["payload"]["overall_severity"] == "breaking"
+
+    def test_no_regression_clear_and_tracer_types_still_present(self):
+        # The Session 25 ARC additions must not displace the CLEAR (GD-20) or TRACER (S24) event types.
+        for prior in ARIA_CLEAR_EVENT_TYPES + ARIA_TRACER_EVENT_TYPES:
             assert prior in APPROVED_EVENT_TYPES

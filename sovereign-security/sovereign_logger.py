@@ -176,6 +176,19 @@ APPROVED_EVENT_TYPES = frozenset({
     "ARIA_TRACE_REQUESTED",        # every manual traceability query
     "ARIA_TRACE_PRODUCED",         # every completed traceability chain
     "ARIA_ORPHAN_FLAGGED",         # any output or decision lacking a traceable basis
+    # Session 25 / Stage 6 ARC (June 29, 2026) — two ARIA Suite / ARC event types (module-aria).
+    # PYTHON-ONLY additions — NOT added to shell-contract.ts SovereignEventType, following the exact
+    # TRACER precedent above. ARC's Regulatory Impact Modeler and dependency-model engine are
+    # deterministic and emit NOTHING from the TypeScript layer (ctx.logger.log() is typed to
+    # SovereignEventType, which deliberately does not carry these; emitting them from TS would require
+    # a shell-contract change, which this session has no GD for — docs/16 §6/§7 confirm GD-20
+    # authorized only the four CLEAR event types, and the ARC STOP discipline applies). These types
+    # exist so a Python-side / CLI emitter records impact-modeling runs and any adaptation decision
+    # recorded against an ARC report. The set now holds 84 members; shell-contract.ts
+    # SovereignEventType is UNCHANGED at v1.15 (79 members) by design (84 = 79 + 5 Python-only ARIA
+    # events: 3 TRACER + 2 ARC).
+    "ARIA_IMPACT_MODELED",         # every ARC impact-modeling run
+    "ARIA_ADAPTATION_DECISION",    # every human decision recorded in response to an ARC report
 })
 
 # NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary
