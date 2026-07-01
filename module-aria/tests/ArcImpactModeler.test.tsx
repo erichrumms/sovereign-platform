@@ -83,6 +83,24 @@ describe("ArcImpactModeler (D2)", () => {
     expect(logSink).toHaveLength(0);
   });
 
+  it("D-6: echoes the selected change scope as a badge on the result panel (substantive by default)", () => {
+    render(<ArcImpactModeler ctx={makeCtx()} />);
+    model("omba11", "A-11 revision.");
+    const report = screen.getByTestId("arc-report");
+    const badge = within(report).getByTestId("arc-scope-badge");
+    expect(badge).toHaveTextContent(/Substantive change/);
+    expect(badge).toHaveAttribute("data-scope", "substantive");
+  });
+
+  it("D-6: the scope badge reflects a clarifying change", () => {
+    render(<ArcImpactModeler ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("arc-scope-clarifying"));
+    model("omba11", "Editorial corrections to A-11 only.");
+    const badge = within(screen.getByTestId("arc-report")).getByTestId("arc-scope-badge");
+    expect(badge).toHaveTextContent(/Clarifying change/);
+    expect(badge).toHaveAttribute("data-scope", "clarifying");
+  });
+
   it("a clarifying change lowers the overall severity (no routing recommendation when not high)", () => {
     render(<ArcImpactModeler ctx={makeCtx()} />);
     // anti-deficiency-act under a clarifying change downshifts to at most significant; pick a source

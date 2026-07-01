@@ -200,10 +200,29 @@ function ChainNodeCard({ node, isLast }: { node: ChainNode; isLast: boolean }): 
           )}
         </div>
         <p style={nodeCitesStyle}>{node.cites}</p>
+        {/* D-5 — a recorded-at timestamp on nodes whose source is a timestamped record/event. */}
+        {node.timestamp ? (
+          <p style={nodeTimestampStyle} data-testid={`tracer-timestamp-${node.node_id}`}>
+            Recorded: {formatTimestamp(node.timestamp)}
+          </p>
+        ) : null}
         {node.source_ref ? (
           <p style={nodeRefStyle}>
             Reference: <span style={monoStyle}>{node.source_ref}</span>
           </p>
+        ) : null}
+        {/* D-4 — raw internal identifiers kept out of primary content, available on demand. */}
+        {node.technical_references && node.technical_references.length > 0 ? (
+          <details style={techDetailsStyle} data-testid={`tracer-tech-${node.node_id}`}>
+            <summary style={techSummaryStyle}>Technical references</summary>
+            <ul style={techListStyle}>
+              {node.technical_references.map((ref) => (
+                <li key={ref.label} style={nodeRefStyle}>
+                  {ref.label}: <span style={monoStyle}>{ref.value}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
         ) : null}
       </div>
       {!isLast ? <div style={connectorStyle} aria-hidden="true">↓</div> : null}
@@ -213,6 +232,16 @@ function ChainNodeCard({ node, isLast }: { node: ChainNode; isLast: boolean }): 
 
 function chainTypeNoun(t: ChainType): string {
   return t === "decision" ? "decision" : t === "document" ? "document" : "obligation";
+}
+
+/**
+ * Format an ISO 8601 timestamp as a plain-prose "YYYY-MM-DD HH:MM UTC" (D-5). Pure string slicing —
+ * no Date parsing — so it stays deterministic and never shifts by the viewer's local time zone.
+ */
+function formatTimestamp(iso: string): string {
+  const date = iso.slice(0, 10);
+  const time = iso.slice(11, 16);
+  return time ? `${date} ${time} UTC` : date;
 }
 
 // ── Styles (approved white-card pattern on the ARIA light canvas — docs/16 §8) ───────────────
@@ -239,6 +268,10 @@ const nodeHeaderStyle: CSSProperties = { display: "flex", justifyContent: "space
 const nodeTitleStyle: CSSProperties = { fontSize: 14, fontWeight: 700, color: "#0f172a" };
 const nodeCitesStyle: CSSProperties = { margin: "0 0 6px", fontSize: 13, color: "#334155", lineHeight: 1.5 };
 const nodeRefStyle: CSSProperties = { margin: 0, fontSize: 12, color: "#475569" };
+const nodeTimestampStyle: CSSProperties = { margin: "0 0 4px", fontSize: 12, color: "#475569" };
+const techDetailsStyle: CSSProperties = { marginTop: 6 };
+const techSummaryStyle: CSSProperties = { fontSize: 12, fontWeight: 600, color: "#475569", cursor: "pointer" };
+const techListStyle: CSSProperties = { margin: "6px 0 0", padding: "0 0 0 16px", display: "flex", flexDirection: "column", gap: 2 };
 const monoStyle: CSSProperties = { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "#0f172a" };
 const citationMarkerStyle: CSSProperties = {
   display: "inline-block", padding: "2px 8px", borderRadius: 999, fontSize: 12, fontWeight: 600,

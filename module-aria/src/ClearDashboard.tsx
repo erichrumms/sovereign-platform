@@ -57,7 +57,7 @@ export interface ClearDashboardProps {
 const DEMO_OUTPUTS: OutputComplianceItem[] = [
   {
     document_id: "DOC-A11-FY26-OM",
-    document_name: "FY26 O&M Budget Exhibit",
+    document_name: "FY 2026 O&M Budget Exhibit",
     document_type: "OMB A-11 Exhibit",
     applicable_check: "OMB Circular A-11 — justification narrative and exhibit type",
     status: "pending",
@@ -108,7 +108,7 @@ const DEMO_PROCESS: ProcessComplianceItem[] = [
 const DEMO_DATA_QUALITY: DataQualityItem[] = [
   {
     id: "DQ-CONG-JUST",
-    material_name: "FY26 Congressional Justification dataset",
+    material_name: "FY 2026 Congressional Justification dataset",
     quality_index: 87,
     is_congressional_submission: true,
     severity: severityForDataQuality(87, true),

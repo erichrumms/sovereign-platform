@@ -54,8 +54,29 @@ describe("TracerExplorer (D2)", () => {
     selectItem("tracer-item-select", "SCR-EXHIBIT-FY26-OM");
     const chain = screen.getByTestId("tracer-chain");
     expect(chain).toHaveAttribute("data-complete", "true");
-    // The draft node cites the real scribe-drafter Logger event.
-    expect(screen.getByText(/Draft recorded by scribe-drafter/)).toBeInTheDocument();
+    // D-4 — the draft node's primary content is human-readable, not a raw agent id.
+    expect(screen.getByText(/Drafting step recorded by the SCRIBE drafter/i)).toBeInTheDocument();
+  });
+
+  it("D-4: raw internal identifiers live in an expandable technical-references detail, not primary content", () => {
+    render(<TracerExplorer ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("tracer-type-document"));
+    selectItem("tracer-item-select", "SCR-EXHIBIT-FY26-OM");
+    const draftNode = screen.getByTestId("tracer-node-SCR-EXHIBIT-FY26-OM:draft_event");
+    const tech = within(draftNode).getByTestId("tracer-tech-SCR-EXHIBIT-FY26-OM:draft_event");
+    // The identifiers are present, but inside the technical-references disclosure.
+    expect(tech).toHaveTextContent(/AGENT_STEP_COMPLETE/);
+    expect(tech).toHaveTextContent(/scribe-drafter/);
+  });
+
+  it("D-5: SCRIBE document source-lineage nodes show a recorded timestamp", () => {
+    render(<TracerExplorer ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("tracer-type-document"));
+    selectItem("tracer-item-select", "SCR-EXHIBIT-FY26-OM");
+    const sourceNode = screen.getByTestId("tracer-node-SCR-EXHIBIT-FY26-OM:source:SRC-COSTBASE-FY26");
+    expect(
+      within(sourceNode).getByTestId("tracer-timestamp-SCR-EXHIBIT-FY26-OM:source:SRC-COSTBASE-FY26")
+    ).toHaveTextContent(/Recorded: 2026-06-19 14:05 UTC/);
   });
 
   it("shows the not-yet-integrated message for an obligation chain", () => {

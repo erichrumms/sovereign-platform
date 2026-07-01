@@ -62,6 +62,13 @@ export type SourceKind = "document" | "logger_event" | "regulation" | "none";
  *   - `traceable` — true when this node resolves to an existing source. A chain is orphaned when
  *     any node is not traceable.
  */
+export interface TechnicalReference {
+  /** Plain-prose label for the identifier, e.g. "Logger event type". */
+  label: string;
+  /** The raw identifier a reviewer or auditor may need, e.g. "AGENT_STEP_COMPLETE". */
+  value: string;
+}
+
 export interface ChainNode {
   node_id: string;
   kind: ChainNodeKind;
@@ -74,6 +81,18 @@ export interface ChainNode {
   source_ref: string;
   /** True when the node resolves to an existing source; false marks an orphan link. */
   traceable: boolean;
+  /**
+   * D-4 — raw internal identifiers (Logger event types, agent ids, decision-type codes) kept OUT of the
+   * plain-prose `title`/`cites` and surfaced as secondary/expandable technical detail. Absent when a node
+   * carries no such identifier (e.g. an orphan node with no traceable source).
+   */
+  technical_references?: TechnicalReference[];
+  /**
+   * D-5 — ISO 8601 timestamp of the underlying record/event, when one exists (a SCRIBE source record's
+   * recorded_at, a draft event's produced_at, a decision's created_at). Absent when the node has no
+   * timestamped source. Formatting is a UI concern; this stays the raw ISO string (determinism contract).
+   */
+  timestamp?: string;
 }
 
 /**
@@ -155,6 +174,8 @@ export interface ScribeSourceRecord {
   logger_event_type: string;
   /** The Logger workflow_step_id a reviewer can open to see the source event. */
   workflow_step_id: string;
+  /** D-5 — ISO 8601 timestamp of the Logger event that recorded this source (every Logger event has one). */
+  recorded_at: string;
 }
 
 /**

@@ -73,6 +73,15 @@ describe("AriaApp (Stage 6 scaffold)", () => {
     expect(screen.getByText(/Determinism Verification/)).toBeInTheDocument();
   });
 
+  it("D-7: the Category 2 banners render exactly once on the CPMI-VRS tab (no duplicate)", () => {
+    render(<AriaApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByRole("tab", { name: "CPMI-VRS" }));
+    expect(screen.getByTestId("aria-vrs-gates")).toBeInTheDocument();
+    // Both app-shell guardrails appear once — the tab no longer renders its own copies.
+    expect(screen.getAllByText(/Classification boundary \(GD-10\)/)).toHaveLength(1);
+    expect(screen.getAllByText(/How ARIA reaches its findings:/)).toHaveLength(1);
+  });
+
   it("Gap 6: the three content categories are visually present (blue governance + white card)", () => {
     const { container } = render(<AriaApp ctx={makeCtx()} />);
     // Category 2 (blue) guardrails present.

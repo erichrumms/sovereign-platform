@@ -75,7 +75,7 @@ export interface TracerDataSource {
 export const DEMO_DECISIONS: CounselDecisionRecord[] = [
   {
     document_id: "DR-COUNSEL-0007",
-    title: "COUNSEL Decision Record — realign FY26 O&M funding to readiness",
+    title: "COUNSEL Decision Record — realign FY 2026 O&M funding to readiness",
     program_id: "PRG-014",
     decision_type: "HUMAN_APPROVAL",
     chosen_alternative_label: "Realign $4.2M from sustainment to readiness",
@@ -110,7 +110,7 @@ export const DEMO_DECISIONS: CounselDecisionRecord[] = [
 export const DEMO_DOCUMENTS: ScribeDocumentRecord[] = [
   {
     document_id: "SCR-EXHIBIT-FY26-OM",
-    document_title: "FY26 O&M Budget Exhibit",
+    document_title: "FY 2026 O&M Budget Exhibit",
     workflow_step_id: "SCRIBE-DRAFT-FY26OM-step-1",
     draft_event: {
       event_type: "AGENT_STEP_COMPLETE",
@@ -121,15 +121,17 @@ export const DEMO_DOCUMENTS: ScribeDocumentRecord[] = [
     source_records: [
       {
         record_id: "SRC-COSTBASE-FY26",
-        description: "FY26 cost baseline dataset",
+        description: "FY 2026 cost baseline dataset",
         logger_event_type: "AGENT_STEP_COMPLETE",
         workflow_step_id: "APEX-COSTBASE-FY26-step-2",
+        recorded_at: "2026-06-19T14:05:00.000Z",
       },
       {
         record_id: "SRC-OBL-Q3",
         description: "Q3 obligation summary",
         logger_event_type: "AGENT_STEP_COMPLETE",
         workflow_step_id: "APEX-OBL-Q3-step-2",
+        recorded_at: "2026-06-18T10:30:00.000Z",
       },
     ],
   },
@@ -154,7 +156,7 @@ export const DEMO_DOCUMENTS: ScribeDocumentRecord[] = [
 export const DEMO_OBLIGATIONS: ObligationRecordRef[] = [
   {
     obligation_id: "OBL-FY26-0042",
-    label: "FY26 O&M obligation — readiness realignment",
+    label: "FY 2026 O&M obligation — readiness realignment",
     program_id: "PRG-014",
     objective_id: "OBJ-READINESS-1",
   },

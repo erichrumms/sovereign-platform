@@ -57,7 +57,7 @@ const DOC_COMPLETE: ScribeDocumentRecord = {
     workflow_step_id: "SCRIBE-DRAFT-1-step-1",
   },
   source_records: [
-    { record_id: "S1", description: "Cost baseline", logger_event_type: "AGENT_STEP_COMPLETE", workflow_step_id: "APEX-1-step-2" },
+    { record_id: "S1", description: "Cost baseline", logger_event_type: "AGENT_STEP_COMPLETE", workflow_step_id: "APEX-1-step-2", recorded_at: "2026-06-19T00:00:00.000Z" },
   ],
 };
 
@@ -117,10 +117,36 @@ describe("tracer-engine — document chains", () => {
     const chain = assembleDocumentChain(DOC_COMPLETE);
     expect(chain.chain_type).toBe("document");
     expect(chain.complete).toBe(true);
-    // The draft node models the real AGENT_STEP_COMPLETE scribe-drafter event (reconciliation #2).
+  });
+
+  it("D-4: keeps raw Logger identifiers out of the draft node's primary content, in technical references", () => {
+    const chain = assembleDocumentChain(DOC_COMPLETE);
     const draft = chain.nodes.find((n) => n.kind === "draft_event")!;
-    expect(draft.cites).toMatch(/AGENT_STEP_COMPLETE/);
-    expect(draft.cites).toMatch(/scribe-drafter/);
+    // Primary content is human-readable — the raw event type / agent id are NOT in title or cites.
+    expect(draft.title).not.toMatch(/AGENT_STEP_COMPLETE|scribe-drafter/);
+    expect(draft.cites).not.toMatch(/AGENT_STEP_COMPLETE|scribe-drafter/);
+    // The identifiers are preserved as secondary technical references (reconciliation #2 still holds).
+    const values = (draft.technical_references ?? []).map((r) => r.value);
+    expect(values).toContain("AGENT_STEP_COMPLETE");
+    expect(values).toContain("scribe-drafter");
+  });
+
+  it("D-4: keeps the decision node's Logger event + decision-type code as technical references", () => {
+    const chain = assembleDecisionChain(DECISION_NO_BASIS);
+    const decision = chain.nodes.find((n) => n.kind === "decision_record")!;
+    expect(decision.cites).not.toMatch(/HUMAN_DECISION/);
+    const values = (decision.technical_references ?? []).map((r) => r.value);
+    expect(values).toContain("HUMAN_DECISION");
+    expect(values).toContain("HUMAN_APPROVAL"); // the decision_type code
+  });
+
+  it("D-5: every traceable SCRIBE source-lineage node carries a recorded-at timestamp", () => {
+    const chain = assembleDocumentChain(DOC_COMPLETE);
+    const sources = chain.nodes.filter((n) => n.kind === "source_record" && n.traceable);
+    expect(sources.length).toBeGreaterThan(0);
+    for (const s of sources) expect(s.timestamp).toBe("2026-06-19T00:00:00.000Z");
+    // The draft node is timestamped too (produced_at).
+    expect(chain.nodes.find((n) => n.kind === "draft_event")!.timestamp).toBe("2026-06-20T00:00:00.000Z");
   });
 
   it("orphans when the document cites no source records", () => {

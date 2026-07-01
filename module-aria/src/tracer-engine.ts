@@ -75,14 +75,20 @@ export function assembleDecisionChain(record: CounselDecisionRecord): TraceChain
   const nodes: ChainNode[] = [];
 
   // Node 1 — the decision itself. Always traceable: the Decision Record exists in COUNSEL.
+  // D-4: the raw Logger event and decision-type code are technical references, not primary content.
   nodes.push({
     node_id: `${record.document_id}:decision`,
     kind: "decision_record",
     title: `COUNSEL decision: ${record.chosen_alternative_label}`,
-    cites: `Recorded as a HUMAN_DECISION (${record.decision_type}) for program ${record.program_id}. Rationale: ${record.rationale}`,
+    cites: `A human decision recorded in COUNSEL for program ${record.program_id}. Rationale: ${record.rationale}`,
     source_kind: "logger_event",
     source_ref: record.workflow_step_id,
     traceable: true,
+    technical_references: [
+      { label: "Logger event", value: "HUMAN_DECISION" },
+      { label: "Decision type", value: record.decision_type },
+    ],
+    timestamp: record.created_at,
   });
 
   const basis = record.regulation_basis;
@@ -139,29 +145,40 @@ export function assembleDecisionChain(record: CounselDecisionRecord): TraceChain
 export function assembleDocumentChain(record: ScribeDocumentRecord): TraceChain {
   const nodes: ChainNode[] = [];
 
-  // Node 1 — the document.
+  // Node 1 — the document. D-4: the workflow-step id is the reference below, not primary prose.
   nodes.push({
     node_id: `${record.document_id}:document`,
     kind: "scribe_document",
     title: `SCRIBE document: ${record.document_title}`,
-    cites: `Drafted in SCRIBE under workflow step ${record.workflow_step_id}.`,
+    cites: "The SCRIBE-drafted document this chain traces back to its sources.",
     source_kind: "logger_event",
     source_ref: record.workflow_step_id,
     traceable: true,
   });
 
   // Node 2 — the drafting event (real: AGENT_STEP_COMPLETE, agent_id scribe-drafter).
+  // D-4: the raw event type + agent id are technical references; the prose names the drafter in plain
+  // language. D-5: the node carries the draft's produced-at timestamp.
   const draft = record.draft_event;
   nodes.push({
     node_id: `${record.document_id}:draft_event`,
     kind: "draft_event",
-    title: draft ? `Draft recorded by ${draft.agent_id}` : "Draft event — not recorded",
+    title: draft ? "Drafting step recorded by the SCRIBE drafter agent" : "Draft event — not recorded",
     cites: draft
-      ? `Logger event ${draft.event_type} (agent ${draft.agent_id}), recorded ${draft.produced_at}.`
+      ? "The document was produced by the SCRIBE drafter agent and recorded to the audit log."
       : "No drafting Logger event was found for this document, so the draft cannot be traced to the agent that produced it.",
     source_kind: draft ? "logger_event" : "none",
     source_ref: draft ? draft.workflow_step_id : "",
     traceable: draft !== undefined,
+    ...(draft
+      ? {
+          technical_references: [
+            { label: "Logger event type", value: draft.event_type },
+            { label: "Agent", value: draft.agent_id },
+          ],
+          timestamp: draft.produced_at,
+        }
+      : {}),
   });
 
   // Nodes 3..n — each cited source record in the document's data lineage.
@@ -178,14 +195,18 @@ export function assembleDocumentChain(record: ScribeDocumentRecord): TraceChain 
     });
   } else {
     for (const src of record.source_records) {
+      // D-4: the raw Logger event type is a technical reference; the workflow-step id is the reference
+      // line. D-5: the node carries the source record's recorded-at timestamp.
       nodes.push({
         node_id: `${record.document_id}:source:${src.record_id}`,
         kind: "source_record",
         title: `Source: ${src.description}`,
-        cites: `Logger event ${src.logger_event_type} under workflow step ${src.workflow_step_id}.`,
+        cites: "A source record in this document's data lineage.",
         source_kind: "logger_event",
         source_ref: src.workflow_step_id,
         traceable: true,
+        technical_references: [{ label: "Logger event type", value: src.logger_event_type }],
+        timestamp: src.recorded_at,
       });
     }
   }

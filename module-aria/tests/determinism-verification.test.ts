@@ -22,6 +22,29 @@ describe("determinism-verification — coverage", () => {
   it("defines three or more scenarios", () => {
     expect(DETERMINISM_SCENARIOS.length).toBeGreaterThanOrEqual(3);
   });
+
+  it("D-9: is exactly two scenarios per component — the stated coverage structure", () => {
+    const perComponent = DETERMINISM_SCENARIOS.reduce<Record<string, number>>((acc, s) => {
+      acc[s.component] = (acc[s.component] ?? 0) + 1;
+      return acc;
+    }, {});
+    expect(perComponent).toEqual({ CLEAR: 2, TRACER: 2, ARC: 2 });
+  });
+
+  it("D-10: every scenario names what was compared, and titles don't dangle the word 'identically'", () => {
+    for (const scenario of DETERMINISM_SCENARIOS) {
+      expect(scenario.compared.length).toBeGreaterThan(0);
+      expect(scenario.compared).toMatch(/run 1 against run 2/i);
+      expect(scenario.label).not.toMatch(/identically/i);
+      expect(verifyScenario(scenario).compared).toBe(scenario.compared);
+    }
+  });
+
+  it("D-8: the scenario title does not repeat the component name (the badge already carries it)", () => {
+    for (const scenario of DETERMINISM_SCENARIOS) {
+      expect(scenario.label).not.toContain(scenario.component);
+    }
+  });
 });
 
 describe("determinism-verification — each scenario is deterministic", () => {

@@ -44,6 +44,8 @@ export interface DeterminismScenario {
   label: string;
   /** Plain-prose statement of what is being proven (Gap 5). */
   description: string;
+  /** D-10 — names the exact output compared across the two runs, so "identical" has a stated object. */
+  compared: string;
   /** Deterministic producer — same call every time. The verifier invokes it twice. */
   run: () => ScenarioRun;
 }
@@ -54,6 +56,8 @@ export interface DeterminismResult {
   component: AriaComponent;
   label: string;
   description: string;
+  /** D-10 — the exact output compared across the two runs. */
+  compared: string;
   /** True when both runs produced deeply identical output. */
   identical: boolean;
   /** How many times the engine was run (always 2 — the determinism proof). */
@@ -68,7 +72,7 @@ const ARC_AT = "2026-06-29T12:00:00.000Z";
 
 const CLEAR_COMPLIANT_INPUT: ClearEvaluationInput = {
   document_id: "VRS-CLEAR-OK",
-  document_name: "FY26 O&M Budget Exhibit (benchmark)",
+  document_name: "FY 2026 O&M Budget Exhibit (benchmark)",
   document_type: "OMB A-11 Exhibit",
   data_quality_index: 96,
   is_congressional_submission: false,
@@ -108,9 +112,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "clear-compliant",
     component: "CLEAR",
-    label: "CLEAR — compliant exhibit evaluates identically",
+    label: "The same compliant exhibit produces the same verdict on both runs",
     description:
       "The same budget exhibit, evaluated twice against the four regulatory sources, yields the same compliance verdict and findings.",
+    compared: "The compliance verdict and every finding from run 1 against run 2.",
     run: () => {
       const output = evaluateDocument(CLEAR_COMPLIANT_INPUT, CLEAR_AT);
       return {
@@ -122,9 +127,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "clear-violation",
     component: "CLEAR",
-    label: "CLEAR — over-obligation flags identically",
+    label: "The same over-obligation raises the same violation on both runs",
     description:
       "An exhibit with an uncovered obligation, evaluated twice, yields the same red Anti-Deficiency Act violation every time.",
+    compared: "The compliance verdict and the flagged Anti-Deficiency Act finding from run 1 against run 2.",
     run: () => {
       const output = evaluateDocument(CLEAR_VIOLATION_INPUT, CLEAR_AT);
       const flagged = output.findings.filter((f) => !f.passed).length;
@@ -137,9 +143,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "tracer-complete",
     component: "TRACER",
-    label: "TRACER — complete decision chain assembles identically",
+    label: "The same Decision Record assembles the same chain on both runs",
     description:
       "The same Decision Record, traced twice, assembles the same complete chain of authority node-for-node.",
+    compared: "The assembled chain — every node and its order — from run 1 against run 2.",
     run: () => {
       const output = assembleChainFor(DEMO_TRACER_DATA, "decision", "DR-COUNSEL-0008");
       const nodes = output ? output.nodes.length : 0;
@@ -152,9 +159,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "tracer-orphan",
     component: "TRACER",
-    label: "TRACER — orphaned chain reports identically",
+    label: "The same orphaned record reports the same gap on both runs",
     description:
       "A Decision Record with no regulation basis, traced twice, produces the same orphan reason every time — the gap is reported, not hidden.",
+    compared: "The incomplete-chain result and its orphan reason from run 1 against run 2.",
     run: () => {
       const output = assembleChainFor(DEMO_TRACER_DATA, "decision", "DR-COUNSEL-0007");
       return {
@@ -168,9 +176,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "arc-substantive",
     component: "ARC",
-    label: "ARC — substantive A-11 change models identically",
+    label: "The same substantive A-11 change projects the same impact on both runs",
     description:
       "The same proposed substantive change to OMB Circular A-11, modeled twice, projects the same affected items and the same overall severity.",
+    compared: "The projected affected items and the overall severity from run 1 against run 2.",
     run: () => {
       const output = modelImpact(ARC_SUBSTANTIVE_CHANGE, ARC_AT);
       return {
@@ -182,9 +191,10 @@ export const DETERMINISM_SCENARIOS: readonly DeterminismScenario[] = [
   {
     id: "arc-clarifying",
     component: "ARC",
-    label: "ARC — clarifying change downshifts identically",
+    label: "The same clarifying change downshifts severity the same way on both runs",
     description:
       "The same clarifying change to the Anti-Deficiency Act, modeled twice, downshifts every item's severity the same way each run.",
+    compared: "Every item's downshifted severity and the overall severity from run 1 against run 2.",
     run: () => {
       const output = modelImpact(ARC_CLARIFYING_CHANGE, ARC_AT);
       return {
@@ -217,6 +227,7 @@ export function verifyScenario(scenario: DeterminismScenario): DeterminismResult
     component: scenario.component,
     label: scenario.label,
     description: scenario.description,
+    compared: scenario.compared,
     identical: deeplyIdentical(first.output, second.output),
     runs: 2,
     output_summary: first.summary,

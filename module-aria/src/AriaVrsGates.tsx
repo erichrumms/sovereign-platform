@@ -20,9 +20,10 @@
  *     no GD authorizes one). Also a Project Principal step — built and ready, left pending.
  *
  * Mirrors the FLOWPATH / APEX GateRunnerPanel pattern (Gap 6 three-category model: blue guardrails are
- * Category 2; gate status cards are Category 3; pending/locked pills are Category 1). Reuses the ARIA
- * banners and the clear-ui SeverityBadge — no parallel components (docs/16 §8). NO new SovereignEventType
- * and NO new HumanDecisionType — no shell-contract change this session.
+ * Category 2; gate status cards are Category 3; pending/locked pills are Category 1). The Category 2
+ * banners (determinism + GD-10 boundary) are rendered once by the ARIA app shell (AriaApp), not here, so
+ * they are not duplicated on this tab (D-7). Reuses the clear-ui SeverityBadge — no parallel components
+ * (docs/16 §8). NO new SovereignEventType and NO new HumanDecisionType — no shell-contract change.
  *
  * Version: 1.0 · Session 25 (D4) · June 29, 2026
  */
@@ -31,8 +32,6 @@ import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  DeterminismBanner,
-  ClassificationBoundaryBanner,
   titleStyle,
   subtitleStyle,
   sectionHeadingStyle,
@@ -50,13 +49,31 @@ type GateState = "PASSED" | "PENDING" | "LOCKED";
 // Product-level workflow step ids for the certification flow (Constraint #6).
 const GATE3_WORKFLOW_STEP = "aria-cpmi-vrs-gate3-attestation";
 const GATE4_WORKFLOW_STEP = "aria-cpmi-vrs-gate4-monitoring-baseline";
-const MIN_NOTE_LENGTH = 10;
+
+// D-11 — Gate 3 is attested by reviewing and confirming a pre-formed statement, not by composing free
+// text. The statement is explicit about WHAT is certified, in WHAT capacity, on WHAT evidence, and WHAT
+// changes on submit. The exact text shown is what is written to the audit trail (buildAttestationStatement).
+const ATTESTATION_CAPACITY = "the human authority accountable for ARIA Suite certification (Project Principal)";
+
+function attestationClauses(asOfDate: string): string[] {
+  return [
+    `the ARIA Suite rule sets — CLEAR's compliance rules, TRACER's chain definitions, and ARC's dependency model — correctly reflect the applicable regulatory framework as of ${asOfDate};`,
+    "I have reviewed the determinism verification results above, which confirm that ARIA Suite produces identical output for identical input across all six scenarios (two each for CLEAR, TRACER, and ARC); and",
+    "I make this attestation knowing it is recorded permanently in the SOVEREIGN audit trail and unlocks Gate 4, the monitoring baseline.",
+  ];
+}
+
+function buildAttestationStatement(attesterName: string, asOfDate: string): string {
+  return `I, ${attesterName}, as ${ATTESTATION_CAPACITY}, attest that: ${attestationClauses(asOfDate).join(" ")}`;
+}
 
 export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
   const results = useMemo(() => verifyAllDeterminism(), []);
   const determinismPassed = useMemo(() => allDeterministic(results), [results]);
 
-  const [note, setNote] = useState("");
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [remarks, setRemarks] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
   const [gate3, setGate3] = useState<{ state: GateState; attestedAt: string | null }>({ state: "PENDING", attestedAt: null });
   const [gate4, setGate4] = useState<{ state: GateState; completedAt: string | null }>({ state: "LOCKED", completedAt: null });
   const [error, setError] = useState<string | null>(null);
@@ -68,12 +85,19 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
 
   const attestGate3 = (): void => {
     setError(null);
-    const trimmed = note.trim();
-    if (trimmed.length < MIN_NOTE_LENGTH) {
-      setError(`An attestation note of at least ${MIN_NOTE_LENGTH} characters is required before Gate 3 can be attested.`);
+    // Evidence-basis guard: the statement certifies "based on the determinism results above", so it can
+    // only be attested truthfully once those results have passed. Never auto-attest (Gates 3/4 are human).
+    if (!determinismPassed) {
+      setError("Gate 3 cannot be attested until determinism verification has passed — the determinism result is the evidence this attestation relies on.");
+      return;
+    }
+    if (!confirmed) {
+      setError("Please read and confirm the attestation statement before attesting Gate 3.");
       return;
     }
     const attestedAt = new Date().toISOString();
+    const statement = buildAttestationStatement(ctx.auth.user.name, today);
+    const trimmedRemarks = remarks.trim();
     try {
       ctx.logger.log({
         event_type: "HUMAN_DECISION",
@@ -85,7 +109,9 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
         decision_type: "GATE_3_ATTESTATION", // existing GD-7 type — no shell-contract change
         actor: "human",
         actor_name: ctx.auth.user.name,
-        payload: { gate: 3, note: trimmed, attested_at: attestedAt },
+        // Record the verbatim statement the human confirmed, so the audit trail captures exactly what was
+        // certified — not a free-text note whose meaning has to be reconstructed later.
+        payload: { gate: 3, statement, remarks: trimmedRemarks || null, attested_at: attestedAt },
       });
     } catch (err) {
       setError(`Logger emission failed — Gate 3 attestation not recorded (fail-closed): ${err instanceof Error ? err.message : String(err)}`);
@@ -132,9 +158,8 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
         </p>
       </header>
 
-      {/* Category 2 — permanent governance guardrails (blue). */}
-      <DeterminismBanner />
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
+      {/* D-7 — the determinism + GD-10 classification-boundary banners are rendered once by the ARIA
+          app shell (AriaApp), so this tab must not render its own copies (they double-rendered before). */}
 
       {/* Certification summary — Category 3, read first. */}
       <div style={summaryStyle} role="status" data-category="3-content">
@@ -155,13 +180,43 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
 
       {error ? <p role="alert" style={errorStyle}>{error}</p> : null}
 
+      {/* D-12 — plain-prose rationale for a non-technical reviewer, BEFORE the scenario results. */}
+      <section style={gateCardStyle} data-category="3-content" data-testid="aria-determinism-rationale" aria-label="Why ARIA Suite is certified on determinism">
+        <h2 style={{ ...sectionHeadingStyle, margin: "0 0 8px" }}>Why ARIA Suite is certified on determinism, not accuracy</h2>
+        <p style={bodyTextStyle}>
+          The other SOVEREIGN products certified through CPMI-VRS — CPMI, APEX, and FLOWPATH — pass Gates 1
+          and 2 by meeting accuracy benchmarks. Those products are built on a large language model, so the
+          same question can produce a different answer from one run to the next; Gates 1 and 2 measure how
+          often that answer is correct.
+        </p>
+        <p style={bodyTextStyle}>
+          ARIA Suite works differently. Its engine applies fixed, written rules with no language model and no
+          prompt — it is fully deterministic. It does not estimate or predict, so there is no accuracy rate to
+          measure and an accuracy benchmark does not apply to it.
+        </p>
+        <p style={{ ...bodyTextStyle, marginBottom: 0 }}>
+          For a system like this, the meaningful question is whether the same input always produces the same
+          output. That is exactly what the six scenarios below test — two for each ARIA component (CLEAR,
+          TRACER, and ARC). Passing them shows ARIA Suite's output is reproducible and stable, and that
+          demonstration is what replaces Gates 1 and 2 as ARIA Suite's certification basis.
+        </p>
+      </section>
+
       {/* ── Determinism verification — replaces Gates 1 + 2 (docs/16 §12) ───────────────── */}
       <GateCard
         number="1–2"
         name="Determinism Verification"
         state={determinismState}
-        description="ARIA Suite's authority rests on determinism, not accuracy benchmarking. Each scenario below runs one ARIA engine — CLEAR, TRACER, or ARC — twice with identical input and confirms the two outputs are identical. Proving this determinism is ARIA Suite's stand-in for the accuracy gates an LLM-backed product must pass."
+        description="Each scenario below runs one ARIA engine — CLEAR, TRACER, or ARC — twice with identical input and confirms the two outputs are identical. There are two scenarios per component; passing all six is ARIA Suite's certification basis in place of the accuracy Gates 1 and 2 (see the explanation above)."
       >
+        {/* D-9 — why these six scenarios: the coverage the reviewer is otherwise left to infer. */}
+        <p style={{ ...bodyTextStyle, margin: "12px 0 0" }} data-testid="aria-determinism-coverage">
+          The six scenarios are two for each ARIA component — CLEAR, TRACER, and ARC. For every component,
+          one scenario exercises the normal path and one exercises an exception path (a violation, an
+          orphaned chain, a clarifying change), so determinism is shown to hold across both — not just the
+          straightforward case. Each scenario runs that component's engine twice on identical input and
+          checks that the two outputs match.
+        </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
           {results.map((r) => (
             <DeterminismCard key={r.id} result={r} />
@@ -183,21 +238,59 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
         ) : (
           <div style={{ marginTop: 8 }}>
             <p style={{ ...bodyTextStyle, marginBottom: 6 }}>
-              Record your review below, then attest. Your note becomes part of the permanent audit trail.
+              Review the attestation statement below. When you attest, this exact statement is recorded — with
+              your name and today's date — in the permanent SOVEREIGN audit trail.
             </p>
-            <textarea
-              aria-label="gate 3 attestation note"
-              data-testid="aria-gate3-note"
-              placeholder="Describe your review and acceptance that the ARIA rule sets reflect the applicable regulatory framework (required, at least 10 characters)."
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              style={textareaStyle}
-            />
-            <div style={{ marginTop: 8 }}>
-              <button type="button" onClick={attestGate3} style={primaryBtnStyle} data-testid="aria-gate3-attest">
-                Attest Gate 3
-              </button>
-            </div>
+            <blockquote style={statementBlockStyle} data-testid="aria-gate3-statement">
+              <p style={{ ...bodyTextStyle, margin: "0 0 6px", fontWeight: 600 }}>
+                I, {ctx.auth.user.name}, as {ATTESTATION_CAPACITY}, attest that:
+              </p>
+              <ul style={{ margin: 0, paddingLeft: 18 }}>
+                {attestationClauses(today).map((clause, i) => (
+                  <li key={i} style={{ ...bodyTextStyle, margin: "0 0 4px" }}>{clause}</li>
+                ))}
+              </ul>
+            </blockquote>
+            <p style={{ ...bodyTextStyle, marginTop: 8 }}>
+              Submitting records a permanent Gate 3 attestation in the SOVEREIGN audit trail and unlocks
+              Gate 4, the monitoring baseline. It cannot be undone from this screen.
+            </p>
+            {determinismPassed ? (
+              <>
+                <label htmlFor="aria-gate3-remarks" style={{ ...bodyTextStyle, display: "block", margin: "0 0 4px" }}>
+                  Optional remarks for the audit record:
+                </label>
+                <textarea
+                  id="aria-gate3-remarks"
+                  aria-label="gate 3 optional remarks"
+                  data-testid="aria-gate3-remarks"
+                  placeholder="Optional — add any context you want preserved alongside the attestation."
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  style={textareaStyle}
+                />
+                <label style={{ ...bodyTextStyle, display: "flex", gap: 8, alignItems: "flex-start", margin: "8px 0 0" }}>
+                  <input
+                    type="checkbox"
+                    data-testid="aria-gate3-confirm"
+                    checked={confirmed}
+                    onChange={(e) => setConfirmed(e.target.checked)}
+                    style={{ marginTop: 3 }}
+                  />
+                  <span>I have read the statement above and make this attestation.</span>
+                </label>
+                <div style={{ marginTop: 8 }}>
+                  <button type="button" onClick={attestGate3} style={primaryBtnStyle} data-testid="aria-gate3-attest">
+                    Attest Gate 3
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p style={{ ...bodyTextStyle, marginTop: 8, color: "#854d0e" }} data-testid="aria-gate3-blocked">
+                Attestation unlocks once determinism verification has passed — its result is the evidence this
+                attestation relies on.
+              </p>
+            )}
           </div>
         )}
       </GateCard>
@@ -253,7 +346,7 @@ function GateStatusPill({ state }: { state: GateState }): JSX.Element {
 /** One determinism scenario result — a card stating what was verified, in plain prose (Gap 5). */
 function DeterminismCard({ result }: { result: DeterminismResult }): JSX.Element {
   return (
-    <article style={scenarioCardStyle} data-testid={`aria-determinism-${result.id}`} data-identical={result.identical} aria-label={`Determinism scenario ${result.label}`}>
+    <article style={scenarioCardStyle} data-testid={`aria-determinism-${result.id}`} data-identical={result.identical} aria-label={`Determinism scenario — ${result.component}: ${result.label}`}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 4, flexWrap: "wrap" }}>
         <h3 style={{ margin: 0, fontSize: 14, color: "#0f172a" }}>
           <span style={componentTagStyle}>{result.component}</span> {result.label}
@@ -265,6 +358,9 @@ function DeterminismCard({ result }: { result: DeterminismResult }): JSX.Element
         )}
       </div>
       <p style={{ ...bodyTextStyle, margin: "0 0 4px" }}>{result.description}</p>
+      <p style={{ margin: "0 0 4px", fontSize: 13, color: "#334155" }} data-testid={`aria-determinism-compared-${result.id}`}>
+        <strong>Compared:</strong> {result.compared}
+      </p>
       <p style={{ margin: 0, fontSize: 13, color: "#475569" }}>
         Ran {result.runs} times. {result.output_summary}
       </p>
@@ -293,6 +389,7 @@ const gateCardStyle: CSSProperties = { padding: "14px 16px", background: "#fffff
 const scenarioCardStyle: CSSProperties = { padding: "12px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8 };
 const componentTagStyle: CSSProperties = { display: "inline-block", padding: "1px 7px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e40af", marginRight: 6 };
 const pillStyle: CSSProperties = { fontSize: 12, fontWeight: 700, padding: "2px 10px", borderRadius: 999, whiteSpace: "nowrap" };
+const statementBlockStyle: CSSProperties = { margin: 0, padding: "12px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: 8, maxWidth: 900 };
 const textareaStyle: CSSProperties = { width: "100%", maxWidth: 820, minHeight: 70, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontFamily: "inherit" };
 const primaryBtnStyle: CSSProperties = { padding: "7px 16px", borderRadius: 6, border: "1px solid #1d4ed8", background: "#2563eb", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 };
 const errorStyle: CSSProperties = { margin: "0 0 10px", color: "#b91c1c", fontSize: 13, fontWeight: 600 };

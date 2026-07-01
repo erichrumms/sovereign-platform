@@ -85,6 +85,12 @@ const OVERALL_LABEL: Record<OverallSeverity, string> = {
   none: "No modeled impact",
 };
 
+/** D-6 — the change scope, echoed as a badge on the result panel so the reviewer sees which scope produced this projection. */
+const SCOPE_LABEL: Record<ChangeScope, string> = {
+  substantive: "Substantive change",
+  clarifying: "Clarifying change",
+};
+
 /** A high-severity report (breaking or significant) is the one that surfaces COUNSEL/NEXUS routing. */
 function isHighSeverity(severity: OverallSeverity): boolean {
   return severity === "breaking" || severity === "significant";
@@ -241,6 +247,7 @@ function ImpactReportView({ report }: { report: ImpactReport }): JSX.Element {
               label={OVERALL_LABEL[report.overall_severity]}
             />
           )}
+          <ScopeBadge scope={report.change_scope} />
           <ProjectionMarker />
         </div>
         <p style={bodyTextStyle}>
@@ -250,7 +257,7 @@ function ImpactReportView({ report }: { report: ImpactReport }): JSX.Element {
           prediction of whether the change will be adopted.
         </p>
         <p style={{ ...bodyTextStyle, margin: 0, color: "#475569", fontSize: 13 }}>
-          Proposed change: “{report.change_description}” ({scopeNoun(report.change_scope)} change)
+          Proposed change: “{report.change_description}”
         </p>
       </section>
 
@@ -367,11 +374,22 @@ function ProjectionMarker(): JSX.Element {
   );
 }
 
+/**
+ * D-6 — the change scope echoed as a badge on the result panel. Neutral (slate) so it reads as a
+ * categorical attribute of the input, distinct from the red/amber/green severity pills and the violet
+ * "Modeled projection" marker. Clarifying vs substantive materially changes the modeled severity, so a
+ * reviewer must be able to see at a glance which scope produced this projection.
+ */
+function ScopeBadge({ scope }: { scope: ChangeScope }): JSX.Element {
+  return (
+    <span style={scopeBadgeStyle} data-testid="arc-scope-badge" data-scope={scope}>
+      {SCOPE_LABEL[scope]}
+    </span>
+  );
+}
+
 function itemCountPhrase(n: number): string {
   return n === 1 ? "one platform item" : `${n} platform items`;
-}
-function scopeNoun(scope: ChangeScope): string {
-  return scope === "substantive" ? "substantive" : "clarifying";
 }
 
 // ── Styles (approved white-card pattern on the ARIA light canvas — docs/16 §8) ───────────────────
@@ -415,6 +433,11 @@ const recommendationStyle: CSSProperties = {
 const projectionMarkerStyle: CSSProperties = {
   display: "inline-block", padding: "2px 8px", borderRadius: 999, fontSize: 12, fontWeight: 600,
   background: "#f5f3ff", border: "1px solid #ddd6fe", color: "#5b21b6", whiteSpace: "nowrap",
+};
+// D-6 — neutral slate: a categorical input attribute, not a severity and not the projection cue.
+const scopeBadgeStyle: CSSProperties = {
+  display: "inline-block", padding: "2px 8px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+  background: "#f1f5f9", border: "1px solid #cbd5e1", color: "#334155", whiteSpace: "nowrap",
 };
 
 export default ArcImpactModeler;
