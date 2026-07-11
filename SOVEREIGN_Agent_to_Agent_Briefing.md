@@ -1,6 +1,6 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
 ## For Any Claude Instance Opening a SOVEREIGN Session
-## Updated July 9, 2026 — PPBE/TT governance reconciled, D-P7/D-TT7 open, demo track defined
+## Updated July 11, 2026 — TT prompts delivered, docs/18 status corrected, prompt/D-TT7 dependency clarified
 
 ---
 
@@ -31,14 +31,14 @@ Walkthroughs A–D complete, including full remediation of every Walkthrough D f
 
 | Item | State |
 |---|---|
-| HEAD / origin/main | `dca57a1` (as of Session 26 close) — verify current before assuming unchanged |
+| HEAD / origin/main | `c3684f0` (AIS-dedupe fix, July 9) — verify current before assuming unchanged |
 | shell-contract.ts | v1.15 · `939c2441…bfa5876` — unchanged since Session 23 |
-| Platform tests | 1288 · 0 production vulnerabilities — unchanged since Session 26 (no build session since) |
+| Platform tests | 1288 · 0 production vulnerabilities — unchanged since Session 26 (no build session since; `c3684f0` is docs-only) |
 | CPMI-VRS Gate 3 (ARIA Suite) | Unblocked, **not yet attested** |
-| Time & Travel | **D-TT1–D-TT6 decided June 29, 2026** (fully filed record). `docs/17` complete. **D-TT7 open.** Prompts authoring in progress. |
-| PPBE | **D-P1–D-P6 decided June 29, 2026** (well-evidenced, original record not located — reconstruction provided). `docs/18` partial. **D-P7 open.** |
+| Time & Travel | **D-TT1–D-TT6 decided June 29, 2026** (fully filed record). `docs/17` complete. **D-TT7 open — does not block prompts.** Two prompts drafted and delivered (`tt/prompts/`), approval pending D-TT7 only if Option C is chosen. |
+| PPBE | **D-P1–D-P6 decided June 29, 2026** (well-evidenced, original record not located — reconstruction provided). `docs/18` **not yet started** (corrected — was previously described as in progress). **D-P7 open.** |
 | Registered agents | 44 (36 master, including 6 PPBE agents — not separate from the 36 — + 8 `tt.*`) |
-| Approved prompts | 14 (+2 Time & Travel prompts in progress) |
+| Approved prompts | 14 approved; 2 Time & Travel prompts drafted, pending formal approval alongside D-TT7 |
 
 **Do not assume PPBE's or Time & Travel's data-dictionary entities are still open
 decisions — they are not.** The only open questions are D-P7 and D-TT7: whether those
@@ -92,17 +92,26 @@ Do not build against either workflow layer's data dictionary as if these are set
 Unlike PPBE, Time & Travel has a **complete, approved build specification**
 (`docs/17_TimeAndTravel_Architecture.md`) — tool designs, ten compliance rule
 categories, Logger events, shell-contract impact assessment, autonomous-operation
-rules for Claude Code. It is the most build-ready path to a demonstrable, working
-workflow layer. Sequence build sessions accordingly unless directed otherwise.
+rules for Claude Code — **and now both drafting prompts, delivered July 11**
+(`tt/prompts/travel_drafting_system.md`, `tt/prompts/time_drafting_system.md`).
+It is the most build-ready path to a demonstrable, working workflow layer.
+Sequence build sessions accordingly unless directed otherwise.
+
+**On the two prompts specifically:** drafting them did not require D-TT7 to resolve
+first — they don't reference any field beyond what D-TT3 already approved. Formal
+approval is held pending D-TT7 only as a precaution against Option C (full
+architecture) changing the underlying fields; if D-TT7 resolves to Option A or B,
+approve the prompts as-written alongside the decision, no rework needed.
 
 ---
 
 ## Corrections to Carry Forward
 
-- **`AIS-dedupe` is confirmed, and worse than flagged.** `Agent_Identity_Standard.md`'s
-  Time & Travel section is duplicated **three times**, not two. Simple fix, no design
-  judgment needed — safe for a quick manual edit or a trivial Claude Code task, not
-  worth a dedicated session.
+- **`AIS-dedupe` is resolved.** `Agent_Identity_Standard.md`'s Time & Travel section was
+  found duplicated three times (a July 1 merge commit, `88cd04e`, unknowingly worsened
+  an existing double-duplication to triple). Fixed and verified July 9 — file truncated
+  to its single clean copy (1,359 lines), all three prior copies confirmed byte-identical
+  before the cut, committed as `c3684f0`. No longer open — don't re-flag it.
 - **npm-dev-vulns is not an open decision.** The `esbuild`/Vite advisory has been
   deferred to the Stage 5+ Vite major-version review since Session 2B (June 18). Stop
   tracking it as "pending" — it's already resolved as "deferred with a trigger condition."
@@ -136,7 +145,7 @@ workflow layer. Sequence build sessions accordingly unless directed otherwise.
 | Wrong shell-contract hash | Verify v1.15 — unchanged since Session 23 |
 | Agent count wrong | Count the authoritative table directly — a naive grep returns 46 |
 | Building against Time & Travel or PPBE data dictionary before D-TT7/D-P7 resolve | Wait — amendment could still change field shape |
-| Treating `AIS-dedupe` as unverified | It's confirmed — tripled, not just possibly duplicated |
+| Treating `AIS-dedupe` as still open | It's resolved (`c3684f0`, July 9) — don't re-flag it |
 | Treating npm-dev-vulns as an open choice | It's an already-made, deferred decision |
 | A side conversation's governance decision not making it back into the main thread | This is exactly what caused the multi-week reconciliation — bring outputs back explicitly, promptly |
 | Session closes without handoff | Non-negotiable |

@@ -1,5 +1,5 @@
 # SOVEREIGN Platform — Work Plan to CTO Demo
-## July 9, 2026
+## July 9, 2026 · Revised July 11, 2026 — prompts delivered, docs/18 status corrected
 
 **Classification:** Pre-Decisional · Internal Working Document
 **Purpose:** A single, structured reference for the path from current state to a
@@ -20,7 +20,7 @@ complete.
 
 | # | Component | Status Today | What Makes It Demo-Strong |
 |---|---|---|---|
-| 1 | Core six-product pipeline (NEXUS, CPMI, APEX, FLOWPATH, AgentOS, ARIA Suite) + companion suite (COUNSEL, SCRIBE, LENS, VIGIL) | Feature-complete, ready now | No work needed — this is the foundation |
+| 1 | Core six-product pipeline (NEXUS, CPMI, APEX, FLOWPATH, AgentOS, ARIA Suite) + companion suite (COUNSEL, SCRIBE, LENS, VIGIL) | Feature-complete, ready now | No work needed — this is the foundation. One minor caveat: `PROMPT-REGISTRY-DRIFT` (two FLOWPATH prompt-registry entries not matching disk) is tracked but unresolved — doesn't affect passing tests or demo behavior, worth a glance before demo day regardless |
 | 2 | Governance/certification story — CPMI-VRS gates, Logger audit trail, VIGIL human-in-the-loop enforcement | Mostly ready; Gate 3/4 attestation still open | This is SOVEREIGN's actual differentiator — lead with it, not bury it |
 | 3 | One fully-built workflow layer, end-to-end | Not yet — Time & Travel is closest | This is the proof-of-concept a CTO will weigh most heavily: does a workflow layer really run on existing infrastructure, or is that just a claim? |
 | 4 | Second workflow layer (PPBE), shown honestly as in-progress | Governance decided, spec partial | A credible second data point without needing to rush it to completion |
@@ -33,38 +33,45 @@ complete.
 Two tracks run in parallel with **no dependency between them.** This matters — the
 prior assumption that everything sequences strictly after Gate 3/4 was convention,
 not a real technical constraint, and holding to it unnecessarily would cost demo-prep
-time for no reason.
+time for no reason. **As of July 11, 2026, the critical path also got shorter:**
+Time & Travel's two drafting prompts are drafted and delivered, no longer waiting on
+D-TT7 to be written — only formal approval waits, and only conditionally.
 
 ```
 TRACK A — Browser, Project Principal, any time
   Gate 3/4 attestation for ARIA Suite
   (unblocks nothing else; strengthens the governance-story portion of the demo)
 
-TRACK B — Claude Chat, then Claude Code, the actual critical path
+TRACK B — the actual critical path, now shorter
   D-TT7 decision (Option A/B/C)
-       ↓
-  Time & Travel drafting prompts approved (in progress)
+       │
+       ├── if A or B: approve the already-drafted prompts as-is, no rework
+       └── if C: quick review of the drafted prompts against the new
+                  architecture before approval — still faster than
+                  having waited to write them
        ↓
   Session 27 — Time & Travel Phase I
-  (data dictionary registration, agent scaffolding,
-   AIS-dedupe fix as opening housekeeping)
+  (data dictionary registration, agent scaffolding)
        ↓
   Session 28 — Time & Travel Phase II
   (drafting agents live, VIGIL/NEXUS wiring)
        ↓
   *** DEMO-READY WORKFLOW LAYER ***
 
-PARALLEL, NOT ON THE CRITICAL PATH
-  D-P7 decision → docs/18 completion (data-dictionary section) → PPBE Phase I
-  (shown as "in progress" in the demo — does not block demo readiness)
+ALREADY DONE, NO LONGER ON ANY PATH
+  Time & Travel drafting prompts — drafted July 11, tt/prompts/
+  AIS-dedupe cleanup — fixed July 11, commit c3684f0
 
-  AIS-dedupe cleanup — trivial, any time, folded into Session 27 open if not done sooner
+PARALLEL, NOT ON THE CRITICAL PATH
+  D-P7 decision → docs/18 authoring (not yet started) → PPBE Phase I
+  (shown as "in progress" in the demo — does not block demo readiness)
 
   REVIEW-SCOPE — explicitly deprioritized given the demo timeline; not on any path here
 ```
 
-**The single highest-leverage near-term action:** deciding D-TT7. Everything on the
-critical path is downstream of it.
+**The single highest-leverage near-term action is still deciding D-TT7** — but it's a
+narrower dependency now than before: the decision itself, plus (only under Option C)
+a quick prompt review, rather than the decision plus the entire drafting effort.
 
 ---
 
@@ -72,15 +79,15 @@ critical path is downstream of it.
 
 | Session | Type | Scope | Blocked On |
 |---|---|---|---|
-| — | Claude Chat | Integration Brief v1.41, Briefing, System Prompt v19 (this pass) | Nothing — done this pass |
-| — | Claude Chat | Time & Travel drafting prompts (2) | Nothing — done this pass |
-| — | Claude Chat | `docs/18` partial (workflow/agent/Logger sections; data-dictionary deferred) | Nothing — done this pass |
+| — | Claude Chat | Integration Brief v1.41, Briefing, System Prompt v19 | **Delivered** |
+| — | Claude Chat | Time & Travel drafting prompts (2) | **Delivered**, `tt/prompts/` — approval pending D-TT7 |
+| — | Claude Chat | `docs/18` PPBE spec | **Not started** — corrected from earlier "in progress" claim |
 | — | Project Principal | D-TT7 decision | Nothing — ready now |
 | — | Project Principal | D-P7 decision | Nothing — ready now, not on critical path |
 | — | Project Principal, browser | Gate 3/4 attestation | Nothing — ready now, not on critical path |
-| 27 | Claude Code build | Time & Travel Phase I — data dictionary, agent scaffolding, `AIS-dedupe` fix | D-TT7 decided, prompts approved |
+| 27 | Claude Code build | Time & Travel Phase I — data dictionary, agent scaffolding | D-TT7 decided; prompts already drafted, approve alongside |
 | 28 | Claude Code build | Time & Travel Phase II — drafting agents, VIGIL/NEXUS wiring | Session 27 complete |
-| 29 | Claude Code build | PPBE Phase I | `docs/18` complete, D-P7 decided |
+| 29 | Claude Code build | PPBE Phase I | `docs/18` authored, D-P7 decided |
 | ~30 | Level 1 Walkthrough (E) | Full-platform validation including new workflow layer | At least Session 28 complete |
 
 **Demo readiness is achievable after Session 28** — Session 29 (PPBE build) and
@@ -93,7 +100,7 @@ honest demo under the scope in §1.
 
 | Risk | Mitigation |
 |---|---|
-| D-TT7 decision delayed, stalling the entire critical path | It's a self-contained, well-scoped decision (3 options, clearly laid out) — worth prioritizing resolution over the other open decisions |
+| D-TT7 decision delayed | Narrower impact than before — prompts are already drafted, so delay only holds up formal approval and Session 27's open, not the drafting effort itself. Still worth prioritizing. |
 | Session 27/28 uncovers a Hard Stop (shell-contract boundary), the way D-3 did in Session 26 | Expected possibility, not a failure mode — the platform's own discipline (Lesson 14) exists precisely to surface and resolve this without derailing the session |
 | PPBE's incomplete paper trail (missing D-P1–D-P6 original) causes confusion mid-build | Mitigated — reconstructed record now exists; not a blocker to Time & Travel's critical path regardless |
 | Another parallel conversation makes an untracked decision, repeating this reconciliation's root cause | Standing practice recommendation: one canonical continuity thread per work period, side-conversation outputs reconciled promptly |
