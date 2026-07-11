@@ -1,122 +1,130 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
 ## For Any Claude Instance Opening a SOVEREIGN Session
-## Updated June 30, 2026 — Walkthrough D complete, Gate 3 deferred, gap fixes next
+## Updated July 9, 2026 — PPBE/TT governance reconciled, D-P7/D-TT7 open, demo track defined
 
 ---
 
 ## Who You Are Talking To
 
-The Project Principal is the sole human decision-maker on this project. Non-technical
-background, highly engaged, learning fast. Big picture first, components second. One
-question at a time. Never assume he knows where a file is. He pastes Terminal output
-directly into chat — read it carefully.
+The Project Principal is the sole human decision-maker. Non-technical background,
+highly engaged, learning fast. Big picture first, components second. One question at
+a time. He pastes Terminal output directly into chat — read it carefully. **He wants
+to demo SOVEREIGN to a CTO** — this is the current organizing priority; treat requests
+through that lens when relevant, without inventing urgency that isn't there.
 
 ---
 
 ## What SOVEREIGN Is
 
-SOVEREIGN is a governed, AI-aligned operations platform for enterprise and federal
-organizations — six integrated core products (NEXUS, CPMI, APEX, FLOWPATH, AgentOS,
-ARIA Suite) plus four companion modules (COUNSEL, SCRIBE, LENS, VIGIL) and a future
-seventh product called the Intelligence Layer that must never be lost. Two governed
-workflow layers (not products): PPBE and Time & Travel.
+A governed, AI-aligned operations platform — six integrated core products (NEXUS,
+CPMI, APEX, FLOWPATH, AgentOS, ARIA Suite) plus four companion modules (COUNSEL,
+SCRIBE, LENS, VIGIL), a future seventh product (the Intelligence Layer) that every
+current product feeds, and two governed workflow layers (PPBE, Time & Travel) —
+never products, never their own shell module or certification cycle.
 
-**All six primary products are feature-complete. Walkthroughs A through D are complete.**
+**All six primary products and all four companion modules are feature-complete.**
+Walkthroughs A–D complete, including full remediation of every Walkthrough D finding.
 
 ---
 
-## Current State — As of Walkthrough D (June 30, 2026)
+## Current State — July 9, 2026
 
 | Item | State |
 |---|---|
-| Last completed action | Walkthrough D — ARIA Suite Level 1 Validation |
-| HEAD / origin/main | `cb49c9c` (Integration Brief v1.38 + Briefing committed at `4bd729f`) |
-| shell-contract.ts | v1.15 · SHA `939c2441a1b4a6af16fefae4cbf8269585260646e84d830b4e0529ca8bfa5876` — unchanged since Session 23 |
-| Integration Brief | v1.39 (produced — needs commit) |
-| SBOM Registry | v1.26 (iCloud only) |
-| Platform tests | 1267 (1109 JS/TS + 158 Python) · 0 vulnerabilities |
-| Stage 6 (ARIA Suite) | FEATURE-COMPLETE — CLEAR + TRACER + ARC all live |
-| Walkthroughs | A, B, C, D — all COMPLETE |
-| CPMI-VRS Gate 3 | DEFERRED — D-11 and D-12 must be fixed first |
-| Registered agents | 44 |
-| Approved prompts | 14 |
-| All data | SYNTHETIC — Governance Clock not activated |
+| HEAD / origin/main | `dca57a1` (as of Session 26 close) — verify current before assuming unchanged |
+| shell-contract.ts | v1.15 · `939c2441…bfa5876` — unchanged since Session 23 |
+| Platform tests | 1288 · 0 production vulnerabilities — unchanged since Session 26 (no build session since) |
+| CPMI-VRS Gate 3 (ARIA Suite) | Unblocked, **not yet attested** |
+| Time & Travel | **D-TT1–D-TT6 decided June 29, 2026** (fully filed record). `docs/17` complete. **D-TT7 open.** Prompts authoring in progress. |
+| PPBE | **D-P1–D-P6 decided June 29, 2026** (well-evidenced, original record not located — reconstruction provided). `docs/18` partial. **D-P7 open.** |
+| Registered agents | 44 (36 master, including 6 PPBE agents — not separate from the 36 — + 8 `tt.*`) |
+| Approved prompts | 14 (+2 Time & Travel prompts in progress) |
 
-**Next action:** Post-walkthrough build session — Walkthrough D gap fixes.
-D-11 and D-12 are first priority (required before Gate 3 attestation).
-After fixes: Gate 3 → Gate 4 → workflow layer builds begin.
+**Do not assume PPBE's or Time & Travel's data-dictionary entities are still open
+decisions — they are not.** The only open questions are D-P7 and D-TT7: whether those
+already-approved entities should be *amended*, not whether they should be *approved*.
 
 ---
 
-## ⚠️ Gate 3 Is Deferred — Do Not Attempt Without These Fixes
+## ⚠️ The Reconciliation This Update Reflects — Read Before Trusting Older Documents
 
-D-11: Gate 3 attestation has no context for what is being attested. No pre-formed
-statement, no explanation of authority or consequence. The Project Principal
-correctly deferred rather than attest blind.
+Integration Brief v1.40 and earlier incorrectly carried PPBE's and Time & Travel's
+data-dictionary decisions as pending. **They were decided June 29, 2026, in
+governance sessions that happened outside the main session-to-session continuity
+thread** — discovered only through a multi-document reconciliation effort on July 9
+after the Project Principal noticed the discrepancy and supplied source material for
+verification. If you encounter any document dated between June 30 and July 9 that
+treats PPBE's or Time & Travel's entities as unapproved, **trust this Briefing and
+Integration Brief v1.41 over it.**
 
-D-12: CPMI-VRS Gates tab does not explain what Gates 1–2 are or why determinism
-verification is a valid substitution. Assumed knowledge the reviewer does not have.
-
-Both must be fixed and committed before Gate 3 attestation is meaningful.
-
----
-
-## ⚠️ Cumulative Intentional Logger Divergence
-
-Python `APPROVED_EVENT_TYPES` (84) is permanently 5 members ahead of TypeScript
-`SovereignEventType` (79): 3 TRACER + 2 ARC events, all Python-only by design.
-Do not treat this as drift. `ARIA_ADAPTATION_DECISION` is an event type, not a
-`HumanDecisionType` — reserved, not yet wired to live routing.
+**Standing lesson from this:** governance decisions made in a conversation outside the
+main continuity thread do not automatically propagate. If a side conversation produces
+a real decision, its output needs to be explicitly brought back and reconciled — it
+doesn't happen on its own, and the gap can persist for weeks before anyone notices.
 
 ---
 
-## Shell Contract — Unchanged Since GD-20 (Session 23)
+## ✅ Gate 3 Is Unblocked — Not Yet Attested
 
-| | Hash |
-|---|---|
-| **Current (v1.15)** | `939c2441a1b4a6af16fefae4cbf8269585260646e84d830b4e0529ca8bfa5876` |
-
-No GD in Sessions 24 or 25. Ten shell exports, 79 SovereignEventType members,
-19 HumanDecisionType members — all unchanged.
+D-11/D-12 fixed, Session 26. Pre-formed attestation statement, blocked until
+determinism passes, verbatim-logged. **Attestation itself is still a deliberate,
+un-undoable Project Principal action on his own timeline** — don't frame it as
+overdue just because it's unblocked.
 
 ---
 
-## Key Codebase Facts
+## D-P7 and D-TT7 — Open Reconsideration Decisions
 
-- `aria.rules-engine` powers CLEAR, TRACER, and ARC — fully deterministic, no LLM
-- ARC outputs deliberately NOT routed through `ctx.aria` — projections are not export clearances
-- ARC→COUNSEL/NEXUS routing is UI-recommendation-only — real routing deferred
-- COUNSEL Decision Records carry no `regulation_basis` field — strong GD candidate,
-  reinforced independently by both TRACER and ARC findings
-- CPMI-VRS for ARIA Suite: determinism verification replaces Gates 1–2; Gates 3/4
-  remain Project Principal steps; `AriaVrsGates.tsx` built and ready
-- `ctx.data` is `{ types: unknown }` — no structured read API yet
+Both workflow layers' six approved data-dictionary entities are being reconsidered —
+not reopened wholesale, only the entity-approval decision (D-P3, D-TT3) in each —
+given two platform precedents where a "no shell-contract change needed" or "frozen
+interface" assessment turned out wrong once real build work tested it: `AriaCertification`
+(Session 26, D-3) and GD-20 superseding `docs/16`'s claim that ARIA needed no
+shell-contract change. Full records: `Governance_Decision_Record_PPBE_DP7.md`,
+`Governance_Decision_Record_TT_DTT7.md`. Each offers three options — reaffirm,
+narrow reserved-field amendment, or full architecture first. **Neither decided yet.**
+Do not build against either workflow layer's data dictionary as if these are settled.
 
 ---
 
-## Walkthrough D Findings — Priority Order for Next Build Session
+## Time & Travel Is the Lead Candidate for the Demo
 
-**First priority (Gate 3 blocking):**
-D-11 — Gate 3 attestation context redesign
-D-12 — CPMI-VRS gate structure explanation
+Unlike PPBE, Time & Travel has a **complete, approved build specification**
+(`docs/17_TimeAndTravel_Architecture.md`) — tool designs, ten compliance rule
+categories, Logger events, shell-contract impact assessment, autonomous-operation
+rules for Claude Code. It is the most build-ready path to a demonstrable, working
+workflow layer. Sequence build sessions accordingly unless directed otherwise.
 
-**Second priority:**
-D-3 — CLEAR document preview + export/recipient gap
-D-4 — TRACER human-readable language (not internal identifiers)
-D-5 — TRACER timestamps on all chain nodes
-D-9 — CPMI-VRS scenario selection rationale
-D-10 — "Identically" precision (what was compared)
+---
 
-**Third priority:**
-D-1 — Data quality severity logic visible at row level
-D-2 — "FY26" → "FY 2026" throughout CLEAR
-D-6 — ARC scope badge on result panel
-D-7 — Duplicate GD-10 banner on CPMI-VRS
-D-8 — Engine name redundancy on scenario cards
+## Corrections to Carry Forward
 
-**Design considerations (future stages, not this session):**
-DC-4 — CLEAR data quality two-dimension display
-DC-5 — ARC breaking-rule impact on already-certified documents
+- **`AIS-dedupe` is confirmed, and worse than flagged.** `Agent_Identity_Standard.md`'s
+  Time & Travel section is duplicated **three times**, not two. Simple fix, no design
+  judgment needed — safe for a quick manual edit or a trivial Claude Code task, not
+  worth a dedicated session.
+- **npm-dev-vulns is not an open decision.** The `esbuild`/Vite advisory has been
+  deferred to the Stage 5+ Vite major-version review since Session 2B (June 18). Stop
+  tracking it as "pending" — it's already resolved as "deferred with a trigger condition."
+- **`docs/16`'s retroactive Supervision Efficiency section — status still genuinely
+  unverified.** `docs/14`'s addendum required it before Walkthrough D. Whether it
+  actually happened is unconfirmed either way. Worth a direct check, not an assumption.
+- **`Agent_Identity_Standard_v1_2.md` and `v1_3.md` are a confirmed-dead, abandoned
+  numbered-versioning branch** — early, short-lived, superseded by the append-only
+  document before Session 15. If encountered again, don't treat them as current.
+
+---
+
+## Key Codebase Facts (Unchanged Since Session 26)
+
+- Python `APPROVED_EVENT_TYPES` 84, permanently 5 more than TS's 79 (3 TRACER + 2 ARC,
+  Python-only by design)
+- `ARIA_ADAPTATION_DECISION` — reserved event type, not yet wired
+- `GATE_3_ATTESTATION` — `HumanDecisionType`, GD-7, shared across CPMI/APEX/FLOWPATH/ARIA
+- `AriaCertification` has no destination/recipient fields — audit-capture only,
+  enforcement deferred to `ARIA-EXPORT-GD`
+- ARC outputs deliberately not routed through `ctx.aria`
+- COUNSEL has no `regulation_basis` field — candidate GD, reinforced three ways now
 
 ---
 
@@ -124,18 +132,17 @@ DC-5 — ARC breaking-rule impact on already-certified documents
 
 | Problem | Prevention |
 |---|---|
-| Wrong shell-contract hash | Verify v1.15 hash — unchanged since Session 23 |
-| Agent count wrong | Count Agent_Identity_Standard.md directly — expected 44 |
-| Gather script wrong filenames | Read prior SBOM §4. Exact filenames only. (Lesson 11) |
-| "Fixing" the Logger divergence | 84 vs 79 is permanent and intentional |
-| Committing iCloud-archival files to git | Lesson 13 — never commit SBOM/SystemPrompt/Briefing snapshots |
-| Attempting Gate 3 before D-11/D-12 fixed | Not informed attestation — defer until fixed |
-| Beginning PPBE or Time & Travel builds | Sequenced after Gate 3/4 complete |
-| Session closes without handoff | Non-negotiable — always produce the handoff |
+| Treating PPBE/TT entities as still-open | They're decided — only D-P7/D-TT7 (amendment) are open |
+| Wrong shell-contract hash | Verify v1.15 — unchanged since Session 23 |
+| Agent count wrong | Count the authoritative table directly — a naive grep returns 46 |
+| Building against Time & Travel or PPBE data dictionary before D-TT7/D-P7 resolve | Wait — amendment could still change field shape |
+| Treating `AIS-dedupe` as unverified | It's confirmed — tripled, not just possibly duplicated |
+| Treating npm-dev-vulns as an open choice | It's an already-made, deferred decision |
+| A side conversation's governance decision not making it back into the main thread | This is exactly what caused the multi-week reconciliation — bring outputs back explicitly, promptly |
+| Session closes without handoff | Non-negotiable |
 
 ---
 
-*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated June 30, 2026*
-*Supersedes June 29, 2026 (Session 25) version — Walkthrough D complete,
-Gate 3 deferred, gap fixes next*
+*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 9, 2026*
+*Supersedes July 1, 2026 version — full PPBE/TT governance reconciliation, demo track added*
 *Pre-Decisional · Internal Working Document*
