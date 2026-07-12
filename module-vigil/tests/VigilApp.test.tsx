@@ -33,7 +33,7 @@ describe("VigilApp (scaffold)", () => {
     render(<VigilApp ctx={makeCtx()} />);
     const summary = screen.getByLabelText("Command Center summary");
     expect(summary).toHaveTextContent(/Pending approvals/);
-    expect(summary).toHaveTextContent(/3/); // three synthetic requests
+    expect(summary).toHaveTextContent(/4/); // three synthetic AgentOS requests + the seeded TT escalation (Session 29, WE-5)
   });
 
   it("switches to the Agent Approval Queue tab and shows the synthetic requests", () => {

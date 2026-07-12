@@ -17,7 +17,7 @@
  * Version: 2.0 (Agent Approval Flow) · Session 10 · June 23, 2026
  */
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { AlertQueue } from "./AlertQueue";
@@ -27,6 +27,8 @@ import { ApprovalDetail } from "./ApprovalDetail";
 import { useAlertQueue } from "./useAlertQueue";
 import { useApprovalQueue } from "./useApprovalQueue";
 import { DEMO_ARIA_ALERTS } from "./aria-alert-routing";
+import { DEMO_TT_ALERTS, makeDemoTTApprovalRequest } from "./tt-synthetic-alerts";
+import { createDevApprovalPort } from "./approval-port";
 
 export interface VigilAppProps {
   ctx: SovereignShellContext;
@@ -42,8 +44,14 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
   // the VIGIL Alert Queue (Session 23 · D5). Until the live Alert Dispatcher endpoint is
   // wired (Stage 2), they are seeded on the synthetic/dev backing — the sanctioned dev path
   // (useAlertQueue.initialAlerts), the same pattern as the synthetic approval port.
-  const alerts = useAlertQueue(ctx, { initialAlerts: DEMO_ARIA_ALERTS });
-  const approvals = useApprovalQueue(ctx);
+  // Session 29 (WE-5): Time & Travel alerts + the TT formal-escalation approval
+  // item join the seeded queues — same sanctioned dev path. The TT approval is
+  // anchored to mount time so its P2 window is live (not instantly expired).
+  const alerts = useAlertQueue(ctx, { initialAlerts: [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS] });
+  const anchorIso = useMemo(() => new Date().toISOString(), []);
+  const approvals = useApprovalQueue(ctx, {
+    initialRequests: [...createDevApprovalPort(anchorIso).listPending(), makeDemoTTApprovalRequest(anchorIso)],
+  });
 
   // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
   useEffect(() => {

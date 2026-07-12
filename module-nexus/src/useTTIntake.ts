@@ -28,7 +28,7 @@
  * Version: 1.0 · Session 29 · July 12, 2026
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import type { ComplianceFlag, TimeRecord, TravelPolicy, TravelRequest } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -48,6 +48,7 @@ import {
 import {
   processTravelSubmission,
   recordTravelDecision,
+  travelWorkflowStep,
   type TravelDecisionOutcome,
 } from "./tt-travel-queue";
 
@@ -66,6 +67,14 @@ export interface TTIntakePorts {
   travelContext?: TravelEvaluationContext;
   /** Absent = time records are recorded but not evaluated (surfaced honestly in the UI). */
   timeEngine?: TimeCompliancePort;
+  /**
+   * Session 29 (WE-5) — pre-seed the queues (dev/demo, SYNTH- data only), the
+   * useAlertQueue.initialAlerts precedent: seeds enter WITHOUT Logger emission
+   * (no fabricated audit events for records nobody just processed). Findings
+   * for seeded travel requests are recomputed PURELY from the active policy.
+   */
+  seedTravel?: TravelRequest[];
+  seedTime?: Array<{ record: TimeRecord; flags: ComplianceFlag[] }>;
 }
 
 /** One submitted travel request with its engine finding, held in the authority queue. */
@@ -99,10 +108,33 @@ export interface UseTTIntake {
 }
 
 export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): UseTTIntake {
-  const travelRef = useRef<SubmittedTravelItem[]>([]);
-  const timeRef = useRef<SubmittedTimeItem[]>([]);
-  const [travelItems, setTravelItems] = useState<SubmittedTravelItem[]>([]);
-  const [timeItems, setTimeItems] = useState<SubmittedTimeItem[]>([]);
+  // Seeds are computed ONCE (mount) — pure evaluation, zero Logger events.
+  const seededTravel = useMemo<SubmittedTravelItem[]>(
+    () =>
+      (ports.seedTravel ?? []).map((request) => ({
+        request,
+        finding: evaluateTravelRequest(request, ports.travelPolicy, ports.travelContext ?? {}),
+        workflow_step_id: travelWorkflowStep(request.request_id),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  const seededTime = useMemo<SubmittedTimeItem[]>(
+    () =>
+      (ports.seedTime ?? []).map(({ record, flags }) => ({
+        record,
+        flags,
+        evaluated: true,
+        workflow_step_id: `tt-time-${record.record_id}`,
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const travelRef = useRef<SubmittedTravelItem[]>(seededTravel);
+  const timeRef = useRef<SubmittedTimeItem[]>(seededTime);
+  const [travelItems, setTravelItems] = useState<SubmittedTravelItem[]>(seededTravel);
+  const [timeItems, setTimeItems] = useState<SubmittedTimeItem[]>(seededTime);
   const [error, setError] = useState<string | null>(null);
 
   // Ref-backed monotonic id sources (the Gap 1 lesson — never derive ids from lagging state).

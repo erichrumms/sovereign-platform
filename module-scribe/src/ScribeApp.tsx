@@ -13,7 +13,13 @@
  * Presentation reads the context; it never re-derives it. Styling is inline,
  * consistent with the shell chrome and the COUNSEL module.
  *
- * Version: 1.1 (D1 — drafting engine) · Session 6 · June 17, 2026
+ * Session 29 (Walkthrough E findings WE-3/WE-5): the Session 28 TTManagerReview
+ * split-panel interface is now MOUNTED — a surface toggle above the mode grid
+ * switches between the drafting modes and the Time & Travel manager review
+ * queue, seeded with the canonical SYNTH review items (tt-synthetic-review.ts).
+ * TT stays out of SCRIBEMode (module-level taxonomy — Session 28 decision).
+ *
+ * Version: 1.2 · Session 29 · July 12, 2026
  */
 
 import { useMemo, useState } from "react";
@@ -29,12 +35,17 @@ import { useStyleProfile } from "./useStyleProfile";
 import { DraftWorkspace } from "./DraftWorkspace";
 import { IntermediateWorkspace } from "./IntermediateWorkspace";
 import { StyleDNAManager } from "./StyleDNAManager";
+import { TTManagerReview } from "./TTManagerReview";
+import { DEMO_TT_REVIEW_ITEMS } from "./tt-synthetic-review";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
 }
 
+type ScribeSurface = "drafting" | "tt-review";
+
 export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
+  const [surface, setSurface] = useState<ScribeSurface>("drafting");
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
   const descriptor = selected ? describeMode(selected) : null;
 
@@ -57,6 +68,33 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
         <strong>{ctx.auth.user.name}</strong>.
       </div>
 
+      {/* Session 29 (WE-3/WE-5): surface toggle — drafting modes vs. TT manager review. */}
+      <nav style={surfaceBarStyle} aria-label="SCRIBE surfaces">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={surface === "drafting"}
+          onClick={() => setSurface("drafting")}
+          style={surface === "drafting" ? surfaceTabActiveStyle : surfaceTabStyle}
+        >
+          Drafting Modes
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={surface === "tt-review"}
+          data-testid="scribe-tt-review-tab"
+          onClick={() => setSurface("tt-review")}
+          style={surface === "tt-review" ? surfaceTabActiveStyle : surfaceTabStyle}
+        >
+          Time &amp; Travel Review
+        </button>
+      </nav>
+
+      {surface === "tt-review" ? (
+        <TTManagerReview ctx={ctx} items={DEMO_TT_REVIEW_ITEMS} />
+      ) : (
+        <>
       <StyleDNAManager style={style} />
 
       <h2 style={sectionTitleStyle}>Drafting mode</h2>
@@ -105,6 +143,8 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
       ) : (
         <p style={mutedStyle}>Select a mode to begin drafting (or to see an intermediate mode&apos;s role).</p>
       )}
+        </>
+      )}
     </section>
   );
 }
@@ -129,6 +169,10 @@ const scaffoldBannerStyle: CSSProperties = {
   borderRadius: 8, color: "#92400e", fontSize: 13, marginBottom: 16, maxWidth: 720,
 };
 const sectionTitleStyle: CSSProperties = { margin: "0 0 8px", fontSize: 16 };
+const surfaceBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 16 };
+const surfaceTabBase: CSSProperties = { padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
+const surfaceTabStyle: CSSProperties = { ...surfaceTabBase, color: "#475569", borderBottom: "2px solid transparent", fontWeight: 500 };
+const surfaceTabActiveStyle: CSSProperties = { ...surfaceTabBase, color: "#0f172a", borderBottom: "2px solid #0f172a", fontWeight: 700 };
 const modeGridStyle: CSSProperties = {
   display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
   gap: 10, maxWidth: 720, marginBottom: 16,

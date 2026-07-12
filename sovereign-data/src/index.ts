@@ -124,6 +124,10 @@ export { validateCorrectionRecord } from './entities/correction-record';
 export {
   SYNTH_TT_TRAVEL_POLICY,
   SYNTH_TT_CHARGE_ACCOUNTS,
+  SYNTH_TT_TRAVEL_REQUESTS,
+  SYNTH_TT_TIME_RECORDS,
+  SYNTH_TT_COMPLIANCE_FLAGS,
+  SYNTH_TT_CORRECTION_RECORDS,
 } from './synthetic/tt-seed';
 
 /** Package version. */

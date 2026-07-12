@@ -30,7 +30,13 @@
 
 import { useMemo, useState, type CSSProperties } from "react";
 
-import { SYNTH_TT_TRAVEL_POLICY, SYNTH_TT_CHARGE_ACCOUNTS } from "@sovereign/data";
+import {
+  SYNTH_TT_TRAVEL_POLICY,
+  SYNTH_TT_CHARGE_ACCOUNTS,
+  SYNTH_TT_TRAVEL_REQUESTS,
+  SYNTH_TT_TIME_RECORDS,
+  SYNTH_TT_COMPLIANCE_FLAGS,
+} from "@sovereign/data";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { useRequestRegistry } from "./useRequestRegistry";
@@ -75,6 +81,12 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
         evaluate: (record, employeeRole) =>
           evaluateTimeRecord(record, SYNTH_TT_CHARGE_ACCOUNTS, employeeRole, SYNTH_TT_TIME_POLICY_CONFIG),
       },
+      // WE-5 seed data: queues populated on mount (SYNTH- only; no Logger emission).
+      seedTravel: SYNTH_TT_TRAVEL_REQUESTS,
+      seedTime: SYNTH_TT_TIME_RECORDS.map((record) => ({
+        record,
+        flags: SYNTH_TT_COMPLIANCE_FLAGS.filter((f) => f.record_ref === record.record_id),
+      })),
     }),
     []
   );
