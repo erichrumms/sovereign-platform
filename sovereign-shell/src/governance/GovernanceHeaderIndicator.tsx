@@ -90,7 +90,9 @@ const holdBadgeStyle: CSSProperties = {
   padding: "2px 7px",
   borderRadius: 4,
   background: T.semantic.red,
-  color: "#fff",
+  // Session 29 (WE-2): dark-on-red (6.25:1) — white-on-red fails AA at 3.04:1.
+  // Matches the CPMI-VRS dashboard's dark-text-on-semantic-color badge.
+  color: "#0D1018",
   fontSize: 11,
   fontWeight: 700,
   letterSpacing: 0.3,

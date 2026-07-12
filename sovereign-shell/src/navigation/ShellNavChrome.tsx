@@ -25,7 +25,7 @@ import { useCallback } from "react";
 import type { CSSProperties, ReactNode, Ref } from "react";
 import type { SovereignShellContext } from "../../shell-contract";
 import type { RegisteredModuleView } from "../module-loader";
-import { SOVEREIGN_THEME as T } from "./theme";
+import { SOVEREIGN_THEME as T, MODULE_OUTLET_BG } from "./theme";
 import { Breadcrumb } from "./Breadcrumb";
 import { ModuleNav } from "./ModuleNav";
 import { useNavigationState } from "./useNavigationState";
@@ -159,7 +159,10 @@ const asideStyle: CSSProperties = {
 const mainStyle: CSSProperties = {
   flex: 1,
   minWidth: 0,
-  background: T.bg.base,
+  // Session 29 (WE-2 root cause): the module outlet is LIGHT. Modules are
+  // dark-text-on-light and set no root background of their own; mounting them
+  // over bg.base was the source of every Gap 3 recurrence. See theme.ts.
+  background: MODULE_OUTLET_BG,
   overflow: "auto",
 };
 
