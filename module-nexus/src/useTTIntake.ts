@@ -61,12 +61,45 @@ export interface TimeCompliancePort {
   evaluate: (record: TimeRecord, employeeRole: string) => ComplianceFlag[];
 }
 
+/**
+ * Display-level shape of a drafted communication (module-nexus-local; avoids a cross-module
+ * import of TTDraft from module-scribe). Structurally compatible with TTDraft so the composition
+ * root can assign module-scribe's TTDraft directly without casting.
+ */
+export interface TravelDraftResult {
+  communication_type: string;
+  subject?: string;
+  body: string;
+}
+
+/**
+ * Injectable drafting port for tt.travel-drafter — wired at the composition root (NexusApp.tsx)
+ * using module-scribe's runTTDraft engine. Absent means travel decisions produce no draft (the
+ * pre-Session-30 behaviour that WE-10 identified as the gap).
+ *
+ * D1 (WE-10) root cause: decideTravel never invoked this port — drafting engine was never called
+ * on the travel path. Fix: port is called async after recordTravelDecision and the draft is stored
+ * on SubmittedTravelItem, displayed inline in TravelQueueRow.
+ */
+export interface TravelDrafterPort {
+  draft: (
+    request: TravelRequest,
+    finding: TravelComplianceFinding
+  ) => Promise<{ draft: TravelDraftResult; tier: string }>;
+}
+
 export interface TTIntakePorts {
   /** Active TravelPolicy (FLOWPATH-elicited; synthetic/dev backing this session). */
   travelPolicy: TravelPolicy;
   travelContext?: TravelEvaluationContext;
   /** Absent = time records are recorded but not evaluated (surfaced honestly in the UI). */
   timeEngine?: TimeCompliancePort;
+  /**
+   * Injectable drafting port for tt.travel-drafter. When provided, a draft communication is
+   * generated async after each travel decision and stored on the SubmittedTravelItem.
+   * When absent, no draft is produced (draftStatus stays 'idle').
+   */
+  travelDrafter?: TravelDrafterPort;
   /**
    * Session 29 (WE-5) — pre-seed the queues (dev/demo, SYNTH- data only), the
    * useAlertQueue.initialAlerts precedent: seeds enter WITHOUT Logger emission
@@ -82,6 +115,15 @@ export interface SubmittedTravelItem {
   request: TravelRequest;
   finding: TravelComplianceFinding;
   workflow_step_id: string;
+  /**
+   * D1 (WE-10): the communication draft produced by tt.travel-drafter after the manager's
+   * decision. Absent until the decision is recorded; null if the drafter port is not wired.
+   */
+  draft?: TravelDraftResult | null;
+  draftTier?: string;
+  /** 'idle' = no drafter port wired · 'loading' = async draft in flight · 'done' / 'error' */
+  draftStatus?: 'idle' | 'loading' | 'done' | 'error';
+  draftError?: string;
 }
 
 /** One submitted time record with the flags the engine raised (empty = clean or unevaluated). */
@@ -205,15 +247,44 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           note,
           ctx.logger
         );
+        const hasDrafter = Boolean(ports.travelDrafter);
         travelRef.current = travelRef.current.map((t) =>
-          t.request.request_id === requestId ? { ...t, request: decided.request } : t
+          t.request.request_id === requestId
+            ? { ...t, request: decided.request, draftStatus: hasDrafter ? "loading" : "idle" }
+            : t
         );
-        setTravelItems(travelRef.current);
+        setTravelItems([...travelRef.current]);
+
+        if (ports.travelDrafter) {
+          const drafter = ports.travelDrafter;
+          drafter.draft(decided.request, item.finding).then(
+            ({ draft, tier }) => {
+              travelRef.current = travelRef.current.map((t) =>
+                t.request.request_id === requestId
+                  ? { ...t, draft, draftTier: tier, draftStatus: "done" as const }
+                  : t
+              );
+              setTravelItems([...travelRef.current]);
+            },
+            (err: unknown) => {
+              travelRef.current = travelRef.current.map((t) =>
+                t.request.request_id === requestId
+                  ? {
+                      ...t,
+                      draftStatus: "error" as const,
+                      draftError: err instanceof Error ? err.message : String(err),
+                    }
+                  : t
+              );
+              setTravelItems([...travelRef.current]);
+            }
+          );
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [ctx]
+    [ctx, ports]
   );
 
   const submitTime = useCallback(

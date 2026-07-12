@@ -25,10 +25,19 @@
  * seeds from @sovereign/data (SYNTH- prefixed; a real deployment swaps in FLOWPATH
  * elicitation output by configuration).
  *
- * Version: 1.2 · Session 29 · July 12, 2026
+ * Session 30 D1 (WE-10): travelDrafter port wired here using module-scribe's runTTDraft
+ * engine — same Item 57 / composition-root pattern as the apex engine above. After a manager
+ * records a travel decision, the port calls runTTDraft (3-tier: live → cache → static) and
+ * stores the draft on SubmittedTravelItem for inline display in TTQueuePanel. Logger bracketing
+ * (AGENT_STEP_START/COMPLETE) emitted here; Gate 2 applies (failed START aborts the draft).
+ *
+ * Version: 1.3 · Session 30 · July 12, 2026
  */
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useRef, useState, type CSSProperties } from "react";
+
+import { createSovereignClient } from "@sovereign/api-client";
+import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import {
   SYNTH_TT_TRAVEL_POLICY,
@@ -48,10 +57,23 @@ import {
   TT_TIME_COMPLIANCE_ENGINE_AGENT_ID,
 } from "../../module-apex/src/tt-time-compliance-engine";
 import { SYNTH_TT_TIME_POLICY_CONFIG } from "../../module-apex/src/tt-synthetic-config";
+// Item 57 pattern (Session 30 D1): composition-root wiring of module-scribe's
+// tt.travel-drafter engine — Standing Constraint #5 (createSovereignClient, never
+// raw Anthropic API) is met by module-scribe's readAnthropicKey + createSovereignClient.
+import {
+  runTTDraft,
+  ttDraftWorkflowStepId,
+  type TravelDraftInput,
+  type TTDraftDeps,
+} from "../../module-scribe/src/tt-draft-engine";
+import { TT_TRAVEL_DRAFTER } from "../../module-scribe/src/tt-draft-contract";
+import { TT_TRAVEL_DRAFTING_SYSTEM_PROMPT } from "../../module-scribe/src/prompts/tt-travel-drafting-system.prompt";
+import { readAnthropicKey } from "../../module-scribe/src/anthropic-key";
+import type { TTDraft } from "../../module-scribe/src/tt-draft-contract";
 import { RequestIntakePanel } from "./RequestIntakePanel";
 import { RequestQueuePanel } from "./RequestQueuePanel";
 import { TTQueuePanel } from "./TTQueuePanel";
-import { useTTIntake, type TTIntakePorts } from "./useTTIntake";
+import { useTTIntake, type TTIntakePorts, type TravelDrafterPort } from "./useTTIntake";
 
 export interface NexusAppProps {
   ctx: SovereignShellContext;
@@ -71,10 +93,99 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
   // and AgentOS task store live behind it), mirroring the prior synthetic port's identity.
   const port = useMemo(() => createAgentOSBackedPort(ctx), [ctx]);
   const registry = useRequestRegistry(ctx, port);
+
+  // D1 (WE-10): per-session draft cache — Tier 2 of the 3-tier fallback (live → cache → static).
+  const drafterCacheRef = useRef<Map<string, TTDraft>>(new Map());
+
+  // D1 (WE-10): travelDrafter port — wires module-scribe's runTTDraft into the NEXUS queue.
+  // Follows the Item 57 / composition-root pattern: module-nexus code never calls runTTDraft
+  // directly; the port is configuration injected here. ctx in deps so the Logger closure
+  // always holds the live shell context reference.
+  const travelDrafter = useMemo(
+    (): TravelDrafterPort => ({
+      draft: async (request, finding) => {
+        const input: TravelDraftInput = {
+          tool: "travel",
+          request,
+          policy: SYNTH_TT_TRAVEL_POLICY,
+          flags: finding.findings,
+        };
+        const wsid = ttDraftWorkflowStepId(input);
+        const actorId = ctx.auth.user.employee_id;
+
+        const requestContext: SovereignRequestContext = {
+          workflow_step_id: wsid,
+          product: "SCRIBE",
+          agent_id: TT_TRAVEL_DRAFTER,
+          tier: "standard",
+        };
+
+        // Gate 2: AGENT_STEP_START. A failed emit aborts (fail-closed, Constraint #6).
+        ctx.logger.log({
+          event_type: "AGENT_STEP_START",
+          workflow_step_id: wsid,
+          sovereign_tier: "standard",
+          product: "SCRIBE",
+          actor_id: actorId,
+          agent_id: TT_TRAVEL_DRAFTER,
+          agent_class: "Operational",
+          outcome: "tt_travel_draft_started",
+          payload: { request_id: request.request_id, routing_tier: finding.routing_tier },
+        });
+
+        const deps: TTDraftDeps = {
+          complete: async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          },
+          cacheGet: (key) => drafterCacheRef.current.get(key) ?? null,
+          cacheSet: (key, value) => { drafterCacheRef.current.set(key, value); },
+        };
+
+        const result = await runTTDraft(input, TT_TRAVEL_DRAFTING_SYSTEM_PROMPT, requestContext, deps);
+        const fellBack = result.tier !== "live";
+
+        if (fellBack) {
+          ctx.logger.log({
+            event_type: "FALLBACK_ACTIVATED",
+            workflow_step_id: wsid,
+            sovereign_tier: "standard",
+            product: "SCRIBE",
+            actor_id: actorId,
+            agent_id: TT_TRAVEL_DRAFTER,
+            agent_class: "Operational",
+            outcome: `tt_travel_draft_fallback_${result.tier}`,
+            payload: { tier: result.tier, detail: result.detail },
+          });
+        }
+
+        ctx.logger.log({
+          event_type: "AGENT_STEP_COMPLETE",
+          workflow_step_id: wsid,
+          sovereign_tier: "standard",
+          product: "SCRIBE",
+          actor_id: actorId,
+          agent_id: TT_TRAVEL_DRAFTER,
+          agent_class: "Operational",
+          outcome: "tt_travel_draft_complete",
+          payload: { request_id: request.request_id, tier: result.tier, communication_type: result.draft.communication_type },
+        });
+
+        return { draft: result.draft, tier: result.tier };
+      },
+    }),
+    [ctx]
+  );
+
   // TT intake ports (Session 29): synthetic policy + the module-apex engine as configuration.
+  // Session 30: travelDrafter port added (D1/WE-10).
   const ttPorts = useMemo(
     (): TTIntakePorts => ({
       travelPolicy: SYNTH_TT_TRAVEL_POLICY,
+      travelDrafter,
       timeEngine: {
         agent_id: TT_TIME_COMPLIANCE_ENGINE_AGENT_ID,
         agent_class: "Governance",
@@ -88,7 +199,7 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
         flags: SYNTH_TT_COMPLIANCE_FLAGS.filter((f) => f.record_ref === record.record_id),
       })),
     }),
-    []
+    [travelDrafter]
   );
   const tt = useTTIntake(ctx, ttPorts);
   const [tab, setTab] = useState<Tab>("intake");
