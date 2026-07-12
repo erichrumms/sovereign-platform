@@ -1,17 +1,17 @@
 # SOVEREIGN Platform — Time & Travel Navigation Reference
 ## docs/19_TT_Navigation_Reference.md
 
-**Version:** 1.0
-**Date:** July 12, 2026 (Session 29, deliverable D4 — Walkthrough E finding WE-4)
+**Version:** 1.1
+**Date:** July 12, 2026 (Session 30, D5 — Walkthrough E-2 code verification)
 **Classification:** Pre-Decisional · Internal Working Document
 
-> ## ⚠️ STATUS: UNVERIFIED — pending Walkthrough E-2
-> Per Walkthrough E's Rule 5 requirement, this document was derived by tracing
-> the actual routing and component code as built through Session 29 — **not**
-> from docs/17's prose, which describes intent. It has **not yet been confirmed
-> against the live platform in a browser**. Until Walkthrough E-2 verifies each
-> click path below, treat this as a claim to be checked, not a fact to plan on.
-> Anything E-2 finds divergent should be corrected HERE first.
+> **STATUS: VERIFIED against current code (Session 30 D5)**
+> All click paths traced against the actual source tree as built through Session
+> 30. Corrections applied where code diverged from Session 29's draft.
+> Changes in this version: §2 Step 5 travel queue ROUTED count corrected (4,
+> not 3); §2 Step 6 updated for Session 30 D1/D2/D3 (decision note pre-populated,
+> required indicator visible, communication draft produced after decision);
+> §5 seed inventory ROUTED count corrected.
 
 ---
 
@@ -53,12 +53,23 @@ Source of truth traced: `module-nexus/src/index.ts` (mount gate), `NexusApp.tsx`
    queue with its full compliance finding (rule cited, actual value,
    threshold). Eight seeded SYNTH-TR-1xx requests are already there spanning
    every state (`TTQueuePanel.tsx`).
-6. **Decision.** On a ROUTED request the approval authority enters a note
-   (≥10 chars) and clicks Approve / Deny / Escalate —
-   `recordTravelDecision` emits `HUMAN_DECISION · TRAVEL_APPROVAL` (GD-21).
-   This NEXUS queue is **the** travel decision surface: `TRAVEL_APPROVAL` is
-   emitted with product NEXUS and there is no other code path to
-   APPROVED/DENIED/ESCALATED.
+6. **Decision.** On a ROUTED request:
+   - The **decision note** is **pre-populated** from the compliance finding
+     already on-screen — editable, always ≥10 chars for any seeded state
+     (Session 30, WE-12). A visible `(required, ≥10 chars)` label and inline
+     error on blur replace the prior silent gate (Session 30, WE-11).
+   - Click **Approve / Deny / Escalate** — `recordTravelDecision` emits
+     `HUMAN_DECISION · TRAVEL_APPROVAL` (GD-21).
+   - After the decision, **tt.travel-drafter** is invoked async and a
+     communication draft (APPROVAL_NOTICE, DENIAL_NOTICE, ESCALATION_NOTICE, or
+     INFORMATION_REQUEST) appears inline beneath the decided request. Draft
+     lifecycle shown: "Generating draft…" → draft body + subject + tier tag, or
+     error message (Session 30, WE-10). The note is **audit-only** — it does NOT
+     feed into the draft; the draft is sourced from governed TravelRequest +
+     ComplianceFlag data only.
+   - This NEXUS queue is **the** travel decision surface: `TRAVEL_APPROVAL` is
+     emitted with product NEXUS and there is no other code path to
+     APPROVED/DENIED/ESCALATED.
 
 ## 3. Time & Expense Flow — Click Path (employee → manager → gate)
 
@@ -111,9 +122,10 @@ Source of truth traced: `module-nexus/src/index.ts` (mount gate), `NexusApp.tsx`
 
 ## 5. Seeded Data Inventory (what E-2 should expect to see)
 
-- **NEXUS Travel & Time Queue:** 8 travel requests (SYNTH-TR-101…108 — 3
-  ROUTED pending, 2 APPROVED, 1 DENIED, 1 ESCALATED, tiers/authorities all
-  covered) · 6 time records (SYNTH-TM-201…206) with their compliance flags.
+- **NEXUS Travel & Time Queue:** 8 travel requests (SYNTH-TR-101…108 — 4
+  ROUTED pending [TR-102/103/104/107], 2 APPROVED [TR-101/108], 1 DENIED
+  [TR-106], 1 ESCALATED [TR-105]; tiers/authorities all covered) · 6 time
+  records (SYNTH-TM-201…206) with their compliance flags.
 - **SCRIBE Time & Travel Review:** 6 items — one per communication type plus
   both escalation gate states.
 - **VIGIL:** 3 TT alerts + 1 TT approval item (alongside the pre-existing
@@ -122,5 +134,5 @@ Source of truth traced: `module-nexus/src/index.ts` (mount gate), `NexusApp.tsx`
 
 ---
 
-*docs/19_TT_Navigation_Reference.md · v1.0 · Session 29 · July 12, 2026*
-*UNVERIFIED pending Walkthrough E-2 · Pre-Decisional · Internal Working Document*
+*docs/19_TT_Navigation_Reference.md · v1.1 · Session 30 · July 12, 2026*
+*VERIFIED against current code (Session 30 D5) · Pre-Decisional · Internal Working Document*
