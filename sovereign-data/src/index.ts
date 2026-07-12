@@ -7,12 +7,15 @@
  * package as the source of canonical entity types. No module may redefine or
  * rename these fields.
  *
- * Version: 1.2.0 — Session 11, June 23, 2026
+ * Version: 1.3.0 — Session 27, July 12, 2026
  *   - Canonical entities: Employee, Program, Cost Code, Document, Vendor
  *   - StyleProfile (GD-1, approved June 11, 2026)
  *   - LensExplanation (Session 8, approved Project Principal — aligned to PR-LENS-001)
  *   - ReasoningChainOutput (Session 11, CPMI module — six-step chain output)
  *   - SCRIBE mode output schemas (companion suite spec, Part 3)
+ *   - Time & Travel entities (D-TT3, reaffirmed D-TT7 Option A): TravelRequest,
+ *     TravelPolicy, TimeRecord, ChargeAccount (extends CostCode), ComplianceFlag,
+ *     CorrectionRecord (Session 27, July 12, 2026)
  */
 
 // Shared enum types (synced to shell-contract.ts — see shared-types.ts header)
@@ -71,5 +74,48 @@ export type {
   RuleChangeProposalSchema,
 } from './schemas/scribe-modes';
 
+// Time & Travel workflow layer — D-TT3 (June 29, 2026), reaffirmed D-TT7
+// Option A (July 11, 2026). Six entities registered Session 27.
+export type {
+  TravelPolicy,
+  TravelHardExceptionRules,
+  TravelRoutingThresholds,
+  TravelSoftFlags,
+} from './entities/travel-policy';
+export { validateTravelPolicy } from './entities/travel-policy';
+
+export type {
+  TravelRequest,
+  TravelCostBreakdown,
+  TravelRoutingTier,
+  TravelApprovalAuthority,
+  TravelRequestStatus,
+} from './entities/travel-request';
+export { validateTravelRequest } from './entities/travel-request';
+
+export type { TimeRecord, TimeRecordEntry } from './entities/time-record';
+export { validateTimeRecord } from './entities/time-record';
+
+export type { ChargeAccount, ChargeAccountType } from './entities/charge-account';
+export { validateChargeAccount } from './entities/charge-account';
+
+export type {
+  ComplianceFlag,
+  ComplianceFlagSource,
+  ComplianceFlagSeverity,
+  ComplianceFlagStatus,
+  ComplianceRuleCategory,
+  TimeRuleCategory,
+  TravelRuleCategory,
+} from './entities/compliance-flag';
+export { validateComplianceFlag, TIME_RULE_SEVERITY } from './entities/compliance-flag';
+
+export type {
+  CorrectionRecord,
+  CorrectionCommunicationType,
+  CorrectionResolutionStatus,
+} from './entities/correction-record';
+export { validateCorrectionRecord } from './entities/correction-record';
+
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.2.0';
+export const SOVEREIGN_DATA_VERSION = '1.3.0';
