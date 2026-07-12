@@ -6,8 +6,8 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.15
- * Date: June 2026
+ * Version: 1.16
+ * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
  *
@@ -18,6 +18,32 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.16 (July 12, 2026) — GD-21 (TT-GD: Time & Travel Phase II human decisions, decided and
+ *                       pre-authorized Session 28 opening prompt §3, per docs/17 §12/§13 — the
+ *                       GD docs/17 required before Phase II, pattern identical to GD-20). Added
+ *                       three HumanDecisionType members: TRAVEL_APPROVAL (a manager deciding a
+ *                       routed travel request — approve/deny/escalate — in the NEXUS/VIGIL
+ *                       review flow), TIME_CORRECTION_SENT (a manager sending a time-record
+ *                       correction communication after reviewing a tt.time-drafter draft), and
+ *                       ESCALATION_AUTHORIZED (a manager authorizing a formal escalation notice
+ *                       through the VIGIL Agent Approval Queue). All non-breaking union
+ *                       widenings. Impact assessment: emitted only by the Time & Travel workflow
+ *                       layer running inside its host modules (module-nexus / module-scribe /
+ *                       module-vigil — docs/17 §2, no new module); no exhaustive switch over
+ *                       HumanDecisionType exists. NAMING NOTE: TRAVEL_APPROVAL is distinct from
+ *                       the v1.0 TRAVEL_APPROVED / TRAVEL_DENIED / TRAVEL_ESCALATED members —
+ *                       docs/17 §12 names the new member for the decision ACT on a routed
+ *                       TravelRequest (one member, outcome carried in the event payload/status),
+ *                       while the v1.0 members are the original per-outcome taxonomy; the v1.0
+ *                       members are untouched (Constraint #2 tension documented in the Session
+ *                       28 handoff, resolution deferred to governance). Per Standing Constraint
+ *                       #11 the three members propagate to the synced HumanDecisionType copy in
+ *                       sovereign-data/src/shared-types.ts (type + HUMAN_DECISION_TYPES const,
+ *                       19 -> 22) and its test, and to the Python logger APPROVED_DECISION_TYPES
+ *                       (19 -> 22). NO SovereignEventType / SovereignProduct / SovereignRole /
+ *                       AgentClass change; NO new shell export (Constraint #7 holds at ten).
+ *                       Full tsc --noEmit clean; both shell-contract copies SHA-256 re-verified
+ *                       identical at v1.16.
  *   v1.15 (June 2026) — GD-20 (ARIA Suite / CLEAR shell-contract enablement, approved
  *                       June 29, 2026). +4 SovereignEventType (ARIA_COMPLIANCE_CHECK,
  *                       ARIA_CERTIFICATION_ISSUED, ARIA_VIOLATION_FLAGGED, ARIA_CALENDAR_ALERT),
@@ -519,7 +545,17 @@ export type HumanDecisionType =
   // GD-20 — June 2026 (shell-contract v1.15) — a human reviewer certifying an output as
   // compliant in the CLEAR Certification Queue (opens the SCRIBE/PPBE export gate).
   // Synced to sovereign-data/src/shared-types.ts (18 -> 19 members).
-  | "COMPLIANCE_CERTIFICATION";
+  | "COMPLIANCE_CERTIFICATION"
+  // GD-21 — July 12, 2026 (shell-contract v1.16) — three Time & Travel Phase II human
+  // decisions (docs/17 §12): a manager deciding a routed travel request (TRAVEL_APPROVAL —
+  // distinct from the v1.0 TRAVEL_APPROVED/TRAVEL_DENIED/TRAVEL_ESCALATED outcome members;
+  // see the v1.16 changelog naming note), a manager sending a time-record correction
+  // communication (TIME_CORRECTION_SENT), and a manager authorizing a formal escalation
+  // notice through VIGIL (ESCALATION_AUTHORIZED). All synced to
+  // sovereign-data/src/shared-types.ts (19 -> 22 members).
+  | "TRAVEL_APPROVAL"
+  | "TIME_CORRECTION_SENT"
+  | "ESCALATION_AUTHORIZED";
 
 export interface SovereignLogEvent {
   event_type: SovereignEventType;

@@ -260,6 +260,13 @@ APPROVED_DECISION_TYPES = frozenset({
     # Synced from shell-contract.ts HumanDecisionType (Constraint #11). 19 members total. A human
     # reviewer certifying an output as compliant in the CLEAR Certification Queue.
     "COMPLIANCE_CERTIFICATION",
+    # GD-21 / shell-contract v1.16 (July 12, 2026) — Time & Travel Phase II human decisions
+    # (docs/17 §12). Synced from shell-contract.ts HumanDecisionType (Constraint #11).
+    # 22 members total. TRAVEL_APPROVAL is distinct from the v1.0 TRAVEL_APPROVED/DENIED/
+    # ESCALATED outcome members — see the shell-contract v1.16 changelog naming note.
+    "TRAVEL_APPROVAL",         # GD-21 / v1.16 — manager decides a routed travel request
+    "TIME_CORRECTION_SENT",    # GD-21 / v1.16 — manager sends a time-record correction communication
+    "ESCALATION_AUTHORIZED",   # GD-21 / v1.16 — manager authorizes a formal escalation via VIGIL
 })
 
 APPROVED_AGENT_CLASSES = frozenset({

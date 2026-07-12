@@ -20,9 +20,9 @@ describe("runtime enum mirrors", () => {
     expect(CLEARANCE_LEVELS).toEqual(["UNCLASSIFIED", "CUI", "SECRET", "TOP_SECRET"]);
   });
 
-  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (19 members, unique)", () => {
-    expect(HUMAN_DECISION_TYPES).toHaveLength(19);
-    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(19);
+  it("HUMAN_DECISION_TYPES mirrors the canonical taxonomy (22 members, unique)", () => {
+    expect(HUMAN_DECISION_TYPES).toHaveLength(22);
+    expect(new Set(HUMAN_DECISION_TYPES).size).toBe(22);
     expect(HUMAN_DECISION_TYPES).toContain("HUMAN_APPROVAL");
     expect(HUMAN_DECISION_TYPES).toContain("LABOR_ESCALATION_INITIATED");
     // GD-6 (shell-contract v1.4) — synced agent-action approval decision type.
@@ -40,6 +40,10 @@ describe("runtime enum mirrors", () => {
     expect(HUMAN_DECISION_TYPES).toContain("VALIDATION_SIGN_OFF");
     // GD-20 (shell-contract v1.15) — synced ARIA Suite CLEAR compliance certification.
     expect(HUMAN_DECISION_TYPES).toContain("COMPLIANCE_CERTIFICATION");
+    // GD-21 (shell-contract v1.16) — synced Time & Travel Phase II human decisions.
+    expect(HUMAN_DECISION_TYPES).toContain("TRAVEL_APPROVAL");
+    expect(HUMAN_DECISION_TYPES).toContain("TIME_CORRECTION_SENT");
+    expect(HUMAN_DECISION_TYPES).toContain("ESCALATION_AUTHORIZED");
   });
 
   it("HUMAN_DECISION_TYPES values are assignable to HumanDecisionType", () => {

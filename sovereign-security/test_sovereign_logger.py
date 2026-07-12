@@ -459,10 +459,12 @@ class TestGD20AriaClearTaxonomy:
         # PYTHON-ONLY event types (-> 84); those 5 are deliberately NOT in shell-contract (no GD).
         # Session 27 Time & Travel Phase I added 11 more PYTHON-ONLY event types (-> 95) per docs/17
         # §12 ("Logger-only additions — do not add to shell-contract.ts"), so APPROVED_EVENT_TYPES now
-        # intentionally holds 16 more than SovereignEventType (79). Decision types remain at 19 —
-        # the three TT HumanDecisionType additions await the TT-GD shell-contract decision (Phase II).
+        # intentionally holds 16 more than SovereignEventType (79). Session 28 / GD-21 (shell-contract
+        # v1.16) then added the three TT HumanDecisionType members (TRAVEL_APPROVAL,
+        # TIME_CORRECTION_SENT, ESCALATION_AUTHORIZED), advancing decision types 19 -> 22 in parity
+        # with shell-contract v1.16 HumanDecisionType.
         assert len(APPROVED_EVENT_TYPES) == 95
-        assert len(APPROVED_DECISION_TYPES) == 19
+        assert len(APPROVED_DECISION_TYPES) == 22
 
     def test_aria_event_types_accepted_under_product_aria(self, logger):
         for event_type in ARIA_CLEAR_EVENT_TYPES:
@@ -495,6 +497,46 @@ class TestGD20AriaClearTaxonomy:
                       "APEX_REPORT_GENERATED"]:
             assert prior in APPROVED_EVENT_TYPES
         for prior in ["HUMAN_APPROVAL", "REPORT_ATTESTATION", "VALIDATION_SIGN_OFF"]:
+            assert prior in APPROVED_DECISION_TYPES
+
+
+# ─────────────────────────────────────────────────────────────
+# Session 28 — GD-21 / shell-contract v1.16 (July 12, 2026)
+# Three Time & Travel Phase II HumanDecisionType members (docs/17 §12), synced from
+# shell-contract.ts per Constraint #11. TRAVEL_APPROVAL is distinct from the v1.0
+# TRAVEL_APPROVED/DENIED/ESCALATED outcome members, which remain untouched.
+# ─────────────────────────────────────────────────────────────
+
+TT_DECISION_TYPES = [
+    "TRAVEL_APPROVAL",
+    "TIME_CORRECTION_SENT",
+    "ESCALATION_AUTHORIZED",
+]
+
+
+class TestGD21TimeTravelDecisionTaxonomy:
+
+    def test_three_tt_decision_types_in_taxonomy(self):
+        for decision_type in TT_DECISION_TYPES:
+            assert decision_type in APPROVED_DECISION_TYPES
+
+    def test_tt_decision_types_accepted_on_human_decision(self, logger):
+        for decision_type in TT_DECISION_TYPES:
+            entry = logger.log(**minimal_event({
+                "event_type": "HUMAN_DECISION",
+                "product": "NEXUS",
+                "workflow_step_id": "tt-travel-TR-0001",
+                "decision_type": decision_type,
+                "actor": "human",
+                "actor_name": "Morgan Manager",
+                "outcome": "decided",
+            }))
+            assert entry["decision_type"] == decision_type
+            assert entry["actor"] == "human"
+
+    def test_v1_0_travel_outcome_members_unchanged(self):
+        for prior in ["TRAVEL_APPROVED", "TRAVEL_DENIED", "TRAVEL_ESCALATED",
+                      "LABOR_CORRECTION_APPROVED", "LABOR_ESCALATION_INITIATED"]:
             assert prior in APPROVED_DECISION_TYPES
 
 
