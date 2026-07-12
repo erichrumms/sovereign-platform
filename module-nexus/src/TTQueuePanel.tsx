@@ -27,7 +27,8 @@
 
 import { useState, type CSSProperties } from "react";
 
-import type { SubmittedTravelItem, SubmittedTimeItem, TravelComplianceFinding, UseTTIntake } from "./useTTIntake";
+import type { SubmittedTravelItem, SubmittedTimeItem, UseTTIntake } from "./useTTIntake";
+import type { TravelComplianceFinding } from "./tt-travel-compliance-engine";
 import type { TravelDecisionOutcome } from "./tt-travel-queue";
 
 const NOTE_MIN_CHARS = 10;

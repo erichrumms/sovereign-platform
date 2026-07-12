@@ -37,6 +37,7 @@ import {
 import { registerPlatformModules } from "./register-modules";
 import { ShellNavChrome } from "./navigation";
 import { GovernanceHeaderIndicator, CPMIVRSDashboard } from "./governance";
+import { PlatformHome } from "./PlatformHome";
 
 // ============================================================
 // SYNTHETIC DEV USER (Stage 2 — replaced by EAMS SAML 2.0 SSO upstream)
@@ -79,6 +80,8 @@ function App(): JSX.Element {
   const [, forceRender] = useReducer((c: number) => c + 1, 0);
   const [showDashboard, setShowDashboard] = useState(false);
   const [mountError, setMountError] = useState<string | null>(null);
+  // D4 (WE-7): show landing until the user picks a module.
+  const [hasSelectedModule, setHasSelectedModule] = useState(false);
 
   const modules = loader.list();
   const isAccessible = useCallback(
@@ -90,6 +93,7 @@ function App(): JSX.Element {
     (m: RegisteredModuleView) => {
       setShowDashboard(false);
       setMountError(null);
+      setHasSelectedModule(true);
       // The outlet div is rendered by ShellNavChrome; mount after this tick so
       // outletRef.current is present.
       requestAnimationFrame(() => {
@@ -116,6 +120,8 @@ function App(): JSX.Element {
         onSelectModule={onSelectModule}
         outletRef={outletRef}
         brand="SOVEREIGN"
+        showLanding={!hasSelectedModule}
+        landing={<PlatformHome ctx={ctx} />}
         headerSlot={
           <GovernanceHeaderIndicator
             governance={ctx.governance}

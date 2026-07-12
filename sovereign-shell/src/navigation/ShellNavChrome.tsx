@@ -45,6 +45,15 @@ export interface ShellNavChromeProps {
   /** Hide (rather than lock) modules the user cannot access. Default: false. */
   hideInaccessible?: boolean;
   brand?: string;
+  /**
+   * D4 (WE-7): landing page content rendered in the outlet area when no module
+   * is mounted. Shown only when `showLanding` is true. The outletRef div remains
+   * in the DOM (hidden) so ModuleLoader.mount() can target it when the user picks
+   * a module; the landing disappears once `showLanding` is set to false by the host.
+   */
+  landing?: ReactNode;
+  /** True when the landing should be shown (host tracks hasSelectedModule). */
+  showLanding?: boolean;
 }
 
 export function ShellNavChrome(props: ShellNavChromeProps): JSX.Element {
@@ -56,6 +65,8 @@ export function ShellNavChrome(props: ShellNavChromeProps): JSX.Element {
     headerSlot,
     hideInaccessible,
     brand = "SOVEREIGN",
+    landing,
+    showLanding = false,
   } = props;
   const isAccessible = props.isAccessible ?? (() => true);
 
@@ -122,8 +133,12 @@ export function ShellNavChrome(props: ShellNavChromeProps): JSX.Element {
           />
         </aside>
         <main style={mainStyle}>
-          {/* Module outlet — ModuleLoader.mount() renders here. */}
-          <div ref={outletRef} style={{ height: "100%", width: "100%" }} />
+          {/* Module outlet — always in the DOM so loader.mount() can target it; hidden during landing. */}
+          <div ref={outletRef} style={{ height: "100%", width: "100%", display: showLanding ? "none" : "block" }} />
+          {/* D4 (WE-7): landing page shown until the user selects a module. */}
+          {showLanding && landing ? (
+            <div style={{ height: "100%", overflow: "auto" }}>{landing}</div>
+          ) : null}
         </main>
       </div>
     </div>
