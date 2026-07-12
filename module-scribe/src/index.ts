@@ -86,6 +86,62 @@ const scribeStyleAnalystCard: AgentCard = {
   security_observable: true,
 };
 
+// --- Time & Travel workflow-layer agents hosted on SCRIBE infrastructure (Session 28,
+// docs/17 §2 — no new module directory; AIS D-TT5). Both Operational, LLM-backed via
+// createSovereignClient() only, operating under the two APPROVED registered prompts
+// (tt/prompts/CHANGELOG.md v1.0). product is the HOST product ("SCRIBE") — the workflow
+// layer is not a SovereignProduct. Both agents DRAFT ONLY: the manager reviews, adjusts,
+// and sends; neither agent has a send path (docs/17 §1). ---
+
+// tt.travel-drafter — four travel communication templates (docs/17 §5.4) from governed
+// TravelRequest/TravelPolicy data.
+const ttTravelDrafterCard: AgentCard = {
+  agent_id: "tt.travel-drafter",
+  agent_class: "Operational",
+  product: "SCRIBE",
+  capabilities: [
+    "travel_approval_notice_drafting",
+    "travel_information_request_drafting",
+    "travel_escalation_notice_drafting",
+    "travel_denial_notice_drafting",
+  ],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE", // platform default (AIS Session 1)
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED", // GD-10
+  security_observable: true,
+};
+
+// tt.time-drafter — five time & expense communication templates (docs/17 §6.4) from
+// governed TimeRecord/ComplianceFlag/ChargeAccount data. The formal escalation
+// scenario requires manager selection of which version(s) to send — the agent never
+// chooses (AIS scope constraint).
+const ttTimeDrafterCard: AgentCard = {
+  agent_id: "tt.time-drafter",
+  agent_class: "Operational",
+  product: "SCRIBE",
+  capabilities: [
+    "time_error_correction_drafting",
+    "time_clarification_request_drafting",
+    "time_justification_request_drafting",
+    "time_pattern_flag_notice_drafting",
+    "time_formal_escalation_drafting",
+  ],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -98,7 +154,9 @@ export const scribeModule: SovereignModuleContract = {
   // (Decision 24). READ_ONLY is the least-privilege placeholder; the authoritative
   // RoleAccessPolicy is injected when written — no module change required.
   minimumRole: "READ_ONLY",
-  agentCards: [scribeDrafterCard, scribeStyleAnalystCard],
+  // scribe-drafter + scribe-style-analyst (Session 5), plus the two Time & Travel
+  // drafters hosted on SCRIBE infrastructure (Session 28 — docs/17 §2, AIS D-TT5).
+  agentCards: [scribeDrafterCard, scribeStyleAnalystCard, ttTravelDrafterCard, ttTimeDrafterCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     root = createRoot(el);
