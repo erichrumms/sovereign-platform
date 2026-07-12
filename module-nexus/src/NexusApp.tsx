@@ -16,26 +16,47 @@
  * Task Registry panel. This is a configuration change at the composition root, not a NEXUS
  * rewrite (Standing Constraint #3); useRequestRegistry still consumes the injected AgentOSPort.
  *
- * Version: 1.1 · Session 22 (D2) · June 29, 2026
+ * Session 29 (Walkthrough E findings WE-1/WE-5): the Time & Travel intake is wired here.
+ * The intake dropdown gains the two TT types; a third tab shows the TT authority queue.
+ * The time-compliance port follows the Item 57 pattern exactly — the composition root
+ * imports module-apex's PURE tt.time-compliance-engine evaluation and injects it as
+ * configuration (Standing Constraint #3); module-nexus's own code never imports
+ * module-apex. The active TravelPolicy and charge accounts are the canonical synthetic
+ * seeds from @sovereign/data (SYNTH- prefixed; a real deployment swaps in FLOWPATH
+ * elicitation output by configuration).
+ *
+ * Version: 1.2 · Session 29 · July 12, 2026
  */
 
 import { useMemo, useState, type CSSProperties } from "react";
 
+import { SYNTH_TT_TRAVEL_POLICY, SYNTH_TT_CHARGE_ACCOUNTS } from "@sovereign/data";
+
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { useRequestRegistry } from "./useRequestRegistry";
 import { createAgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
+// Item 57 pattern (Session 29): composition-root wiring of the module-apex-hosted
+// tt.time-compliance-engine as an injected port — configuration, not a NEXUS rewrite.
+import {
+  evaluateTimeRecord,
+  TT_TIME_COMPLIANCE_ENGINE_AGENT_ID,
+} from "../../module-apex/src/tt-time-compliance-engine";
+import { SYNTH_TT_TIME_POLICY_CONFIG } from "../../module-apex/src/tt-synthetic-config";
 import { RequestIntakePanel } from "./RequestIntakePanel";
 import { RequestQueuePanel } from "./RequestQueuePanel";
+import { TTQueuePanel } from "./TTQueuePanel";
+import { useTTIntake, type TTIntakePorts } from "./useTTIntake";
 
 export interface NexusAppProps {
   ctx: SovereignShellContext;
 }
 
-type Tab = "intake" | "queue";
+type Tab = "intake" | "queue" | "tt";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "intake", label: "Request Intake" },
   { id: "queue", label: "Request Queue" },
+  { id: "tt", label: "Travel & Time Queue" },
 ];
 
 export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
@@ -44,6 +65,20 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
   // and AgentOS task store live behind it), mirroring the prior synthetic port's identity.
   const port = useMemo(() => createAgentOSBackedPort(ctx), [ctx]);
   const registry = useRequestRegistry(ctx, port);
+  // TT intake ports (Session 29): synthetic policy + the module-apex engine as configuration.
+  const ttPorts = useMemo(
+    (): TTIntakePorts => ({
+      travelPolicy: SYNTH_TT_TRAVEL_POLICY,
+      timeEngine: {
+        agent_id: TT_TIME_COMPLIANCE_ENGINE_AGENT_ID,
+        agent_class: "Governance",
+        evaluate: (record, employeeRole) =>
+          evaluateTimeRecord(record, SYNTH_TT_CHARGE_ACCOUNTS, employeeRole, SYNTH_TT_TIME_POLICY_CONFIG),
+      },
+    }),
+    []
+  );
+  const tt = useTTIntake(ctx, ttPorts);
   const [tab, setTab] = useState<Tab>("intake");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -85,10 +120,11 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
       </nav>
 
       <div>
-        {tab === "intake" && <RequestIntakePanel registry={registry} ctx={ctx} />}
+        {tab === "intake" && <RequestIntakePanel registry={registry} ctx={ctx} tt={tt} />}
         {tab === "queue" && (
           <RequestQueuePanel registry={registry} port={port} selectedId={selectedId} onSelect={setSelectedId} />
         )}
+        {tab === "tt" && <TTQueuePanel tt={tt} />}
       </div>
     </section>
   );

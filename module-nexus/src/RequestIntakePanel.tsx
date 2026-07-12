@@ -2,13 +2,20 @@
  * SOVEREIGN Platform — module-nexus
  * RequestIntakePanel.tsx — the work-request intake surface.
  *
- * Collects a title, a work-request type (one of five), and a data classification
- * (ClearanceLevel — Constraint #2), then submits the request. GD-10 is enforced in the
- * registry at intake; a non-UNCLASSIFIED request is refused and the boundary message is
- * shown here. The routing table is displayed so the operator sees which agent class and
+ * Collects a title, a request type, and a data classification (ClearanceLevel —
+ * Constraint #2), then submits the request. GD-10 is enforced in the registry at
+ * intake; a non-UNCLASSIFIED request is refused and the boundary message is shown
+ * here. The routing table is displayed so the operator sees which agent class and
  * approval requirement each type carries.
  *
- * Version: 1.0 · Session 15 · June 24, 2026
+ * Session 29 (Walkthrough E finding WE-1): the request-type dropdown now also
+ * offers TRAVEL_REQUEST and TIME_RECORD — the Time & Travel intake types. These
+ * are a MODULE-LOCAL taxonomy (tt-intake.ts), deliberately NOT added to
+ * WorkRequestType: a TT submission creates a canonical D-TT3 entity with its own
+ * lifecycle and never enters the GD-11 NEXUS_REQUEST_* state machine. Selecting
+ * a TT type swaps the form body to the matching TT fields (TTIntakeForms.tsx).
+ *
+ * Version: 1.1 · Session 29 · July 12, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -18,22 +25,32 @@ import type { ClearanceLevel } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { WORK_REQUEST_TYPES, type WorkRequestType } from "./nexus-contract";
+import { TT_INTAKE_TYPES, isTTIntakeType, type TTIntakeType } from "./tt-intake";
+import { TravelIntakeFormBody, TimeIntakeFormBody } from "./TTIntakeForms";
+import type { UseTTIntake } from "./useTTIntake";
 import { routingTable } from "./request-router";
 import type { UseRequestRegistry } from "./useRequestRegistry";
+
+/** Every type the intake dropdown offers: the five work-request types + the two TT types. */
+type IntakeType = WorkRequestType | TTIntakeType;
 
 export interface RequestIntakePanelProps {
   registry: UseRequestRegistry;
   ctx: SovereignShellContext;
+  /** The TT intake hook, lifted in NexusApp so the TT queue tab shares the state. */
+  tt: UseTTIntake;
 }
 
-export function RequestIntakePanel({ registry, ctx }: RequestIntakePanelProps): JSX.Element {
+export function RequestIntakePanel({ registry, ctx, tt }: RequestIntakePanelProps): JSX.Element {
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<WorkRequestType>("DOCUMENT_REVIEW");
+  const [type, setType] = useState<IntakeType>("DOCUMENT_REVIEW");
   const [classification, setClassification] = useState<ClearanceLevel>("UNCLASSIFIED");
 
   const table = routingTable();
+  const isTT = isTTIntakeType(type);
 
   const onSubmit = (): void => {
+    if (isTTIntakeType(type)) return; // TT types submit through their own form bodies
     const trimmed = title.trim();
     if (trimmed === "") return;
     // Gap 1 fix: take the id from the hook's monotonic source, NOT from the lagging
@@ -54,25 +71,39 @@ export function RequestIntakePanel({ registry, ctx }: RequestIntakePanelProps): 
   return (
     <section aria-label="Request Intake" style={wrapStyle}>
       <div style={formStyle}>
-        <input
-          aria-label="request title"
-          placeholder="New work-request title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={inputStyle}
-        />
-        <select aria-label="request type" value={type} onChange={(e) => setType(e.target.value as WorkRequestType)} style={selectStyle}>
+        {!isTT && (
+          <input
+            aria-label="request title"
+            placeholder="New work-request title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={inputStyle}
+          />
+        )}
+        <select aria-label="request type" value={type} onChange={(e) => setType(e.target.value as IntakeType)} style={selectStyle}>
           {WORK_REQUEST_TYPES.map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
-        </select>
-        <select aria-label="data classification" value={classification} onChange={(e) => setClassification(e.target.value as ClearanceLevel)} style={selectStyle}>
-          {CLEARANCE_LEVELS.map((c) => (
-            <option key={c} value={c}>{c}</option>
+          {TT_INTAKE_TYPES.map((t) => (
+            <option key={t} value={t}>{t}</option>
           ))}
         </select>
-        <button type="button" onClick={onSubmit} style={submitBtnStyle}>Submit Request</button>
+        {!isTT && (
+          <>
+            <select aria-label="data classification" value={classification} onChange={(e) => setClassification(e.target.value as ClearanceLevel)} style={selectStyle}>
+              {CLEARANCE_LEVELS.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <button type="button" onClick={onSubmit} style={submitBtnStyle}>Submit Request</button>
+          </>
+        )}
       </div>
+
+      {/* WE-1: the form adapts per type — TT types render the matching entity form. */}
+      {type === "TRAVEL_REQUEST" && <TravelIntakeFormBody tt={tt} />}
+      {type === "TIME_RECORD" && <TimeIntakeFormBody tt={tt} />}
+      {isTT && tt.error ? <p role="alert" style={errorStyle}>{tt.error}</p> : null}
 
       {registry.error ? <p role="alert" style={errorStyle}>{registry.error}</p> : null}
 

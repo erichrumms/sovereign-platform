@@ -117,5 +117,14 @@ export type {
 } from './entities/correction-record';
 export { validateCorrectionRecord } from './entities/correction-record';
 
+// Time & Travel canonical synthetic seed data (Session 29 — Walkthrough E
+// WE-1/WE-5). Validated SYNTH- prefixed INSTANCES of the six D-TT3 entities,
+// single-sourced here because the TT workflow layer spans four host modules
+// that cannot import each other. No entity type added or changed.
+export {
+  SYNTH_TT_TRAVEL_POLICY,
+  SYNTH_TT_CHARGE_ACCOUNTS,
+} from './synthetic/tt-seed';
+
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.3.0';
+export const SOVEREIGN_DATA_VERSION = '1.4.0';
