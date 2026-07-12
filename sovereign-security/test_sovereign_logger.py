@@ -456,10 +456,12 @@ class TestGD20AriaClearTaxonomy:
         # v1.14 held 75 event types and 18 decision types; GD-20 advances decision types to 19 and
         # added 4 ARIA CLEAR event types (-> 79, in parity with shell-contract v1.15 SovereignEventType).
         # Session 24 TRACER then added 3 PYTHON-ONLY event types (-> 82) and Session 25 ARC added 2 more
-        # PYTHON-ONLY event types (-> 84); those 5 are deliberately NOT in shell-contract (no GD), so
-        # APPROVED_EVENT_TYPES now intentionally holds 5 more than SovereignEventType (79). Decision
-        # types remain at 19 (neither TRACER nor ARC adds a human-decision type).
-        assert len(APPROVED_EVENT_TYPES) == 84
+        # PYTHON-ONLY event types (-> 84); those 5 are deliberately NOT in shell-contract (no GD).
+        # Session 27 Time & Travel Phase I added 11 more PYTHON-ONLY event types (-> 95) per docs/17
+        # §12 ("Logger-only additions — do not add to shell-contract.ts"), so APPROVED_EVENT_TYPES now
+        # intentionally holds 16 more than SovereignEventType (79). Decision types remain at 19 —
+        # the three TT HumanDecisionType additions await the TT-GD shell-contract decision (Phase II).
+        assert len(APPROVED_EVENT_TYPES) == 95
         assert len(APPROVED_DECISION_TYPES) == 19
 
     def test_aria_event_types_accepted_under_product_aria(self, logger):
@@ -609,4 +611,68 @@ class TestSession25ArcTaxonomy:
     def test_no_regression_clear_and_tracer_types_still_present(self):
         # The Session 25 ARC additions must not displace the CLEAR (GD-20) or TRACER (S24) event types.
         for prior in ARIA_CLEAR_EVENT_TYPES + ARIA_TRACER_EVENT_TYPES:
+            assert prior in APPROVED_EVENT_TYPES
+
+
+# ─────────────────────────────────────────────────────────────
+# Session 27 — Time & Travel Phase I event types (docs/17 §12)
+# PYTHON-ONLY additions, following the TRACER/ARC precedent: NOT in
+# shell-contract.ts SovereignEventType (no GD required or taken).
+# ─────────────────────────────────────────────────────────────
+
+TT_EVENT_TYPES = [
+    "TT_TRAVEL_COMPLIANCE_CHECK",
+    "TT_TRAVEL_ESCALATION_FLAGGED",
+    "TT_TRAVEL_ROUTED",
+    "TT_TIME_COMPLIANCE_CHECK",
+    "TT_TIME_FLAG_RAISED",
+    "TT_PATTERN_FLAG_RAISED",
+    "TT_ESCALATION_TRIGGERED",
+    "TT_ESCALATION_ROUTED",
+    "TT_AUDIT_EXPORT_PRODUCED",
+    "TT_BUDGET_EXHAUSTION",
+    "TT_AUDIT_DEADLINE",
+]
+
+
+class TestSession27TimeTravelTaxonomy:
+
+    def test_eleven_tt_event_types_in_taxonomy(self):
+        assert len(TT_EVENT_TYPES) == 11
+        for event_type in TT_EVENT_TYPES:
+            assert event_type in APPROVED_EVENT_TYPES
+
+    def test_tt_event_types_accepted_under_host_products(self, logger):
+        # Time & Travel is a workflow layer, not a SovereignProduct — its agents run on
+        # NEXUS/APEX/VIGIL infrastructure (docs/17 §2) and emit under the HOST product.
+        entry = logger.log(**minimal_event({
+            "event_type": "TT_TRAVEL_COMPLIANCE_CHECK",
+            "product": "NEXUS",
+            "workflow_step_id": "tt-travel-TR-1",
+            "actor_id": "tt.travel-compliance-engine",
+            "outcome": "STANDARD",
+        }))
+        assert entry["event_type"] == "TT_TRAVEL_COMPLIANCE_CHECK"
+        entry = logger.log(**minimal_event({
+            "event_type": "TT_TIME_FLAG_RAISED",
+            "product": "APEX",
+            "workflow_step_id": "tt-time-TRC-1",
+            "actor_id": "tt.time-compliance-engine",
+            "outcome": "WARNING",
+        }))
+        assert entry["event_type"] == "TT_TIME_FLAG_RAISED"
+
+    def test_tt_events_carry_workflow_step_id(self, logger):
+        # Constraint #6 — workflow_step_id on every Logger call.
+        entry = logger.log(**minimal_event({
+            "event_type": "TT_ESCALATION_ROUTED",
+            "product": "VIGIL",
+            "workflow_step_id": "tt-esc-emp-1",
+            "actor_id": "tt.escalation-monitor",
+            "outcome": "routed_for_authorization",
+        }))
+        assert entry["workflow_step_id"] == "tt-esc-emp-1"
+
+    def test_no_regression_prior_python_only_types_still_present(self):
+        for prior in ARIA_CLEAR_EVENT_TYPES + ARIA_TRACER_EVENT_TYPES + ARIA_ARC_EVENT_TYPES:
             assert prior in APPROVED_EVENT_TYPES

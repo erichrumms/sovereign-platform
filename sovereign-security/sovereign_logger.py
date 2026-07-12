@@ -189,6 +189,27 @@ APPROVED_EVENT_TYPES = frozenset({
     # events: 3 TRACER + 2 ARC).
     "ARIA_IMPACT_MODELED",         # every ARC impact-modeling run
     "ARIA_ADAPTATION_DECISION",    # every human decision recorded in response to an ARC report
+    # Session 27 / Time & Travel Phase I (July 12, 2026) — eleven Time & Travel workflow-layer
+    # event types (docs/17 §12). PYTHON-ONLY additions — docs/17 §12 is explicit: "Logger-only
+    # additions — do not add to shell-contract.ts", following the TRACER/ARC precedent above.
+    # Emitted by the six deterministic tt.* Phase I agents (registered in
+    # Agent_Identity_Standard.md, D-TT5) hosted on NEXUS/APEX/VIGIL infrastructure. The set now
+    # holds 95 members; shell-contract.ts SovereignEventType is UNCHANGED at v1.15 (79 members)
+    # by design (95 = 79 + 5 Python-only ARIA + 11 Python-only Time & Travel). The three
+    # HumanDecisionType additions docs/17 §12 also names (TRAVEL_APPROVAL, TIME_CORRECTION_SENT,
+    # ESCALATION_AUTHORIZED) are NOT added — they are shell-contract changes requiring the TT-GD
+    # governance decision before the Phase II session that needs them (docs/17 §13).
+    "TT_TRAVEL_COMPLIANCE_CHECK",   # every travel request evaluated by compliance engine
+    "TT_TRAVEL_ESCALATION_FLAGGED", # every hard-exception or threshold escalation
+    "TT_TRAVEL_ROUTED",             # every routing decision with destination authority
+    "TT_TIME_COMPLIANCE_CHECK",     # every time record period evaluated
+    "TT_TIME_FLAG_RAISED",          # every rule trigger with severity and recurrence count
+    "TT_PATTERN_FLAG_RAISED",       # every pattern drift detection surfaced to dashboard
+    "TT_ESCALATION_TRIGGERED",      # every recurrence threshold breach
+    "TT_ESCALATION_ROUTED",         # every formal escalation routed to VIGIL
+    "TT_AUDIT_EXPORT_PRODUCED",     # every audit report generated
+    "TT_BUDGET_EXHAUSTION",         # charge account at zero budget (P1 VIGIL alert)
+    "TT_AUDIT_DEADLINE",            # period close approaching with unresolved flags
 })
 
 # NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary

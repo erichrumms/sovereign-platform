@@ -108,6 +108,29 @@ const vigilApprovalAgentCard: AgentCard = {
   security_observable: true,
 };
 
+// tt.escalation-monitor — Time & Travel workflow-layer agent hosted on VIGIL/NEXUS
+// infrastructure (Session 27, docs/17 §2 — no new module directory; AIS D-TT5).
+// Monitoring, deterministic: tracks recurrence per employee/rule across the rolling
+// window and routes formal escalations for VIGIL human authorization. Tracks and
+// routes only. product is the HOST product ("VIGIL") — the workflow layer is not a
+// SovereignProduct. NOTE: actual VIGIL Alert Queue wiring is Session 28 scope,
+// blocked on the sourceProduct question (see tt-escalation-monitor.ts header).
+const ttEscalationMonitorCard: AgentCard = {
+  agent_id: "tt.escalation-monitor",
+  agent_class: "Monitoring",
+  product: "VIGIL",
+  capabilities: ["recurrence_tracking", "escalation_routing", "communication_type_upgrade"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -119,9 +142,10 @@ export const vigilModule: SovereignModuleContract = {
   // fail-closed default policy turns this into "PLATFORM_ADMIN or SYSTEM_ADMIN
   // only". Not a placeholder, unlike COUNSEL/SCRIBE's READ_ONLY.
   minimumRole: VIGIL_MINIMUM_ROLE,
-  // vigil-triage-analyst (Session 7 — Anomaly Triage Assistant) and vigil-approval-agent
-  // (Session 10 — Agent Approval Flow, activated this session) are both registered.
-  agentCards: [vigilTriageAnalystCard, vigilApprovalAgentCard],
+  // vigil-triage-analyst (Session 7 — Anomaly Triage Assistant), vigil-approval-agent
+  // (Session 10 — Agent Approval Flow), and tt.escalation-monitor (Session 27 —
+  // Time & Travel workflow layer, hosted on VIGIL infrastructure) are registered.
+  agentCards: [vigilTriageAnalystCard, vigilApprovalAgentCard, ttEscalationMonitorCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate (spec §7): throw before building the tree. ---

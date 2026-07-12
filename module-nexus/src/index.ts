@@ -37,8 +37,51 @@ import { NexusApp } from "./NexusApp";
 
 const NEXUS_MINIMUM_ROLE = "AGENT_OPERATOR" as const;
 
-// NEXUS routes work to AgentOS-orchestrated agent classes; it registers no platform agents.
-const NEXUS_AGENT_CARDS: AgentCard[] = [];
+// NEXUS's own routing runs through AgentOS-orchestrated agent classes (no native NEXUS
+// cards yet — the implemented-but-not-carded native agents are tracked as finding F-2).
+// Session 27 adds the two Time & Travel workflow-layer agents that RUN ON NEXUS
+// infrastructure (docs/17 §2 — no new module directory; AIS D-TT5). Both are
+// deterministic: no LLM, no sovereign-api-client. product is the HOST product — the
+// workflow layer is not a SovereignProduct (docs/17 §2), so cards carry "NEXUS".
+
+// tt.travel-compliance-engine — Governance, deterministic. Evaluates TravelRequests
+// against the active TravelPolicy; produces STANDARD/FLAGGED/ESCALATE findings.
+// Evaluates and routes only — approval/denial is always a human decision.
+const ttTravelComplianceEngineCard: AgentCard = {
+  agent_id: "tt.travel-compliance-engine",
+  agent_class: "Governance",
+  product: "NEXUS",
+  capabilities: ["travel_policy_evaluation", "routing_recommendation", "compliance_finding"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE", // platform default (AIS Session 1)
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED", // GD-10
+  security_observable: true,
+};
+
+// tt.travel-router — Operational, deterministic. Executes the engine's routing in
+// NEXUS; structurally cannot route below the authority the engine specifies.
+const ttTravelRouterCard: AgentCard = {
+  agent_id: "tt.travel-router",
+  agent_class: "Operational",
+  product: "NEXUS",
+  capabilities: ["authority_queue_routing", "request_status_update"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
+const NEXUS_AGENT_CARDS: AgentCard[] = [ttTravelComplianceEngineCard, ttTravelRouterCard];
 
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;

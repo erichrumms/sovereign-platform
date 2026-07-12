@@ -2,8 +2,9 @@
 /**
  * module-vigil — index.test.ts
  * The SovereignModuleContract scaffold: identity matches the loader's pre-wired
- * module-vigil slot, the real PLATFORM_ADMIN role gate, agentCards is EMPTY
- * (triage/approval agents deferred), and the structural mount gate throws the
+ * module-vigil slot, the real PLATFORM_ADMIN role gate, the three registered agent
+ * cards (triage, approval, and the Session 27 tt.escalation-monitor), and the
+ * structural mount gate throws the
  * canonical ModuleAccessDeniedError for non-admin roles while admitting
  * PLATFORM_ADMIN / SYSTEM_ADMIN.
  */
@@ -23,13 +24,15 @@ describe("vigilModule contract", () => {
     expect(vigilModule.minimumRole).toBe("PLATFORM_ADMIN");
   });
 
-  it("registers vigil-triage-analyst and vigil-approval-agent (both Monitoring)", () => {
+  it("registers vigil-triage-analyst, vigil-approval-agent, and tt.escalation-monitor (all Monitoring)", () => {
     const ids = vigilModule.agentCards.map((c) => c.agent_id);
-    expect(ids).toEqual(["vigil-triage-analyst", "vigil-approval-agent"]);
+    expect(ids).toEqual(["vigil-triage-analyst", "vigil-approval-agent", "tt.escalation-monitor"]);
     const byId = Object.fromEntries(vigilModule.agentCards.map((c) => [c.agent_id, c]));
     expect(byId["vigil-triage-analyst"].agent_class).toBe("Monitoring");
     // Activated this session (Session 10 — Agent Approval Flow).
     expect(byId["vigil-approval-agent"].agent_class).toBe("Monitoring");
+    // Session 27 — Time & Travel workflow layer, hosted on VIGIL infrastructure.
+    expect(byId["tt.escalation-monitor"].agent_class).toBe("Monitoring");
     expect(vigilModule.agentCards.every((c) => c.product === "VIGIL")).toBe(true);
   });
 

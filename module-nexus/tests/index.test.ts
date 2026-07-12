@@ -3,8 +3,8 @@
  * module-nexus — index.test.ts
  * The SovereignModuleContract: identity matches the loader's pre-wired module-nexus slot,
  * the fail-closed AGENT_OPERATOR gate (nearest existing role; no OPERATOR in the taxonomy),
- * empty agentCards (NEXUS routes to agent classes, registers no agents), the structural
- * mount gate, and an honest NOT_STARTED health state.
+ * the two NEXUS-hosted Time & Travel agent cards (Session 27 — docs/17 §2, no new module
+ * directory), the structural mount gate, and an honest NOT_STARTED health state.
  */
 import { nexusModule } from "../src/index";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
@@ -22,8 +22,15 @@ describe("nexusModule contract", () => {
     expect(nexusModule.minimumRole).toBe("AGENT_OPERATOR");
   });
 
-  it("registers no platform agents (NEXUS routes to AgentOS-orchestrated classes)", () => {
-    expect(nexusModule.agentCards).toEqual([]);
+  it("registers the two NEXUS-hosted Time & Travel agents (Session 27, docs/17 §2)", () => {
+    const ids = nexusModule.agentCards.map((c) => c.agent_id);
+    expect(ids).toEqual(["tt.travel-compliance-engine", "tt.travel-router"]);
+    const byId = Object.fromEntries(nexusModule.agentCards.map((c) => [c.agent_id, c]));
+    expect(byId["tt.travel-compliance-engine"].agent_class).toBe("Governance");
+    expect(byId["tt.travel-router"].agent_class).toBe("Operational");
+    // The workflow layer is not a SovereignProduct — cards carry the HOST product.
+    expect(nexusModule.agentCards.every((c) => c.product === "NEXUS")).toBe(true);
+    expect(nexusModule.agentCards.every((c) => c.data_classification_ceiling === "UNCLASSIFIED")).toBe(true);
   });
 
   it("reports an honest NOT_STARTED health state", async () => {

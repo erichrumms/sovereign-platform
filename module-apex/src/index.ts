@@ -77,6 +77,66 @@ const reportGeneratorCard: AgentCard = {
   security_observable: true,
 };
 
+// --- Time & Travel workflow-layer agents hosted on APEX infrastructure (Session 27,
+// docs/17 §2 — no new module directory; AIS D-TT5). All three deterministic: no LLM,
+// no sovereign-api-client. product is the HOST product ("APEX") — the workflow layer
+// is not a SovereignProduct. ---
+
+// tt.time-compliance-engine — Governance. Ten-rule-category evaluation with frozen
+// severities (docs/17 §6.1). Detects and flags only; humans decide every response.
+const ttTimeComplianceEngineCard: AgentCard = {
+  agent_id: "tt.time-compliance-engine",
+  agent_class: "Governance",
+  product: "APEX",
+  capabilities: ["time_record_evaluation", "compliance_flagging", "severity_assignment"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
+// tt.pattern-analyst — Monitoring. Rolling baselines + peer comparison; informational
+// only, hashed employee IDs (data_classification: user at the baseline layer), never
+// generates employee communications.
+const ttPatternAnalystCard: AgentCard = {
+  agent_id: "tt.pattern-analyst",
+  agent_class: "Monitoring",
+  product: "APEX",
+  capabilities: ["individual_baseline_tracking", "peer_group_comparison", "pattern_drift_detection"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
+// tt.audit-reporter — Governance. Session/period audit exports from governed records;
+// reads and formats only, human-initiated, never automatic.
+const ttAuditReporterCard: AgentCard = {
+  agent_id: "tt.audit-reporter",
+  agent_class: "Governance",
+  product: "APEX",
+  capabilities: ["session_decision_export", "period_close_export", "audit_formatting"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -85,7 +145,13 @@ export const apexModule: SovereignModuleContract = {
   mountPath: "/apex",
   displayName: "APEX",
   minimumRole: APEX_MINIMUM_ROLE,
-  agentCards: [aiAssistantCard, reportGeneratorCard],
+  agentCards: [
+    aiAssistantCard,
+    reportGeneratorCard,
+    ttTimeComplianceEngineCard,
+    ttPatternAnalystCard,
+    ttAuditReporterCard,
+  ],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---

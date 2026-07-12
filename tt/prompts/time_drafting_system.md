@@ -1,11 +1,10 @@
 <!--
-STATUS: DRAFT — written July 11, 2026, pending Project Principal approval.
-Not yet approved per D-TT5's separate approval-before-build-session requirement.
-Does not depend on D-TT7's outcome — drafts against current, approved D-TT3 fields
-(TimeRecord, ComplianceFlag, ChargeAccount). If D-TT7 resolves to a full-architecture
-path (Option C) that changes these fields structurally, this prompt should be
-reviewed before approval; otherwise approve as-is alongside the D-TT7 decision,
-whenever it lands.
+STATUS: APPROVED v1.0 — written July 11, 2026; approved by Project Principal
+July 11, 2026 alongside the D-TT7 Option A decision (D-TT3 fields reaffirmed
+unchanged, so the as-written prompt required no rework). Registered in
+tt/prompts/CHANGELOG.md, Session 27 (July 12, 2026), per the Prompt Registry
+Specification and D-TT5's approval-before-build-session requirement. Drafts
+against approved D-TT3 fields (TimeRecord, ComplianceFlag, ChargeAccount).
 Registered agent: tt.time-drafter (Operational, LLM-backed, extends SCRIBE's
 drafting engine). Path: tt/prompts/time_drafting_system.md
 -->
