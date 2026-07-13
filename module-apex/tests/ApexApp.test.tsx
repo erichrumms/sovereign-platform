@@ -29,12 +29,14 @@ describe("ApexApp", () => {
     expect(screen.getByRole("heading", { name: "Joint Logistics Modernization" })).toBeInTheDocument();
   });
 
-  it("shows the live PPBE performance dashboard on the Execution Monitoring tab (Session 32)", () => {
+  it("shows the live PPBE performance dashboard with REAL seeded metrics on the Execution Monitoring tab (Session 33)", () => {
     render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
     fireEvent.click(screen.getByRole("tab", { name: "Execution Monitoring" }));
     expect(screen.getByRole("heading", { name: "APEX — PPBE Performance" })).toBeInTheDocument();
-    // Honest empty state until the dedicated synthetic-data session lands (Gap 6 Category 1).
-    expect(screen.getByText(/No PPBE execution data is recorded yet/)).toBeInTheDocument();
+    // The Session 32 empty state is gone — the host adapter feeds the seeded portfolio.
+    expect(screen.queryByText(/No PPBE execution data is recorded yet/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Logistics Data Interchange Modernization has obligated 485000 of 500000 planned — 97 percent/)).toBeInTheDocument();
+    expect(screen.getByText(/13 of 20 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
   });
 
   it("falls back to the portfolio when Program Detail is opened with no selection", () => {

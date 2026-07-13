@@ -23,6 +23,7 @@ import { ProgramDetailView } from "./ProgramDetailView";
 import { ReportGenerationPanel } from "./ReportGenerationPanel";
 import { GateRunnerPanel } from "./GateRunnerPanel";
 import { PPBEDashboard } from "./PPBEDashboard";
+import { createSyntheticPPBEDashboardInputs } from "./ppbe-data-adapter";
 
 export interface ApexAppProps {
   ctx: SovereignShellContext;
@@ -42,6 +43,7 @@ const TABS: Array<{ id: Tab; label: string }> = [
 
 export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
   const adapter = useMemo(() => injected ?? createSyntheticApexDataAdapter(), [injected]);
+  const ppbeInputs = useMemo(() => createSyntheticPPBEDashboardInputs(), []);
   const [tab, setTab] = useState<Tab>("portfolio");
   const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
 
@@ -86,11 +88,11 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
       )}
       {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} />}
       {tab === "gates" && <GateRunnerPanel ctx={ctx} adapter={adapter} />}
-      {/* Session 32 (D5): the Session 17 Execution Monitoring stub is replaced by the live
-          PPBE performance dashboard, exactly as spec §17.2 Commitment 1 scheduled — no
-          navigation change. Host data wiring lands with the comprehensive synthetic data
-          (Session 33); until then the dashboard renders its honest empty state. */}
-      {tab === "execution" && <PPBEDashboard />}
+      {/* Session 32 (D5) replaced the Session 17 stub with the live PPBE dashboard;
+          Session 33 (goal item 8) wired the host data adapter over the canonical
+          seeded portfolio — the dashboard now renders real metrics. A production
+          deployment swaps the adapter, not the component. */}
+      {tab === "execution" && <PPBEDashboard inputs={ppbeInputs} />}
     </section>
   );
 }
