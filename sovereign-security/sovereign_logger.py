@@ -210,6 +210,27 @@ APPROVED_EVENT_TYPES = frozenset({
     "TT_AUDIT_EXPORT_PRODUCED",     # every audit report generated
     "TT_BUDGET_EXHAUSTION",         # charge account at zero budget (P1 VIGIL alert)
     "TT_AUDIT_DEADLINE",            # period close approaching with unresolved flags
+    # Session 31 / PPBE Build Session 1 — Core Integration (July 12, 2026) — four PPBE
+    # workflow-layer event types (docs/18 §4). PYTHON-ONLY additions per Project Principal
+    # decision at Session 31 open, following the TRACER/ARC/TT precedent above: NOT added to
+    # shell-contract.ts SovereignEventType (no GD required or taken; if TS-side representation
+    # is ever needed, that is a future GD — docs/18 §8 / D-P4). Emitted by the PPBE workflow
+    # layer running on its host products (APEX/NEXUS/VIGIL/FLOWPATH — docs/18 §7.1; D-P6:
+    # workflow layer, not a new product). The set now holds 99 members; shell-contract.ts
+    # SovereignEventType is UNCHANGED at v1.16 (79 members — GD-21 added HumanDecisionType
+    # members only) by design (99 = 79 + 5 Python-only ARIA + 11 Python-only Time & Travel +
+    # 4 Python-only PPBE). docs/18 §4's per-event additional fields (anomaly_type, from_phase,
+    # finding_id, ...) ride in the payload — the Logger enforces the taxonomy and the
+    # platform-standard required fields, not payload internals. PPBE_DECISION is a HUMAN
+    # DECISION event (docs/18 §4 requires decision_type + approving_human; §6 Tier B/C) — it
+    # is therefore added to HUMAN_DECISION_EVENTS below so decision_type (Standing Constraint
+    # #4), actor, and actor_name are runtime-enforced. Decision types reuse the existing
+    # HUMAN_APPROVAL / TASK_APPROVAL members (Project Principal decision, Session 31 open) —
+    # APPROVED_DECISION_TYPES is unchanged.
+    "PPBE_DECISION",                # every Tier B/C authorization event (human decision)
+    "PPBE_PHASE_TRANSITION",        # VIGIL, on phase handoff (Tier B gate)
+    "PPBE_ANOMALY",                 # ledger-monitor / dependency-tracker threshold breaches
+    "PPBE_EVALUATION_FINDING",      # APEX, on EvaluationFinding creation
 })
 
 # NOTE (GD-18): FLOWPATH is already present in APPROVED_PRODUCTS below — it has been a primary
@@ -276,8 +297,10 @@ APPROVED_AGENT_CLASSES = frozenset({
     "Orchestration",
 })
 
-# Events that require decision_type, actor, and actor_name
-HUMAN_DECISION_EVENTS = frozenset({"HUMAN_DECISION"})
+# Events that require decision_type, actor, and actor_name.
+# PPBE_DECISION added Session 31: docs/18 §4 requires decision_type and approving_human
+# (carried as actor_name) on every Tier B/C authorization event — Standing Constraint #4.
+HUMAN_DECISION_EVENTS = frozenset({"HUMAN_DECISION", "PPBE_DECISION"})
 
 # Events that require agent_id and agent_class
 AGENT_EVENTS = frozenset({"AGENT_STEP_START", "AGENT_STEP_COMPLETE"})

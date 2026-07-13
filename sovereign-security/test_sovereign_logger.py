@@ -124,7 +124,9 @@ class TestTaxonomyEnforcement:
             # Agent events need extra fields — test separately
             if event_type in ("AGENT_STEP_START", "AGENT_STEP_COMPLETE"):
                 continue
-            if event_type == "HUMAN_DECISION":
+            # Human-decision events (HUMAN_DECISION; PPBE_DECISION as of Session 31)
+            # need decision_type/actor/actor_name — tested separately
+            if event_type in ("HUMAN_DECISION", "PPBE_DECISION"):
                 continue
             entry = logger.log(**minimal_event({"event_type": event_type}))
             assert entry["event_type"] == event_type
@@ -462,8 +464,10 @@ class TestGD20AriaClearTaxonomy:
         # intentionally holds 16 more than SovereignEventType (79). Session 28 / GD-21 (shell-contract
         # v1.16) then added the three TT HumanDecisionType members (TRAVEL_APPROVAL,
         # TIME_CORRECTION_SENT, ESCALATION_AUTHORIZED), advancing decision types 19 -> 22 in parity
-        # with shell-contract v1.16 HumanDecisionType.
-        assert len(APPROVED_EVENT_TYPES) == 95
+        # with shell-contract v1.16 HumanDecisionType. Session 31 then added 4 PYTHON-ONLY PPBE
+        # event types (-> 99) per docs/18 §4 and the Session 31 Project Principal decision
+        # (TRACER/ARC/TT precedent); decision types unchanged at 22.
+        assert len(APPROVED_EVENT_TYPES) == 99
         assert len(APPROVED_DECISION_TYPES) == 22
 
     def test_aria_event_types_accepted_under_product_aria(self, logger):
@@ -717,4 +721,125 @@ class TestSession27TimeTravelTaxonomy:
 
     def test_no_regression_prior_python_only_types_still_present(self):
         for prior in ARIA_CLEAR_EVENT_TYPES + ARIA_TRACER_EVENT_TYPES + ARIA_ARC_EVENT_TYPES:
+            assert prior in APPROVED_EVENT_TYPES
+
+
+# ─────────────────────────────────────────────────────────────
+# Session 31 — PPBE Core Integration event types (docs/18 §4)
+# PYTHON-ONLY additions, following the TRACER/ARC/TT precedent: NOT in
+# shell-contract.ts SovereignEventType (no GD required or taken).
+# PPBE_DECISION is a human-decision event — decision_type, actor, and
+# actor_name are runtime-enforced (docs/18 §4; Standing Constraint #4).
+# ─────────────────────────────────────────────────────────────
+
+PPBE_EVENT_TYPES = [
+    "PPBE_DECISION",
+    "PPBE_PHASE_TRANSITION",
+    "PPBE_ANOMALY",
+    "PPBE_EVALUATION_FINDING",
+]
+
+
+class TestSession31PPBETaxonomy:
+
+    def test_four_ppbe_event_types_in_taxonomy(self):
+        assert len(PPBE_EVENT_TYPES) == 4
+        for event_type in PPBE_EVENT_TYPES:
+            assert event_type in APPROVED_EVENT_TYPES
+
+    def test_taxonomy_holds_99_members(self):
+        # 79 shell-contract v1.16 members + 5 Python-only ARIA + 11 Python-only TT
+        # + 4 Python-only PPBE. Guards the ledger arithmetic in the source comment.
+        assert len(APPROVED_EVENT_TYPES) == 99
+
+    def test_ppbe_decision_records_with_correct_schema(self, logger):
+        # docs/18 §7.1 done condition: "Logger records a PPBE_DECISION event with
+        # correct schema" — decision_type (existing HUMAN_APPROVAL member, per
+        # Project Principal decision), approving human as actor_name, program_id
+        # in payload, workflow_step_id present.
+        entry = logger.log(**minimal_event({
+            "event_type": "PPBE_DECISION",
+            "product": "VIGIL",
+            "workflow_step_id": "ppbe-phase2-obligation-OB-1",
+            "actor_id": "emp_001",
+            "outcome": "obligation authorized",
+            "payload": {"program_id": "PRG-001", "decision_kind": "obligation"},
+            "decision_type": "HUMAN_APPROVAL",
+            "actor": "human",
+            "actor_name": "Jane Smith",
+        }))
+        assert entry["event_type"] == "PPBE_DECISION"
+        assert entry["decision_type"] == "HUMAN_APPROVAL"
+        assert entry["actor_name"] == "Jane Smith"
+        assert entry["payload"]["program_id"] == "PRG-001"
+        assert entry["workflow_step_id"] == "ppbe-phase2-obligation-OB-1"
+
+    def test_ppbe_decision_rejects_missing_decision_type(self, logger):
+        # Standing Constraint #4 — enforced at runtime, not convention.
+        with pytest.raises(MissingRequiredFieldError):
+            logger.log(**minimal_event({
+                "event_type": "PPBE_DECISION",
+                "product": "VIGIL",
+                "actor": "human",
+                "actor_name": "Jane Smith",
+            }))
+
+    def test_ppbe_decision_rejects_agent_actor(self, logger):
+        with pytest.raises(InvalidFieldValueError):
+            logger.log(**minimal_event({
+                "event_type": "PPBE_DECISION",
+                "product": "VIGIL",
+                "decision_type": "TASK_APPROVAL",
+                "actor": "agent",
+                "actor_name": "ppbe-ledger-monitor",
+            }))
+
+    def test_ppbe_anomaly_accepted_under_host_products(self, logger):
+        # PPBE is a workflow layer, not a SovereignProduct (D-P6) — events emit
+        # under the HOST product, same as the TT layer.
+        entry = logger.log(**minimal_event({
+            "event_type": "PPBE_ANOMALY",
+            "product": "APEX",
+            "workflow_step_id": "ppbe-ledger-PRG-001",
+            "actor_id": "ppbe-ledger-monitor",
+            "outcome": "OBLIGATION_RATE_DEVIATION",
+            "payload": {
+                "anomaly_type": "OBLIGATION_RATE_DEVIATION",
+                "program_id": "PRG-001",
+                "threshold_breached": "obligation rate 12 percent below plan",
+                "severity": "P2",
+            },
+        }))
+        assert entry["event_type"] == "PPBE_ANOMALY"
+        entry = logger.log(**minimal_event({
+            "event_type": "PPBE_PHASE_TRANSITION",
+            "product": "VIGIL",
+            "workflow_step_id": "ppbe-phase2-to-phase3",
+            "actor_id": "emp_001",
+            "outcome": "authorized",
+            "payload": {"from_phase": 2, "to_phase": 3, "approving_human": "Jane Smith"},
+        }))
+        assert entry["event_type"] == "PPBE_PHASE_TRANSITION"
+
+    def test_ppbe_evaluation_finding_carries_workflow_step_id(self, logger):
+        # Constraint #6 — workflow_step_id on every Logger call.
+        entry = logger.log(**minimal_event({
+            "event_type": "PPBE_EVALUATION_FINDING",
+            "product": "APEX",
+            "workflow_step_id": "ppbe-evaluation-EF-2027-001",
+            "actor_id": "apex.report-generator",
+            "outcome": "finding recorded",
+            "payload": {"finding_id": "EF-2027-001", "feeds_planning_cycle": True},
+        }))
+        assert entry["workflow_step_id"] == "ppbe-evaluation-EF-2027-001"
+
+    def test_decision_types_unchanged_by_ppbe_addition(self):
+        # Project Principal decision (Session 31 open): reuse HUMAN_APPROVAL /
+        # TASK_APPROVAL — no PPBE-specific HumanDecisionType this session.
+        assert "HUMAN_APPROVAL" in APPROVED_DECISION_TYPES
+        assert "TASK_APPROVAL" in APPROVED_DECISION_TYPES
+        assert len(APPROVED_DECISION_TYPES) == 22
+
+    def test_no_regression_tt_types_still_present(self):
+        for prior in TT_EVENT_TYPES:
             assert prior in APPROVED_EVENT_TYPES
