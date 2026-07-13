@@ -45,8 +45,9 @@ export function tracerWorkflowStep(subjectId: string): string {
  * Finalize a chain: a chain is complete only when every node is traceable. When it is not, the
  * `orphan_reason` is the `cites` text of the first untraceable node — a plain-prose statement of
  * the missing link. Deterministic: depends only on the node array order, which assembly fixes.
+ * Exported for the PPBE obligation chain (ppbe-aria.ts, Session 32) — one finalizer, no duplicate.
  */
-function finalizeChain(
+export function finalizeChain(
   chain_type: TraceChain["chain_type"],
   subject_id: string,
   subject_label: string,

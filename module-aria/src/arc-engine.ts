@@ -183,6 +183,74 @@ export const DEPENDENCY_MODEL: readonly DependentItem[] = [
     provision: "PPBE Reform guidance — phase transition timing",
     coupling: "references",
   },
+  // ── PPBE workflow-layer items (Session 32, docs/18 §7.2 — the ARC impact models for
+  // OMB/appropriations-law changes now project onto the PPBE build). Rule ids are the real
+  // rules evaluatePPBEDocument enforces (ppbe-aria.ts); template ids are the three SCRIBE
+  // PPBE document modes (module-scribe ppbe-exhibit-contract.ts). ──────────────────────────
+  {
+    item_id: "R-PPBE-2",
+    kind: "clear_rule",
+    label: "CLEAR rule — every PPBE figure traceable to a source record",
+    source_id: "dod-ppbe-reform",
+    provision: "PPBE Reform guidance — budget submission data traceability",
+    coupling: "enforces",
+  },
+  {
+    item_id: "R-PPBE-3",
+    kind: "clear_rule",
+    label: "CLEAR rule — document phase within the six-phase PPBE closed loop",
+    source_id: "dod-ppbe-reform",
+    provision: "PPBE Reform guidance — closed-loop phase structure",
+    coupling: "enforces",
+  },
+  {
+    item_id: "R-PPBE-4",
+    kind: "clear_rule",
+    label: "CLEAR rule — evaluation findings record whether they feed planning",
+    source_id: "evidence-act",
+    provision: "Title I — evaluation and learning agenda",
+    coupling: "enforces",
+  },
+  {
+    item_id: "TPL-PPBE-BUDGET-EXHIBIT",
+    kind: "scribe_template",
+    label: "SCRIBE PPBE mode — Budget Exhibit",
+    source_id: "omba11",
+    provision: "Section 51 — exhibit formats",
+    coupling: "references",
+  },
+  {
+    item_id: "TPL-PPBE-CONG-JUST",
+    kind: "scribe_template",
+    label: "SCRIBE PPBE mode — Congressional Justification",
+    source_id: "omba11",
+    provision: "Section 22 — congressional justification materials",
+    coupling: "references",
+  },
+  {
+    item_id: "TPL-PPBE-EVAL-REPORT",
+    kind: "scribe_template",
+    label: "SCRIBE PPBE mode — Evaluation Report",
+    source_id: "evidence-act",
+    provision: "Title I — evaluation and learning agenda",
+    coupling: "references",
+  },
+  {
+    item_id: "TC-PPBE-OBLIGATION",
+    kind: "tracer_chain",
+    label: "TRACER PPBE obligation chain — obligation to program to strategic objective",
+    source_id: "anti-deficiency-act",
+    provision: "31 U.S.C. §1341 — obligation authority limits",
+    coupling: "informational",
+  },
+  {
+    item_id: "WF-PPBE-OBLIGATION-GATE",
+    kind: "workflow",
+    label: "VIGIL Tier C obligation authorization gate",
+    source_id: "anti-deficiency-act",
+    provision: "31 U.S.C. §1341 — obligation authority limits",
+    coupling: "enforces",
+  },
 ];
 
 /**
