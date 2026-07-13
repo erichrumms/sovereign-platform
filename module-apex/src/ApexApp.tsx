@@ -5,7 +5,8 @@
  * The single component the module mounts after the role gate admits the reviewer. It lifts the
  * ApexDataAdapter ONCE and renders the APEX chrome with five tabs: Portfolio Dashboard,
  * Program Detail, Report Generation, CPMI-VRS Certification (the gate runner — Session 18), and
- * the Execution Monitoring stub (PPBE Phase 5). The "Export Dossier" actions and program links
+ * the PPBE performance dashboard (Session 32 — replaced the Session 17 Execution Monitoring
+ * stub on the same tab). The "Export Dossier" actions and program links
  * route between tabs. Governance banners on each screen are Category 2 (permanent, blue); status
  * notices are Category 1 (amber); program content is Category 3 (substantive) — the Gap 6
  * three-category model.
@@ -21,7 +22,7 @@ import { PortfolioDashboard } from "./PortfolioDashboard";
 import { ProgramDetailView } from "./ProgramDetailView";
 import { ReportGenerationPanel } from "./ReportGenerationPanel";
 import { GateRunnerPanel } from "./GateRunnerPanel";
-import { ExecutionMonitoringStub } from "./ExecutionMonitoringStub";
+import { PPBEDashboard } from "./PPBEDashboard";
 
 export interface ApexAppProps {
   ctx: SovereignShellContext;
@@ -85,7 +86,11 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
       )}
       {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} />}
       {tab === "gates" && <GateRunnerPanel ctx={ctx} adapter={adapter} />}
-      {tab === "execution" && <ExecutionMonitoringStub />}
+      {/* Session 32 (D5): the Session 17 Execution Monitoring stub is replaced by the live
+          PPBE performance dashboard, exactly as spec §17.2 Commitment 1 scheduled — no
+          navigation change. Host data wiring lands with the comprehensive synthetic data
+          (Session 33); until then the dashboard renders its honest empty state. */}
+      {tab === "execution" && <PPBEDashboard />}
     </section>
   );
 }

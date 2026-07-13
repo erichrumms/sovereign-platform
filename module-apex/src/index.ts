@@ -10,7 +10,8 @@
  * (createSovereignClient only — Constraint #5).
  *
  * Session 17 SCOPE: scaffold + GD-16 schema + the three screens (Portfolio / Program Detail /
- * Report Generation), the Execution Monitoring stub (PPBE Phase 5), and the two AgentCards.
+ * Report Generation), the PPBE performance dashboard (Session 32 — replaced the Session 17
+ * Execution Monitoring stub), and the AgentCards.
  *
  * ROLE GATE (platform analytics — conservative, fail-closed): minimumRole "PLATFORM_ADMIN".
  *   APEX surfaces platform-level audit/analysis data "accessible to authorized platform

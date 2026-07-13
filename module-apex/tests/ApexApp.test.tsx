@@ -1,8 +1,9 @@
 /** @jest-environment jsdom */
 /**
  * module-apex — ApexApp.test.tsx
- * The composition root: four tabs; the Portfolio Dashboard is the entry; opening a program
- * navigates to the Program Detail tab; the Execution Monitoring tab shows the Category-1 stub.
+ * The composition root: five tabs; the Portfolio Dashboard is the entry; opening a program
+ * navigates to the Program Detail tab; the Execution Monitoring tab shows the live PPBE
+ * performance dashboard (Session 32 — replaced the Session 17 stub).
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -28,11 +29,12 @@ describe("ApexApp", () => {
     expect(screen.getByRole("heading", { name: "Joint Logistics Modernization" })).toBeInTheDocument();
   });
 
-  it("shows the Execution Monitoring stub (Category 1) on its tab", () => {
+  it("shows the live PPBE performance dashboard on the Execution Monitoring tab (Session 32)", () => {
     render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
     fireEvent.click(screen.getByRole("tab", { name: "Execution Monitoring" }));
-    expect(screen.getByText(/This screen is not yet active/)).toBeInTheDocument();
-    expect(screen.getByText(/PPBE Phase II is integrated/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "APEX — PPBE Performance" })).toBeInTheDocument();
+    // Honest empty state until the dedicated synthetic-data session lands (Gap 6 Category 1).
+    expect(screen.getByText(/No PPBE execution data is recorded yet/)).toBeInTheDocument();
   });
 
   it("falls back to the portfolio when Program Detail is opened with no selection", () => {
