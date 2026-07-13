@@ -6,7 +6,7 @@
 - **Model:** supplied by `sovereign-api-client` (`claude-sonnet-4`). Do **not** hardcode a model string in COUNSEL.
 - **Max tokens:** platform default (1000 per call).
 - **Output:** a single JSON object validated against the `AnalysisResult` contract (`module-counsel/src/analysis-contract.ts`) before it is shown to the user.
-- **Status:** Authored Session 4 (June 15, 2026). Approval: **PENDING Project Principal.**
+- **Status:** Authored Session 4 (June 15, 2026). Approval: **APPROVED — Project Principal, June 15, 2026** (registry of record: `module-counsel/prompts/CHANGELOG.md`, PR-COUNSEL-001; stale header back-propagated July 13, 2026 — the approval itself predates this text correction).
 
 ---
 

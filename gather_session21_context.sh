@@ -41,7 +41,7 @@ append_file "FLOWPATH banners.tsx (approved card pattern)" "$REPO/module-flowpat
 append_file "FLOWPATH FlowpathApp.tsx" "$REPO/module-flowpath/src/FlowpathApp.tsx"
 append_file "FLOWPATH SessionManager.tsx (Screen 1)" "$REPO/module-flowpath/src/SessionManager.tsx"
 append_file "FLOWPATH ElicitationDialogue.tsx (Screen 2)" "$REPO/module-flowpath/src/ElicitationDialogue.tsx"
-append_file "FLOWPATH synthetic-elicitation-data.ts" "$REPO/module-flowpath/src/synthetic-elicitation-data.ts"
+append_file "FLOWPATH synthetic-elicitation.ts" "$REPO/module-flowpath/src/synthetic-elicitation.ts"
 append_file "FLOWPATH org_elicitation_system.md (PR-FLOWPATH-001)" "$REPO/module-flowpath/prompts/org_elicitation_system.md"
 append_file "FLOWPATH completeness_gate_system.md (PR-FLOWPATH-003)" "$REPO/module-flowpath/prompts/completeness_gate_system.md"
 append_file "APEX GateRunnerPanel.tsx (Gates tab pattern)" "$REPO/module-apex/src/GateRunnerPanel.tsx"

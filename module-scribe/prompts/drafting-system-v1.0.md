@@ -6,7 +6,7 @@
 - **Model:** supplied by `sovereign-api-client` (`claude-sonnet-4`). Do **not** hardcode a model string in SCRIBE.
 - **Max tokens:** platform default.
 - **Output:** a single JSON object whose shape is the canonical mode output schema for the requested `SCRIBEMode` (`@sovereign/data` `scribe-modes.ts`), validated before the user approves it at the Export step.
-- **Status:** Authored Session 5 (June 16, 2026). Approval: **PENDING Project Principal.**
+- **Status:** Authored Session 5 (June 16, 2026). Approval: **APPROVED — Project Principal, June 16, 2026** (registry of record: `module-scribe/prompts/CHANGELOG.md`, PR-SCRIBE-001; stale header back-propagated July 13, 2026 — the approval itself predates this text correction).
 
 ---
 
