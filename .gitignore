@@ -15,3 +15,5 @@ npm-debug.log*
 .DS_Store
 **/.DS_Store
 sovereign-security/logs/sovereign.jsonl
+logs/sovereign.jsonl
+sovereign-security/logs/sovereign.jsonl
