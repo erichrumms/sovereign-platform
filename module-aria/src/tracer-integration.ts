@@ -31,6 +31,18 @@
  * Version: 1.0 · Session 24 (D4) · June 29, 2026
  */
 
+import type {
+  ObligationRecord,
+  ProgramRecord,
+  StrategicObjective,
+} from "@sovereign/data";
+import {
+  SYNTH_PPBE_OBLIGATIONS,
+  SYNTH_PPBE_OBJECTIVES,
+  SYNTH_PPBE_PROGRAMS,
+} from "@sovereign/data";
+
+import { assemblePPBEObligationChain } from "./ppbe-aria";
 import {
   assembleDecisionChain,
   assembleDocumentChain,
@@ -61,7 +73,20 @@ export interface TraceableItem {
 export interface TracerDataSource {
   decisions: CounselDecisionRecord[];
   documents: ScribeDocumentRecord[];
+  /** Bare references with no resolvable entities — the honest not-integrated path. */
   obligations: ObligationRecordRef[];
+  /**
+   * ENTITY-RESOLVED PPBE records (Session 33, goal item 7): obligations whose
+   * ProgramRecord / StrategicObjective actually exist. These assemble through
+   * assemblePPBEObligationChain (the real Session 31 entity chain) instead of
+   * the ObligationRecordRef stub. An obligation id found here wins over a
+   * same-id bare reference — a resolvable chain is never shown as unresolved.
+   */
+  ppbe?: {
+    obligations: ObligationRecord[];
+    programs: ProgramRecord[];
+    objectives: StrategicObjective[];
+  };
 }
 
 // ── Synthetic demo records (Governance Clock OFF — all data is synthetic) ────────────────────
@@ -150,8 +175,12 @@ export const DEMO_DOCUMENTS: ScribeDocumentRecord[] = [
 ];
 
 /**
- * One obligation. The PPBE entities it would trace to (ProgramRecord, StrategicObjective) are not
- * built, so its chain returns the not-integrated message — by design until PPBE Phase I.
+ * One legacy obligation reference whose program (PRG-014) was never brought
+ * into PPBE tracking — kept deliberately so the Explorer still demonstrates
+ * the honest not-integrated path alongside the real PPBE chains below.
+ * (Session 24 wrote this when NO obligation could resolve; since Session 33
+ * the seeded PPBE obligations resolve fully — this is now the exception, not
+ * the rule.)
  */
 export const DEMO_OBLIGATIONS: ObligationRecordRef[] = [
   {
@@ -162,19 +191,42 @@ export const DEMO_OBLIGATIONS: ObligationRecordRef[] = [
   },
 ];
 
-/** The default synthetic data source the Explorer lists while the Governance Clock is OFF. */
+/**
+ * The default synthetic data source the Explorer lists while the Governance
+ * Clock is OFF. Session 33: the canonical PPBE seed's obligations, programs,
+ * and objectives ride in the entity-resolved lane, so the Explorer shows
+ * COMPLETE obligation → program → strategic objective chains over real
+ * seeded entities (goal item 7 / WE-6).
+ */
 export const DEMO_TRACER_DATA: TracerDataSource = {
   decisions: DEMO_DECISIONS,
   documents: DEMO_DOCUMENTS,
   obligations: DEMO_OBLIGATIONS,
+  ppbe: {
+    obligations: SYNTH_PPBE_OBLIGATIONS,
+    programs: SYNTH_PPBE_PROGRAMS,
+    objectives: SYNTH_PPBE_OBJECTIVES,
+  },
 };
 
-/** Flatten a data source into the Explorer's grouped picker list (stable order: decisions, documents, obligations). */
+/** Flatten a data source into the Explorer's grouped picker list (stable order:
+ *  decisions, documents, entity-resolved PPBE obligations, bare references). */
 export function listTraceableItems(data: TracerDataSource): TraceableItem[] {
+  const ppbeIds = new Set((data.ppbe?.obligations ?? []).map((o) => o.obligation_id));
   return [
     ...data.decisions.map((d): TraceableItem => ({ chain_type: "decision", id: d.document_id, label: d.title })),
     ...data.documents.map((d): TraceableItem => ({ chain_type: "document", id: d.document_id, label: d.document_title })),
-    ...data.obligations.map((o): TraceableItem => ({ chain_type: "obligation", id: o.obligation_id, label: o.label })),
+    ...(data.ppbe?.obligations ?? []).map(
+      (o): TraceableItem => ({
+        chain_type: "obligation",
+        id: o.obligation_id,
+        label: `Obligation ${o.obligation_id} — ${o.amount} against cost code ${o.cost_code}`,
+      })
+    ),
+    // A bare reference whose id is also entity-resolved is listed once, as the resolved item.
+    ...data.obligations
+      .filter((o) => !ppbeIds.has(o.obligation_id))
+      .map((o): TraceableItem => ({ chain_type: "obligation", id: o.obligation_id, label: o.label })),
   ];
 }
 
@@ -196,6 +248,17 @@ export function assembleChainFor(
     const record = data.documents.find((d) => d.document_id === id);
     return record ? assembleDocumentChain(record) : null;
   }
+  // Obligations: the entity-resolved PPBE lane wins (Session 33, goal item 7) —
+  // a resolvable chain is assembled over the REAL Session 31 entities.
+  const ppbeRecord = data.ppbe?.obligations.find((o) => o.obligation_id === id);
+  if (ppbeRecord) {
+    const program = data.ppbe!.programs.find((p) => p.program_id === ppbeRecord.program_id);
+    const objective = program
+      ? data.ppbe!.objectives.find((o) => o.objective_id === program.objective_id)
+      : undefined;
+    return assemblePPBEObligationChain(ppbeRecord, program, objective);
+  }
+  // Bare references fall back to the honest not-integrated stub (Session 24 path).
   const record = data.obligations.find((o) => o.obligation_id === id);
   return record ? assembleObligationChain(record) : null;
 }

@@ -181,7 +181,10 @@ describe("tracer-integration — adapters over real demo shapes", () => {
     const items = listTraceableItems(DEMO_TRACER_DATA);
     expect(items.filter((i) => i.chain_type === "decision").length).toBe(DEMO_TRACER_DATA.decisions.length);
     expect(items.filter((i) => i.chain_type === "document").length).toBe(DEMO_TRACER_DATA.documents.length);
-    expect(items.filter((i) => i.chain_type === "obligation").length).toBe(DEMO_TRACER_DATA.obligations.length);
+    // Session 33: obligations list the entity-resolved PPBE lane plus the bare references.
+    expect(items.filter((i) => i.chain_type === "obligation").length).toBe(
+      DEMO_TRACER_DATA.obligations.length + (DEMO_TRACER_DATA.ppbe?.obligations.length ?? 0)
+    );
   });
 
   it("assembles a chain for a known selection and returns null for an unknown one", () => {
