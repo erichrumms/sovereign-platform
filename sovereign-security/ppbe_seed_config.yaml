@@ -1,0 +1,8 @@
+# SOVEREIGN Platform — configuration for the SYNTHETIC PPBE seed trail only
+# (Session 33, seed_ppbe_events.py). Deliberately separate from
+# sovereign_config.yaml so seeding NEVER touches the operational audit chain.
+sovereign:
+  version: "1.0"
+  logger:
+    output_path: "./logs/ppbe_synthetic_seed.jsonl"
+    remote_sink: null
