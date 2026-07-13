@@ -117,6 +117,34 @@ export type {
 } from './entities/correction-record';
 export { validateCorrectionRecord } from './entities/correction-record';
 
+// PPBE workflow layer — D-P3 (June 29, 2026), reaffirmed D-P7 Option A
+// (July 12, 2026). Six entities registered Session 31 per docs/18 §3.
+export type { StrategicObjective, StrategicObjectiveStatus } from './entities/strategic-objective';
+export { validateStrategicObjective } from './entities/strategic-objective';
+
+export type {
+  ProgramRecord,
+  ObligationPlanEntry,
+  PerformanceBaselineMetric,
+} from './entities/program-record';
+export { validateProgramRecord } from './entities/program-record';
+
+export type {
+  BudgetExhibit,
+  ExhibitCertificationStatus,
+  ExhibitExportStatus,
+} from './entities/budget-exhibit';
+export { validateBudgetExhibit } from './entities/budget-exhibit';
+
+export type { ObligationRecord } from './entities/obligation-record';
+export { validateObligationRecord } from './entities/obligation-record';
+
+export type { EvaluationFinding, EvaluationFindingType } from './entities/evaluation-finding';
+export { validateEvaluationFinding } from './entities/evaluation-finding';
+
+export type { DependencyMap, DependencyHealthStatus } from './entities/dependency-map';
+export { validateDependencyMap } from './entities/dependency-map';
+
 // Time & Travel canonical synthetic seed data (Session 29 — Walkthrough E
 // WE-1/WE-5). Validated SYNTH- prefixed INSTANCES of the six D-TT3 entities,
 // single-sourced here because the TT workflow layer spans four host modules
@@ -131,4 +159,4 @@ export {
 } from './synthetic/tt-seed';
 
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.4.0';
+export const SOVEREIGN_DATA_VERSION = '1.5.0';
