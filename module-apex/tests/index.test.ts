@@ -21,7 +21,7 @@ describe("apexModule contract", () => {
     expect(apexModule.minimumRole).toBe("PLATFORM_ADMIN");
   });
 
-  it("registers the two APEX agents plus the three APEX-hosted Time & Travel agents (Session 27)", () => {
+  it("registers the two APEX agents, the three APEX-hosted TT agents (Session 27), and the APEX-hosted PPBE synthesizer (Session 32)", () => {
     const ids = apexModule.agentCards.map((c) => c.agent_id);
     expect(ids).toEqual([
       "apex.ai-assistant",
@@ -29,6 +29,7 @@ describe("apexModule contract", () => {
       "tt.time-compliance-engine",
       "tt.pattern-analyst",
       "tt.audit-reporter",
+      "ppbe-evidence-synthesizer",
     ]);
     const byId = Object.fromEntries(apexModule.agentCards.map((c) => [c.agent_id, c]));
     expect(byId["apex.ai-assistant"].agent_class).toBe("Analytical");
@@ -36,7 +37,8 @@ describe("apexModule contract", () => {
     expect(byId["tt.time-compliance-engine"].agent_class).toBe("Governance");
     expect(byId["tt.pattern-analyst"].agent_class).toBe("Monitoring");
     expect(byId["tt.audit-reporter"].agent_class).toBe("Governance");
-    // TT cards carry the HOST product — the workflow layer is not a SovereignProduct.
+    expect(byId["ppbe-evidence-synthesizer"].agent_class).toBe("Analytical");
+    // TT/PPBE cards carry the HOST product — a workflow layer is not a SovereignProduct.
     expect(apexModule.agentCards.every((c) => c.product === "APEX")).toBe(true);
     expect(apexModule.agentCards.every((c) => c.data_classification_ceiling === "UNCLASSIFIED")).toBe(true);
   });

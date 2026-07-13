@@ -137,6 +137,32 @@ const ttAuditReporterCard: AgentCard = {
   security_observable: true,
 };
 
+// --- PPBE workflow-layer agents hosted on APEX infrastructure (Session 32,
+// docs/18 §7.2 — D-P6: no new module directory; AIS D-P5). product is the HOST
+// product ("APEX") — the workflow layer is not a SovereignProduct (same pattern
+// as the tt.* cards above). ---
+
+// ppbe-evidence-synthesizer — Analytical, LLM-backed under the PENDING
+// evidence_synthesis_system prompt (Session 32; synthetic-data use only until
+// approved). Advisory only (docs/18 §6 Tier A): aggregates EvaluationFinding
+// records + program data into labeled synthesis reports; never decides, never
+// writes upstream, never invokes other agents.
+const ppbeEvidenceSynthesizerCard: AgentCard = {
+  agent_id: "ppbe-evidence-synthesizer",
+  agent_class: "Analytical",
+  product: "APEX",
+  capabilities: ["evidence_aggregation", "cross_program_synthesis", "planning_review_support"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -151,6 +177,7 @@ export const apexModule: SovereignModuleContract = {
     ttTimeComplianceEngineCard,
     ttPatternAnalystCard,
     ttAuditReporterCard,
+    ppbeEvidenceSynthesizerCard,
   ],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
