@@ -27,6 +27,7 @@ cleared beyond that. **No prompt in this registry is approved for live
 | evidence_synthesis_system | `ppbe-evidence-synthesizer` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
 | scenario_analysis_system | `ppbe-scenario-analyst` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
 | exhibit_drafting_system | `ppbe-exhibit-drafter` | v1.0 | **PENDING — Project Principal** | 2026-07-13 (Session 32, resumed) |
+| coordination_system | `ppbe-coordination-assistant` | v1.0 | **PENDING — Project Principal** | 2026-07-13 (Session 32, resumed) |
 
 ## Change History
 
@@ -71,3 +72,20 @@ cleared beyond that. **No prompt in this registry is approved for live
   standing rule, Lesson 16).
 - Benchmark pass: N/A (not CPMI Track A).
 - Approval: **PENDING — Project Principal.** Same terms as above.
+
+- **coordination_system.md — initial baseline, PENDING.** Instructs
+  `ppbe-coordination-assistant` (Operational) to read unstructured
+  coordination material against the tracked item list and produce an advisory
+  digest — update proposals citing only tracked items (fabricated references
+  rejected structurally by `module-nexus/src/ppbe-coordination-assistant.ts`),
+  every proposal requiring explicit human authorization, mandatory advisory
+  label. Deadline monitoring is deterministic and runs outside the prompt.
+  GOVERNANCE NOTE: the registry's prompt requirement overrides docs/18 §5's
+  "inferred no" (Session 32 standing rule); the agent was moved from Session 31
+  per that session's decision #1.
+- Benchmark pass: N/A (not CPMI Track A).
+- Approval: **PENDING — Project Principal.** Same terms as above.
+
+**All four PPBE prompts (D-P5) are now authored and registered PENDING —
+the Session 32 done condition's prompt requirement is satisfied. None is
+approved for live use.**

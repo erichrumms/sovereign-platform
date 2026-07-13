@@ -81,7 +81,41 @@ const ttTravelRouterCard: AgentCard = {
   security_observable: true,
 };
 
-const NEXUS_AGENT_CARDS: AgentCard[] = [ttTravelComplianceEngineCard, ttTravelRouterCard];
+// ppbe-coordination-assistant — PPBE workflow-layer agent hosted on NEXUS/VIGIL
+// infrastructure (Session 32, docs/18 §7.2 — D-P6: no new module directory; AIS
+// D-P5; moved from Session 31 per that session's Project Principal decision #1).
+// Operational, LLM-backed under the PENDING ppbe/prompts/coordination_system.md
+// prompt (synthetic-data use only until approved; registry's prompt requirement
+// overrides docs/18 §5's "inferred no"). Tracks action items, commitments, and
+// governance-calendar obligations; routes coordination failures to VIGIL as
+// PPBE_ANOMALY findings. NEVER sends communications; the only close path
+// requires a human operator and a successful Logger emit.
+const ppbeCoordinationAssistantCard: AgentCard = {
+  agent_id: "ppbe-coordination-assistant",
+  agent_class: "Operational",
+  product: "NEXUS",
+  capabilities: [
+    "action_item_tracking",
+    "governance_calendar_monitoring",
+    "coordination_failure_routing",
+    "natural_language_coordination_tracking",
+  ],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
+const NEXUS_AGENT_CARDS: AgentCard[] = [
+  ttTravelComplianceEngineCard,
+  ttTravelRouterCard,
+  ppbeCoordinationAssistantCard,
+];
 
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;

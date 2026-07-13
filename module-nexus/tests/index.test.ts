@@ -22,12 +22,13 @@ describe("nexusModule contract", () => {
     expect(nexusModule.minimumRole).toBe("AGENT_OPERATOR");
   });
 
-  it("registers the two NEXUS-hosted Time & Travel agents (Session 27, docs/17 §2)", () => {
+  it("registers the two NEXUS-hosted TT agents (Session 27) and the PPBE coordination assistant (Session 32)", () => {
     const ids = nexusModule.agentCards.map((c) => c.agent_id);
-    expect(ids).toEqual(["tt.travel-compliance-engine", "tt.travel-router"]);
+    expect(ids).toEqual(["tt.travel-compliance-engine", "tt.travel-router", "ppbe-coordination-assistant"]);
     const byId = Object.fromEntries(nexusModule.agentCards.map((c) => [c.agent_id, c]));
     expect(byId["tt.travel-compliance-engine"].agent_class).toBe("Governance");
     expect(byId["tt.travel-router"].agent_class).toBe("Operational");
+    expect(byId["ppbe-coordination-assistant"].agent_class).toBe("Operational");
     // The workflow layer is not a SovereignProduct — cards carry the HOST product.
     expect(nexusModule.agentCards.every((c) => c.product === "NEXUS")).toBe(true);
     expect(nexusModule.agentCards.every((c) => c.data_classification_ceiling === "UNCLASSIFIED")).toBe(true);
