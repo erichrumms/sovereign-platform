@@ -1,21 +1,20 @@
-# Reserved — `ppbe-ledger-monitor` (PPBE Phase II)
+# `ppbe-ledger-monitor` — BUILT (Session 31, PPBE Build Session 1 — Core Integration)
 
-**Reserved for PPBE Phase II integration.** This agent will be registered and activated at
-the PPBE governance session (~Session 19) and built no earlier than PPBE Phase II
-(~Session 22).
+The reservation conditions this directory guarded are satisfied: D-P1–D-P6 were
+decided June 29, 2026 (reaffirmed by D-P7 Option A, July 12, 2026), the agent is
+registered in `Agent_Identity_Standard.md` (Constraint #10), and the build
+specification is `docs/18_PPBE_Workflow_Architecture.md`.
 
-**No build work in this directory** until the PPBE governance decisions D-P1 through D-P6 are
-recorded in the Integration Brief and the agent is added to `Agent_Identity_Standard.md`
-(Standing Constraint #10 — no agent in code before it is in the registry).
+**Implementation:** `module-apex/src/ppbe-ledger-monitor.ts`
+**Tests:** `module-apex/tests/ppbe-ledger-monitor.test.ts`
 
-## Planned role (from SOVEREIGN_PPBE_Integration_Architecture_Draft1.md, Table 6)
+The implementation lives in `src/` following the Time & Travel workflow-layer
+pattern (`tt-pattern-analyst.ts` et al.), not in this directory — this README
+remains as the registry-anchored pointer.
 
-- **Class:** Monitoring
-- **Home module:** `module-apex` (Phase 5 — Budget Execution)
-- **Function:** Continuously analyze obligation records and performance data for anomalies,
-  deviation patterns, and early-warning signals. Routes `PPBE_ANOMALY` events to VIGIL when
-  obligation rates or budget-to-actual variance exceed configured thresholds.
-
-This directory and its sibling exist now so a future session creates these agents in the right
-location without naming conflicts (spec §17.2 Commitment 3). They cost one directory and one
-README each and prevent rewrite debt later.
+- **Class:** Monitoring — DETERMINISTIC (registry determination; no LLM call, no
+  prompt, no sovereign-api-client)
+- **Rules:** obligation rate deviation vs. plan, lifecycle ceiling
+  proximity/exceedance, feedback-loop stall (R-P7)
+- **Scope:** observes and alerts only — findings route to the VIGIL Alert Queue;
+  `PPBE_ANOMALY` emission is Python-side (Session 31 Project Principal decision)

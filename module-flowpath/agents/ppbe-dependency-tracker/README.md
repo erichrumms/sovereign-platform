@@ -1,14 +1,22 @@
-# Reserved — `ppbe-dependency-tracker` (PPBE Phase II)
+# `ppbe-dependency-tracker` — BUILT (Session 31, PPBE Build Session 1 — Core Integration)
 
-Reserved for PPBE Phase II integration. The `ppbe-dependency-tracker` agent (NEXUS / FLOWPATH,
-Monitoring class — see `SOVEREIGN_PPBE_Integration_Architecture_Draft1.md` Table 6) will be
-registered and activated at the PPBE governance session and built in Session ~22.
+The reservation conditions this directory guarded are satisfied: D-P1–D-P6 were
+decided June 29, 2026 (reaffirmed by D-P7 Option A, July 12, 2026), the agent is
+registered in `Agent_Identity_Standard.md` (Constraint #10), and the build
+specification is `docs/18_PPBE_Workflow_Architecture.md`.
 
-**No build work in this directory** until PPBE governance decisions D-P1 through D-P6 are recorded
-in the Integration Brief (Constraint #10 — agents are registered before code; the six PPBE agents
-are not yet in `Agent_Identity_Standard.md`).
+**Implementation:** `module-flowpath/src/ppbe-dependency-tracker.ts`
+**Tests:** `module-flowpath/tests/ppbe-dependency-tracker.test.ts`
 
-This reservation costs one directory and one README. It prevents a future session from creating
-this agent in the wrong location, prevents naming conflicts, and signals that the slot is
-intentional — the same defensive pattern APEX used for its two reserved PPBE agent slots
-(spec 13_APEX_Architecture.md §17.2, Commitment 3).
+The implementation lives in `src/` following the Time & Travel workflow-layer
+pattern, not in this directory — this README remains as the registry-anchored
+pointer.
+
+- **Class:** Monitoring — DETERMINISTIC (registry determination; no LLM call, no
+  prompt, no sovereign-api-client)
+- **Rules:** dependency health failures (failed/at-risk), handoff timing
+  violations, quality-threshold failures; plus the Tier B phase-readiness
+  contribution (`assessPhaseReadiness`)
+- **Scope:** reads DependencyMap entities and handoff observations read-only;
+  tracks and routes only — findings go to VIGIL; `PPBE_ANOMALY` emission is
+  Python-side (Session 31 Project Principal decision)
