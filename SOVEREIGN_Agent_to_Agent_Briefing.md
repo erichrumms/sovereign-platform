@@ -1,157 +1,273 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
 ## For Any Claude Instance Opening a SOVEREIGN Session
-## Updated July 11, 2026 — TT prompts delivered, docs/18 status corrected, prompt/D-TT7 dependency clarified
+## Updated June 22, 2026 — reflects monorepo path change
 
 ---
 
 ## Who You Are Talking To
 
-The Project Principal is the sole human decision-maker. Non-technical background,
-highly engaged, learning fast. Big picture first, components second. One question at
-a time. He pastes Terminal output directly into chat — read it carefully. **He wants
-to demo SOVEREIGN to a CTO** — this is the current organizing priority; treat requests
-through that lens when relevant, without inventing urgency that isn't there.
+The Project Principal is the sole human decision-maker on this project. Non-technical background, highly engaged, learning fast. He thinks in big pictures first and components second — always orient before you detail. He makes confident decisions when options are clearly framed with what each closes and what it leaves open. He pastes Terminal output directly into chat; read it carefully, it always contains useful information. One question at a time. Never assume he knows where a file is.
 
 ---
 
 ## What SOVEREIGN Is
 
-A governed, AI-aligned operations platform — six integrated core products (NEXUS,
-CPMI, APEX, FLOWPATH, AgentOS, ARIA Suite) plus four companion modules (COUNSEL,
-SCRIBE, LENS, VIGIL), a future seventh product (the Intelligence Layer) that every
-current product feeds, and two governed workflow layers (PPBE, Time & Travel) —
-never products, never their own shell module or certification cycle.
+SOVEREIGN is a governed, AI-aligned operations platform for enterprise and federal organizations — six integrated core products (NEXUS, CPMI, APEX, FLOWPATH, AgentOS, ARIA Suite) plus four companion modules (COUNSEL, SCRIBE, LENS, VIGIL) and a future seventh product called the Intelligence Layer that must never be lost. Every current product builds toward it.
 
-**All six primary products and all four companion modules are feature-complete.**
-Walkthroughs A–D complete, including full remediation of every Walkthrough D finding.
+Three non-negotiable design outcomes govern every build decision: integration reliability, operational efficiency, and end-to-end security observability.
+
+Three shared infrastructure layers underpin everything: the SOVEREIGN Security Observability Framework (shared nervous system), the CPMI-VRS AI Governance Standard (shared governance), and AgentOS (shared execution environment). No product builds its own version of any of these.
 
 ---
 
-## Current State — July 9, 2026
+## ⚠️ PATH CHANGE — Effective June 22, 2026
+
+The monorepo was moved to a new permanent location. Every `cd`, `cp`, and file-path command must use the new path.
+
+| | Path |
+|---|---|
+| **Old (invalid)** | `~/sovereign-platform/` |
+| **New (permanent)** | `~/Developer/sovereign-platform/` |
+| **Absolute path** | `/Users/developmentsystem/Developer/sovereign-platform/` |
+
+Git repository, history, GitHub remote, npm workspace linkages, shell contract, and all 546 tests are intact. Only the local directory path changed.
+
+**Open Claude Code with:**
+```
+cd ~/Developer/sovereign-platform
+claude
+```
+
+**Copy files to monorepo with:**
+```
+cp ~/Downloads/<filename> ~/Developer/sovereign-platform/
+cp ~/Downloads/<filename> ~/Developer/sovereign-platform/docs/
+```
+
+---
+
+## Current State — As of Session 7 (June 18, 2026)
 
 | Item | State |
 |---|---|
-| HEAD / origin/main | `c3684f0` (AIS-dedupe fix, July 9) — verify current before assuming unchanged |
-| shell-contract.ts | v1.15 · `939c2441…bfa5876` — unchanged since Session 23 |
-| Platform tests | 1288 · 0 production vulnerabilities — unchanged since Session 26 (no build session since; `c3684f0` is docs-only) |
-| CPMI-VRS Gate 3 (ARIA Suite) | Unblocked, **not yet attested** |
-| Time & Travel | **D-TT1–D-TT6 decided June 29, 2026** (fully filed record). `docs/17` complete. **D-TT7 open — does not block prompts.** Two prompts drafted and delivered (`tt/prompts/`), approval pending D-TT7 only if Option C is chosen. |
-| PPBE | **D-P1–D-P6 decided June 29, 2026** (well-evidenced, original record not located — reconstruction provided). `docs/18` **not yet started** (corrected — was previously described as in progress). **D-P7 open.** |
-| Registered agents | 44 (36 master, including 6 PPBE agents — not separate from the 36 — + 8 `tt.*`) |
-| Approved prompts | 14 approved; 2 Time & Travel prompts drafted, pending formal approval alongside D-TT7 |
+| Last completed session | Session 7 |
+| HEAD / origin/main | `bd0e20d` |
+| shell-contract.ts | v1.3 · SHA `4d78754f…6836acc2` · unchanged Sessions 3–7 |
+| Integration Brief | v1.11 (path commands need updating to new monorepo path — will correct in v1.12) |
+| SBOM Registry | v1.8 |
+| JS tests passing | 419 (+ 127 Python = 546 total) |
+| All data | SYNTHETIC — Governance Clock not activated |
 
-**Do not assume PPBE's or Time & Travel's data-dictionary entities are still open
-decisions — they are not.** The only open questions are D-P7 and D-TT7: whether those
-already-approved entities should be *amended*, not whether they should be *approved*.
+**Companion suite build status:**
+- COUNSEL — core complete (91 tests)
+- SCRIBE — core complete (86 tests)
+- VIGIL — core complete (63 tests)
+- LENS — scaffold only (9 tests) · core unblocked · `03_LENS_Orientation_Module.md` authored
 
----
-
-## ⚠️ The Reconciliation This Update Reflects — Read Before Trusting Older Documents
-
-Integration Brief v1.40 and earlier incorrectly carried PPBE's and Time & Travel's
-data-dictionary decisions as pending. **They were decided June 29, 2026, in
-governance sessions that happened outside the main session-to-session continuity
-thread** — discovered only through a multi-document reconciliation effort on July 9
-after the Project Principal noticed the discrepancy and supplied source material for
-verification. If you encounter any document dated between June 30 and July 9 that
-treats PPBE's or Time & Travel's entities as unapproved, **trust this Briefing and
-Integration Brief v1.41 over it.**
-
-**Standing lesson from this:** governance decisions made in a conversation outside the
-main continuity thread do not automatically propagate. If a side conversation produces
-a real decision, its output needs to be explicitly brought back and reconciled — it
-doesn't happen on its own, and the gap can persist for weeks before anyone notices.
+**Next build session:** Session 8 — LENS core + SCRIBE intermediate modes + Smart Capture
 
 ---
 
-## ✅ Gate 3 Is Unblocked — Not Yet Attested
+## The Two Claude Environments — Never Cross These
 
-D-11/D-12 fixed, Session 26. Pre-formed attestation statement, blocked until
-determinism passes, verbatim-logged. **Attestation itself is still a deliberate,
-un-undoable Project Principal action on his own timeline** — don't frame it as
-overdue just because it's unblocked.
+**Claude Chat** — governance only. Authors documents, merges SBOMs, approves prompts, produces session opening prompts, authors architecture specs. Never writes code.
 
----
+**Claude Code** — code only. Writes, tests, and commits code. Produces session handoff and SBOM update at close. Never authors governance documents.
 
-## D-P7 and D-TT7 — Open Reconsideration Decisions
-
-Both workflow layers' six approved data-dictionary entities are being reconsidered —
-not reopened wholesale, only the entity-approval decision (D-P3, D-TT3) in each —
-given two platform precedents where a "no shell-contract change needed" or "frozen
-interface" assessment turned out wrong once real build work tested it: `AriaCertification`
-(Session 26, D-3) and GD-20 superseding `docs/16`'s claim that ARIA needed no
-shell-contract change. Full records: `Governance_Decision_Record_PPBE_DP7.md`,
-`Governance_Decision_Record_TT_DTT7.md`. Each offers three options — reaffirm,
-narrow reserved-field amendment, or full architecture first. **Neither decided yet.**
-Do not build against either workflow layer's data dictionary as if these are settled.
+The Project Principal is the bridge. He uploads Claude Code's close artifacts to Claude Chat. He downloads Claude Chat's governance documents and installs them in the repo.
 
 ---
 
-## Time & Travel Is the Lead Candidate for the Demo
+## The Invariant Constraints
 
-Unlike PPBE, Time & Travel has a **complete, approved build specification**
-(`docs/17_TimeAndTravel_Architecture.md`) — tool designs, ten compliance rule
-categories, Logger events, shell-contract impact assessment, autonomous-operation
-rules for Claude Code — **and now both drafting prompts, delivered July 11**
-(`tt/prompts/travel_drafting_system.md`, `tt/prompts/time_drafting_system.md`).
-It is the most build-ready path to a demonstrable, working workflow layer.
-Sequence build sessions accordingly unless directed otherwise.
+These apply to every session, every product, every build decision without exception.
 
-**On the two prompts specifically:** drafting them did not require D-TT7 to resolve
-first — they don't reference any field beyond what D-TT3 already approved. Formal
-approval is held pending D-TT7 only as a precaution against Option C (full
-architecture) changing the underlying fields; if D-TT7 resolves to Option A or B,
-approve the prompts as-written alongside the decision, no rework needed.
-
----
-
-## Corrections to Carry Forward
-
-- **`AIS-dedupe` is resolved.** `Agent_Identity_Standard.md`'s Time & Travel section was
-  found duplicated three times (a July 1 merge commit, `88cd04e`, unknowingly worsened
-  an existing double-duplication to triple). Fixed and verified July 9 — file truncated
-  to its single clean copy (1,359 lines), all three prior copies confirmed byte-identical
-  before the cut, committed as `c3684f0`. No longer open — don't re-flag it.
-- **npm-dev-vulns is not an open decision.** The `esbuild`/Vite advisory has been
-  deferred to the Stage 5+ Vite major-version review since Session 2B (June 18). Stop
-  tracking it as "pending" — it's already resolved as "deferred with a trigger condition."
-- **`docs/16`'s retroactive Supervision Efficiency section — status still genuinely
-  unverified.** `docs/14`'s addendum required it before Walkthrough D. Whether it
-  actually happened is unconfirmed either way. Worth a direct check, not an assumption.
-- **`Agent_Identity_Standard_v1_2.md` and `v1_3.md` are a confirmed-dead, abandoned
-  numbered-versioning branch** — early, short-lived, superseded by the append-only
-  document before Session 15. If encountered again, don't treat them as current.
+1. No independent security, governance, or audit systems — use the platform's
+2. No shared entity field-name divergence from the data dictionary
+3. No rewrite debt — connections are configuration changes, not rewrites
+4. Every human decision event carries `decision_type`
+5. No direct Anthropic API calls — `createSovereignClient()` only
+6. `workflow_step_id` on every Logger call
+7. Shell context frozen at eight exports
+8. `shell-contract.ts` is a governance document — changes require a governance decision, version increment, changelog, impact assessment, and SHA-256 verification of both copies
+9. All prompts registered before build
+10. All agents registered before build
+11. Five synced copies of shared artifacts — changes must propagate to all copies
 
 ---
 
-## Key Codebase Facts (Unchanged Since Session 26)
+## Where Everything Lives
 
-- Python `APPROVED_EVENT_TYPES` 84, permanently 5 more than TS's 79 (3 TRACER + 2 ARC,
-  Python-only by design)
-- `ARIA_ADAPTATION_DECISION` — reserved event type, not yet wired
-- `GATE_3_ATTESTATION` — `HumanDecisionType`, GD-7, shared across CPMI/APEX/FLOWPATH/ARIA
-- `AriaCertification` has no destination/recipient fields — audit-capture only,
-  enforcement deferred to `ARIA-EXPORT-GD`
-- ARC outputs deliberately not routed through `ctx.aria`
-- COUNSEL has no `regulation_basis` field — candidate GD, reinforced three ways now
+### Mac Local File System
+
+```
+/Users/developmentsystem/
+├── Developer/
+│   ├── sovereign-platform/              ← MONOREPO ROOT (moved June 22, 2026)
+│   │   ├── package.json
+│   │   ├── SOVEREIGN_Platform_Integration_Brief_v1.11.md
+│   │   ├── Agent_Identity_Standard.md   ← all 9 agents recorded
+│   │   ├── sovereign-security/          ← 127 Python tests
+│   │   ├── sovereign-api-client/        ← 143 JS tests
+│   │   ├── sovereign-data/              ← 27 JS tests
+│   │   ├── sovereign-shell/
+│   │   │   ├── shell-contract.ts        ← v1.3 · SHA 4d78754f…6836acc2
+│   │   │   └── src/register-modules.ts ← mounts counsel + scribe + vigil + lens
+│   │   ├── module-counsel/              ← COMPLETE · 91 tests
+│   │   ├── module-scribe/               ← Core COMPLETE · 86 tests
+│   │   ├── module-vigil/                ← Core COMPLETE · 63 tests
+│   │   ├── module-lens/                 ← Scaffold · 9 tests
+│   │   └── docs/
+│   │       ├── 03_LENS_Orientation_Module.md    ← LENS architecture spec
+│   │       ├── vigil_alert_response.md          ← LENS source doc
+│   │       ├── vigil_agent_approvals.md         ← LENS source doc
+│   │       ├── 02_SCRIBE_Drafting_Workspace.md
+│   │       ├── 04_VIGIL_Operator_Dashboard.md
+│   │       └── sovereign_data_CompanionSuite_Specification.md
+│   ├── grip-it-good/
+│   ├── RuckItGood/
+│   └── SpinWave/
+```
+
+### iCloud (`7 - SOVEREIGN/`)
+
+```
+7 - SOVEREIGN/
+├── SOVEREIGN_Platform_Integration_Brief_v1.11.md
+├── SOVEREIGN_New_Conversation_Handoff_v4_20260617.md
+└── Companion Suite/Governance/
+    ├── 03_LENS_Orientation_Module.md
+    ├── SBOM_Registry_v1.8_MERGED.md
+    ├── Prompt_Approvals_Session6.md
+    ├── Prompt_Approvals_Session7.md
+    ├── vigil_alert_response.md
+    └── vigil_agent_approvals.md
+```
+
+### GitHub
+
+```
+origin → https://github.com/erichrumms/sovereign-platform.git
+Branch: main · HEAD: bd0e20d · in sync with origin/main
+```
 
 ---
 
-## What Makes a Session Go Badly
+## The Registered Agents (9 total)
+
+| Agent ID | Module | Class | Status |
+|---|---|---|---|
+| `counsel-analyst` | COUNSEL | Analytical | Implemented |
+| `scribe-drafter` | SCRIBE | Operational | Implemented |
+| `scribe-style-analyst` | SCRIBE | Analytical | Implemented |
+| `vigil-triage-analyst` | VIGIL | Monitoring | Implemented |
+| `vigil-approval-agent` | VIGIL | Monitoring | Registered, not yet implemented |
+| `lens-explainer` | LENS | Analytical* | Registered, scaffold only |
+| `lens-orientation` | LENS | Analytical | Registered, scaffold only |
+
+*Registered as Operational in scaffold — correct to Analytical in LENS core build session.
+
+---
+
+## The Approved Prompts (7 total)
+
+| ID | Prompt | Approved |
+|---|---|---|
+| PR-COUNSEL-001/002/003 | Analysis, Counterargument, Pre-Mortem | June 15–16, 2026 |
+| PR-SCRIBE-001 | Drafting Engine | June 16, 2026 |
+| PR-SCRIBE-004 | Style Analysis | June 17, 2026 |
+| PR-VIGIL-001 | Triage System | June 17, 2026 |
+| PR-LENS-001 | Explainer System | June 18, 2026 |
+
+Not yet authored: PR-SCRIBE-002, PR-SCRIBE-003, PR-LENS-002.
+
+---
+
+## Open Governance Items — Most Consequential for Session 8
+
+**Alert-response HumanDecisionType deferred to v1.4** — VIGIL alert responses emit `ALERT_*` only. Do not invent `HumanDecisionType` members for alert responses.
+
+**SCRIBE intermediate modes (`synthesis`, `framing`)** — no product intake schema; cannot run schema validation. Build in Session 8; no new governance decisions needed.
+
+**`ctx.data` cross-session store** — StyleProfile injectable port is built; cross-session persistence needs a shell-contract v1.4 governance decision.
+
+**`vigil-approval-agent` still deferred** — do not register until the Agent Approval flow build session.
+
+**`lens-explainer` agent class** — registered as Operational in scaffold; correct to Analytical in LENS core build session.
+
+**Integration Brief v1.11 path commands** — two copy commands in §18 still reference the old `~/sovereign-platform/` path. Correct in v1.12.
+
+---
+
+## The Post-Session Rhythm — Every Session
+
+```
+Claude Code closes → handoff + SBOM update committed + pushed
+        ↓
+Project Principal copies close artifacts → uploads to Claude Chat
+        ↓
+Claude Chat produces → merged SBOM + updated Integration Brief
+                     + prompt approval records + any new spec docs
+        ↓
+Project Principal downloads → copies Brief + specs to monorepo
+                            → commits + pushes → places files in iCloud
+        ↓
+Next session → gather script → Claude Code → context paste → opening prompt
+```
+
+Never skip the handoff. Never skip the post-session document cycle. Claude has no memory between sessions — the documents are the entire institutional memory of this project.
+
+---
+
+## How to Open the Next Session
+
+**Step 1 — Run the gather script**
+```
+~/Developer/sovereign-platform/gather_session8_context.sh
+```
+*(The gather script must be updated to use the new monorepo path before running.)*
+
+**Step 2 — Open Claude Code**
+```
+cd ~/Developer/sovereign-platform
+claude
+```
+
+**Step 3 — Paste context** (clipboard from gather script)
+
+**Step 4 — Paste the session opening prompt** (produced by Claude Chat)
+
+**Step 5 — Claude Code confirms files, restates done condition, waits for approval**
+
+**Step 6 — Project Principal approves. Build begins.**
+
+---
+
+## Key Decision Points Where the Project Principal Acts
+
+- **Approving the session done condition** — before any code is written
+- **Confirming each deliverable** — before Claude Code proceeds to the next
+- **Approving prompts** — Claude cannot self-approve; every PR-* requires explicit Project Principal approval in Claude Chat
+- **Resolving governance forks** — when Claude Code surfaces an architectural conflict it stops and presents options; the Project Principal decides
+- **Downloading and placing files** — Integration Brief to monorepo root, specs to `docs/`, all files to iCloud
+- **Committing and pushing governance docs** — after every post-session file placement
+
+---
+
+## What Makes a Session Go Badly — and How to Prevent It
 
 | Problem | Prevention |
 |---|---|
-| Treating PPBE/TT entities as still-open | They're decided — only D-P7/D-TT7 (amendment) are open |
-| Wrong shell-contract hash | Verify v1.15 — unchanged since Session 23 |
-| Agent count wrong | Count the authoritative table directly — a naive grep returns 46 |
-| Building against Time & Travel or PPBE data dictionary before D-TT7/D-P7 resolve | Wait — amendment could still change field shape |
-| Treating `AIS-dedupe` as still open | It's resolved (`c3684f0`, July 9) — don't re-flag it |
-| Treating npm-dev-vulns as an open choice | It's an already-made, deferred decision |
-| A side conversation's governance decision not making it back into the main thread | This is exactly what caused the multi-week reconciliation — bring outputs back explicitly, promptly |
-| Session closes without handoff | Non-negotiable |
+| Wrong monorepo path used | All commands use `~/Developer/sovereign-platform/` — not the old path |
+| Claude Code opens against stale Integration Brief | Always copy the new Brief to monorepo root and push before next session |
+| Gather script has wrong file list or wrong path | Update both the file list (per Integration Brief §15) and the monorepo path before each session |
+| Claude Code invents architecture | Every module needs a spec doc before its core build session — author in Claude Chat first |
+| Prompt runs before approval | Register as PENDING, approve in Claude Chat, never self-approve |
+| Governance decision made in code | Claude Code surfaces forks and stops — Project Principal decides in chat |
+| Session closes without handoff | Non-negotiable — always tell Claude Code to produce the handoff before closing |
 
 ---
 
-*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 9, 2026*
-*Supersedes July 1, 2026 version — full PPBE/TT governance reconciliation, demo track added*
+*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated June 22, 2026*
+*Supersedes the June 18, 2026 version — path change only, all governance state unchanged*
 *Pre-Decisional · Internal Working Document*
