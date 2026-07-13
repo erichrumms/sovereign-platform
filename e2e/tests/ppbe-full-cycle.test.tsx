@@ -659,6 +659,436 @@ describe("PRELIMINARY V&V — SCRIBE exhibits behind the DOUBLE gate + CLEAR + d
   });
 });
 
+// ═════════════════════════════════════════════════════════════════════════════
+// SECOND PASS — Session 33: COMPREHENSIVE V&V under the seeded portfolio.
+// Everything above ran at n=1 and remains as the wiring baseline. Everything
+// below re-confirms the same guarantees under the canonical multi-program seed
+// AND exercises what the first pass explicitly could not: every previously-
+// unfired anomaly rule, a genuinely NOT-ready Tier B case, multi-program
+// synthesis/scenario/dashboard output, the entity-resolved TRACER lane, the
+// coordination digest against the realistic notes corpus, and the seeded
+// Python-side JSONL trail cross-checked against the TypeScript seed.
+// ═════════════════════════════════════════════════════════════════════════════
+
+import * as fs from "fs";
+import * as path from "path";
+
+import {
+  SYNTH_PPBE_AS_OF,
+  SYNTH_PPBE_DEPENDENCIES,
+  SYNTH_PPBE_FINDINGS,
+  SYNTH_PPBE_OBJECTIVES,
+  SYNTH_PPBE_OBLIGATIONS,
+  SYNTH_PPBE_PROGRAMS,
+} from "@sovereign/data";
+
+import { SYNTH_PPBE_HANDOFF_OBSERVATIONS } from "../../module-flowpath/src/ppbe-synthetic-handoffs";
+import {
+  SYNTH_PPBE_COORDINATION_ITEMS,
+  SYNTH_PPBE_MEETING_NOTES,
+} from "../../module-nexus/src/ppbe-synthetic-coordination";
+import {
+  runCoordinationTracking,
+  staticCoordinationDigest,
+  validateCoordinationDigest,
+  type CoordinationDigest,
+} from "../../module-nexus/src/ppbe-coordination-assistant";
+import {
+  DEMO_TRACER_DATA,
+  assembleChainFor,
+} from "../../module-aria/src/tracer-integration";
+import {
+  createSyntheticPPBEDashboardInputs,
+  SYNTH_PPBE_EVENT_COUNTS,
+} from "../../module-apex/src/ppbe-data-adapter";
+
+const LEDGER_CONFIG = {
+  obligation_deviation_percent: 10,
+  ceiling_proximity_percent: 90,
+  feedback_stall_fraction: 0.5,
+  feedback_minimum_findings: 2,
+};
+
+function seededActuals(programId: string): Record<string, number> {
+  return createSyntheticPPBEDashboardInputs().actualsByProgram[programId] as Record<string, number>;
+}
+
+describe("SECOND PASS — re-confirmation of every first-pass guarantee under seeded data", () => {
+  it("all six Tier B transitions still require a human, now with seeded readiness text", () => {
+    const pairs: Array<[number, number]> = [[1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]];
+    for (const [from, to] of pairs) {
+      const readiness = assessPhaseReadiness(
+        SYNTH_PPBE_DEPENDENCIES,
+        SYNTH_PPBE_HANDOFF_OBSERVATIONS,
+        SYNTH_PPBE_AS_OF,
+        `phase-${from}`
+      );
+      const gateCase = openPhaseTransitionGate(
+        {
+          from_phase: from,
+          to_phase: to,
+          data_quality_assessment: "Seeded portfolio inputs validated against their source records.",
+          integration_readiness_check: readiness.summary,
+          requested_by_agent_id: "ppbe-dependency-tracker",
+        },
+        SYNTH_PPBE_AS_OF,
+        sink
+      )!;
+      expect(isPhaseTransitionComplete(gateCase)).toBe(false);
+      const decided = recordPhaseTransitionDecision(gateCase, "APPROVE", OPERATOR, NOTE, sink);
+      expect(decided.ok).toBe(true);
+      expect(decided.case.transition_record?.approving_human).toBe(OPERATOR.name);
+    }
+  });
+
+  it("the Tier C gate still requires the linked COUNSEL record for a seeded obligation draft", () => {
+    const draft = {
+      obligation_id: "SYNTH-OB-A5",
+      program_id: "SYNTH-PRG-ALPHA",
+      cost_code: "SYNTH-CC-111",
+      amount: 15000,
+      timestamp: SYNTH_PPBE_AS_OF,
+      workflow_step_id: "ppbe-obligation-SYNTH-OB-A5",
+    };
+    const gateCase = openObligationGate(draft, "ppbe-ledger-monitor", SYNTH_PPBE_AS_OF, sink)!;
+    expect(recordObligationAuthorization(gateCase, "APPROVE", OPERATOR, NOTE, "", sink).ok).toBe(false);
+    const authorized = recordObligationAuthorization(
+      gateCase, "APPROVE", OPERATOR, NOTE, "SYNTH-DR-RANK-01", sink
+    );
+    expect(authorized.ok).toBe(true);
+    expect(validateObligationRecord(authorized.case.authorized_record!).valid).toBe(true);
+  });
+
+  it("the SCRIBE double gate still blocks each half alone over the seeded ALPHA program", async () => {
+    const alpha = SYNTH_PPBE_PROGRAMS.find((p) => p.program_id === "SYNTH-PRG-ALPHA")!;
+    const alphaObligations = SYNTH_PPBE_OBLIGATIONS.filter((o) => o.program_id === alpha.program_id);
+    const input: ExhibitDraftInput = {
+      mode: "BUDGET_EXHIBIT",
+      program: alpha,
+      obligations: alphaObligations,
+      plan_source_step_id: "SYNTH-flowpath-ppbe-elicitation-01",
+    };
+    const refs = allowedSourceRefs(input);
+    const draft = staticExhibitDraft(input);
+    expect(validatePPBEExhibitDraft(draft, refs).valid).toBe(true);
+    const meta = { program_id: alpha.program_id, fiscal_year: alpha.fiscal_year };
+    expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, NOTE, false, sink).ok).toBe(false);
+    expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, "no", true, sink).ok).toBe(false);
+    expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, NOTE, true, sink).ok).toBe(true);
+  });
+
+  it("all four COUNSEL PPBE decision types still produce signed records over seeded ids", () => {
+    const contexts: PPBEDecisionContext[] = [
+      { ppbe_decision_type: "STRATEGIC_PRIORITY_RANKING", program_id: "SYNTH-PRG-ALPHA", objective_id: "SYNTH-SO-01" },
+      { ppbe_decision_type: "PROGRAMMING_TRADE_OFF", program_id: "SYNTH-PRG-BRAVO" },
+      { ppbe_decision_type: "PHASE_TRANSITION_AUTHORIZATION", program_id: "SYNTH-PRG-DELTA", from_phase: 4, to_phase: 5 },
+      { ppbe_decision_type: "EVALUATION_FINDING_RESPONSE", program_id: "SYNTH-PRG-ECHO", finding_id: "SYNTH-EF-E2" },
+    ];
+    let n = 0;
+    for (const context of contexts) {
+      const result = buildPPBEDecisionRecord(
+        {
+          frame: {
+            decisionStatement: `Seeded ${context.ppbe_decision_type} decision`,
+            stakes: "SYNTH stakes",
+            constraints: [],
+            sovereignContext: {
+              sourceProduct: "APEX",
+              workflowStepId: `ppbe-decision-${context.program_id}-step-1`,
+              decisionType: "HUMAN_APPROVAL",
+            },
+          },
+          analysis: {
+            alternatives: [
+              { id: "ALT-1", label: "SYNTH adopt", summary: "s", pros: ["p"], cons: ["c"] },
+              { id: "ALT-2", label: "SYNTH defer", summary: "s", pros: ["p"], cons: ["c"] },
+              { id: "ALT-3", label: "SYNTH escalate", summary: "s", pros: ["p"], cons: ["c"] },
+            ],
+            riskScenarios: [
+              { alternativeId: "ALT-1", scenario: "SYNTH.", severity: "LOW" },
+              { alternativeId: "ALT-2", scenario: "SYNTH.", severity: "LOW" },
+              { alternativeId: "ALT-3", scenario: "SYNTH.", severity: "LOW" },
+            ],
+            assumptionFlags: [],
+            confidenceScore: 70,
+            recommendedNextAction: "SYNTH review.",
+          },
+          chosenAlternativeId: "ALT-1",
+          rationale: "SYNTH simulated rationale over seeded portfolio data.",
+          programId: context.program_id,
+          reviewConfirmed: true,
+        },
+        context,
+        { now: () => SYNTH_PPBE_AS_OF, newDocumentId: () => `SYNTH-DR-S33-${++n}`, actorId: OPERATOR.id, actorName: OPERATOR.name }
+      );
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(ppbeDecisionEmissionRecord(result.record, context).approving_human).toBe(OPERATOR.name);
+      }
+    }
+  });
+
+  it("cross-module restated constants still agree, and every event logged in this pass is disciplined", () => {
+    expect(PPBE_ADVISORY_LABEL).toBe(PPBE_TIER_A_LABEL);
+    expect(PPBE_COORDINATION_ADVISORY_LABEL).toBe(PPBE_TIER_A_LABEL);
+    // Drive a representative seeded slice so the sink holds a mixed event set
+    // (beforeEach clears it per test).
+    const gateCase = openPhaseTransitionGate(
+      {
+        from_phase: 1,
+        to_phase: 2,
+        data_quality_assessment: "Seeded portfolio inputs validated.",
+        integration_readiness_check: "Seeded dependencies healthy for phase 1.",
+        requested_by_agent_id: "ppbe-dependency-tracker",
+      },
+      SYNTH_PPBE_AS_OF,
+      sink
+    )!;
+    recordPhaseTransitionDecision(gateCase, "APPROVE", OPERATOR, NOTE, sink);
+    closeCoordinationItem(
+      SYNTH_PPBE_COORDINATION_ITEMS.find((i) => i.item_id === "SYNTH-CI-01")!,
+      OPERATOR,
+      NOTE,
+      sink
+    );
+    expect(logged.length).toBeGreaterThanOrEqual(3);
+    for (const event of logged) {
+      expect(event.workflow_step_id.trim()).not.toBe("");
+      if (event.event_type === "HUMAN_DECISION" || event.decision_type !== undefined) {
+        expect(event.decision_type).toBeTruthy();
+        expect(event.actor).toBe("human");
+        expect(event.actor_name).toBeTruthy();
+      }
+    }
+  });
+});
+
+describe("SECOND PASS — every previously-unfired anomaly rule fires end to end (goal items 2-3)", () => {
+  it("the ledger monitor over the seeded portfolio fires all four rule families with the designed targets", () => {
+    const all = SYNTH_PPBE_PROGRAMS.flatMap((program) =>
+      runLedgerMonitor(
+        program,
+        SYNTH_PPBE_OBLIGATIONS,
+        seededActuals(program.program_id),
+        SYNTH_PPBE_FINDINGS,
+        LEDGER_CONFIG
+      )
+    );
+    const byType = (t: string) => all.filter((f) => f.anomaly_type === t);
+
+    const deviations = byType("OBLIGATION_RATE_DEVIATION");
+    expect(new Set(deviations.map((f) => f.program_id))).toEqual(
+      new Set(["SYNTH-PRG-BRAVO", "SYNTH-PRG-CHARLIE"])
+    );
+    expect(deviations.some((f) => f.threshold_breached.includes("below plan"))).toBe(true);
+    expect(deviations.some((f) => f.threshold_breached.includes("above plan"))).toBe(true);
+
+    expect(byType("CEILING_PROXIMITY").map((f) => f.program_id)).toEqual(["SYNTH-PRG-DELTA"]);
+    const exceeded = byType("CEILING_EXCEEDED");
+    expect(exceeded.map((f) => f.program_id)).toEqual(["SYNTH-PRG-ECHO"]);
+    expect(exceeded[0].severity).toBe("P1");
+    expect(byType("FEEDBACK_LOOP_STALL").map((f) => f.program_id)).toEqual(["SYNTH-PRG-ECHO"]);
+
+    // ALPHA, the healthy baseline, fires NOTHING — anomalies are deliberate, not noise.
+    expect(all.filter((f) => f.program_id === "SYNTH-PRG-ALPHA")).toEqual([]);
+    // Every finding is emitter-ready (the docs/18 §4 field set ppbe_emitter.py enforces).
+    for (const f of all) {
+      expect(f.threshold_breached.trim()).not.toBe("");
+      expect(f.workflow_step_id.trim()).not.toBe("");
+      expect(["P1", "P2", "P3"]).toContain(f.severity);
+    }
+  });
+
+  it("the dependency tracker fires both TIMING_VIOLATION arms and QUALITY_THRESHOLD_FAILURE, and the NOT-ready phase 4 drives a real Tier B rejection", () => {
+    const findings = runDependencyTracker(
+      SYNTH_PPBE_DEPENDENCIES,
+      SYNTH_PPBE_HANDOFF_OBSERVATIONS,
+      SYNTH_PPBE_AS_OF
+    );
+    const types = new Set(findings.map((f) => f.anomaly_type));
+    expect(types).toEqual(
+      new Set([
+        "TIMING_VIOLATION",
+        "QUALITY_THRESHOLD_FAILURE",
+        "DEPENDENCY_AT_RISK",
+        "DEPENDENCY_HEALTH_FAILURE",
+      ])
+    );
+
+    // The NOT-ready Tier B case: phase 4's seeded state blocks, the human sees it and REJECTS.
+    const readiness = assessPhaseReadiness(
+      SYNTH_PPBE_DEPENDENCIES,
+      SYNTH_PPBE_HANDOFF_OBSERVATIONS,
+      SYNTH_PPBE_AS_OF,
+      "phase-4"
+    );
+    expect(readiness.ready).toBe(false);
+    const gateCase = openPhaseTransitionGate(
+      {
+        from_phase: 4,
+        to_phase: 5,
+        data_quality_assessment: "Seeded phase 4 inputs assembled for review.",
+        integration_readiness_check: readiness.summary, // "... require human review before handoff."
+        requested_by_agent_id: "ppbe-dependency-tracker",
+      },
+      SYNTH_PPBE_AS_OF,
+      sink
+    )!;
+    const rejected = recordPhaseTransitionDecision(
+      gateCase,
+      "REJECT",
+      OPERATOR,
+      "SIMULATED rejection — the readiness check reports blocking dependencies.",
+      sink
+    );
+    expect(rejected.ok).toBe(true);
+    expect(isPhaseTransitionComplete(rejected.case)).toBe(false);
+    expect(rejected.case.transition_record).toBeUndefined();
+  });
+
+  it("the coordination monitor fires MISSED_DEADLINE (both severities), LAPSED_COMMITMENT, and OVERDUE_PHASE_TRANSITION over the seeded items", () => {
+    const failures = detectCoordinationFailures(SYNTH_PPBE_COORDINATION_ITEMS, SYNTH_PPBE_AS_OF);
+    expect(failures).toHaveLength(4);
+    const severitiesByType = new Map(failures.map((f) => [f.anomaly_type + ":" + f.severity, f.item_id]));
+    expect(severitiesByType.has("MISSED_DEADLINE:P3")).toBe(true);
+    expect(severitiesByType.has("MISSED_DEADLINE:P2")).toBe(true);
+    expect(severitiesByType.has("LAPSED_COMMITMENT:P2")).toBe(true);
+    expect(severitiesByType.has("OVERDUE_PHASE_TRANSITION:P1")).toBe(true);
+  });
+});
+
+describe("SECOND PASS — multi-program output is meaningfully different from n=1 (goal items 1, 4, 8)", () => {
+  it("synthesis over the seeded evidence base produces per-program findings the n=1 case could not", () => {
+    const input = {
+      findings: SYNTH_PPBE_FINDINGS,
+      programs: [],
+      fiscal_context: "FY 2026 seeded portfolio review",
+    };
+    const report = staticSynthesisReport(input);
+    expect(report.programs_covered).toHaveLength(5);
+    expect(report.key_findings).toHaveLength(5); // one per program — n=1 produced one
+    const echo = report.key_findings.find((k) => k.programs_affected.includes("SYNTH-PRG-ECHO"))!;
+    expect(echo.statement).toContain("3 of these findings are not feeding the planning cycle");
+    expect(report.key_findings.flatMap((k) => k.source_finding_ids)).toHaveLength(20);
+  });
+
+  it("scenario modeling spans the five-program trade space", () => {
+    const report = staticScenarioReport({
+      programs: SYNTH_PPBE_PROGRAMS,
+      fiscal_context: "FY 2026 seeded programming decision",
+    });
+    expect(report.scenarios[0].allocation_changes).toHaveLength(5);
+    const allocations = report.scenarios[0].allocation_changes.map((a) => a.current_allocation);
+    expect(new Set(allocations).size).toBeGreaterThanOrEqual(4); // genuinely different programs
+  });
+
+  it("the dashboard renders real, distinct metrics live through the host adapter", () => {
+    const data = buildPPBEDashboard(createSyntheticPPBEDashboardInputs());
+    expect(data.is_empty).toBe(false);
+    const rates = data.obligation_rates.map((m) => m.rate_percent);
+    expect(new Set(rates).size).toBeGreaterThanOrEqual(4);
+    expect(data.learning_velocity.velocity_percent).toBe(65);
+    expect(data.dependency_health.index_percent).toBe(75);
+  });
+});
+
+describe("SECOND PASS — TRACER and the coordination digest over seeded data (goal items 5, 7)", () => {
+  it("every seeded obligation assembles a COMPLETE chain through the Explorer's data source", () => {
+    for (const obligation of SYNTH_PPBE_OBLIGATIONS) {
+      const chain = assembleChainFor(DEMO_TRACER_DATA, "obligation", obligation.obligation_id);
+      expect(chain?.complete).toBe(true);
+    }
+  });
+
+  it("the digest contract holds against the realistic notes corpus: grounded proposals accepted, ungrounded ones rejected", async () => {
+    const input = {
+      items: SYNTH_PPBE_COORDINATION_ITEMS,
+      notes: SYNTH_PPBE_MEETING_NOTES,
+    };
+    // A corpus-grounded digest (what a good live model should produce): resolve
+    // CI-01 (the notes say the work is done), do NOT resolve CI-04 (discussed,
+    // not decided), flag the quiet owner and the untracked dependency.
+    const grounded: CoordinationDigest = {
+      summary:
+        "The notes report the BRAVO evidence base complete; the trade-off decision was discussed " +
+        "but not recorded; the CHARLIE reconciliation owner has gone quiet; a depot data extract " +
+        "dependency is tracked nowhere.",
+      update_proposals: [
+        {
+          item_id: "SYNTH-CI-01",
+          proposed_status: "RESOLVED",
+          rationale: "The notes state the evidence base was assembled and filed Friday.",
+        },
+      ],
+      risks_flagged: [
+        "The CHARLIE unit-cost reconciliation owner has not reported for two meetings.",
+        "A depot data extract dependency is mentioned in the notes but tracked on no register.",
+      ],
+      advisory_label: PPBE_COORDINATION_ADVISORY_LABEL,
+      workflow_step_id: "ppbe-coordination-digest-8-items",
+      schema_valid: true,
+    };
+    expect(validateCoordinationDigest(grounded, input.items).valid).toBe(true);
+
+    const outcome = await runCoordinationTracking(
+      input, SYNTH_PPBE_AS_OF, "SYNTH PROMPT",
+      { workflow_step_id: "ppbe-coordination-digest-8-items", product: "NEXUS", agent_id: "ppbe-coordination-assistant", tier: "standard" },
+      { complete: async () => ({ content: JSON.stringify(grounded), fallback_tier: "live", fallback_activated: false, sovereign_metadata: {} as never }) }
+    );
+    expect(outcome.tier).toBe("live");
+    expect(outcome.digest.update_proposals.map((p) => p.item_id)).toEqual(["SYNTH-CI-01"]);
+
+    // A digest fabricating an item reference is rejected structurally.
+    const fabricated = { ...grounded, update_proposals: [{ item_id: "SYNTH-CI-99", proposed_status: "RESOLVED" as const, rationale: "made up" }] };
+    expect(validateCoordinationDigest(fabricated, input.items).valid).toBe(false);
+
+    // The static tier over the seeded state reports the four real failures and proposes nothing.
+    const staticDigest = staticCoordinationDigest(input, SYNTH_PPBE_AS_OF);
+    expect(staticDigest.update_proposals).toEqual([]);
+    expect(staticDigest.risks_flagged).toHaveLength(4);
+  });
+});
+
+describe("SECOND PASS — the seeded Python-side trail matches the TypeScript seed (goal item 6)", () => {
+  const trailPath = path.join(__dirname, "..", "..", "sovereign-security", "logs", "ppbe_synthetic_seed.jsonl");
+  const events = fs
+    .readFileSync(trailPath, "utf-8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as { event_type: string; workflow_step_id: string; checksum?: string; payload: Record<string, unknown> });
+
+  it("carries the adapter's exact per-type counts (the drift check the adapter header promises)", () => {
+    const byType: Record<string, number> = {};
+    for (const e of events) byType[e.event_type] = (byType[e.event_type] ?? 0) + 1;
+    expect(byType).toEqual(SYNTH_PPBE_EVENT_COUNTS);
+  });
+
+  it("references only ids that exist in the canonical TypeScript seed", () => {
+    const knownPrograms = new Set(SYNTH_PPBE_PROGRAMS.map((p) => p.program_id));
+    const knownObjectives = new Set(SYNTH_PPBE_OBJECTIVES.map((o) => o.objective_id));
+    const knownFindings = new Set(SYNTH_PPBE_FINDINGS.map((f) => f.finding_id));
+    for (const e of events) {
+      const p = e.payload;
+      if (typeof p.program_id === "string") expect(knownPrograms.has(p.program_id)).toBe(true);
+      if (typeof p.objective_id === "string") expect(knownObjectives.has(p.objective_id)).toBe(true);
+      if (e.event_type === "PPBE_EVALUATION_FINDING") {
+        expect(knownFindings.has(p.finding_id as string)).toBe(true);
+      }
+      expect(e.workflow_step_id.trim()).not.toBe("");
+      expect(typeof e.checksum).toBe("string"); // chain field present on every entry
+    }
+  });
+
+  it("tells the seeded story: ECHO's held transition is absent; the ceiling-exceeded P1 is present", () => {
+    const transitions = events.filter((e) => e.event_type === "PPBE_PHASE_TRANSITION");
+    expect(transitions.some((e) => e.workflow_step_id.includes("SYNTH-PRG-ECHO"))).toBe(false);
+    const anomalies = events.filter((e) => e.event_type === "PPBE_ANOMALY");
+    const exceeded = anomalies.filter((a) => a.payload.anomaly_type === "CEILING_EXCEEDED");
+    expect(exceeded).toHaveLength(1);
+    expect(exceeded[0].payload.program_id).toBe("SYNTH-PRG-ECHO");
+  });
+});
+
 describe("PRELIMINARY V&V — audit-trail discipline over everything this suite logged", () => {
   it("every event carries workflow_step_id; every HUMAN_DECISION carries the full triad (Constraints #4/#6)", async () => {
     // Re-run a representative slice so the sink holds a mixed event set.
