@@ -158,5 +158,23 @@ export {
   SYNTH_TT_CORRECTION_RECORDS,
 } from './synthetic/tt-seed';
 
+// PPBE canonical synthetic seed data (Session 33 — WE-6, the Walkthrough F
+// precondition). Validated SYNTH- prefixed INSTANCES of the six D-P3 entities,
+// single-sourced here because the PPBE workflow layer spans host modules that
+// cannot import each other (the tt-seed precedent). No entity type added or
+// changed. Module-local shapes (coordination items, handoff observations) are
+// seeded in their own modules and reference these records by id.
+export {
+  SYNTH_PPBE_AS_OF,
+  SYNTH_PPBE_PERIODS,
+  synthPeriodForTimestamp,
+  SYNTH_PPBE_OBJECTIVES,
+  SYNTH_PPBE_PROGRAMS,
+  SYNTH_PPBE_OBLIGATIONS,
+  SYNTH_PPBE_DEPENDENCIES,
+  SYNTH_PPBE_FINDINGS,
+  SYNTH_PPBE_EXHIBITS,
+} from './synthetic/ppbe-seed';
+
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.5.0';
+export const SOVEREIGN_DATA_VERSION = '1.6.0';
