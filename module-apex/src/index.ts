@@ -163,6 +163,27 @@ const ppbeEvidenceSynthesizerCard: AgentCard = {
   security_observable: true,
 };
 
+// ppbe-scenario-analyst — Analytical, LLM-backed under the PENDING
+// scenario_analysis_system prompt (Session 32; synthetic-data use only until
+// approved). Advisory only (docs/18 §6 Tier A): models alternative allocations
+// as labeled scenario reports feeding COUNSEL's decision framing; never
+// executes allocations, never modifies program data, never invokes other agents.
+const ppbeScenarioAnalystCard: AgentCard = {
+  agent_id: "ppbe-scenario-analyst",
+  agent_class: "Analytical",
+  product: "APEX",
+  capabilities: ["allocation_scenario_modeling", "performance_projection", "risk_implication_analysis"],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -178,6 +199,7 @@ export const apexModule: SovereignModuleContract = {
     ttPatternAnalystCard,
     ttAuditReporterCard,
     ppbeEvidenceSynthesizerCard,
+    ppbeScenarioAnalystCard,
   ],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {

@@ -30,6 +30,7 @@ describe("apexModule contract", () => {
       "tt.pattern-analyst",
       "tt.audit-reporter",
       "ppbe-evidence-synthesizer",
+      "ppbe-scenario-analyst",
     ]);
     const byId = Object.fromEntries(apexModule.agentCards.map((c) => [c.agent_id, c]));
     expect(byId["apex.ai-assistant"].agent_class).toBe("Analytical");
@@ -38,6 +39,7 @@ describe("apexModule contract", () => {
     expect(byId["tt.pattern-analyst"].agent_class).toBe("Monitoring");
     expect(byId["tt.audit-reporter"].agent_class).toBe("Governance");
     expect(byId["ppbe-evidence-synthesizer"].agent_class).toBe("Analytical");
+    expect(byId["ppbe-scenario-analyst"].agent_class).toBe("Analytical");
     // TT/PPBE cards carry the HOST product — a workflow layer is not a SovereignProduct.
     expect(apexModule.agentCards.every((c) => c.product === "APEX")).toBe(true);
     expect(apexModule.agentCards.every((c) => c.data_classification_ceiling === "UNCLASSIFIED")).toBe(true);

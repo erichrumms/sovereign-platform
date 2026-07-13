@@ -25,6 +25,7 @@ cleared beyond that. **No prompt in this registry is approved for live
 | Prompt | Agent | Current Version | Status | Authored |
 |---|---|---|---|---|
 | evidence_synthesis_system | `ppbe-evidence-synthesizer` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
+| scenario_analysis_system | `ppbe-scenario-analyst` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
 
 ## Change History
 
@@ -42,3 +43,15 @@ cleared beyond that. **No prompt in this registry is approved for live
 - Approval: **PENDING — Project Principal.** Claude Code cannot self-approve a
   prompt (Constraint #9). Synthetic-data use within Session 32 is permitted per
   the July 12 reassignment; live use is not.
+
+- **scenario_analysis_system.md — initial baseline, PENDING.** Instructs
+  `ppbe-scenario-analyst` (Analytical) to model at least two alternative
+  resource allocations per request as a JSON scenario report carrying the
+  mandatory scenario-modeling label ("AI-generated scenario modeling — not a
+  decision or a recommendation to execute"). Allocation changes may name only
+  programs present in the supplied portfolio — fabricated programs cause
+  structural rejection by `module-apex/src/ppbe-scenario-analyst.ts`'s
+  validator. Enforces no-ranking, honest confidence calibration, and Gap 5
+  plain prose. Output feeds COUNSEL's decision framing at host level.
+- Benchmark pass: N/A (not CPMI Track A).
+- Approval: **PENDING — Project Principal.** Same terms as above.
