@@ -26,6 +26,7 @@ cleared beyond that. **No prompt in this registry is approved for live
 |---|---|---|---|---|
 | evidence_synthesis_system | `ppbe-evidence-synthesizer` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
 | scenario_analysis_system | `ppbe-scenario-analyst` | v1.0 | **PENDING — Project Principal** | 2026-07-12 (Session 32) |
+| exhibit_drafting_system | `ppbe-exhibit-drafter` | v1.0 | **PENDING — Project Principal** | 2026-07-13 (Session 32, resumed) |
 
 ## Change History
 
@@ -53,5 +54,20 @@ cleared beyond that. **No prompt in this registry is approved for live
   structural rejection by `module-apex/src/ppbe-scenario-analyst.ts`'s
   validator. Enforces no-ranking, honest confidence calibration, and Gap 5
   plain prose. Output feeds COUNSEL's decision framing at host level.
+- Benchmark pass: N/A (not CPMI Track A).
+- Approval: **PENDING — Project Principal.** Same terms as above.
+
+- **exhibit_drafting_system.md — initial baseline, PENDING** (authored July 12,
+  registered July 13 after the session resumed from a usage-limit
+  interruption). Instructs `ppbe-exhibit-drafter` (Operational) to draft in
+  three PPBE document modes (Budget Exhibit, Congressional Justification,
+  Evaluation Report) as a JSON draft whose every figure cites the
+  workflow_step_id of a supplied governed record — fabricated figure sources
+  cause structural rejection by `module-scribe/src/ppbe-exhibit-contract.ts`.
+  Enforces the system-invisibility rule (same validator as the TT drafters)
+  and the double export gate framing (CLEAR certification AND human sign-off —
+  neither is the agent's to grant). GOVERNANCE NOTE: the registry's prompt
+  requirement for this agent overrides docs/18 §5's "inferred no" (Session 32
+  standing rule, Lesson 16).
 - Benchmark pass: N/A (not CPMI Track A).
 - Approval: **PENDING — Project Principal.** Same terms as above.

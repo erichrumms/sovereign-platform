@@ -142,6 +142,35 @@ const ttTimeDrafterCard: AgentCard = {
   security_observable: true,
 };
 
+// ppbe-exhibit-drafter — PPBE workflow-layer agent hosted on SCRIBE infrastructure
+// (Session 32, docs/18 §7.2 — D-P6: no new module directory; AIS D-P5). Operational,
+// LLM-backed under the PENDING ppbe/prompts/exhibit_drafting_system.md prompt
+// (synthetic-data use only until approved; registry's prompt requirement overrides
+// docs/18 §5's "inferred no" — Session 32 standing rule). Three document modes:
+// Budget Exhibit, Congressional Justification, Evaluation Report. DRAFTS ONLY —
+// export requires BOTH a CLEAR certification AND a human sign-off (the double
+// gate); the agent has no export path and never modifies ProgramRecord or
+// ObligationRecord data.
+const ppbeExhibitDrafterCard: AgentCard = {
+  agent_id: "ppbe-exhibit-drafter",
+  agent_class: "Operational",
+  product: "SCRIBE",
+  capabilities: [
+    "budget_exhibit_drafting",
+    "congressional_justification_drafting",
+    "evaluation_report_drafting",
+  ],
+  input_schema: {},
+  output_schema: {},
+  task_lifecycle_contract: {
+    supports_long_running: false,
+    approval_behavior: "ACKNOWLEDGE_AND_CONTINUE",
+    partial_failure_behavior: "ESCALATE",
+  },
+  data_classification_ceiling: "UNCLASSIFIED",
+  security_observable: true,
+};
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -154,9 +183,16 @@ export const scribeModule: SovereignModuleContract = {
   // (Decision 24). READ_ONLY is the least-privilege placeholder; the authoritative
   // RoleAccessPolicy is injected when written — no module change required.
   minimumRole: "READ_ONLY",
-  // scribe-drafter + scribe-style-analyst (Session 5), plus the two Time & Travel
-  // drafters hosted on SCRIBE infrastructure (Session 28 — docs/17 §2, AIS D-TT5).
-  agentCards: [scribeDrafterCard, scribeStyleAnalystCard, ttTravelDrafterCard, ttTimeDrafterCard],
+  // scribe-drafter + scribe-style-analyst (Session 5), the two Time & Travel
+  // drafters (Session 28 — docs/17 §2, AIS D-TT5), and the PPBE exhibit drafter
+  // (Session 32 — docs/18 §7.2, AIS D-P5) — all hosted on SCRIBE infrastructure.
+  agentCards: [
+    scribeDrafterCard,
+    scribeStyleAnalystCard,
+    ttTravelDrafterCard,
+    ttTimeDrafterCard,
+    ppbeExhibitDrafterCard,
+  ],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     root = createRoot(el);
