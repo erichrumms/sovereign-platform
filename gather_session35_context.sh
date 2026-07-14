@@ -64,8 +64,7 @@ find_and_add "*ppbe-authorization*" "VIGIL side of the authorization write"
 find_and_add "*scribe*queue*" "SCRIBE side, the 'sendable' state this fix updates"
 
 echo ""
-echo "-- Part 3: Time & Travel agent verification, 4 host modules --"
-find_and_add "*AgentCard*" "Wherever AgentCards are actually declared, for exact-ID search"
+echo "-- Part 3: prompt registry reconciliation (TT question already resolved) --"
 add_file "tt/prompts/travel_drafting_system.md" "TT drafter prompt, reconstruction claims APPROVED"
 add_file "tt/prompts/time_drafting_system.md" "TT time-drafter prompt, reconstruction claims APPROVED"
 
