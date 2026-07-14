@@ -10,7 +10,43 @@ import type {
   SovereignLogEvent,
   SovereignRole,
   AriaCertification,
+  SharedTask,
+  TaskSurface,
 } from "../../sovereign-shell/shell-contract";
+
+/**
+ * Minimal in-memory shared task surface (GD-19 ninth export) — same shape as the
+ * module-agentos helper (restated; modules do not import each other's tests).
+ * Session 35: lets TTManagerReview tests drive a live VIGIL authorization.
+ */
+export function createInMemoryTaskSurface(): TaskSurface {
+  const tasks = new Map<string, SharedTask>();
+  const listeners = new Set<(t: readonly SharedTask[]) => void>();
+  const snapshot = (): readonly SharedTask[] => Array.from(tasks.values());
+  const notify = (): void => {
+    for (const l of listeners) l(snapshot());
+  };
+  return {
+    publish: (task) => {
+      tasks.set(task.task_id, task);
+      notify();
+    },
+    update: (id, patch) => {
+      const t = tasks.get(id);
+      if (!t) return;
+      tasks.set(id, { ...t, ...patch, task_id: id });
+      notify();
+    },
+    list: () => snapshot(),
+    get: (id) => tasks.get(id),
+    subscribe: (l) => {
+      listeners.add(l);
+      return () => {
+        listeners.delete(l);
+      };
+    },
+  };
+}
 
 export interface CtxOverrides {
   role?: SovereignRole;
@@ -18,6 +54,8 @@ export interface CtxOverrides {
   navigateTo?: (path: string) => void;
   /** Document ids to pre-seed as CLEAR-certified on the ctx.aria surface (GD-20 export gate). */
   certifiedDocumentIds?: string[];
+  /** Shared task surface (GD-19). Defaults to an in-memory one. */
+  taskSurface?: TaskSurface;
 }
 
 export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
@@ -46,6 +84,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
 
   return {
     aria,
+    taskSurface: over.taskSurface ?? createInMemoryTaskSurface(),
     auth: {
       user: {
         employee_id: "E-700",

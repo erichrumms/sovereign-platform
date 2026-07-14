@@ -29,6 +29,7 @@ import {
   type AgentApprovalRequest,
   type ApprovalDecisionAction,
 } from "./approval-contract";
+import { publishEscalationAuthorization } from "./tt-escalation-surface";
 
 const APPROVAL_DECISION_TYPE = "AGENT_APPROVAL" as const;
 
@@ -91,6 +92,15 @@ export function useApprovalDecision(ctx: SovereignShellContext): UseApprovalDeci
             err instanceof Error ? err.message : String(err)
           }`
         );
+      }
+
+      // Session 35 (GD-19 pattern): a decided TT formal escalation becomes visible on
+      // the shared task surface so SCRIBE's review queue flips without a manual
+      // refresh. AFTER the Logger emit (the decision of record), never before it;
+      // ESCALATE leaves the case undecided and publishes nothing; optional-chained
+      // inside for a partial test ctx — same degradation as the NEXUS port.
+      if (action !== "ESCALATE") {
+        publishEscalationAuthorization(ctx.taskSurface, request, action, new Date().toISOString());
       }
 
       setLastAction(action);

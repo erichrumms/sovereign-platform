@@ -10,9 +10,44 @@ import type {
   SovereignShellContext,
   SovereignRole,
   SovereignLogEvent,
+  SharedTask,
+  TaskSurface,
 } from "../../sovereign-shell/shell-contract";
 import type { A2AStage } from "../src/AgentApprovalQueue";
 import type { SecurityAlert } from "../src/vigil-types";
+
+/**
+ * Minimal in-memory shared task surface (GD-19 ninth export) — same shape as the
+ * module-agentos helper (restated; modules do not import each other's tests).
+ */
+export function createInMemoryTaskSurface(): TaskSurface {
+  const tasks = new Map<string, SharedTask>();
+  const listeners = new Set<(t: readonly SharedTask[]) => void>();
+  const snapshot = (): readonly SharedTask[] => Array.from(tasks.values());
+  const notify = (): void => {
+    for (const l of listeners) l(snapshot());
+  };
+  return {
+    publish: (task) => {
+      tasks.set(task.task_id, task);
+      notify();
+    },
+    update: (id, patch) => {
+      const t = tasks.get(id);
+      if (!t) return;
+      tasks.set(id, { ...t, ...patch, task_id: id });
+      notify();
+    },
+    list: () => snapshot(),
+    get: (id) => tasks.get(id),
+    subscribe: (l) => {
+      listeners.add(l);
+      return () => {
+        listeners.delete(l);
+      };
+    },
+  };
+}
 
 /** Build a SecurityAlert for tests, with sensible defaults. */
 export function makeAlert(over: Partial<SecurityAlert> = {}): SecurityAlert {
@@ -35,11 +70,14 @@ export interface CtxOverrides {
   logSink?: SovereignLogEvent[];
   /** When true, ctx.logger.log throws — exercises the Gate 2 failure path. */
   throwOnLog?: boolean;
+  /** Shared task surface (GD-19). Defaults to an in-memory one; pass null-ish via omission. */
+  taskSurface?: TaskSurface;
 }
 
 export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
   const role: SovereignRole = over.role ?? "PLATFORM_ADMIN";
   return {
+    taskSurface: over.taskSurface ?? createInMemoryTaskSurface(),
     auth: {
       user: {
         employee_id: "E-900",

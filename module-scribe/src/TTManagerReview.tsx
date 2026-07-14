@@ -29,6 +29,7 @@ import { useState } from "react";
 import type { TravelRequest, ComplianceFlag } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { TTDraft } from "./tt-draft-contract";
+import { useVigilEscalationAuthorizations } from "./useVigilEscalationAuthorizations";
 
 /** A routed travel request awaiting the manager's decision. */
 export interface TravelReviewItem {
@@ -49,7 +50,12 @@ export interface TimeReviewItem {
   draft: TTDraft;
   /** True for FORMAL_ESCALATION drafts — the VIGIL Tier B gate applies. */
   requiresVigilAuthorization: boolean;
-  /** The VIGIL gate's current answer (tt-escalation-gate isSendable). */
+  /**
+   * The VIGIL gate's answer as seeded at composition time (tt-escalation-gate
+   * isSendable). Session 35: a live VIGIL authorization published on
+   * ctx.taskSurface ALSO unlocks the item (useVigilEscalationAuthorizations) —
+   * this static field no longer needs a manual refresh to catch up.
+   */
   vigilAuthorized: boolean;
   workflow_step_id: string;
 }
@@ -82,13 +88,19 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
   const [error, setError] = useState<string | null>(null);
   const [sentKeys, setSentKeys] = useState<readonly string[]>([]);
 
+  // Session 35 (GD-19): live VIGIL authorizations from the shared task surface.
+  // An item is sendable when its seeded state OR a live VIGIL decision says so.
+  const liveAuthorizedFlagIds = useVigilEscalationAuthorizations(ctx);
+  const isVigilAuthorized = (item: TimeReviewItem): boolean =>
+    item.vigilAuthorized || liveAuthorizedFlagIds.has(item.flag.flag_id);
+
   const selected = items.find((i) => itemKey(i) === selectedKey) ?? null;
 
   /** Record that the MANAGER sent a time communication (GD-21 TIME_CORRECTION_SENT). */
   function recordSend(item: TimeReviewItem): void {
     setError(null);
     // Structural gate (docs/17 §7 Tier B) — defense in depth behind the disabled button.
-    if (item.requiresVigilAuthorization && !item.vigilAuthorized) {
+    if (item.requiresVigilAuthorization && !isVigilAuthorized(item)) {
       setError("This formal escalation requires VIGIL authorization before it can be sent.");
       return;
     }
@@ -109,7 +121,7 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
           rule_category: item.flag.rule_category,
           communication_type: item.draft.communication_type,
           recurrence_count: item.flag.recurrence_count,
-          vigil_authorized: item.requiresVigilAuthorization ? item.vigilAuthorized : null,
+          vigil_authorized: item.requiresVigilAuthorization ? isVigilAuthorized(item) : null,
         },
       });
     } catch (err) {
@@ -204,12 +216,12 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
                     <button
                       type="button"
                       data-testid="tt-send-communication"
-                      disabled={selected.requiresVigilAuthorization && !selected.vigilAuthorized}
+                      disabled={selected.requiresVigilAuthorization && !isVigilAuthorized(selected)}
                       onClick={() => recordSend(selected)}
                     >
                       I have sent this communication
                     </button>
-                    {selected.requiresVigilAuthorization && !selected.vigilAuthorized && (
+                    {selected.requiresVigilAuthorization && !isVigilAuthorized(selected) && (
                       <p data-testid="tt-awaiting-authorization">Awaiting VIGIL authorization</p>
                     )}
                   </>
