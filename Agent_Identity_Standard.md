@@ -712,7 +712,7 @@ file. The Integration Brief's count claim is not authoritative. (Lesson 12)**
 | Agent Class | Monitoring |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase II opens |
+| Status | IMPLEMENTED — built Session 31 (July 12, 2026). Status updated July 13, 2026. |
 
 **Description:** Continuously analyzes obligation records and performance data for
 anomalies, deviation patterns, and early warning signals. Routes `PPBE_ANOMALY`
@@ -748,7 +748,7 @@ anomaly responses require a human decision in VIGIL. It does not invoke other ag
 | Agent Class | Monitoring |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase II opens |
+| Status | IMPLEMENTED — built Session 31 (July 12, 2026). Status updated July 13, 2026. |
 
 **Description:** Tracks inter-workflow dependencies and handoff health across the
 six PPBE phases. Flags timing violations and quality threshold failures before
@@ -785,7 +785,7 @@ or any FLOWPATH data. Flags go to VIGIL; humans decide the response.
 | Agent Class | Analytical |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 32 (July 12-13, 2026). Prompt APPROVED July 13, 2026. Status updated July 13, 2026. |
 
 **Description:** Aggregates evaluation findings, audit results, and performance
 data across programs to support planning and programming reviews. Produces
@@ -796,8 +796,11 @@ required before any synthesis report influences a PPBE decision. Calls
 directly. Requires Tier A authorization.
 
 **Prompt registrations required:**
-- `ppbe/prompts/evidence_synthesis_system.md` — to be authored in Claude Chat
-  and approved by Project Principal before PPBE Phase III build session opens.
+- `ppbe/prompts/evidence_synthesis_system.md` — this entry's original
+  authorship assignment (Claude Chat) is superseded by the July 12, 2026
+  AGENT_REFERENCE.md reassignment: Claude Code authors each prompt in-session,
+  marked PENDING, Claude Chat produces the approval record. Authored by Claude
+  Code during Session 32; APPROVED by Project Principal July 13, 2026.
 
 **Logger event fields this agent_id appears on:**
 - `PPBE_DECISION` — when synthesis report is accepted and influences a decision
@@ -825,7 +828,7 @@ Logger event.
 | Agent Class | Analytical |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 32 (July 12-13, 2026). Prompt APPROVED July 13, 2026. Status updated July 13, 2026. |
 
 **Description:** Models alternative resource allocations and their projected
 performance and risk implications across program portfolios. Produces scenario
@@ -836,8 +839,11 @@ execute. Calls `sovereign-api-client` under a registered prompt. Never calls the
 Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/scenario_analysis_system.md` — to be authored in Claude Chat
-  and approved by Project Principal before PPBE Phase III build session opens.
+- `ppbe/prompts/scenario_analysis_system.md` — this entry's original
+  authorship assignment (Claude Chat) is superseded by the July 12, 2026
+  AGENT_REFERENCE.md reassignment: Claude Code authors each prompt in-session,
+  marked PENDING, Claude Chat produces the approval record. Authored by Claude
+  Code during Session 32; APPROVED by Project Principal July 13, 2026.
 
 **Logger event fields this agent_id appears on:**
 - `PPBE_DECISION` — when scenario analysis informs a programming decision
@@ -867,7 +873,7 @@ contribute to the Intelligence Layer's Risk Modeler when built.
 | Agent Class | Operational |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase III opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 32 (July 12-13, 2026), resumed after a usage-limit interruption. Prompt APPROVED July 13, 2026. Status updated July 13, 2026. |
 
 **Description:** Drafts budget exhibits and justification narratives from governed
 `ProgramRecord` and `ObligationRecord` data. Extends SCRIBE's existing drafting
@@ -880,8 +886,11 @@ congressional justification or evaluation report. Calls `sovereign-api-client`
 under a registered prompt; never calls the Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/exhibit_drafting_system.md` — to be authored in Claude Chat
-  and approved by Project Principal before PPBE Phase III build session opens.
+- `ppbe/prompts/exhibit_drafting_system.md` — this entry's original
+  authorship assignment (Claude Chat) is superseded by the July 12, 2026
+  AGENT_REFERENCE.md reassignment: Claude Code authors each prompt in-session,
+  marked PENDING, Claude Chat produces the approval record. Authored by Claude
+  Code during Session 32; APPROVED by Project Principal July 13, 2026.
 
 **Logger event fields this agent_id appears on:**
 - `SCRIBE_DRAFT_CREATED` — every PPBE exhibit or justification draft produced
@@ -911,7 +920,7 @@ publishing path is disabled for PPBE document modes in federal deployments.
 | Agent Class | Operational |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when PPBE Phase II opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 32 (July 12-13, 2026). This entry's original "Phase II" target was superseded during Session 31: the Project Principal moved this agent to Session 32 (Full Cycle) per docs/18 §7.2's placement. Prompt APPROVED July 13, 2026. Status updated July 13, 2026. |
 
 **Description:** Tracks action items, decision commitments, and governance calendar
 obligations across the PPBE cycle. Monitors the governance calendar for timing
@@ -923,8 +932,12 @@ under a registered prompt for natural language coordination tracking; never call
 Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/coordination_system.md` — to be authored in Claude Chat and
-  approved by Project Principal before PPBE Phase II build session opens.
+- `ppbe/prompts/coordination_system.md` — this entry's original authorship
+  assignment (Claude Chat) is superseded by the July 12, 2026
+  AGENT_REFERENCE.md reassignment: Claude Code authors each prompt in-session,
+  marked PENDING, Claude Chat produces the approval record. Authored by Claude
+  Code during Session 32 (moved from its original Phase II target, see Status
+  above); APPROVED by Project Principal July 13, 2026.
 
 **Logger event fields this agent_id appears on:**
 - `PPBE_ANOMALY` — every coordination failure, missed deadline, or calendar violation
@@ -978,14 +991,17 @@ Integration Brief's count. This table is the authoritative count.**
 | `lens-orientation` | module-lens | Analytical | Yes | Implemented |
 | `vigil-triage-analyst` | module-vigil | Monitoring | Yes | Implemented |
 | `vigil-approval-agent` | module-vigil | Monitoring | No | Implemented |
-| `ppbe-ledger-monitor` | PPBE layer | Monitoring | No | Registered (Phase II) |
-| `ppbe-dependency-tracker` | PPBE layer | Monitoring | No | Registered (Phase II) |
-| `ppbe-evidence-synthesizer` | PPBE layer | Analytical | Yes | Registered (Phase III) |
-| `ppbe-scenario-analyst` | PPBE layer | Analytical | Yes | Registered (Phase III) |
-| `ppbe-exhibit-drafter` | PPBE layer | Operational | Yes | Registered (Phase III) |
-| `ppbe-coordination-assistant` | PPBE layer | Operational | Yes | Registered (Phase II) |
+| `ppbe-ledger-monitor` | PPBE layer | Monitoring | No | Implemented (S31) |
+| `ppbe-dependency-tracker` | PPBE layer | Monitoring | No | Implemented (S31) |
+| `ppbe-evidence-synthesizer` | PPBE layer | Analytical | Yes | Implemented (S32) |
+| `ppbe-scenario-analyst` | PPBE layer | Analytical | Yes | Implemented (S32) |
+| `ppbe-exhibit-drafter` | PPBE layer | Operational | Yes | Implemented (S32) |
+| `ppbe-coordination-assistant` | PPBE layer | Operational | Yes | Implemented (S32) |
 
-**Total registered agents: 36**
+**Total registered agents: 36** (as of this section's original June 29, 2026
+append point — status column updated July 13, 2026 to reflect Sessions 31-32;
+the count itself is unaffected, since these six were already counted here
+before they were built)
 
 Note on prior count discrepancy: Integration Brief v1.30 claimed 21 agents. The
 actual count in this file as of June 29, 2026 is 36. The discrepancy arose from
@@ -1000,360 +1016,3 @@ count forward without verifying.
 *June 29, 2026 · Project Principal approved (Governance Decision Record D-P5)*
 *Pre-Decisional · Internal Working Document*
 *Append to Agent_Identity_Standard.md after AgentOS Orchestration additions*
-# Agent Identity Standard — Time & Travel Workflow Layer Additions
-## Append to Agent_Identity_Standard.md
-
-**Session:** Time & Travel Governance Session — June 29, 2026
-**Date:** June 29, 2026
-**Approved by:** Project Principal (Governance Decision Record D-TT5)
-**Scope:** Eight new agent identities — Time & Travel workflow layer
-
-These entries are appended to the SOVEREIGN Agent Identity Standard following all
-prior additions. All eight agents follow the same registration format as existing
-platform agents. No Time & Travel build session may begin until all agent IDs are
-confirmed present in this registry.
-
-After appending, the total registered agent count is **44**.
-
-**ALWAYS verify Agent_Identity_Standard.md directly at session open — count the
-entries in the file. The Integration Brief's count claim is not authoritative.
-(Lesson 12)**
-
----
-
-## Time & Travel Workflow Layer Agents
-
-### tt.travel-compliance-engine
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.travel-compliance-engine` |
-| Module | Time & Travel workflow layer (runs on NEXUS / FLOWPATH infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Governance |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** The deterministic compliance engine for the Travel Management Tool.
-Evaluates every travel request against the `TravelPolicy` rule set produced by a
-FLOWPATH elicitation session. Produces one of three routing recommendations — Standard
-(all rules satisfied), Flagged (soft flags present, no hard exceptions), or Escalate
-(hard exception present or cost exceeds manager-level threshold) — along with a
-complete compliance finding citing the exact rule triggered, the actual value, and the
-threshold exceeded. Same input always produces same output. No LLM call.
-
-**Prompt registrations required:** None. `tt.travel-compliance-engine` is deterministic.
-It does not call `sovereign-api-client`.
-
-**Logger event fields this agent_id appears on:**
-- `TT_TRAVEL_COMPLIANCE_CHECK` — every travel request evaluated
-- `TT_TRAVEL_ESCALATION_FLAGGED` — every hard-exception or threshold escalation
-
-**Data classification:** Platform-level audit data. `TravelRequest` compliance records
-are program-level governance records.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.travel-compliance-engine` evaluates and routes only. It does
-not approve, deny, or communicate. No travel request is approved or denied without a
-human decision in NEXUS/VIGIL. It does not invoke other agents.
-
----
-
-### tt.travel-router
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.travel-router` |
-| Module | Time & Travel workflow layer (runs on NEXUS infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Operational |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** Routes travel requests to the correct approval authority based on the
-compliance engine's output. Updates the `TravelRequest` status in NEXUS and assigns
-the request to the appropriate authority queue. Hard exception rules override
-cost-based routing — a trip that falls below the dollar threshold for senior approval
-but includes an international component is routed to the senior authority regardless.
-No LLM call. Deterministic routing logic only.
-
-**Prompt registrations required:** None.
-
-**Logger event fields this agent_id appears on:**
-- `TT_TRAVEL_ROUTED` — every routing decision with destination authority
-
-**Data classification:** Platform-level audit data.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.travel-router` routes only. It does not approve, deny, or
-communicate. Every routing decision is logged with the rule basis. Wrong-authority
-routing is structurally prevented — the router cannot route to an authority level
-below what the compliance engine specifies.
-
----
-
-### tt.time-compliance-engine
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.time-compliance-engine` |
-| Module | Time & Travel workflow layer (runs on NEXUS / APEX infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Governance |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** The deterministic detection engine for the Time & Expense Tool.
-Evaluates every employee time record against ten rule categories: unauthorized charge
-account, budget exhaustion, overtime threshold, holiday direct charge, missing hours,
-justification absence, direct/indirect mismatch, pattern drift, off-schedule
-submission, and period hour minimum. Assigns severity (Error — correction required;
-Warning — clarification required; Informational — manager judgment only) and tracks
-recurrence count per employee across a rolling multi-period window. Same input always
-produces same output. No LLM call.
-
-**Prompt registrations required:** None. `tt.time-compliance-engine` is deterministic.
-
-**Logger event fields this agent_id appears on:**
-- `TT_TIME_COMPLIANCE_CHECK` — every time record period evaluated
-- `TT_TIME_FLAG_RAISED` — every rule trigger, with severity and recurrence count
-
-**Data classification:** Platform-level audit data.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.time-compliance-engine` detects and flags only. It does not
-communicate to employees, modify time records, or authorize corrections. All
-compliance flags require human manager review before any communication is sent.
-
----
-
-### tt.pattern-analyst
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.pattern-analyst` |
-| Module | Time & Travel workflow layer (runs on APEX infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Monitoring |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** Maintains rolling baselines and surfaces pattern drift flags to the
-manager dashboard. Two analysis levels: individual baseline comparison (current period
-vs. 4-week rolling average by account category per employee) and peer group comparison
-(employee charging pattern vs. others in the same program or function). Pattern flags
-are informational only by design — a deviation has many legitimate explanations.
-`tt.pattern-analyst` never generates automatic employee communications. It surfaces
-signals; managers apply context and decide whether outreach is appropriate. No LLM call.
-
-**Prompt registrations required:** None.
-
-**Logger event fields this agent_id appears on:**
-- `TT_PATTERN_FLAG_RAISED` — every pattern drift detection surfaced to the dashboard
-
-**Data classification:** `data_classification: user` for individual baseline data.
-Pattern flags that surface to the manager dashboard are program-level audit data.
-Individual employee baseline records follow the same privacy pattern as
-`AnalystWorkstyleProfile` — employee ID hashed before logging, no admin read path.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.pattern-analyst` observes and surfaces only. No automatic
-employee communication. No modification of time records. Manager decides all responses.
-
----
-
-### tt.travel-drafter
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.travel-drafter` |
-| Module | Time & Travel workflow layer (runs on SCRIBE infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Operational |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase II opens; prompt required before build |
-
-**Description:** Drafts the four travel communication templates from governed
-`TravelRequest` data. Four modes: Approval Notice (confirms authorization, notes any
-conditions), Additional Information Request (targeted to the specific unclear field),
-Escalation Notice (informs traveler of higher-authority routing with expected timeline),
-and Denial Notice (formal denial with exact rule citation and available options).
-Extends SCRIBE's existing drafting engine with Travel Management Tool document modes.
-Every draft is pre-populated from request data before the approver opens the record.
-The tool name never appears in outgoing communications — every message is sent from
-the approver's identity. Calls `sovereign-api-client` under a registered prompt.
-
-**Prompt registrations required:**
-- `tt/prompts/travel_drafting_system.md` — to be authored in Claude Chat and approved
-  by Project Principal before Time & Travel Phase II build session opens.
-
-**Logger event fields this agent_id appears on:**
-- `SCRIBE_DRAFT_CREATED` — every travel communication draft produced
-- `SCRIBE_EXPORT_APPROVED` — every draft reviewed and sent by manager
-
-**Data classification:** Per content type. Communication drafts are program-level
-audit records. Export events carry `data_classification_confirmed: true`.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.travel-drafter` produces draft communications only. The
-manager reviews, adjusts if needed, and sends. The agent does not send communications.
-It does not approve or deny travel requests. Export is gated on manager action.
-
----
-
-### tt.time-drafter
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.time-drafter` |
-| Module | Time & Travel workflow layer (runs on SCRIBE infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Operational |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase II opens; prompt required before build |
-
-**Description:** Drafts the five time and expense communication templates from governed
-`ComplianceFlag` data. Five modes: Error Correction Notice (step-by-step correction
-instructions in the specific time system, policy section cited, no accusatory language),
-Clarification Request (two to three likely explanations offered for employee to
-confirm or correct), Justification Request (example justification language plus
-system-specific instructions), Pattern Flag Notice (conversational check-in framing,
-not a correction demand), and Formal Escalation Notice (two versions: employee direct
-and supervisor notification, cites prior occurrence count). Tone calibrated
-appropriately per communication type. System-invisible — tool name never appears in
-outgoing communications. Calls `sovereign-api-client` under a registered prompt.
-
-**Prompt registrations required:**
-- `tt/prompts/time_drafting_system.md` — to be authored in Claude Chat and approved
-  by Project Principal before Time & Travel Phase II build session opens.
-
-**Logger event fields this agent_id appears on:**
-- `SCRIBE_DRAFT_CREATED` — every time/expense communication draft produced
-- `SCRIBE_EXPORT_APPROVED` — every draft reviewed and sent by manager
-
-**Data classification:** Per content type. Formal escalation notices involving
-supervisor notification carry elevated handling. Individual correction records
-are program-level audit data.
-
-**Monitoring tier:** Standard, with CPMI enhanced monitoring applied given the
-sensitive nature of personnel-adjacent communications.
-
-**Scope constraint:** `tt.time-drafter` produces draft communications only. The
-manager selects, adjusts if needed, and sends. The agent does not send communications.
-The formal escalation scenario (employee + supervisor versions) requires manager
-selection of which version(s) to send — the agent does not choose.
-
----
-
-### tt.escalation-monitor
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.escalation-monitor` |
-| Module | Time & Travel workflow layer (runs on VIGIL / NEXUS infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Monitoring |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** Tracks recurrence counts per employee across a rolling multi-period
-window for each compliance rule category. When the same rule triggers at or beyond
-the defined recurrence threshold within the window, `tt.escalation-monitor` upgrades
-the default communication type from routine correction to formal escalation template
-and routes the case to VIGIL for human authorization before the escalation
-communication is sent. The recurrence count is displayed on the manager's review
-dashboard. First and second occurrences are managed through standard correction
-channels; third occurrence and beyond triggers formal escalation. No LLM call.
-
-**Prompt registrations required:** None.
-
-**Logger event fields this agent_id appears on:**
-- `TT_ESCALATION_TRIGGERED` — every recurrence threshold breach
-- `TT_ESCALATION_ROUTED` — every formal escalation routed to VIGIL
-
-**Data classification:** Platform-level audit data. Recurrence records are governance
-records accessible to authorized platform administrators.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.escalation-monitor` tracks and routes only. It does not
-send escalation notices, modify time records, or make personnel decisions. All formal
-escalation actions require human authorization through VIGIL.
-
----
-
-### tt.audit-reporter
-
-| Field | Value |
-|---|---|
-| `agent_id` | `tt.audit-reporter` |
-| Module | Time & Travel workflow layer (runs on APEX / Logger infrastructure) |
-| Product | Time & Travel — governed workflow layer |
-| Agent Class | Governance |
-| Registered | 2026-06-29 |
-| Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
-
-**Description:** Produces period-close audit exports and session-based decision logs
-from the Logger audit trail. Two export modes: session-based (travel approval
-decisions with timestamp, rule detail, routing, and outcome — exportable for records
-management) and period-based (time record flags, resolutions, correction history, and
-recurrence records — exportable for DCAA, Inspector General, or internal audit use).
-Every decision logged with the travel request or time record, the rule that triggered,
-the manager who decided, and the outcome. Audit preparation time reduced from 90–120
-minutes to 15–20 minutes. No LLM call.
-
-**Prompt registrations required:** None. `tt.audit-reporter` reads from the Logger
-and formats output — no AI inference.
-
-**Logger event fields this agent_id appears on:**
-- `TT_AUDIT_EXPORT_PRODUCED` — every audit report generated
-
-**Data classification:** Platform-level audit data. Audit exports carry
-`data_classification_confirmed: true`. DCAA-formatted exports carry federal audit
-handling designation.
-
-**Monitoring tier:** Standard.
-
-**Scope constraint:** `tt.audit-reporter` reads and formats only. It does not modify
-any Logger records, time records, or travel requests. Audit export is initiated by
-an authorized manager or administrator — not automatically generated.
-
----
-
-## Updated Agent Count — Full Platform (as of June 29, 2026)
-
-**Total registered agents after this addition: 44**
-
-| Layer / Module | Agent IDs | Count |
-|---|---|---|
-| FLOWPATH | flowpath.coordinator/interviewer/mapper/validator/analyzer/domain-translator | 6 |
-| CPMI | cpmi.reasoning-chain/world-model-api/vrs-certification | 3 |
-| AgentOS (core) | agentos.orchestrator/data-agent/training-agent/evaluation-agent/monitoring-agent/compliance-agent | 6 |
-| AgentOS (orchestration) | agentos.deployer/exporter/configurator | 3 |
-| NEXUS | nexus.classification-agent/routing-agent | 2 |
-| APEX | apex.ai-assistant/report-generator | 2 |
-| ARIA Suite | aria.rules-engine | 1 |
-| Companion Suite | counsel-analyst/scribe-drafter/scribe-style-analyst/lens-explainer/lens-orientation/vigil-triage-analyst/vigil-approval-agent | 7 |
-| PPBE workflow layer | ppbe-ledger-monitor/dependency-tracker/evidence-synthesizer/scenario-analyst/exhibit-drafter/coordination-assistant | 6 |
-| **Time & Travel workflow layer** | **tt.travel-compliance-engine/travel-router/time-compliance-engine/pattern-analyst/travel-drafter/time-drafter/escalation-monitor/audit-reporter** | **8** |
-| **Total** | | **44** |
-
----
-
-*Agent Identity Standard — Time & Travel Workflow Layer Additions*
-*June 29, 2026 · Project Principal approved (Governance Decision Record D-TT5)*
-*Pre-Decisional · Internal Working Document*
-*Append to Agent_Identity_Standard.md after PPBE workflow layer additions*
