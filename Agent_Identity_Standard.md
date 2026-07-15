@@ -796,7 +796,7 @@ required before any synthesis report influences a PPBE decision. Calls
 directly. Requires Tier A authorization.
 
 **Prompt registrations required:**
-- `ppbe/prompts/evidence_synthesis_system.md` — to be authored in Claude Chat
+- `ppbe/prompts/evidence_synthesis_system.md` — to be authored by the Governance Agent
   and approved by Project Principal before PPBE Phase III build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -836,7 +836,7 @@ execute. Calls `sovereign-api-client` under a registered prompt. Never calls the
 Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/scenario_analysis_system.md` — to be authored in Claude Chat
+- `ppbe/prompts/scenario_analysis_system.md` — to be authored by the Governance Agent
   and approved by Project Principal before PPBE Phase III build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -880,7 +880,7 @@ congressional justification or evaluation report. Calls `sovereign-api-client`
 under a registered prompt; never calls the Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/exhibit_drafting_system.md` — to be authored in Claude Chat
+- `ppbe/prompts/exhibit_drafting_system.md` — to be authored by the Governance Agent
   and approved by Project Principal before PPBE Phase III build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -923,7 +923,7 @@ under a registered prompt for natural language coordination tracking; never call
 Anthropic API directly.
 
 **Prompt registrations required:**
-- `ppbe/prompts/coordination_system.md` — to be authored in Claude Chat and
+- `ppbe/prompts/coordination_system.md` — to be authored by the Governance Agent and
   approved by Project Principal before PPBE Phase II build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -990,7 +990,7 @@ Integration Brief's count. This table is the authoritative count.**
 Note on prior count discrepancy: Integration Brief v1.30 claimed 21 agents. The
 actual count in this file as of June 29, 2026 is 36. The discrepancy arose from
 count drift across multiple sessions (Lesson 12). The count in this table is
-authoritative. Claude Code must count file entries directly at every session open
+authoritative. The Build Agent must count file entries directly at every session open
 and record the verified count in the session handoff. Do not propagate the Brief's
 count forward without verifying.
 
@@ -1033,7 +1033,7 @@ entries in the file. The Integration Brief's count claim is not authoritative.
 | Agent Class | Governance |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** The deterministic compliance engine for the Travel Management Tool.
 Evaluates every travel request against the `TravelPolicy` rule set produced by a
@@ -1071,7 +1071,7 @@ human decision in NEXUS/VIGIL. It does not invoke other agents.
 | Agent Class | Operational |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Routes travel requests to the correct approval authority based on the
 compliance engine's output. Updates the `TravelRequest` status in NEXUS and assigns
@@ -1106,7 +1106,7 @@ below what the compliance engine specifies.
 | Agent Class | Governance |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** The deterministic detection engine for the Time & Expense Tool.
 Evaluates every employee time record against ten rule categories: unauthorized charge
@@ -1143,7 +1143,7 @@ compliance flags require human manager review before any communication is sent.
 | Agent Class | Monitoring |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Maintains rolling baselines and surfaces pattern drift flags to the
 manager dashboard. Two analysis levels: individual baseline comparison (current period
@@ -1180,7 +1180,7 @@ employee communication. No modification of time records. Manager decides all res
 | Agent Class | Operational |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase II opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 28 (July 12, 2026); wiring gap (WE-10) closed Session 30 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Drafts the four travel communication templates from governed
 `TravelRequest` data. Four modes: Approval Notice (confirms authorization, notes any
@@ -1193,7 +1193,7 @@ The tool name never appears in outgoing communications — every message is sent
 the approver's identity. Calls `sovereign-api-client` under a registered prompt.
 
 **Prompt registrations required:**
-- `tt/prompts/travel_drafting_system.md` — to be authored in Claude Chat and approved
+- `tt/prompts/travel_drafting_system.md` — to be authored by the Governance Agent and approved
   by Project Principal before Time & Travel Phase II build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -1221,7 +1221,7 @@ It does not approve or deny travel requests. Export is gated on manager action.
 | Agent Class | Operational |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase II opens; prompt required before build |
+| Status | IMPLEMENTED — built Session 28 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Drafts the five time and expense communication templates from governed
 `ComplianceFlag` data. Five modes: Error Correction Notice (step-by-step correction
@@ -1235,7 +1235,7 @@ appropriately per communication type. System-invisible — tool name never appea
 outgoing communications. Calls `sovereign-api-client` under a registered prompt.
 
 **Prompt registrations required:**
-- `tt/prompts/time_drafting_system.md` — to be authored in Claude Chat and approved
+- `tt/prompts/time_drafting_system.md` — to be authored by the Governance Agent and approved
   by Project Principal before Time & Travel Phase II build session opens.
 
 **Logger event fields this agent_id appears on:**
@@ -1266,7 +1266,7 @@ selection of which version(s) to send — the agent does not choose.
 | Agent Class | Monitoring |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Tracks recurrence counts per employee across a rolling multi-period
 window for each compliance rule category. When the same rule triggers at or beyond
@@ -1304,7 +1304,7 @@ escalation actions require human authorization through VIGIL.
 | Agent Class | Governance |
 | Registered | 2026-06-29 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed when Time & Travel Phase I opens |
+| Status | IMPLEMENTED — built Session 27 (July 12, 2026). Status updated July 14, 2026. |
 
 **Description:** Produces period-close audit exports and session-based decision logs
 from the Logger audit trail. Two export modes: session-based (travel approval
