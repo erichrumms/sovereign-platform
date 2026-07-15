@@ -16,7 +16,7 @@
  *    through sovereign-api-client."
  *
  * API: Anthropic Messages API v1
- * Model: claude-sonnet-4-20250514 (SBOM_Registry.md — Anthropic API entry)
+ * Model: claude-sonnet-4-6 (SBOM_Registry.md — Anthropic API entry)
  * Auth: x-api-key header — key injected at runtime, never stored in code
  *
  * Version: 1.0
@@ -51,7 +51,7 @@ export const ANTHROPIC_API_VERSION = "2023-06-01";
  * Source: SBOM_Registry.md — External API Services table.
  * Change requires SBOM update and governance decision.
  */
-export const SOVEREIGN_DEFAULT_MODEL = "claude-sonnet-4-20250514";
+export const SOVEREIGN_DEFAULT_MODEL = "claude-sonnet-4-6";
 
 // ============================================================
 // CONFIG

@@ -322,7 +322,26 @@ describe("public export surface", () => {
   });
 
   test("SOVEREIGN_DEFAULT_MODEL is exported", () => {
-    expect(SOVEREIGN_DEFAULT_MODEL).toBe("claude-sonnet-4-20250514");
+    expect(SOVEREIGN_DEFAULT_MODEL).toBe("claude-sonnet-4-6");
+  });
+
+  // Model-retirement regression test (Session 37).
+  // Catches a stale/retired model string before it reaches a live smoke run.
+  // The failure mode this guards against: a 404 that only surfaces when someone
+  // runs the live half with a real key — a silent green hermetic suite followed
+  // by a confusing live failure (exactly what happened with claude-sonnet-4-20250514).
+  //
+  // To update the default model: (1) confirm the new model is available on the
+  // Anthropic account, (2) add it to SOVEREIGN_ALLOWED_MODELS, (3) update
+  // SOVEREIGN_DEFAULT_MODEL, (4) update the exact-value test above.
+  // Retired models should be removed from the allowlist so they cannot be
+  // accidentally re-introduced.
+  const SOVEREIGN_ALLOWED_MODELS = new Set([
+    "claude-sonnet-4-6",
+  ]);
+
+  test("SOVEREIGN_DEFAULT_MODEL is in the known-available model allowlist", () => {
+    expect(SOVEREIGN_ALLOWED_MODELS.has(SOVEREIGN_DEFAULT_MODEL)).toBe(true);
   });
 
   test("GOVCLOUD_PROVIDER_ENDPOINT placeholder is exported", () => {
