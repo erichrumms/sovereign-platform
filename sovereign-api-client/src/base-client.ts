@@ -358,6 +358,14 @@ export abstract class BaseSovereignClient {
       const reason = isTimeout ? "timeout" : "provider_error";
       const detail = err instanceof Error ? err.message : String(err);
 
+      // SOVEREIGN_CLIENT_DEBUG=1 — temporary diagnostic gate (Session 36).
+      // Remove after live-call failure is diagnosed.
+      if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+        console.log(
+          `[SOVEREIGN DEBUG] complete() tier-1 catch: reason=${reason} detail=${detail}`
+        );
+      }
+
       this.logger.log({
         event_type: "FALLBACK_ACTIVATED",
         workflow_step_id: context.workflow_step_id,
