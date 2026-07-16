@@ -1,0 +1,26 @@
+# SOVEREIGN Platform — Document Manifest
+# This file is the system of record for "what is current." Not this conversation's
+# memory, not the last thing said in chat — this file. The Governance Agent updates
+# it every time a new version of any tracked document is produced; the placement
+# script (place_governance_doc.sh) verifies against it before anything gets copied
+# anywhere. If this file and a chat message disagree, this file wins — but only
+# once you've confirmed IT is current (see AGENT_REFERENCE.md Conflict Resolution).
+#
+# Format (pipe-delimited, one line per document):
+# filename|destination|sha256|line_count|version_label|last_placed_date
+#
+# destination values:
+#   repo           — ~/Developer/sovereign-platform/ (git-tracked)
+#   icloud         — ~/Library/Mobile Documents/com~apple~CloudDocs/7 - SOVEREIGN/Companion Suite/Governance/
+#   project_knowledge — Claude.ai project file management (not scriptable; manual replace)
+#
+# Lines starting with # are comments. Do not hand-edit the data lines below without
+# also updating the checksum — if you change a file's content, you must regenerate
+# its hash (shasum -a 256 <file>) or the verify script will (correctly) refuse it.
+
+SOVEREIGN_Platform_Integration_Brief_v1.46.md|repo|da4e578cedba4d179b83171947fb84683a7f7b0fbdb340a8f5cbb7dcdcec68e8|139|v1.46|2026-07-15
+SOVEREIGN_Agent_to_Agent_Briefing.md|repo|a378b6ff6a18fe0329d506c3c57329f3d571c72ffb20d842f9ce7c5a5d848dca|100|current (no version suffix by design)|2026-07-15
+Agent_Identity_Standard.md|repo|746c5fbf12d9851461036867a3feff970b20531a399bdc445fa14a7d7f835fd4|1440|current, includes Documentation Integrity Note|UNCONFIRMED — placement never verified, check before trusting this row
+SBOM_Registry_v1.39.md|icloud|7b557141c34914ab8300ab6c2eacbd304749a7e4bab2682ad20dfb2830a53905|127|v1.39|2026-07-15
+SOVEREIGN_System_Prompt_v29.md|icloud|2fd10a74b464ac182a63122c759b2ba4acfc957a211f18f3569b74bd8c3f92fd|171|v29|2026-07-15
+AGENT_REFERENCE.md|project_knowledge|d90227a7344b1561d97e8c06146890f51e8d580d4fdc93bbc3103366a87c8c5d|492|current, includes Rules 8-10|UNCONFIRMED — verify actual project file matches
