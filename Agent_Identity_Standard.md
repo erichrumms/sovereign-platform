@@ -1357,3 +1357,84 @@ an authorized manager or administrator — not automatically generated.
 *June 29, 2026 · Project Principal approved (Governance Decision Record D-TT5)*
 *Pre-Decisional · Internal Working Document*
 *Append to Agent_Identity_Standard.md after PPBE workflow layer additions*
+
+---
+
+# Agent Identity Standard — Documentation Integrity Note
+## Append to Agent_Identity_Standard.md, after Time & Travel additions
+
+**Date:** July 15, 2026
+**Recorded by:** Governance Agent, at Project Principal's request
+
+This note records two things found while making routine corrections to this
+file: a near-miss that briefly reintroduced a previously-resolved data-loss
+risk into the live repository, and a genuine unresolved discrepancy within
+this file's own PPBE section, discovered but not yet fixed.
+
+### Near-miss: this file's TT section was briefly deleted from the repo
+
+A terminology correction and a Status-field correction (see below) were
+applied to a local copy of this file and handed back for the Project
+Principal to place in the repo. The `cp` step that was supposed to copy the
+corrected file into place instead copied a stale same-named file already
+sitting in the local Downloads folder — one downloaded two days earlier, for
+an unrelated purpose, missing the entire Time & Travel section (1018 lines
+instead of 1359). The commit and push both succeeded without error, because
+from git's perspective a valid file was committed — nothing in the mechanical
+steps could distinguish "the right valid file" from "a different valid file
+with the same name." **This silently reintroduced the exact 36-vs-44 agent
+count problem this file had already spent significant effort resolving,**
+live on `origin/main`, for a short window.
+
+**Caught by:** noticing the committed diff's line-change count (379 lines)
+was wildly disproportionate to the size of the intended edit (roughly 40-50
+lines), not by any tooling or process step that was already in place.
+
+**Resolved by:** `git revert` of the bad commit, followed by re-verifying the
+restored file's line count against the actual repo (`git show HEAD:... |
+wc -l`, not a local copy) before re-attempting the edit. When the corrected
+file then failed to re-download twice in a row, the edit was applied directly
+to the already-correct file sitting in the repo (via `sed`/`awk`), rather than
+continuing to retry the same transfer mechanism.
+
+**Standing lesson from this incident is recorded generally in
+`AGENT_REFERENCE.md` (new Rule 10)** — this note exists specifically to leave
+a trace in the file that was actually at risk, per the same reasoning that
+governs every other incident and correction already recorded in this
+document: the record should travel with the artifact it concerns, not live
+only in a chat transcript.
+
+### Open discrepancy, NOT resolved by this note — flagged for a future session
+
+While making the corrections above, a second, unrelated issue was found: the
+**six PPBE agents' individual Status fields** (`ppbe-ledger-monitor` through
+`ppbe-coordination-assistant`, in the PPBE Workflow Layer Additions section
+above) still read pre-build language — `"REGISTERED — build may proceed when
+PPBE Phase II/III opens"` — and the June 29, 2026 summary table in that same
+section still shows `"Registered (Phase II)"` / `"Registered (Phase III)"`
+for all six.
+
+This appears inconsistent with a separate, earlier version of this file
+(seen once, not currently held) whose PPBE agents were marked
+`Implemented (S31)` / `Implemented (S32)` — session numbers that match this
+project's actual SBOM build records for those sessions. **The two versions
+were never reconciled**, and it is not yet established which one reflects
+what actually happened, or how they diverged. Per the same discipline applied
+to the TT section earlier tonight (verify via direct source history before
+editing, don't patch from partial memory): **do not correct these six Status
+fields without first running something equivalent to**
+
+    git log -p --follow -- Agent_Identity_Standard.md | grep -n "Registered (Phase\|Implemented (S3"
+
+**against the actual repository** to understand how and why the two versions
+diverged, before deciding which is authoritative. Until that happens, treat
+the PPBE section's individual Status fields and June 29 summary table as
+unverified for current build state — the "Complete Agent Registry" table's
+Status column at the end of the PPBE section is the same kind of
+carried-forward claim Lesson 12 already warns about in this same file.
+
+---
+
+*Agent Identity Standard — Documentation Integrity Note*
+*July 15, 2026 · Recorded by Governance Agent*
+*Pre-Decisional · Internal Working Document*
