@@ -5,11 +5,14 @@
  * Shows the full request fields, the vigil-approval-agent brief (generated via
  * useApprovalBrief — one createSovereignClient() per brief, with serving-tier
  * disclosure), and the decision controls (ApprovalDecisionPanel + useApprovalDecision).
+ * Tier C obligation requests (action_type "ppbe_obligation") get ObligationDecisionPanel
+ * + useObligationDecision instead — requiring a COUNSEL Decision Record ID in addition
+ * to the standard note (docs/18 §6).
  * The hooks own the LLM call and Logger emission; this component is composition +
  * presentation (spec §9.3 patterns). On a recorded decision the request is removed
  * from the active queue (onDecided).
  *
- * Version: 1.0 · Session 10 · June 23, 2026
+ * Version: 1.1 · Session 38 · July 16, 2026
  */
 
 import { useEffect, type CSSProperties } from "react";
@@ -19,13 +22,31 @@ import { minutesRemaining, type AgentApprovalRequest, type ApprovalDecisionActio
 import { useApprovalBrief } from "./useApprovalBrief";
 import { useApprovalDecision } from "./useApprovalDecision";
 import { ApprovalDecisionPanel } from "./ApprovalDecisionPanel";
+import { ObligationDecisionPanel } from "./ObligationDecisionPanel";
+import { useObligationDecision } from "./useObligationDecision";
+import type { PPBEObligationCase } from "./ppbe-authorization";
 
 export interface ApprovalDetailProps {
   ctx: SovereignShellContext;
   request: AgentApprovalRequest;
   /** Called after a decision is recorded (request leaves the active queue). */
   onDecided: (requestId: string) => void;
+  /** Required when request.action_type === "ppbe_obligation" (Tier C gate). */
+  obligationCase?: PPBEObligationCase;
 }
+
+// Stable placeholder so useObligationDecision can always be called (no conditional hooks).
+const EMPTY_OBLIGATION_CASE: PPBEObligationCase = {
+  case_id: "",
+  draft: { obligation_id: "", program_id: "", cost_code: "", amount: 0, timestamp: "", workflow_step_id: "" },
+  approval_request: {
+    request_id: "", requesting_agent_id: "", requesting_agent_class: "Monitoring",
+    action_type: "ppbe_obligation", action_detail: {}, risk_classification: "P1",
+    submitted_at: "", expires_at: "", workflow_step_id: "",
+  },
+  authorization: "PENDING_AUTHORIZATION",
+  workflow_step_id: "",
+};
 
 const TIER_NOTE: Record<"live" | "cache" | "static", string> = {
   live: "Live brief from vigil-approval-agent.",
@@ -33,9 +54,13 @@ const TIER_NOTE: Record<"live" | "cache" | "static", string> = {
   static: "Static brief — the agent service is unavailable. Assembled directly from the request fields, not generated.",
 };
 
-export function ApprovalDetail({ ctx, request, onDecided }: ApprovalDetailProps): JSX.Element {
+export function ApprovalDetail({ ctx, request, onDecided, obligationCase }: ApprovalDetailProps): JSX.Element {
+  const isObligationRequest = request.action_type === "ppbe_obligation";
   const brief = useApprovalBrief(ctx);
   const decision = useApprovalDecision(ctx);
+  // Obligation hook — only active when an obligation case is present.
+  // A stable placeholder case avoids conditional hook ordering.
+  const obligationDecision = useObligationDecision(ctx, obligationCase ?? EMPTY_OBLIGATION_CASE);
 
   // One brief per request — regenerate when the selected request changes.
   useEffect(() => {
@@ -46,6 +71,12 @@ export function ApprovalDetail({ ctx, request, onDecided }: ApprovalDetailProps)
 
   const onDecide = (action: ApprovalDecisionAction, notes: string): boolean => {
     const result = decision.decide(request, action, notes);
+    if (result.ok) onDecided(request.request_id);
+    return result.ok;
+  };
+
+  const onObligationDecide = (action: "APPROVE" | "REJECT", note: string, counselId: string): boolean => {
+    const result = obligationDecision.decide(action, note, counselId);
     if (result.ok) onDecided(request.request_id);
     return result.ok;
   };
@@ -85,7 +116,11 @@ export function ApprovalDetail({ ctx, request, onDecided }: ApprovalDetailProps)
         ) : null}
       </div>
 
-      <ApprovalDecisionPanel onDecide={onDecide} error={decision.error} />
+      {isObligationRequest && obligationCase ? (
+        <ObligationDecisionPanel onDecide={onObligationDecide} error={obligationDecision.error} />
+      ) : (
+        <ApprovalDecisionPanel onDecide={onDecide} error={decision.error} />
+      )}
     </section>
   );
 }

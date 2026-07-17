@@ -29,6 +29,7 @@ import { useApprovalQueue } from "./useApprovalQueue";
 import { DEMO_ARIA_ALERTS } from "./aria-alert-routing";
 import { DEMO_TT_ALERTS, makeDemoTTApprovalRequest } from "./tt-synthetic-alerts";
 import { createDevApprovalPort } from "./approval-port";
+import { openObligationGate, type PPBEObligationCase } from "./ppbe-authorization";
 
 export interface VigilAppProps {
   ctx: SovereignShellContext;
@@ -49,9 +50,29 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
   // anchored to mount time so its P2 window is live (not instantly expired).
   const alerts = useAlertQueue(ctx, { initialAlerts: [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS] });
   const anchorIso = useMemo(() => new Date().toISOString(), []);
-  const approvals = useApprovalQueue(ctx, {
-    initialRequests: [...createDevApprovalPort(anchorIso).listPending(), makeDemoTTApprovalRequest(anchorIso)],
-  });
+
+  // Tier C seed — one pending obligation awaiting VIGIL authorization + COUNSEL Decision Record.
+  // The draft uses a synthetic obligation that has not yet been committed; it enters the queue
+  // at mount time so the walkthrough can demonstrate the Tier C panel. The null guard is belt-
+  // and-suspenders (openObligationGate only returns null for malformed drafts).
+  const demoPPBEObligationCase = useMemo<PPBEObligationCase | null>(() => {
+    const draft = {
+      obligation_id: "PPBE-OB-DEMO-001",
+      program_id: "SYNTH-PRG-ALPHA",
+      cost_code: "SYNTH-CC-110",
+      amount: 75000,
+      timestamp: anchorIso,
+      workflow_step_id: "ppbe-obligation-PPBE-OB-DEMO-001",
+    };
+    return openObligationGate(draft, "ppbe-coordination-assistant", anchorIso, ctx.logger);
+  }, [anchorIso, ctx.logger]);
+
+  const baseRequests = [...createDevApprovalPort(anchorIso).listPending(), makeDemoTTApprovalRequest(anchorIso)];
+  const initialRequests = demoPPBEObligationCase
+    ? [...baseRequests, demoPPBEObligationCase.approval_request]
+    : baseRequests;
+
+  const approvals = useApprovalQueue(ctx, { initialRequests });
 
   // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
   useEffect(() => {
@@ -121,7 +142,16 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
         <div style={stackStyle}>
           <ApprovalQueue requests={approvals.requests} selectedId={approvals.selectedId} onSelect={approvals.select} />
           {approvals.selected ? (
-            <ApprovalDetail ctx={ctx} request={approvals.selected} onDecided={approvals.remove} />
+            <ApprovalDetail
+            ctx={ctx}
+            request={approvals.selected}
+            onDecided={approvals.remove}
+            obligationCase={
+              approvals.selected.action_type === "ppbe_obligation" && demoPPBEObligationCase
+                ? demoPPBEObligationCase
+                : undefined
+            }
+          />
           ) : (
             approvals.requests.length > 0 && <p style={hintStyle}>Select a request to review its brief and record a decision.</p>
           )}
