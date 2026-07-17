@@ -1438,3 +1438,90 @@ carried-forward claim Lesson 12 already warns about in this same file.
 *Agent Identity Standard — Documentation Integrity Note*
 *July 15, 2026 · Recorded by Governance Agent*
 *Pre-Decisional · Internal Working Document*
+
+---
+
+# Agent Identity Standard — Session Findings Note (Governance Agent Orientation Pass)
+## Append to Agent_Identity_Standard.md, after the Documentation Integrity Note (July 15)
+
+**Date:** July 17, 2026
+**Recorded by:** Governance Agent, during Walkthrough F repeat-pass orientation
+
+Three items found while cross-checking this file's prompt registrations against
+the actual repo. One is a confirmed correction; two are confirmed-harmless
+drift, recorded so they aren't rediscovered from scratch next session.
+
+### 1. `lens-orientation` — description does not match what is built (real correction)
+
+This file's `lens-orientation` entry (Companion Suite Additions, June 11)
+describes an "Orientation Dialogue Agent" that "runs structured learning
+module dialogue," is `LLM-Backed: Yes`, and requires
+`module-lens/prompts/orientation_system.md` (PR-LENS-002).
+
+**Confirmed by direct trace** (`module-lens/src/explanation-engine.ts`,
+`orientation-data.ts`, `index.ts`, and `module-lens/prompts/CHANGELOG.md`):
+`lens-orientation` is a real, registered agent identity attached to the
+Pipeline Navigator — a static, non-LLM feature. `orientation-data.ts`'s own
+header states it plainly: "makes NO LLM call; it renders from this static
+data." The LENS CHANGELOG's last entry confirms PR-LENS-002 was never
+authored and remains deferred. The only LLM call anywhere in `module-lens`
+belongs to `lens-explainer`, not `lens-orientation`.
+
+**Corrected facts, pending a proper table edit:** `lens-orientation` should
+read `LLM-Backed: No`, no prompt registration required until PR-LENS-002 is
+actually authored and approved, and its description should reflect the
+static Pipeline Navigator rather than a dialogue engine. This is the same
+shape as `vigil-approval-agent` (a registered identity attached to a
+non-LLM feature) — not a defect in what's built, a defect in how this
+document describes it.
+
+### 2. Prompt registration paths use a stale naming convention (8 entries, confirmed harmless)
+
+This file registers prompts as `[logical_name]_system.md` (underscores, no
+version) for `counsel-analyst` (3), `lens-explainer` (1), `scribe-drafter`
+(2), `scribe-style-analyst` (1), and `vigil-triage-analyst` (1). The real
+files on disk use `[logical-name]-system-v1.0.md` (hyphens, versioned), per
+the actual SOVEREIGN Prompt Registry Specification convention — e.g.
+`analysis_system.md` in this file vs. the real
+`module-counsel/prompts/analysis-system-v1.0.md`.
+
+**Confirmed harmless by direct trace:** every real prompt file has a
+matching `SOURCE OF TRUTH` / `SYNC OBLIGATION` comment block in its runtime
+`.prompt.ts` copy, and the actual contract files (`analysis-contract.ts`,
+`triage-contract.ts`, etc.) reference the real hyphenated filenames
+correctly. Nothing is broken; this document's registered paths are simply
+the older naming convention, not updated when the per-module prompt
+CHANGELOGs adopted versioned filenames.
+
+`vigil-triage-analyst`'s registered path is additionally wrong on
+directory, not just filename: this file says
+`module-vigil/agents/vigil-triage-analyst/prompts/triage_system.md`; no
+`agents/` directory exists under `module-vigil` at all. The real file is
+`module-vigil/prompts/triage-system-v1.0.md`.
+
+### 3. `vigil-approval-agent` has a prompt file despite being documented as needing none
+
+This file's `vigil-approval-agent` entry states "Prompt registrations
+required: None ... It does not call `sovereign-api-client`." A file exists
+at `module-vigil/prompts/approval-system-v1.0.md` regardless. Not
+independently investigated this session — flagged so it isn't missed, not
+because it's known to be wrong. Could be leftover from an earlier design,
+or could indicate this entry's own "no prompt" claim needs the same
+re-checking `lens-orientation`'s did.
+
+**Recommendation:** items 1 and 2 above are unambiguous — a direct
+table-content correction pass on this file (not another append note) would
+resolve both cleanly whenever that's convenient. Item 3 needs one more
+direct trace before anyone corrects anything about it, per Rule 8.
+
+**Tooling note, for the same reason this file tracks incidents rather than
+just fixes:** the cross-checks above were produced by two new scripts,
+`sovereign_session_verify.sh` and `sovereign_platform_map.sh`, currently
+sitting untracked at the repo root. These are concrete implementations of
+the "repository integrity check" AGENT_REFERENCE.md's Context Gather
+Script section already calls for as a standing tool. They should be
+committed properly rather than left as local, uncommitted files — an
+integrity-check tool that isn't itself in version control is a small
+version of the same problem it exists to catch.
+
+---
