@@ -66,9 +66,9 @@ const inputs: PPBEDashboardInputs = {
 describe("PPBEDashboard", () => {
   it("renders all four metric sections and the event activity with data", () => {
     render(<PPBEDashboard inputs={inputs} />);
-    expect(screen.getByRole("heading", { name: "APEX — PPBE Performance" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
     expect(screen.getByText(/obligated 50000 of 100000 planned — 50 percent/)).toBeInTheDocument();
-    expect(screen.getByText(/FY 2027 Q1: actuals of 50000 are 50000 below plan/)).toBeInTheDocument();
+    expect(screen.getByText(/Logistics Data Interchange.*FY 2027 Q1.*under-executing.*actuals of 50000 are 50000 below plan/)).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 registered dependencies are healthy/)).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_DECISION: 2 recorded events/)).toBeInTheDocument();

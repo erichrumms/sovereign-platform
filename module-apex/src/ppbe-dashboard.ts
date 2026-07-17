@@ -110,6 +110,7 @@ export function budgetToActualVariance(
   return program.obligation_plan.map((entry) => {
     const actual = actualByPeriod[entry.period] ?? 0;
     const variance = actual - entry.planned_amount;
+    const status = variance === 0 ? "on-plan" : variance > 0 ? "over-executing" : "under-executing";
     const direction = variance === 0 ? "on plan" : variance > 0 ? "above plan" : "below plan";
     return {
       program_id: program.program_id,
@@ -119,8 +120,8 @@ export function budgetToActualVariance(
       variance,
       narrative:
         variance === 0
-          ? `${entry.period}: actuals are on plan at ${actual}.`
-          : `${entry.period}: actuals of ${actual} are ${Math.abs(variance)} ${direction} (planned ${entry.planned_amount}).`,
+          ? `${program.name} (${entry.period}) is ${status}: actuals are on plan at ${actual}.`
+          : `${program.name} (${entry.period}) is ${status}: actuals of ${actual} are ${Math.abs(variance)} ${direction} (planned ${entry.planned_amount}).`,
     };
   });
 }

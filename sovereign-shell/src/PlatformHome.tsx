@@ -137,9 +137,11 @@ export function PlatformHome({ ctx }: PlatformHomeProps): JSX.Element {
         <h1 style={pageTitleStyle}>SOVEREIGN Platform</h1>
         <p style={pageSubtitleStyle}>
           Select a module from the left navigation to begin · Status as of{" "}
-          {new Date(cpmiStatus.last_updated).toLocaleString(undefined, {
-            month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
-          })}
+          {Number.isNaN(Date.parse(cpmiStatus.last_updated))
+            ? "Status date unavailable"
+            : new Date(cpmiStatus.last_updated).toLocaleString(undefined, {
+                month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
+              })}
         </p>
       </header>
 

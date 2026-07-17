@@ -84,7 +84,7 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
         selectedProgram ? (
           <ProgramDetailView ctx={ctx} adapter={adapter} programId={selectedProgram} onExportDossier={exportDossierFor} onBack={() => setTab("portfolio")} />
         ) : (
-          <PortfolioDashboard ctx={ctx} adapter={adapter} onOpenProgram={openProgram} onExportDossier={exportDossierFor} />
+          <p style={detailHintStyle}>Select a program from the Portfolio Dashboard to view its detail.</p>
         )
       )}
       {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} />}
@@ -106,5 +106,6 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
 const shellStyle: CSSProperties = { height: "100%", display: "flex", flexDirection: "column", fontFamily: "system-ui, sans-serif" };
 const tabBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", padding: "0 32px", background: "#fff" };
 const tabStyle: CSSProperties = { padding: "10px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
+const detailHintStyle: CSSProperties = { margin: "32px", fontSize: 14, color: "#64748b" };
 
 export default ApexApp;
