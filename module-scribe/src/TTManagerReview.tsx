@@ -78,7 +78,9 @@ function itemKey(item: TTReviewItem): string {
 function itemLabel(item: TTReviewItem): string {
   return item.kind === "travel"
     ? `${item.request.request_id} · ${item.request.destination} · ${item.request.routing_tier ?? "UNEVALUATED"}`
-    : `${item.flag.flag_id} · ${item.flag.rule_category} · ${item.flag.severity}`;
+    // §2.1 Supervision Efficiency: surface employee_id so the reviewer sees who this is about
+    // without navigating into the detail panel.
+    : `${item.flag.flag_id} · ${item.flag.employee_id} · ${item.flag.rule_category} · ${item.flag.severity}`;
 }
 
 export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTManagerReviewProps) {

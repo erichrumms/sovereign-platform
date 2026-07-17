@@ -73,6 +73,9 @@ function RequestCard({
           <span style={cardMetaStyle}>
             {request.requesting_agent_id} · {request.submitted_at}
           </span>
+          {actionContext(request) && (
+            <span style={cardContextStyle}>{actionContext(request)}</span>
+          )}
           <span style={cardExpiryStyle}>
             {expired ? "Expired — will be auto-rejected" : `Expires in ${remaining} min`}
           </span>
@@ -80,6 +83,20 @@ function RequestCard({
       </button>
     </li>
   );
+}
+
+/** §2.1 Supervision Efficiency — surface key context from action_detail inline on the card. */
+function actionContext(request: AgentApprovalRequest): string | null {
+  const d = request.action_detail;
+  if (request.action_type === "ppbe_obligation") {
+    const program = typeof d.program_id === "string" ? d.program_id : "—";
+    const amount = typeof d.amount === "number" ? `$${d.amount.toLocaleString()}` : "—";
+    return `Program ${program} · ${amount}`;
+  }
+  if (request.action_type === "ppbe_phase_transition") {
+    return `Phase ${d.from_phase ?? "?"} → ${d.to_phase ?? "?"}`;
+  }
+  return null;
 }
 
 function riskBadgeStyle(risk: RiskClassification): CSSProperties {
@@ -106,6 +123,7 @@ const cardSelectedStyle: CSSProperties = { borderColor: "#0c4a6e", background: "
 const cardMainStyle: CSSProperties = { display: "flex", flexDirection: "column", gap: 2 };
 const cardTypeStyle: CSSProperties = { fontSize: 13, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 };
 const cardMetaStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
+const cardContextStyle: CSSProperties = { fontSize: 11, color: "#0c4a6e", fontWeight: 500 };
 const cardExpiryStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const badgeStyle: CSSProperties = {
   color: "#ffffff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999, flexShrink: 0,
