@@ -4,11 +4,26 @@
  * Part 2 (Session 38): ppbe-exhibit-drafter trigger renders in SCRIBE's
  * "PPBE Exhibits" surface; clicking Draft Exhibit produces output (static
  * tier in test — no LLM key).
+ *
+ * Post-session: prompt-assertion test verifies the panel passes the real,
+ * approved exhibit_drafting_system.md content as systemPrompt.
  */
+import fs from "fs";
+import path from "path";
+
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 import { PPBEExhibitPanel } from "../src/PPBEExhibitPanel";
+import * as exhibitEngine from "../src/ppbe-exhibit-engine";
 import type { SovereignShellContext, SovereignLogEvent } from "../../sovereign-shell/shell-contract";
+
+const PROMPT_DIR = path.resolve(__dirname, "../../ppbe/prompts");
+
+function loadApprovedPrompt(filename: string): string {
+  const raw = fs.readFileSync(path.join(PROMPT_DIR, filename), "utf8");
+  if (!/STATUS:\s*APPROVED/.test(raw)) throw new Error(`${filename}: STATUS is not APPROVED`);
+  return raw.replace(/^<!--[\s\S]*?-->\s*/, "");
+}
 
 function makeCtx(): SovereignShellContext {
   const events: SovereignLogEvent[] = [];
@@ -43,5 +58,19 @@ describe("PPBEExhibitPanel — Part 2 ppbe-exhibit-drafter trigger", () => {
     );
     // Output includes the tier badge (STATIC) and a title.
     expect(screen.getByTestId("ppbe-exhibit-draft-output")).toHaveTextContent("STATIC");
+  });
+});
+
+describe("PPBEExhibitPanel — systemPrompt matches approved .md file", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("passes exhibit_drafting_system.md content (stripped) as systemPrompt to runExhibitDraft", async () => {
+    const spy = jest.spyOn(exhibitEngine, "runExhibitDraft");
+    render(<PPBEExhibitPanel ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("ppbe-run-exhibit-draft"));
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+    const capturedPrompt = spy.mock.calls[0][1] as string;
+    const expectedPrompt = loadApprovedPrompt("exhibit_drafting_system.md");
+    expect(capturedPrompt).toBe(expectedPrompt);
   });
 });

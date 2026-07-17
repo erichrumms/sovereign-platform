@@ -39,9 +39,11 @@
       "<rootDir>/tests/setup-dom.ts"
     ],
     "moduleNameMapper": {
+      "^(.+\\.md)\\?raw$": "$1",
       "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts"
     },
     "transform": {
+      "^.+\\.md$": "<rootDir>/tests/raw-transformer.cjs",
       "^.+\\.tsx?$": [
         "ts-jest",
         {

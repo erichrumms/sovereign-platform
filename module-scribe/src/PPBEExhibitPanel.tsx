@@ -11,8 +11,9 @@
  * a CLEAR certification and human sign-off (ppbe-exhibit-contract.ts).
  * This panel has no export path.
  *
- * All LLM access via createSovereignClient() (Constraint #5). Prompt is
- * PENDING; static fallback is expected in dev.
+ * All LLM access via createSovereignClient() (Constraint #5). Prompt loaded
+ * at build time from ppbe/prompts/exhibit_drafting_system.md (APPROVED v1.0).
+ * Static fallback is expected in dev (no API key).
  *
  * Version: 1.0 · Session 38 · July 16, 2026
  */
@@ -39,8 +40,9 @@ import {
 } from "./ppbe-exhibit-contract";
 import { readAnthropicKey } from "./anthropic-key";
 
-const EXHIBIT_SYSTEM_PROMPT =
-  "[PENDING — ppbe/prompts/exhibit_drafting_system.md not yet authored; static tier in use]";
+import exhibitPromptRaw from "../../ppbe/prompts/exhibit_drafting_system.md?raw";
+
+const EXHIBIT_SYSTEM_PROMPT = exhibitPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 
 type AgentStatus = "idle" | "running" | "done";
 

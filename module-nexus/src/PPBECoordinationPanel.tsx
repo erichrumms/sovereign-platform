@@ -11,8 +11,9 @@
  * item still requires the human-authorized close path from
  * ppbe-coordination-assistant.ts — this panel does NOT close items.
  *
- * All LLM access via createSovereignClient() (Constraint #5). Prompt is
- * PENDING; static fallback expected in dev.
+ * All LLM access via createSovereignClient() (Constraint #5). Prompt loaded
+ * at build time from ppbe/prompts/coordination_system.md (APPROVED v1.0).
+ * Static fallback expected in dev (no API key).
  *
  * Version: 1.0 · Session 38 · July 16, 2026
  */
@@ -36,8 +37,9 @@ import {
 } from "./ppbe-synthetic-coordination";
 import { readAnthropicKey } from "../../module-scribe/src/anthropic-key";
 
-const COORDINATION_SYSTEM_PROMPT =
-  "[PENDING — ppbe/prompts/coordination_system.md not yet authored; static tier in use]";
+import coordinationPromptRaw from "../../ppbe/prompts/coordination_system.md?raw";
+
+const COORDINATION_SYSTEM_PROMPT = coordinationPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 
 type AgentStatus = "idle" | "running" | "done";
 

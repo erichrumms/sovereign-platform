@@ -13,8 +13,8 @@
  * without human review.
  *
  * All LLM access via createSovereignClient() (Constraint #5). Prompts are
- * PENDING (not yet authored); the static fallback tier kicks in for every dev
- * run and is clearly disclosed.
+ * loaded at build time via Vite ?raw imports from ppbe/prompts/ (APPROVED v1.0).
+ * Static fallback kicks in when no API key is present and is clearly disclosed.
  *
  * Version: 1.0 · Session 38 · July 16, 2026
  */
@@ -45,11 +45,11 @@ import { createSyntheticApexDataAdapter } from "./apex-data-adapter";
 import { readAnthropicKey } from "./anthropic-key";
 import type { PPBEDashboardInputs } from "./ppbe-dashboard";
 
-// Placeholder system prompts (prompts registered as PENDING — Constraints #9/#10).
-const EVIDENCE_SYSTEM_PROMPT =
-  "[PENDING — ppbe/prompts/evidence_synthesis_system.md not yet authored; static tier in use]";
-const SCENARIO_SYSTEM_PROMPT =
-  "[PENDING — ppbe/prompts/scenario_analysis_system.md not yet authored; static tier in use]";
+import evidencePromptRaw from "../../ppbe/prompts/evidence_synthesis_system.md?raw";
+import scenarioPromptRaw from "../../ppbe/prompts/scenario_analysis_system.md?raw";
+
+const EVIDENCE_SYSTEM_PROMPT = evidencePromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
+const SCENARIO_SYSTEM_PROMPT = scenarioPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 const FISCAL_CONTEXT = "FY 2026 Q3 — Execution Monitoring";
 
 type AgentStatus = "idle" | "running" | "done";
