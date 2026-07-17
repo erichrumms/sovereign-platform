@@ -17,6 +17,7 @@ import {
   type TravelReviewItem,
   type TimeReviewItem,
 } from "../src/TTManagerReview";
+import { DEMO_TT_REVIEW_ITEMS } from "../src/tt-synthetic-review";
 
 function syntheticCtx(events: SovereignLogEvent[]): SovereignShellContext {
   return {
@@ -107,6 +108,28 @@ function timeItem(over: Partial<TimeReviewItem> = {}): TimeReviewItem {
 }
 
 describe("TTManagerReview — split-panel queue (docs/17 §14)", () => {
+  it("each of the six DEMO_TT_REVIEW_ITEMS is individually selectable (Part 1 diagnosis)", () => {
+    // Confirms that clicking any queue row changes the detail panel.  The
+    // walkthrough finding (items appeared not to change) was a misperception —
+    // the selection mechanism is stateful useState + items.find and is correct.
+    const events: SovereignLogEvent[] = [];
+    render(<TTManagerReview ctx={syntheticCtx(events)} items={DEMO_TT_REVIEW_ITEMS} />);
+
+    // Click each item in turn and verify the draft panel reflects the selected subject.
+    const expected = [
+      { flagId: "SYNTH-TM-201-F1", subject: "Time record 2026-06-22 to 2026-06-26 — correction required" },
+      { flagId: "SYNTH-TM-202-F1", subject: "Time record 2026-06-22 to 2026-06-26 — quick confirmation" },
+      { flagId: "SYNTH-TM-203-F1", subject: "Time record 2026-06-22 to 2026-06-26 — justification needed" },
+      { flagId: "SYNTH-TM-204-F1", subject: "Checking in on recent time charging" },
+      { flagId: "SYNTH-TM-205-F1", subject: "Formal notice — recurring time record compliance issue" },
+      { flagId: "SYNTH-TM-206-F1", subject: "Formal notice — recurring overtime threshold issue" },
+    ];
+    for (const { flagId, subject } of expected) {
+      fireEvent.click(screen.getByTestId(`tt-queue-item-time-${flagId}`));
+      expect(screen.getByTestId("tt-draft")).toHaveTextContent(subject);
+    }
+  });
+
   it("renders the queue and the pre-populated analysis + draft for the selected item", () => {
     const events: SovereignLogEvent[] = [];
     render(<TTManagerReview ctx={syntheticCtx(events)} items={[timeItem()]} />);
