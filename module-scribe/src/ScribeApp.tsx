@@ -37,12 +37,13 @@ import { IntermediateWorkspace } from "./IntermediateWorkspace";
 import { StyleDNAManager } from "./StyleDNAManager";
 import { TTManagerReview } from "./TTManagerReview";
 import { DEMO_TT_REVIEW_ITEMS } from "./tt-synthetic-review";
+import { PPBEExhibitPanel } from "./PPBEExhibitPanel";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
 }
 
-type ScribeSurface = "drafting" | "tt-review";
+type ScribeSurface = "drafting" | "tt-review" | "ppbe-exhibits";
 
 export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
   const [surface, setSurface] = useState<ScribeSurface>("drafting");
@@ -89,10 +90,22 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
         >
           Time &amp; Travel Review
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={surface === "ppbe-exhibits"}
+          data-testid="scribe-ppbe-exhibits-tab"
+          onClick={() => setSurface("ppbe-exhibits")}
+          style={surface === "ppbe-exhibits" ? surfaceTabActiveStyle : surfaceTabStyle}
+        >
+          PPBE Exhibits
+        </button>
       </nav>
 
       {surface === "tt-review" ? (
         <TTManagerReview ctx={ctx} items={DEMO_TT_REVIEW_ITEMS} />
+      ) : surface === "ppbe-exhibits" ? (
+        <PPBEExhibitPanel ctx={ctx} />
       ) : (
         <>
       <StyleDNAManager style={style} />

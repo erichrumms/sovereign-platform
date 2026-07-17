@@ -73,18 +73,20 @@ import type { TTDraft } from "../../module-scribe/src/tt-draft-contract";
 import { RequestIntakePanel } from "./RequestIntakePanel";
 import { RequestQueuePanel } from "./RequestQueuePanel";
 import { TTQueuePanel } from "./TTQueuePanel";
+import { PPBECoordinationPanel } from "./PPBECoordinationPanel";
 import { useTTIntake, type TTIntakePorts, type TravelDrafterPort } from "./useTTIntake";
 
 export interface NexusAppProps {
   ctx: SovereignShellContext;
 }
 
-type Tab = "intake" | "queue" | "tt";
+type Tab = "intake" | "queue" | "tt" | "ppbe-coordination";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "intake", label: "Request Intake" },
   { id: "queue", label: "Request Queue" },
   { id: "tt", label: "Travel & Time Queue" },
+  { id: "ppbe-coordination", label: "PPBE Coordination" },
 ];
 
 export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
@@ -248,6 +250,7 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
           <RequestQueuePanel registry={registry} port={port} selectedId={selectedId} onSelect={setSelectedId} />
         )}
         {tab === "tt" && <TTQueuePanel tt={tt} />}
+        {tab === "ppbe-coordination" && <PPBECoordinationPanel ctx={ctx} />}
       </div>
     </section>
   );
