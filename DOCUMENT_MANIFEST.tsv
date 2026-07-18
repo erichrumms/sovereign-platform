@@ -18,11 +18,11 @@
 # also updating the checksum — if you change a file's content, you must regenerate
 # its hash (shasum -a 256 <file>) or the verify script will (correctly) refuse it.
 
-SOVEREIGN_Platform_Integration_Brief_v1.46.md|repo|da4e578cedba4d179b83171947fb84683a7f7b0fbdb340a8f5cbb7dcdcec68e8|139|v1.46|2026-07-15
+SOVEREIGN_Platform_Integration_Brief_v1.47.md|repo|26a34dab2acc378f10cfe2bef3737492a27f5b92e7778d6c41f69dec930fe286|191|v1.47|2026-07-18
 SOVEREIGN_Agent_to_Agent_Briefing.md|repo|a378b6ff6a18fe0329d506c3c57329f3d571c72ffb20d842f9ce7c5a5d848dca|100|current (no version suffix by design)|2026-07-15
 Agent_Identity_Standard.md|repo|746c5fbf12d9851461036867a3feff970b20531a399bdc445fa14a7d7f835fd4|1440|current, includes Documentation Integrity Note|UNCONFIRMED — placement never verified, check before trusting this row
 SBOM_Registry_v1.39.md|icloud|7b557141c34914ab8300ab6c2eacbd304749a7e4bab2682ad20dfb2830a53905|127|v1.39|2026-07-15
 SOVEREIGN_System_Prompt_v29.md|icloud|2fd10a74b464ac182a63122c759b2ba4acfc957a211f18f3569b74bd8c3f92fd|171|v29|2026-07-15
-AGENT_REFERENCE.md|project_knowledge|560874c98fcb0a31bd94bbb9bbbae4e2e7adf8d38d2b094da96fb5ee2ff99c2a|530|v2.0 — Rules 1-10, version header restored, provenance addendum|2026-07-17
+AGENT_REFERENCE.md|repo+icloud_root+project_knowledge|db93a631c59d6d7c141d6be2e469c0395da4e4efc363e3d2cddf88c11c35ad55|1546|v3.0 unified — merge of both lineages, PP decision July 18|2026-07-18
 SOVEREIGN_Strategic_Plan_CTO_Demo_v3.3.md|repo|c6f2a22b990292f7be79611b963d4abd47dfc208452c39d0c8114c515ecacf7f|429|v3.3|2026-07-15
 SBOM_Registry_v1.40.md|icloud|a417d2c85fa8651ff7db583895a3bac23845b7aba512537c0756db686fef82f2|115|v1.40|2026-07-18

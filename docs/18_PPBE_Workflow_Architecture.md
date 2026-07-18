@@ -4,10 +4,18 @@
 
 **Document Type:** Build Specification (Phase I Deliverable, per `SOVEREIGN_PPBE_
 Integration_Architecture_Draft1.md` §11)
-**Version:** 1.0 — July 11, 2026
+**Version:** 1.1 — July 13, 2026 (corrected against actual build results;
+supersedes v1.0)
 **Authority:** Project Principal · SOVEREIGN Platform Governance Authority
 **Author:** Claude Chat (Governance Agent)
-**Status:** APPROVED FOR BUILD — all governing decisions (D-P1–D-P7) resolved
+**Status:** BUILD COMPLETE — both PPBE Build Sessions (Core Integration,
+Session 31; Full Cycle, Session 32) closed clean, zero Hard Stops. This
+version corrects §5 (agent prompt-requirement analysis — five of six
+determinations were wrong when checked against actual build reality), §7.2
+(event-type count error), §3.2/§3.3 (placeholder shapes now filled in with
+what was actually built), and §4 (the Python-only decision, contrary to this
+document's own stated default expectation). Nothing else changed — see the
+inline notes marking each correction.
 **Classification:** Pre-Decisional · Internal Working Document
 **Governing documents:** `SOVEREIGN_PPBE_Integration_Architecture_Draft1.md` (source
 architecture — not superseded, this document operationalizes it) ·
@@ -116,8 +124,8 @@ platform-standard Logger conventions already enforced everywhere else.
 | `objective_id` | string (FK → `StrategicObjective`) | The traceability chain's second link |
 | `fiscal_year` | string | |
 | `lifecycle_cost_estimate` | decimal | |
-| `obligation_plan` | structured object | Planned obligation schedule by period |
-| `performance_baseline` | structured object | Feeds Phase 6 evaluation comparison |
+| `obligation_plan` | `{ period: string; planned_amount: number }[]` *(corrected v1.1 — was "structured object")* | Planned obligation schedule by period. Concrete shape confirmed during Session 31's build; elaboration, not amendment, per §0's boundary. |
+| `performance_baseline` | `{ metric: string; baseline_value: string }[]` *(corrected v1.1 — was "structured object")* | Feeds Phase 6 evaluation comparison. Same status as above. |
 | `status` | enum | Consistent with existing `Program` entity status values |
 
 ### 3.3 `BudgetExhibit`
@@ -129,8 +137,8 @@ platform-standard Logger conventions already enforced everywhere else.
 | `fiscal_year` | string | |
 | `narrative_content` | text | Produced by `ppbe-exhibit-drafter` / SCRIBE |
 | `source_data_lineage` | array of Logger event references | Every figure traceable per architecture doc §9 |
-| `certification_status` | enum | Set by ARIA Suite CLEAR |
-| `export_status` | enum | Gated per SCRIBE's existing export-gate mechanism (`ctx.aria.isCertified`, GD-20) |
+| `certification_status` | `UNCERTIFIED \| CERTIFIED \| FLAGGED` *(corrected v1.1 — was generic "enum")* | Set by ARIA Suite CLEAR |
+| `export_status` | `NOT_EXPORTED \| APPROVED_FOR_EXPORT \| EXPORTED` *(corrected v1.1 — was generic "enum")* | Gated per SCRIBE's existing export-gate mechanism (`ctx.aria.isCertified`, GD-20) — the validator enforces no export without `CERTIFIED` |
 
 ### 3.4 `ObligationRecord`
 
@@ -186,53 +194,58 @@ fields in addition to what's listed.
 | `PPBE_ANOMALY` | `anomaly_type`, `program_id`, `threshold_breached`, `severity` | `ppbe-ledger-monitor` |
 | `PPBE_EVALUATION_FINDING` | `finding_id` (FK), `program_id`, `objective_id`, `feeds_planning_cycle` | APEX, on `EvaluationFinding` creation |
 
-These extend `APPROVED_EVENT_TYPES` in both the TypeScript and Python Logger
-implementations. Per the platform's standing pattern (Python is permanently 5
-ahead of TypeScript by design — 3 TRACER + 2 ARC), confirm at build time whether
-these four PPBE types need equivalent treatment or can be added identically to
-both — nothing in the architecture document suggests a Python-only requirement
-here, so the default expectation is identical addition to both implementations.
+These extend `APPROVED_EVENT_TYPES` in the Python Logger implementation only.
+*(Corrected v1.1 — this document originally defaulted to "identical addition
+to both" implementations. That default was not followed: Session 31 built
+all four as Python-only, per the platform's existing TRACER/ARC/Time & Travel
+precedent, taking `APPROVED_EVENT_TYPES` from 95 to 99. `SovereignEventType`
+on the TypeScript side was not touched. This was the right call — it matches
+the platform's established pattern — but it means this document's own stated
+default was wrong when actually checked, same failure shape as §5 below.)*
 
 ---
 
 ## 5. Agent Registry Reference and Prompt Requirement Analysis
 
-The six agents are already registered (D-P5, `Agent_Identity_Standard.md`). This
-section analyzes which need dedicated prompt registrations before which build
-session — the open `PPBE-PROMPTS` item (Integration Brief v1.41 §13) tracks "four
-PPBE agent prompts," and the reasoning behind that number is made explicit here for
-the first time.
+*(Corrected v1.1. This section's original table was wrong on five of six
+determinations when actually checked against the Agent Registry at Session
+31/32 open. The registry — not this document's inference — turned out to be
+authoritative every time. This is now recorded as a standing platform lesson:
+treat this document's own "inferred" language as a coin flip, read the
+Registry first. Original text preserved in v1.0 history for the record; the
+corrected table below reflects what was actually built and approved.)*
 
-| Agent ID | Class | Needed By | Dedicated Prompt? |
-|---|---|---|---|
-| `ppbe-ledger-monitor` | Monitoring | Core Integration | **Yes** — analyzes obligation/performance data, routes `PPBE_ANOMALY` events; this is genuine LLM-backed analysis, not rule evaluation |
-| `ppbe-dependency-tracker` | Monitoring | Core Integration | **Yes** — same reasoning; tracks handoff health and flags timing violations, requires judgment, not just threshold comparison |
-| `ppbe-evidence-synthesizer` | Analytical | Full Cycle | **Yes** — aggregates findings across programs; recommendation-only output, human review required per architecture doc §7 |
-| `ppbe-scenario-analyst` | Analytical | Full Cycle | **Yes** — models alternative allocations; Tier A authorization, feeds COUNSEL |
-| `ppbe-exhibit-drafter` | Operational | Full Cycle | **Inferred no** — architecture doc §7 explicitly describes this as extending "SCRIBE's existing drafting engine with PPBE-specific document modes," which suggests configuration of SCRIBE's existing prompt infrastructure rather than a wholly new prompt, mirroring how `scribe-drafter`'s existing prompts already cover multiple document modes |
-| `ppbe-coordination-assistant` | Operational | Full Cycle | **Inferred no** — tracks action items and governance-calendar obligations; likely NEXUS-native functionality with PPBE-specific configuration rather than a dedicated LLM prompt |
+The six agents are already registered (D-P5, `Agent_Identity_Standard.md`).
+The pattern, confirmed by actual build: **Agent Class `Monitoring` = rule-
+based, no LLM call, no prompt. Every other class = LLM-backed, prompt
+required.**
 
-**This is four dedicated prompts, matching the already-tracked `PPBE-PROMPTS` item
-exactly.** The "inferred no" determinations for `ppbe-exhibit-drafter` and
-`ppbe-coordination-assistant` are inferences from the architecture document's own
-language, not confirmed facts — **this should be confirmed, not assumed, at Core
-Integration session open,** the same discipline applied to every other inference in
-this document.
+| Agent ID | Class | Needed By | Dedicated Prompt? | Status as of this version |
+|---|---|---|---|---|
+| `ppbe-ledger-monitor` | Monitoring | Core Integration | **No** *(v1.0 said Yes — wrong)* — deterministic threshold-based monitoring, no `sovereign-api-client` call | Implemented, Session 31 |
+| `ppbe-dependency-tracker` | Monitoring | Core Integration | **No** *(v1.0 said Yes — wrong)* — deterministic dependency-health evaluation, no `sovereign-api-client` call | Implemented, Session 31 |
+| `ppbe-evidence-synthesizer` | Analytical | Full Cycle | **Yes** *(v1.0 was correct)* | Implemented + prompt APPROVED, Session 32 / July 13, 2026 |
+| `ppbe-scenario-analyst` | Analytical | Full Cycle | **Yes** *(v1.0 was correct)* | Implemented + prompt APPROVED, Session 32 / July 13, 2026 |
+| `ppbe-exhibit-drafter` | Operational | Full Cycle | **Yes** *(v1.0 said "Inferred no" — wrong)* — genuinely LLM-backed, extends SCRIBE's drafting engine under its own dedicated prompt, not mere configuration of existing prompts | Implemented + prompt APPROVED, Session 32 / July 13, 2026 |
+| `ppbe-coordination-assistant` | Operational | Full Cycle | **Yes** *(v1.0 said "Inferred no" — wrong)* — the deadline-monitoring half is deterministic, but the coordination digest is genuinely LLM-backed under its own dedicated prompt | Implemented + prompt APPROVED, Session 32 / July 13, 2026 |
 
-**Prompt authorship — corrected July 12, 2026, per `AGENT_REFERENCE.md` reconciliation:**
-earlier versions of this document stated these four prompts had to be authored and
-approved in Claude Chat *before* their respective build session could open. That is
-superseded. Per the platform's actual Prompt Approval Record workflow: **Claude
-Code (the Build Agent) authors each prompt as part of the session it belongs to**
-— `ppbe-ledger-monitor` and `ppbe-dependency-tracker` during Core Integration,
-`ppbe-evidence-synthesizer` and `ppbe-scenario-analyst` during Full Cycle — marking
-each `PENDING` on creation. A `PENDING` prompt is usable within the session against
-synthetic data (which is all this platform runs on regardless), but Claude Chat
-must produce the approval record and the Project Principal must approve before any
-of them are treated as cleared for anything beyond that. **This is no longer a
-pre-session blocker** — do not stop a Core Integration or Full Cycle session merely
-because these prompts don't exist yet; author them as part of the session's own
-work, in the same one-component-per-exchange discipline as everything else.
+**Still four dedicated prompts — same count, different membership.** v1.0's
+four were `ppbe-ledger-monitor` + `ppbe-dependency-tracker` +
+`ppbe-evidence-synthesizer` + `ppbe-scenario-analyst`. The actual four are
+`ppbe-evidence-synthesizer` + `ppbe-scenario-analyst` + `ppbe-exhibit-drafter`
++ `ppbe-coordination-assistant`. The count matching was coincidence, not
+confirmation — two of the four members were swapped entirely.
+
+**All four prompts are now APPROVED** (July 13, 2026, commit `33495da`), each
+authored by Claude Code during Session 32 per the reassignment described
+below (which itself held correctly — that part of v1.0 was right).
+
+**Prompt authorship — unchanged from v1.0, this part was correct:** Claude
+Code (the Build Agent) authors each prompt as part of the session it belongs
+to, marking each `PENDING` on creation, usable within the session against
+synthetic data. Claude Chat produces the approval record; the Project
+Principal approves. This was not a pre-session blocker for either build
+session, exactly as designed.
 
 ---
 
@@ -289,7 +302,8 @@ transition on human authorization. All tests passing.
 
 **Done condition (constructed for this document — the architecture document did
 not state one explicitly for this phase):** APEX dashboard renders live data across
-all six PPBE Logger event types. SCRIBE produces a valid draft in each of the three
+all four PPBE Logger event types *(corrected v1.1 — originally said "six," but
+only four PPBE event types exist anywhere in this specification, per §4)*. SCRIBE produces a valid draft in each of the three
 new document modes, correctly gated on CLEAR certification. ARIA Suite's CLEAR,
 TRACER, and ARC each demonstrate a working PPBE-specific rule, chain, and model
 respectively. COUNSEL produces a signed Decision Record in each of the four PPBE
