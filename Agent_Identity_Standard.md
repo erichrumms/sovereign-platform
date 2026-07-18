@@ -431,20 +431,30 @@ SOVEREIGN governance records and are sourced from them.
 | `agent_id` | `lens-orientation` |
 | Module | `module-lens` |
 | Product | LENS — Learning, Enrichment, and Navigator for SOVEREIGN |
-| Agent Class | Orientation Dialogue Agent |
+| Agent Class | Orientation Navigator (static, non-LLM) |
+| LLM-Backed | **No** — corrected July 18, 2026; see Session Findings Note below |
 | Registered | 2026-06-11 |
 | Registered By | Project Principal |
-| Status | REGISTERED — build may proceed |
+| Status | **IMPLEMENTED** — confirmed built and live (verified July 17, 2026) |
 
-**Description:** The interactive orientation agent for LENS's role-based orientation
-tracks. Runs structured learning module dialogue using synthetic data for exercises.
-Role assignment from `ctx.auth` determines which orientation track is offered.
-Platform Administrators receive an additional module covering shell contract governance
-and Logger architecture. All orientation dialogue is grounded in SOVEREIGN governance
-documents — the agent does not describe SOVEREIGN from general training knowledge.
+**Description — corrected July 18, 2026, direct code trace (see Session Findings
+Note):** the Pipeline Navigator for LENS's six primary products. Renders entirely
+from the static `ProductOrientation` knowledge object in `orientation-data.ts`
+(module-local, built from the Integration Brief's pipeline description) — makes
+**no LLM call**, per that file's own header comment. Role assignment from
+`ctx.auth` may still gate which content is shown; this is presentation logic, not
+model inference. `active_agents` is honestly empty for primary products by design
+— no fabricated agent activity. This entry originally described a planned
+interactive dialogue agent (PR-LENS-002); that variant was never built and PR-LENS-002
+remains unauthored — if it is authored and approved in the future, this entry must
+be updated again (Agent Class → LLM-Backed dialogue agent, add the prompt
+requirement below, Status stays Implemented for the navigator or splits into two
+entries).
 
-**Prompt registrations required:**
-- `module-lens/prompts/orientation_system.md`
+**Prompt registrations required:** **None currently.** PR-LENS-002 (the originally
+envisioned interactive orientation dialogue) remains unauthored and deferred per
+the LENS prompt CHANGELOG's own last entry. Do not add a prompt requirement here
+unless PR-LENS-002 is actually authored and approved.
 
 **Logger event fields this agent_id appears on:**
 - `LENS_ORIENTATION_COMPLETED`
@@ -479,7 +489,7 @@ with completion status at the AgentOS aggregation layer.
 | `scribe-drafter` | module-scribe | Drafting | 3 | Per content type | Ready |
 | `scribe-style-analyst` | module-scribe | Profile Analysis | 1 | `user` | Ready (Style DNA pending `sovereign-data`) |
 | `lens-explainer` | module-lens | Governance Explanation | 1 | `user` | Ready (source docs required) |
-| `lens-orientation` | module-lens | Orientation Dialogue | 1 | `user` | Ready |
+| `lens-orientation` | module-lens | Orientation Navigator (static) | 0 (corrected 2026-07-18) | `user` | Implemented |
 
 **Total new prompts requiring Prompt Registry entries: 9**
 See `Prompt_Registry_CompanionSuite_Additions.md` for all nine entries.
@@ -623,7 +633,7 @@ is the instrument attribution in the audit trail.
 | `scribe-drafter` | module-scribe | Drafting | Yes | Per content type |
 | `scribe-style-analyst` | module-scribe | Profile Analysis | Yes | `user` |
 | `lens-explainer` | module-lens | Governance Explanation | Yes | `user` |
-| `lens-orientation` | module-lens | Orientation Dialogue | Yes | `user` |
+| `lens-orientation` | module-lens | Orientation Navigator (static) | **No** (corrected 2026-07-18) | `user` |
 | `vigil-triage-analyst` | module-vigil | Security Triage Analysis | Yes | Platform audit |
 | `vigil-approval-agent` | module-vigil | Decision Recording | **No** | Platform audit |
 
@@ -975,7 +985,7 @@ Integration Brief's count. This table is the authoritative count.**
 | `scribe-drafter` | module-scribe | Operational | Yes | Implemented |
 | `scribe-style-analyst` | module-scribe | Analytical | Yes | Implemented |
 | `lens-explainer` | module-lens | Analytical | Yes | Implemented |
-| `lens-orientation` | module-lens | Analytical | Yes | Implemented |
+| `lens-orientation` | module-lens | Orientation Navigator | **No** (corrected 2026-07-18) | Implemented |
 | `vigil-triage-analyst` | module-vigil | Monitoring | Yes | Implemented |
 | `vigil-approval-agent` | module-vigil | Monitoring | No | Implemented |
 | `ppbe-ledger-monitor` | PPBE layer | Monitoring | No | Registered (Phase II) |
@@ -1467,13 +1477,13 @@ data." The LENS CHANGELOG's last entry confirms PR-LENS-002 was never
 authored and remains deferred. The only LLM call anywhere in `module-lens`
 belongs to `lens-explainer`, not `lens-orientation`.
 
-**Corrected facts, pending a proper table edit:** `lens-orientation` should
-read `LLM-Backed: No`, no prompt registration required until PR-LENS-002 is
-actually authored and approved, and its description should reflect the
-static Pipeline Navigator rather than a dialogue engine. This is the same
-shape as `vigil-approval-agent` (a registered identity attached to a
-non-LLM feature) — not a defect in what's built, a defect in how this
-document describes it.
+**Corrected facts — table edit APPLIED July 18, 2026:** `lens-orientation`'s
+entry now reads `LLM-Backed: No`, states no prompt registration is required
+until PR-LENS-002 is actually authored and approved, and describes the
+static Pipeline Navigator directly rather than a dialogue engine. This was
+the same shape as `vigil-approval-agent` (a registered identity attached to
+a non-LLM feature) — not a defect in what's built, a defect that was in how
+this document described it. That defect is now closed.
 
 ### 2. Prompt registration paths use a stale naming convention (8 entries, confirmed harmless)
 
