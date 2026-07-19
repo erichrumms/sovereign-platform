@@ -2,31 +2,33 @@
  * SOVEREIGN Platform — module-aria
  * AriaApp.tsx — ARIA Suite composition root (React).
  *
- * The single component the module mounts after the PLATFORM_ADMIN gate admits the reviewer. It
- * renders the ARIA chrome and routes between the three ARIA Suite components as tabs:
- *   - CLEAR  — Continuous Legal and Regulatory Evaluation and Assessment Review (compliance)
- *   - TRACER — Traceability and Accountability Chain for Evidence Records (traceability)
- *   - ARC    — Adaptive Regulatory Change engine (regulatory-impact modeling)
+ * The single component the module mounts after the widened ARIA gate admits the user.
+ * Renders the ARIA chrome and routes between the four ARIA Suite tabs. Per-tab role
+ * gating is enforced here (D3, GD-22, Session 41): a user admitted to the module sees
+ * only the tabs their role grants; other tabs are visible but disabled with an
+ * explanation, matching the platform's existing disclosure pattern.
  *
- * Session 22 (D4) SCOPE: scaffold only. TRACER and ARC remain placeholders describing the
- * component and the Session in which their logic lands (TRACER S24, ARC S25 — docs/16 §9).
- * Session 23 (D2/D3): the CLEAR tab now renders the live ClearPanel — the Compliance Dashboard
- * and the Certification Queue — replacing its scaffold placeholder. Every screen is built to
- * Gap 5/6: the ARIA determinism notice and GD-10 boundary are Category 2 (permanent, blue);
- * substantive content sits in white cards on the light page canvas (Category 3 / Primary).
- * Session 24 (D2): the TRACER tab now renders the live TracerExplorer — the Traceability
- * Explorer — replacing its scaffold placeholder.
- * Session 25 (D2): the ARC tab now renders the live ArcImpactModeler — the Regulatory Impact
- * Modeler — replacing the last scaffold placeholder. All three ARIA components are now live.
- * Session 25 (D4): a fourth tab, CPMI-VRS, renders AriaVrsGates — the determinism-verification
- * benchmark plus the Gate 3/4 certification UI, ready for Project Principal action before Walkthrough D.
+ * Per-tab role assignments (SOVEREIGN_Role_Access_Matrix_20260718.md):
+ *   CLEAR    → COMPLIANCE_OFFICER  (+ PLATFORM_ADMIN, SYSTEM_ADMIN)
+ *   TRACER   → PROGRAM_MANAGER     (+ PLATFORM_ADMIN, SYSTEM_ADMIN)
+ *   ARC      → ANALYST             (+ PLATFORM_ADMIN, SYSTEM_ADMIN)
+ *   CPMI-VRS → PLATFORM_ADMIN, SYSTEM_ADMIN only (unchanged)
  *
- * Version: 1.3 · Session 25 (ARC live + VRS Gates — ARIA Suite feature-complete) · June 29, 2026
+ * Admin roles (PLATFORM_ADMIN, SYSTEM_ADMIN) see all four tabs — they are explicitly
+ * included in every tab's role list rather than handled by a separate superuser path,
+ * keeping the per-tab check a simple list membership test.
+ *
+ * Tab: CLEAR  — Continuous Legal and Regulatory Evaluation and Assessment Review
+ * Tab: TRACER — Traceability and Accountability Chain for Evidence Records
+ * Tab: ARC    — Adaptive Regulatory Change engine
+ * Tab: CPMI-VRS — Determinism-verification benchmark + Gate 3/4 certification
+ *
+ * Version: 1.4 · Session 41 (GD-22 per-tab role gating) · July 18, 2026
  */
 
 import { useState, type CSSProperties } from "react";
 
-import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import type { SovereignShellContext, SovereignRole } from "../../sovereign-shell/shell-contract";
 import {
   DeterminismBanner,
   ClassificationBoundaryBanner,
@@ -45,16 +47,42 @@ export interface AriaAppProps {
 
 type Tab = "clear" | "tracer" | "arc" | "vrs";
 
+// Per-tab role definitions (GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md).
+// Admin roles are included in every list — the check is straightforward list membership,
+// no separate superuser path required.
+const TAB_ROLES: Record<Tab, SovereignRole[]> = {
+  clear:  ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER"],
+  tracer: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER"],
+  arc:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "ANALYST"],
+  vrs:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
+};
+
+// The primary (non-admin) role for each tab — shown in disabled-tab tooltips.
+const TAB_PRIMARY_ROLE: Record<Tab, string> = {
+  clear:  "COMPLIANCE_OFFICER",
+  tracer: "PROGRAM_MANAGER",
+  arc:    "ANALYST",
+  vrs:    "PLATFORM_ADMIN / SYSTEM_ADMIN",
+};
+
 const TABS: Array<{ id: Tab; label: string }> = [
-  { id: "clear", label: "CLEAR" },
+  { id: "clear",  label: "CLEAR" },
   { id: "tracer", label: "TRACER" },
-  { id: "arc", label: "ARC" },
-  { id: "vrs", label: "CPMI-VRS" },
+  { id: "arc",    label: "ARC" },
+  { id: "vrs",    label: "CPMI-VRS" },
 ];
 
+// Tabs in order — used to pick the default active tab.
+const TAB_ORDER: readonly Tab[] = ["clear", "tracer", "arc", "vrs"];
 
 export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
-  const [tab, setTab] = useState<Tab>("clear");
+  const canAccessTab = (id: Tab) =>
+    TAB_ROLES[id].some((r) => ctx.auth.hasRole(r));
+
+  // Default to the first tab this role can access. If (somehow) none are accessible,
+  // fall back to "clear" — the module gate should have blocked entry before this point.
+  const defaultTab = TAB_ORDER.find(canAccessTab) ?? "clear";
+  const [tab, setTab] = useState<Tab>(defaultTab);
 
   return (
     <section style={rootStyle}>
@@ -71,6 +99,7 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
 
       <nav style={tabBarStyle} aria-label="ARIA Suite components">
         {TABS.map((t) => {
+          const accessible = canAccessTab(t.id);
           const active = t.id === tab;
           return (
             <button
@@ -78,25 +107,99 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
               type="button"
               role="tab"
               aria-selected={active}
-              onClick={() => setTab(t.id)}
-              style={{ ...tabStyle, color: active ? "#0f172a" : "#475569", borderBottom: active ? "2px solid #0f172a" : "2px solid transparent", fontWeight: active ? 700 : 500 }}
+              disabled={!accessible}
+              onClick={() => { if (accessible) setTab(t.id); }}
+              title={
+                accessible
+                  ? t.label
+                  : `${t.label} — requires role: ${TAB_PRIMARY_ROLE[t.id]}`
+              }
+              style={tabButtonStyle(active, accessible)}
             >
               {t.label}
+              {!accessible && (
+                <span aria-hidden="true" style={{ marginLeft: 5, fontSize: 11 }}>🔒</span>
+              )}
             </button>
           );
         })}
       </nav>
 
-      {/* Category 3 — substantive content (Primary). CLEAR (S23), TRACER (S24), ARC (S25) all live. */}
-      {tab === "clear" && <ClearPanel ctx={ctx} />}
-      {tab === "tracer" && <TracerExplorer ctx={ctx} />}
-      {tab === "arc" && <ArcImpactModeler ctx={ctx} />}
-      {tab === "vrs" && <AriaVrsGates ctx={ctx} />}
+      {/* Category 3 — substantive content (Primary). Render only the active tab.
+          The canAccessTab guard below is defensive: the module gate + disabled tabs
+          mean an inaccessible panel should never be reached in normal use. */}
+      {tab === "clear" && (
+        canAccessTab("clear")
+          ? <ClearPanel ctx={ctx} />
+          : <LockedTabNotice tabLabel="CLEAR" requiredRole={TAB_PRIMARY_ROLE.clear} />
+      )}
+      {tab === "tracer" && (
+        canAccessTab("tracer")
+          ? <TracerExplorer ctx={ctx} />
+          : <LockedTabNotice tabLabel="TRACER" requiredRole={TAB_PRIMARY_ROLE.tracer} />
+      )}
+      {tab === "arc" && (
+        canAccessTab("arc")
+          ? <ArcImpactModeler ctx={ctx} />
+          : <LockedTabNotice tabLabel="ARC" requiredRole={TAB_PRIMARY_ROLE.arc} />
+      )}
+      {tab === "vrs" && (
+        canAccessTab("vrs")
+          ? <AriaVrsGates ctx={ctx} />
+          : <LockedTabNotice tabLabel="CPMI-VRS" requiredRole={TAB_PRIMARY_ROLE.vrs} />
+      )}
     </section>
   );
 }
 
-const tabBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 16 };
-const tabStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
+// Shown when a tab is somehow reached by a user who lacks access — defense in depth.
+// Matches the platform's honest-disclosure pattern (STATIC badges, etc.).
+function LockedTabNotice({
+  tabLabel,
+  requiredRole,
+}: {
+  tabLabel: string;
+  requiredRole: string;
+}): JSX.Element {
+  return (
+    <div style={lockedNoticeStyle}>
+      <strong>{tabLabel}</strong> is not available for your current role.
+      <br />
+      Access requires: <code>{requiredRole}</code>. Contact your system administrator.
+    </div>
+  );
+}
+
+function tabButtonStyle(active: boolean, accessible: boolean): CSSProperties {
+  return {
+    padding: "8px 14px",
+    fontSize: 14,
+    background: "none",
+    border: "none",
+    borderBottom: active ? "2px solid #0f172a" : "2px solid transparent",
+    color: !accessible ? "#94a3b8" : active ? "#0f172a" : "#475569",
+    cursor: accessible ? "pointer" : "not-allowed",
+    fontWeight: active ? 700 : 500,
+    opacity: accessible ? 1 : 0.7,
+  };
+}
+
+const tabBarStyle: CSSProperties = {
+  display: "flex",
+  gap: 4,
+  borderBottom: "1px solid #e2e8f0",
+  marginBottom: 16,
+};
+
+const lockedNoticeStyle: CSSProperties = {
+  padding: "16px 20px",
+  background: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  color: "#475569",
+  fontFamily: "system-ui, sans-serif",
+  fontSize: 14,
+  lineHeight: 1.6,
+};
 
 export default AriaApp;

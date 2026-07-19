@@ -34,13 +34,21 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { ApexApp } from "./ApexApp";
 import { APEX_AI_ASSISTANT, APEX_REPORT_GENERATOR } from "./apex-contract";
 
-const APEX_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: APEX analytics are accessible to
+// program managers and analysts (who review program data), as well as admins.
+const APEX_MINIMUM_ROLES: SovereignRole[] = [
+  "PLATFORM_ADMIN",
+  "SYSTEM_ADMIN",
+  "PROGRAM_MANAGER",
+  "ANALYST",
+];
 
 // apex.ai-assistant — Analytical, LLM-backed (PR-APEX-001). Advisory only: produces an
 // ApexAnalysisOutput; never decides, never writes upstream, never invokes other agents.
@@ -192,7 +200,7 @@ export const apexModule: SovereignModuleContract = {
   moduleId: "module-apex",
   mountPath: "/apex",
   displayName: "APEX",
-  minimumRole: APEX_MINIMUM_ROLE,
+  minimumRole: APEX_MINIMUM_ROLES,
   agentCards: [
     aiAssistantCard,
     reportGeneratorCard,
@@ -205,8 +213,8 @@ export const apexModule: SovereignModuleContract = {
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("PLATFORM_ADMIN") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-apex", ctx.auth.user.role, APEX_MINIMUM_ROLE);
+    if (!APEX_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-apex", ctx.auth.user.role, APEX_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(ApexApp, { ctx }));

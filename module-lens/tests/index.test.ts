@@ -17,8 +17,12 @@ describe("lensModule contract", () => {
     expect(lensModule.displayName).toBe("LENS");
   });
 
-  it("uses the READ_ONLY placeholder gate (Decision 24), like COUNSEL/SCRIBE", () => {
-    expect(lensModule.minimumRole).toBe("READ_ONLY");
+  it("is open to all 8 roles per the GD-22 access matrix (formerly READ_ONLY placeholder)", () => {
+    // GD-22 (v1.17): LENS is the widest module — all SovereignRoles admitted.
+    expect(lensModule.minimumRole).toEqual([
+      "PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST",
+      "COMPLIANCE_OFFICER", "AGENT_OPERATOR", "INDEPENDENT_REVIEWER", "READ_ONLY",
+    ]);
   });
 
   it("registers lens-explainer (Analytical) and lens-orientation (Analytical)", () => {

@@ -17,8 +17,11 @@ describe("flowpathModule contract", () => {
     expect(flowpathModule.displayName).toBe("FLOWPATH");
   });
 
-  it("uses the fail-closed AGENT_OPERATOR gate", () => {
-    expect(flowpathModule.minimumRole).toBe("AGENT_OPERATOR");
+  it("uses the GD-22 access matrix (AGENT_OPERATOR, ANALYST, PROGRAM_MANAGER + admins)", () => {
+    // GD-22 (v1.17): replaces the single AGENT_OPERATOR placeholder with the approved list.
+    expect(flowpathModule.minimumRole).toEqual([
+      "PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER",
+    ]);
   });
 
   it("registers the six FLOWPATH agents (all Analytical, FLOWPATH, UNCLASSIFIED ceiling)", () => {
@@ -42,18 +45,23 @@ describe("flowpathModule contract", () => {
 });
 
 describe("flowpathModule structural mount gate", () => {
-  it.each(["READ_ONLY", "ANALYST", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER"] as const)(
-    "throws ModuleAccessDeniedError for non-operator role %s",
+  // GD-22: READ_ONLY, COMPLIANCE_OFFICER, INDEPENDENT_REVIEWER are NOT in the FLOWPATH list.
+  it.each(["READ_ONLY", "COMPLIANCE_OFFICER", "INDEPENDENT_REVIEWER"] as const)(
+    "throws ModuleAccessDeniedError for role %s",
     (role) => {
       const el = document.createElement("div");
       expect(() => flowpathModule.mount(makeCtx({ role }), el)).toThrow(ModuleAccessDeniedError);
     }
   );
 
-  it.each(["AGENT_OPERATOR", "SYSTEM_ADMIN"] as const)("admits %s (mounts without throwing)", (role) => {
-    const el = document.createElement("div");
-    document.body.appendChild(el);
-    expect(() => flowpathModule.mount(makeCtx({ role }), el)).not.toThrow();
-    flowpathModule.unmount();
-  });
+  // GD-22: ANALYST and PROGRAM_MANAGER are now admitted to FLOWPATH.
+  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER"] as const)(
+    "admits %s (mounts without throwing)",
+    (role) => {
+      const el = document.createElement("div");
+      document.body.appendChild(el);
+      expect(() => flowpathModule.mount(makeCtx({ role }), el)).not.toThrow();
+      flowpathModule.unmount();
+    }
+  );
 });

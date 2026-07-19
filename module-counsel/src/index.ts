@@ -77,13 +77,18 @@ export const counselModule: SovereignModuleContract = {
   moduleId: "module-counsel",
   mountPath: "/counsel",
   displayName: "COUNSEL",
-  // Fail-closed placeholder. COUNSEL's intended access is "all roles", but the
-  // platform has no role->module access matrix yet (Decision 24); under the
-  // default exact-match-or-SYSTEM_ADMIN policy a single minimumRole cannot
-  // express "all roles". READ_ONLY is the least-privilege placeholder; the
-  // authoritative matrix is injected as a RoleAccessPolicy when written — no
-  // module change required.
-  minimumRole: "READ_ONLY",
+  // GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: COUNSEL is accessible to
+  // all roles with a decision-support workflow — excludes AGENT_OPERATOR and
+  // READ_ONLY (operational intake and read-only observation roles). Replaces the
+  // READ_ONLY placeholder from before the access matrix existed (Decision 24).
+  minimumRole: [
+    "PLATFORM_ADMIN",
+    "SYSTEM_ADMIN",
+    "PROGRAM_MANAGER",
+    "ANALYST",
+    "COMPLIANCE_OFFICER",
+    "INDEPENDENT_REVIEWER",
+  ],
   agentCards: [counselAnalystCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {

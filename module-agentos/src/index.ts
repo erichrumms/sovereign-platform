@@ -37,12 +37,15 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { AgentOSApp } from "./AgentOSApp";
 
-const AGENTOS_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: AgentOS unchanged — admin-only
+// (orchestration backbone; routes human authorizations and manages agent lifecycle).
+const AGENTOS_MINIMUM_ROLES: SovereignRole[] = ["PLATFORM_ADMIN", "SYSTEM_ADMIN"];
 
 // AgentOS orchestrator agents (Session 16, D2). Registered in Agent_Identity_Standard.md
 // v1.3 as class "Orchestration" (added to the shell-contract AgentClass union in GD-12 / D1).
@@ -82,13 +85,13 @@ export const agentosModule: SovereignModuleContract = {
   moduleId: "module-agentos",
   mountPath: "/agentos",
   displayName: "AgentOS",
-  minimumRole: AGENTOS_MINIMUM_ROLE,
+  minimumRole: AGENTOS_MINIMUM_ROLES,
   agentCards: AGENTOS_AGENT_CARDS,
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("PLATFORM_ADMIN") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-agentos", ctx.auth.user.role, AGENTOS_MINIMUM_ROLE);
+    if (!AGENTOS_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-agentos", ctx.auth.user.role, AGENTOS_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(AgentOSApp, { ctx }));

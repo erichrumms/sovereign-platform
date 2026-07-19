@@ -54,6 +54,7 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 // Canonical access-denial error — reused from the loader (the platform owner of
@@ -62,8 +63,9 @@ import type {
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { VigilApp } from "./VigilApp";
 
-/** The role that satisfies VIGIL's gate (with SYSTEM_ADMIN as the universal superuser). */
-const VIGIL_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: VIGIL is unchanged — restricted to
+// platform and system admins only (security/oversight surface, intentional narrow gate).
+const VIGIL_MINIMUM_ROLES: SovereignRole[] = ["PLATFORM_ADMIN", "SYSTEM_ADMIN"];
 
 // vigil-triage-analyst — Monitoring agent (observes and advises; never acts
 // autonomously — Agent Identity Standard taxonomy). Registered this session (Session
@@ -138,19 +140,17 @@ export const vigilModule: SovereignModuleContract = {
   moduleId: "module-vigil",
   mountPath: "/vigil",
   displayName: "VIGIL",
-  // Real role gate (VIGIL is the first companion module with one). The loader's
-  // fail-closed default policy turns this into "PLATFORM_ADMIN or SYSTEM_ADMIN
-  // only". Not a placeholder, unlike COUNSEL/SCRIBE's READ_ONLY.
-  minimumRole: VIGIL_MINIMUM_ROLE,
+  // GD-22: VIGIL unchanged — PLATFORM_ADMIN and SYSTEM_ADMIN only (access matrix confirms).
+  minimumRole: VIGIL_MINIMUM_ROLES,
   // vigil-triage-analyst (Session 7 — Anomaly Triage Assistant), vigil-approval-agent
   // (Session 10 — Agent Approval Flow), and tt.escalation-monitor (Session 27 —
   // Time & Travel workflow layer, hosted on VIGIL infrastructure) are registered.
   agentCards: [vigilTriageAnalystCard, vigilApprovalAgentCard, ttEscalationMonitorCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
-    // --- Structural role gate (spec §7): throw before building the tree. ---
-    if (!ctx.auth.hasRole("PLATFORM_ADMIN") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-vigil", ctx.auth.user.role, VIGIL_MINIMUM_ROLE);
+    // --- Structural role gate (spec §7 / GD-22): throw before building the tree. ---
+    if (!VIGIL_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-vigil", ctx.auth.user.role, VIGIL_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(VigilApp, { ctx }));

@@ -178,11 +178,15 @@ export const scribeModule: SovereignModuleContract = {
   moduleId: "module-scribe",
   mountPath: "/scribe",
   displayName: "SCRIBE",
-  // Fail-closed placeholder, identical rationale to COUNSEL: SCRIBE's intended
-  // access is "all roles", but the platform has no role->module access matrix yet
-  // (Decision 24). READ_ONLY is the least-privilege placeholder; the authoritative
-  // RoleAccessPolicy is injected when written — no module change required.
-  minimumRole: "READ_ONLY",
+  // GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: SCRIBE is the drafting surface
+  // for program managers and analysts (also accessible to admins). Replaces the
+  // READ_ONLY placeholder from before the access matrix existed (Decision 24).
+  minimumRole: [
+    "PLATFORM_ADMIN",
+    "SYSTEM_ADMIN",
+    "PROGRAM_MANAGER",
+    "ANALYST",
+  ],
   // scribe-drafter + scribe-style-analyst (Session 5), the two Time & Travel
   // drafters (Session 28 — docs/17 §2, AIS D-TT5), and the PPBE exhibit drafter
   // (Session 32 — docs/18 §7.2, AIS D-P5) — all hosted on SCRIBE infrastructure.

@@ -36,12 +36,15 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { CpmiApp } from "./CpmiApp";
 
-const CPMI_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: CPMI unchanged — admin-only
+// (governance engine; Gate 3 attestation is a Project-Principal-level act).
+const CPMI_MINIMUM_ROLES: SovereignRole[] = ["PLATFORM_ADMIN", "SYSTEM_ADMIN"];
 
 // cpmi.reasoning-chain — Governance agent (Agent Identity Standard v1.2 lists it
 // "Analytical / Governance"; the AgentCard class is a single value and Governance is its
@@ -108,13 +111,13 @@ export const cpmiModule: SovereignModuleContract = {
   moduleId: "module-cpmi",
   mountPath: "/cpmi",
   displayName: "CPMI",
-  minimumRole: CPMI_MINIMUM_ROLE,
+  minimumRole: CPMI_MINIMUM_ROLES,
   agentCards: [reasoningChainCard, worldModelApiCard, vrsCertificationCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("PLATFORM_ADMIN") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-cpmi", ctx.auth.user.role, CPMI_MINIMUM_ROLE);
+    if (!CPMI_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-cpmi", ctx.auth.user.role, CPMI_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(CpmiApp, { ctx }));

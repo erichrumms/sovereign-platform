@@ -32,12 +32,28 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { AriaApp } from "./AriaApp";
 
-const ARIA_MINIMUM_ROLE = "PLATFORM_ADMIN" as const;
+// GD-22 / D3: ARIA module-level gate widens to admit the union of all per-tab roles.
+// The module must admit anyone who needs access to ANY tab — per-tab gating inside
+// AriaApp.tsx then restricts each component to its role. PLATFORM_ADMIN and SYSTEM_ADMIN
+// pass the gate and see all tabs; role-specific users see only their assigned tab.
+// Per SOVEREIGN_Role_Access_Matrix_20260718.md:
+//   CLEAR  → COMPLIANCE_OFFICER (+ admins)
+//   TRACER → PROGRAM_MANAGER   (+ admins)
+//   ARC    → ANALYST            (+ admins)
+//   VRS    → admins only (unchanged)
+export const ARIA_MINIMUM_ROLES: SovereignRole[] = [
+  "PLATFORM_ADMIN",
+  "SYSTEM_ADMIN",
+  "COMPLIANCE_OFFICER",
+  "PROGRAM_MANAGER",
+  "ANALYST",
+];
 
 // The single ARIA agent (docs/16 §3). Deterministic governance engine — evaluates rules and
 // issues attestations/clearances with no AI inference. No prompt, no sovereign-api-client call.
@@ -72,13 +88,14 @@ export const ariaModule: SovereignModuleContract = {
   moduleId: "module-aria",
   mountPath: "/aria",
   displayName: "ARIA Suite",
-  minimumRole: ARIA_MINIMUM_ROLE,
+  minimumRole: ARIA_MINIMUM_ROLES,
   agentCards: ARIA_AGENT_CARDS,
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("PLATFORM_ADMIN") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-aria", ctx.auth.user.role, ARIA_MINIMUM_ROLE);
+    // Admits anyone who needs at least one ARIA tab; per-tab gating is in AriaApp.tsx.
+    if (!ARIA_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-aria", ctx.auth.user.role, ARIA_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(AriaApp, { ctx }));

@@ -19,8 +19,9 @@
  *   (see below) — switching roles triggers a page reload so the shell is
  *   re-created with the new role, which is the only way to change role-gated
  *   module access without a real auth layer. SYSTEM_ADMIN is the default and
- *   admits all modules; PROGRAM_MANAGER uses the fail-closed exact-match policy
- *   and will be blocked from PLATFORM_ADMIN-gated modules (VIGIL, APEX, CPMI).
+ *   admits all modules. GD-22 / D4 (Session 41) expanded the toggle to all 8
+ *   SovereignRoles so every access-matrix path from the Role Access Matrix
+ *   (SOVEREIGN_Role_Access_Matrix_20260718.md) can be exercised in dev.
  *   All data is SYNTHETIC; the Governance Clock has not activated.
  *
  * Session 40 (DR-1 Tier 1): added DEV_PERSONA_KEY + DevPersonaToggle so a
@@ -30,7 +31,11 @@
  * is wired). The toggle is clearly labeled DEV and styled to distinguish it from
  * product UI. No shell-contract change; no new role; no agent registration.
  *
- * Version: 1.1 · Session 40 · July 18, 2026
+ * Session 41 (GD-22 / D4): expanded DevPersonaToggle from 2 roles to all 8
+ * SovereignRoles so every role in the approved access matrix can be exercised
+ * without touching source. SYSTEM_ADMIN remains the default (admits all modules).
+ *
+ * Version: 1.2 · Session 41 (GD-22 D4 — all-8-roles persona toggle) · July 19, 2026
  */
 
 import { StrictMode, useCallback, useReducer, useRef, useState } from "react";
@@ -50,14 +55,24 @@ import { GovernanceHeaderIndicator, CPMIVRSDashboard } from "./governance";
 import { PlatformHome } from "./PlatformHome";
 
 // ============================================================
-// DEV PERSONA TOGGLE (DR-1 Tier 1, Session 40)
-// The two roles the toggle supports — both exist in the canonical SovereignRole
-// taxonomy. No new role is added. SYSTEM_ADMIN is the superuser that admits all
-// modules; PROGRAM_MANAGER uses the fail-closed exact-match policy.
+// DEV PERSONA TOGGLE (DR-1 Tier 1 / GD-22 D4, Sessions 40–41)
+// All 8 canonical SovereignRoles are surfaced so every access-matrix path can be
+// exercised in dev without touching source. SYSTEM_ADMIN is the superuser default
+// (admits all modules). No new role is introduced; all values are drawn from the
+// existing SovereignRole union in the shell-contract.
 // ============================================================
 
-type DevPersonaRole = "SYSTEM_ADMIN" | "PROGRAM_MANAGER";
-const DEV_PERSONA_ROLES: readonly DevPersonaRole[] = ["SYSTEM_ADMIN", "PROGRAM_MANAGER"];
+type DevPersonaRole = SovereignRole;
+const DEV_PERSONA_ROLES: readonly DevPersonaRole[] = [
+  "PLATFORM_ADMIN",
+  "SYSTEM_ADMIN",
+  "PROGRAM_MANAGER",
+  "ANALYST",
+  "COMPLIANCE_OFFICER",
+  "AGENT_OPERATOR",
+  "INDEPENDENT_REVIEWER",
+  "READ_ONLY",
+];
 const DEV_PERSONA_KEY = "sovereign-dev-persona";
 
 function readDevPersona(): DevPersonaRole {
@@ -70,13 +85,25 @@ function readDevPersona(): DevPersonaRole {
 }
 
 const DEV_PERSONA_LABELS: Record<DevPersonaRole, string> = {
-  SYSTEM_ADMIN: "System Admin (all access)",
-  PROGRAM_MANAGER: "Program Manager",
+  PLATFORM_ADMIN:       "Platform Admin (all modules)",
+  SYSTEM_ADMIN:         "System Admin (all access)",
+  PROGRAM_MANAGER:      "Program Manager",
+  ANALYST:              "Analyst",
+  COMPLIANCE_OFFICER:   "Compliance Officer",
+  AGENT_OPERATOR:       "Agent Operator",
+  INDEPENDENT_REVIEWER: "Independent Reviewer",
+  READ_ONLY:            "Read Only",
 };
 
 const DEV_PERSONA_NAMES: Record<DevPersonaRole, string> = {
-  SYSTEM_ADMIN: "Platform Developer",
-  PROGRAM_MANAGER: "Dev — Program Manager",
+  PLATFORM_ADMIN:       "Dev — Platform Admin",
+  SYSTEM_ADMIN:         "Platform Developer",
+  PROGRAM_MANAGER:      "Dev — Program Manager",
+  ANALYST:              "Dev — Analyst",
+  COMPLIANCE_OFFICER:   "Dev — Compliance Officer",
+  AGENT_OPERATOR:       "Dev — Agent Operator",
+  INDEPENDENT_REVIEWER: "Dev — Independent Reviewer",
+  READ_ONLY:            "Dev — Read Only",
 };
 
 // ============================================================

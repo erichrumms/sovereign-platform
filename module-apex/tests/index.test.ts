@@ -17,8 +17,9 @@ describe("apexModule contract", () => {
     expect(apexModule.displayName).toBe("APEX");
   });
 
-  it("uses the fail-closed PLATFORM_ADMIN gate", () => {
-    expect(apexModule.minimumRole).toBe("PLATFORM_ADMIN");
+  it("uses the GD-22 access matrix (PROGRAM_MANAGER, ANALYST + admins)", () => {
+    // GD-22 (v1.17): replaces the single PLATFORM_ADMIN placeholder with the approved list.
+    expect(apexModule.minimumRole).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"]);
   });
 
   it("registers the two APEX agents, the three APEX-hosted TT agents (Session 27), and the APEX-hosted PPBE synthesizer (Session 32)", () => {
@@ -51,18 +52,23 @@ describe("apexModule contract", () => {
 });
 
 describe("apexModule structural mount gate", () => {
-  it.each(["ANALYST", "PROGRAM_MANAGER", "READ_ONLY", "AGENT_OPERATOR"] as const)(
-    "throws ModuleAccessDeniedError for non-admin role %s",
+  // GD-22: READ_ONLY, AGENT_OPERATOR, COMPLIANCE_OFFICER, INDEPENDENT_REVIEWER are NOT in the APEX list.
+  it.each(["READ_ONLY", "AGENT_OPERATOR", "COMPLIANCE_OFFICER", "INDEPENDENT_REVIEWER"] as const)(
+    "throws ModuleAccessDeniedError for role %s",
     (role) => {
       const el = document.createElement("div");
       expect(() => apexModule.mount(makeCtx({ role }), el)).toThrow(ModuleAccessDeniedError);
     }
   );
 
-  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN"] as const)("admits %s (mounts without throwing)", (role) => {
-    const el = document.createElement("div");
-    document.body.appendChild(el);
-    expect(() => apexModule.mount(makeCtx({ role }), el)).not.toThrow();
-    apexModule.unmount();
-  });
+  // GD-22: PROGRAM_MANAGER and ANALYST are now admitted to APEX.
+  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"] as const)(
+    "admits %s (mounts without throwing)",
+    (role) => {
+      const el = document.createElement("div");
+      document.body.appendChild(el);
+      expect(() => apexModule.mount(makeCtx({ role }), el)).not.toThrow();
+      apexModule.unmount();
+    }
+  );
 });

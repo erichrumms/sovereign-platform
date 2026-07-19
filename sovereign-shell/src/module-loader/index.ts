@@ -21,14 +21,13 @@
  *      three-tier fallback (live -> last-cached -> static UNAVAILABLE).
  *
  * ROLE HIERARCHY — GOVERNANCE DECISION REQUIRED:
- *   shell-contract v1.0 declares `minimumRole: SovereignRole` on every module
- *   but the platform defines NO total ordering over the seven roles. The
- *   default policy here is deliberately fail-closed: access is granted only to
- *   a user whose role exactly equals minimumRole, plus SYSTEM_ADMIN as a
+ *   shell-contract v1.17 / GD-22 declares `minimumRole: SovereignRole[]` on every module.
+ *   The default policy here is deliberately fail-closed: access is granted only to
+ *   a user whose role appears in the module's minimumRole list, plus SYSTEM_ADMIN as a
  *   universal superuser. This UNDER-grants rather than over-grants. The
- *   authoritative role -> module access matrix is a governance artifact
- *   (candidate home: Decision_Matrix.md / Agent_Identity_Standard.md). When it
- *   exists, inject it as a custom RoleAccessPolicy — no change to this loader.
+ *   authoritative role → module access matrix (SOVEREIGN_Role_Access_Matrix_20260718.md)
+ *   is now encoded directly in each module's minimumRole array. Custom RoleAccessPolicy
+ *   injection remains supported — no change to this loader required for matrix updates.
  *
  * ACCESS-DENIAL LOGGING — TAXONOMY GAP (flagged, not invented):
  *   No member of the frozen SovereignEventType taxonomy denotes "module access
@@ -118,20 +117,22 @@ const MOUNT_PATH_PATTERN = /^\/[a-z][a-z-]*$/;
 
 /**
  * Decides whether a user (via the shell auth provider) may mount a module that
- * declares the given minimumRole. Injectable so the authoritative governance
+ * declares the given minimumRoles list. Injectable so the authoritative governance
  * access matrix can replace the default without touching the loader.
+ * GD-22 (v1.17): parameter widened from SovereignRole to SovereignRole[].
  */
 export type RoleAccessPolicy = (
   auth: SovereignShellContext["auth"],
-  minimumRole: SovereignRole
+  minimumRoles: SovereignRole[]
 ) => boolean;
 
 /**
- * Fail-closed default: exact role match, plus SYSTEM_ADMIN as universal
+ * Fail-closed default: membership in the role list, plus SYSTEM_ADMIN as universal
  * superuser. Grants the minimum; never the benefit of the doubt.
+ * GD-22 (v1.17): updated from single-role exact-match to list membership check.
  */
-export const defaultRoleAccessPolicy: RoleAccessPolicy = (auth, minimumRole) =>
-  auth.hasRole("SYSTEM_ADMIN") || auth.hasRole(minimumRole);
+export const defaultRoleAccessPolicy: RoleAccessPolicy = (auth, minimumRoles) =>
+  auth.hasRole("SYSTEM_ADMIN") || minimumRoles.some((r) => auth.hasRole(r));
 
 // ============================================================
 // ERRORS
@@ -155,11 +156,12 @@ export class ModuleAccessDeniedError extends Error {
   constructor(
     public readonly moduleId: string,
     public readonly userRole: SovereignRole,
-    public readonly minimumRole: SovereignRole
+    // GD-22 (v1.17): widened from SovereignRole to SovereignRole[].
+    public readonly minimumRoles: SovereignRole[]
   ) {
     super(
       `Access to ${moduleId} denied: user role ${userRole} does not satisfy ` +
-        `minimumRole ${minimumRole} under the active RoleAccessPolicy.`
+        `any of [${minimumRoles.join(", ")}] under the active RoleAccessPolicy.`
     );
     this.name = "ModuleAccessDeniedError";
   }
@@ -196,7 +198,7 @@ export interface RegisteredModuleView {
   mountPath: string;
   product: SovereignProduct;
   tier: SovereignTier;
-  minimumRole: SovereignRole;
+  minimumRole: SovereignRole[]; // GD-22 (v1.17): widened to array
   mounted: boolean;
   lastHealth?: HealthSnapshot;
 }
@@ -211,7 +213,7 @@ export interface MountResult {
 export interface AccessDenialAudit {
   moduleId: string;
   userRole: SovereignRole;
-  minimumRole: SovereignRole;
+  minimumRole: SovereignRole[]; // GD-22 (v1.17): widened to array
   sequence: number;
 }
 
@@ -300,10 +302,18 @@ export class ModuleLoader {
     if (!module.displayName || module.displayName.trim() === "") {
       throw new ModuleContractError(`${module.moduleId} has empty displayName`);
     }
-    if (!VALID_ROLES.has(module.minimumRole)) {
+    // GD-22 (v1.17): minimumRole is now SovereignRole[]. Validate non-empty array, all members known.
+    if (!Array.isArray(module.minimumRole) || module.minimumRole.length === 0) {
       throw new ModuleContractError(
-        `${module.moduleId} declares unknown minimumRole "${module.minimumRole}"`
+        `${module.moduleId} minimumRole must be a non-empty SovereignRole array`
       );
+    }
+    for (const role of module.minimumRole) {
+      if (!VALID_ROLES.has(role)) {
+        throw new ModuleContractError(
+          `${module.moduleId} declares unknown role "${role}" in minimumRole`
+        );
+      }
     }
     if (!Array.isArray(module.agentCards)) {
       throw new ModuleContractError(`${module.moduleId} agentCards must be an array`);

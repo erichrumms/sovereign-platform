@@ -97,8 +97,19 @@ export const lensModule: SovereignModuleContract = {
   moduleId: "module-lens",
   mountPath: "/lens",
   displayName: "LENS",
-  // Fail-closed placeholder, identical rationale to COUNSEL / SCRIBE (Decision 24).
-  minimumRole: "READ_ONLY",
+  // GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: LENS is the orientation and
+  // explanation surface for ALL authenticated roles — any user may seek context on
+  // platform behaviour. Replaces the READ_ONLY placeholder (Decision 24).
+  minimumRole: [
+    "PLATFORM_ADMIN",
+    "SYSTEM_ADMIN",
+    "PROGRAM_MANAGER",
+    "ANALYST",
+    "COMPLIANCE_OFFICER",
+    "AGENT_OPERATOR",
+    "INDEPENDENT_REVIEWER",
+    "READ_ONLY",
+  ],
   agentCards: [lensExplainerCard, lensOrientationCard],
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {

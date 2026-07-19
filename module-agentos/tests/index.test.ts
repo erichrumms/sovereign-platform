@@ -19,7 +19,8 @@ describe("agentosModule contract", () => {
   });
 
   it("uses the fail-closed PLATFORM_ADMIN gate for the orchestration backbone", () => {
-    expect(agentosModule.minimumRole).toBe("PLATFORM_ADMIN");
+    // GD-22 (v1.17): minimumRole is now SovereignRole[]. AgentOS is unchanged — admin-only.
+    expect(agentosModule.minimumRole).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN"]);
   });
 
   it("registers the three AgentOS orchestrator agents (D2; Orchestration class, GD-12)", () => {

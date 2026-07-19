@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.16
+ * Version: 1.17
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,21 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.17 (July 18, 2026) — GD-22 (Role-Based Access Matrix, pre-approved Session 41 opening
+ *                       prompt). Widened `minimumRole: SovereignRole` to `minimumRole:
+ *                       SovereignRole[]` on `SovereignModuleContract` (Section 8). This is the
+ *                       only field changed — no SovereignEventType, HumanDecisionType, SovereignRole,
+ *                       SovereignProduct, AgentClass, or shell export (Constraint #7, still ten)
+ *                       was touched. Impact assessment: NO HumanDecisionType change (not synced to
+ *                       shared-types.ts or Python logger — Constraint #11 has nothing to propagate
+ *                       for this change). NO SovereignEventType change. NO AgentClass change.
+ *                       Additive widening: every existing single-role minimumRole assignment becomes
+ *                       a one-element array; the loader's defaultRoleAccessPolicy is updated from
+ *                       `auth.hasRole(minimumRole)` to `minimumRoles.some(r => auth.hasRole(r))`,
+ *                       preserving the SYSTEM_ADMIN superuser clause. CONSUMER UPDATE: all ten
+ *                       module index.ts files update their minimumRole declarations to arrays per
+ *                       the approved SOVEREIGN_Role_Access_Matrix_20260718.md. Both shell-contract
+ *                       copies SHA-256 re-verified identical at v1.17.
  *   v1.16 (July 12, 2026) — GD-21 (TT-GD: Time & Travel Phase II human decisions, decided and
  *                       pre-authorized Session 28 opening prompt §3, per docs/17 §12/§13 — the
  *                       GD docs/17 required before Phase II, pattern identical to GD-20). Added
@@ -1125,7 +1140,10 @@ export interface SovereignModuleContract {
   moduleId: string;        // "module-[productname]"
   mountPath: string;       // "/[productname]"
   displayName: string;
-  minimumRole: SovereignRole;
+  // GD-22 (v1.17): widened from SovereignRole to SovereignRole[] — each module declares
+  // the full set of roles that may mount it. The loader's defaultRoleAccessPolicy checks
+  // list membership; SYSTEM_ADMIN superuser clause is preserved in the policy, not here.
+  minimumRole: SovereignRole[];
   agentCards: AgentCard[];
   mount: (ctx: SovereignShellContext, el: HTMLElement) => void;
   unmount: () => void;

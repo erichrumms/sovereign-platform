@@ -32,6 +32,7 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
@@ -45,7 +46,15 @@ import {
   FLOWPATH_DOMAIN_TRANSLATOR,
 } from "./flowpath-contract";
 
-const FLOWPATH_MINIMUM_ROLE = "AGENT_OPERATOR" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: FLOWPATH elicitation is conducted
+// by analysts and program managers (who know the workflows), plus operators and admins.
+const FLOWPATH_MINIMUM_ROLES: SovereignRole[] = [
+  "PLATFORM_ADMIN",
+  "SYSTEM_ADMIN",
+  "AGENT_OPERATOR",
+  "ANALYST",
+  "PROGRAM_MANAGER",
+];
 
 /**
  * All six FLOWPATH agents are Analytical (Agent_Identity_Standard.md, Session 20). They read,
@@ -88,13 +97,13 @@ export const flowpathModule: SovereignModuleContract = {
   moduleId: "module-flowpath",
   mountPath: "/flowpath",
   displayName: "FLOWPATH",
-  minimumRole: FLOWPATH_MINIMUM_ROLE,
+  minimumRole: FLOWPATH_MINIMUM_ROLES,
   agentCards,
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("AGENT_OPERATOR") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-flowpath", ctx.auth.user.role, FLOWPATH_MINIMUM_ROLE);
+    if (!FLOWPATH_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-flowpath", ctx.auth.user.role, FLOWPATH_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(FlowpathApp, { ctx }));

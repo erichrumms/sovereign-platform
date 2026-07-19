@@ -20,8 +20,9 @@ describe("vigilModule contract", () => {
     expect(vigilModule.displayName).toBe("VIGIL");
   });
 
-  it("declares the real VIGIL role gate (PLATFORM_ADMIN), not a placeholder", () => {
-    expect(vigilModule.minimumRole).toBe("PLATFORM_ADMIN");
+  it("declares the real VIGIL role gate (PLATFORM_ADMIN + SYSTEM_ADMIN), not a placeholder", () => {
+    // GD-22 (v1.17): minimumRole is now SovereignRole[]. VIGIL is unchanged — admin-only.
+    expect(vigilModule.minimumRole).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN"]);
   });
 
   it("registers vigil-triage-analyst, vigil-approval-agent, and tt.escalation-monitor (all Monitoring)", () => {
@@ -74,7 +75,7 @@ describe("vigilModule structural mount gate (spec §7)", () => {
       const err = e as ModuleAccessDeniedError;
       expect(err.moduleId).toBe("module-vigil");
       expect(err.userRole).toBe("ANALYST");
-      expect(err.minimumRole).toBe("PLATFORM_ADMIN");
+      expect(err.minimumRoles).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN"]); // minimumRoles (plural) — GD-22 v1.17
     }
   });
 

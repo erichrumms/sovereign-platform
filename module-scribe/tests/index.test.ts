@@ -12,7 +12,8 @@ describe("scribeModule contract", () => {
     expect(scribeModule.mountPath).toBe("/scribe");
     expect(scribeModule.mountPath).toMatch(/^\/[a-z][a-z-]*$/); // loader MOUNT_PATH_PATTERN
     expect(scribeModule.displayName).toBe("SCRIBE");
-    expect(scribeModule.minimumRole).toBe("READ_ONLY"); // fail-closed placeholder
+    // GD-22 (v1.17): Role Access Matrix replaces the READ_ONLY placeholder.
+    expect(scribeModule.minimumRole).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"]);
   });
 
   it("declares the GD-1/GD-2 SCRIBE agents with valid classes", () => {

@@ -12,11 +12,19 @@ import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader
 import { makeCtx } from "./test-helpers";
 
 describe("ariaModule — module contract", () => {
-  it("declares the ARIA Suite identity and PLATFORM_ADMIN minimum role", () => {
+  it("declares the ARIA Suite identity and the widened GD-22 minimum role list", () => {
     expect(ariaModule.moduleId).toBe("module-aria");
     expect(ariaModule.mountPath).toBe("/aria");
     expect(ariaModule.displayName).toBe("ARIA Suite");
-    expect(ariaModule.minimumRole).toBe("PLATFORM_ADMIN");
+    // GD-22 (v1.17): widened to the union of all per-tab roles so every tab-eligible
+    // role passes the module gate before per-tab gating in AriaApp.tsx takes over.
+    expect(ariaModule.minimumRole).toEqual([
+      "PLATFORM_ADMIN",
+      "SYSTEM_ADMIN",
+      "COMPLIANCE_OFFICER",
+      "PROGRAM_MANAGER",
+      "ANALYST",
+    ]);
   });
 
   it("registers exactly the aria.rules-engine AgentCard (Governance, deterministic)", () => {

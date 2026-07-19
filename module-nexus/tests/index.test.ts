@@ -18,8 +18,11 @@ describe("nexusModule contract", () => {
     expect(nexusModule.displayName).toBe("NEXUS");
   });
 
-  it("uses the AGENT_OPERATOR gate (nearest existing role; no OPERATOR exists)", () => {
-    expect(nexusModule.minimumRole).toBe("AGENT_OPERATOR");
+  it("uses the GD-22 access matrix (AGENT_OPERATOR, PROGRAM_MANAGER, COMPLIANCE_OFFICER + admins)", () => {
+    // GD-22 (v1.17): replaces the single AGENT_OPERATOR placeholder with the approved list.
+    expect(nexusModule.minimumRole).toEqual([
+      "PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "PROGRAM_MANAGER", "COMPLIANCE_OFFICER",
+    ]);
   });
 
   it("registers the two NEXUS-hosted TT agents (Session 27) and the PPBE coordination assistant (Session 32)", () => {
@@ -40,7 +43,8 @@ describe("nexusModule contract", () => {
 });
 
 describe("nexusModule structural mount gate", () => {
-  it.each(["ANALYST", "PROGRAM_MANAGER", "READ_ONLY"] as const)(
+  // GD-22: ANALYST, READ_ONLY, INDEPENDENT_REVIEWER are NOT in the NEXUS role list.
+  it.each(["ANALYST", "READ_ONLY", "INDEPENDENT_REVIEWER"] as const)(
     "throws ModuleAccessDeniedError for role %s",
     (role) => {
       const el = document.createElement("div");
@@ -48,10 +52,14 @@ describe("nexusModule structural mount gate", () => {
     }
   );
 
-  it.each(["AGENT_OPERATOR", "SYSTEM_ADMIN"] as const)("admits %s (mounts without throwing)", (role) => {
-    const el = document.createElement("div");
-    document.body.appendChild(el);
-    expect(() => nexusModule.mount(makeCtx({ role }), el)).not.toThrow();
-    nexusModule.unmount();
-  });
+  // GD-22: PROGRAM_MANAGER and COMPLIANCE_OFFICER are now admitted to NEXUS.
+  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "PROGRAM_MANAGER", "COMPLIANCE_OFFICER"] as const)(
+    "admits %s (mounts without throwing)",
+    (role) => {
+      const el = document.createElement("div");
+      document.body.appendChild(el);
+      expect(() => nexusModule.mount(makeCtx({ role }), el)).not.toThrow();
+      nexusModule.unmount();
+    }
+  );
 });

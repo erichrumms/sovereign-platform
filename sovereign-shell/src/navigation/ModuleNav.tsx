@@ -59,7 +59,7 @@ export function ModuleNav({
             title={
               accessible
                 ? m.displayName
-                : `${m.displayName} — requires role ${m.minimumRole}`
+                : `${m.displayName} — requires one of: ${m.minimumRole.join(", ")}`
             }
             style={navItemStyle(active, accessible)}
           >

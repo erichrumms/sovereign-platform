@@ -19,7 +19,8 @@ describe("cpmiModule contract", () => {
   });
 
   it("uses the fail-closed PLATFORM_ADMIN gate for the governance engine", () => {
-    expect(cpmiModule.minimumRole).toBe("PLATFORM_ADMIN");
+    // GD-22 (v1.17): minimumRole is now SovereignRole[]. CPMI is unchanged — admin-only.
+    expect(cpmiModule.minimumRole).toEqual(["PLATFORM_ADMIN", "SYSTEM_ADMIN"]);
   });
 
   it("registers the three CPMI agents with their classes", () => {

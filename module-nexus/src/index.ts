@@ -30,12 +30,21 @@ import { createRoot, type Root } from "react-dom/client";
 import type {
   SovereignModuleContract,
   SovereignShellContext,
+  SovereignRole,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { NexusApp } from "./NexusApp";
 
-const NEXUS_MINIMUM_ROLE = "AGENT_OPERATOR" as const;
+// GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: NEXUS admits operators, program
+// managers, compliance officers, and admins — anyone who submits or oversees work requests.
+const NEXUS_MINIMUM_ROLES: SovereignRole[] = [
+  "PLATFORM_ADMIN",
+  "SYSTEM_ADMIN",
+  "AGENT_OPERATOR",
+  "PROGRAM_MANAGER",
+  "COMPLIANCE_OFFICER",
+];
 
 // NEXUS's own routing runs through AgentOS-orchestrated agent classes (no native NEXUS
 // cards yet — the implemented-but-not-carded native agents are tracked as finding F-2).
@@ -124,13 +133,13 @@ export const nexusModule: SovereignModuleContract = {
   moduleId: "module-nexus",
   mountPath: "/nexus",
   displayName: "NEXUS",
-  minimumRole: NEXUS_MINIMUM_ROLE,
+  minimumRole: NEXUS_MINIMUM_ROLES,
   agentCards: NEXUS_AGENT_CARDS,
 
   mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
-    if (!ctx.auth.hasRole("AGENT_OPERATOR") && !ctx.auth.hasRole("SYSTEM_ADMIN")) {
-      throw new ModuleAccessDeniedError("module-nexus", ctx.auth.user.role, NEXUS_MINIMUM_ROLE);
+    if (!NEXUS_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
+      throw new ModuleAccessDeniedError("module-nexus", ctx.auth.user.role, NEXUS_MINIMUM_ROLES);
     }
     root = createRoot(el);
     root.render(createElement(NexusApp, { ctx }));
