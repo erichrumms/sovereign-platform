@@ -15,19 +15,29 @@
  *
  * STAGE 2 NOTE — synthetic auth:
  *   Upstream auth is EAMS SAML 2.0 SSO. Until that is wired, the host seeds a
- *   synthetic SYSTEM_ADMIN user so the fail-closed RoleAccessPolicy admits every
- *   module (including the four companion modules and VIGIL's PLATFORM_ADMIN
- *   gate) for local development. All data is SYNTHETIC; the Governance Clock has
- *   not activated.
+ *   synthetic dev user. The active role is selectable via the DevPersonaToggle
+ *   (see below) — switching roles triggers a page reload so the shell is
+ *   re-created with the new role, which is the only way to change role-gated
+ *   module access without a real auth layer. SYSTEM_ADMIN is the default and
+ *   admits all modules; PROGRAM_MANAGER uses the fail-closed exact-match policy
+ *   and will be blocked from PLATFORM_ADMIN-gated modules (VIGIL, APEX, CPMI).
+ *   All data is SYNTHETIC; the Governance Clock has not activated.
  *
- * Version: 1.0 · Session 3 · June 13, 2026
+ * Session 40 (DR-1 Tier 1): added DEV_PERSONA_KEY + DevPersonaToggle so a
+ * developer can switch between SYSTEM_ADMIN and PROGRAM_MANAGER without touching
+ * source. Role change requires a page reload (the SovereignShell is built at
+ * module scope with a fixed user — no reactive auth layer exists until EAMS SSO
+ * is wired). The toggle is clearly labeled DEV and styled to distinguish it from
+ * product UI. No shell-contract change; no new role; no agent registration.
+ *
+ * Version: 1.1 · Session 40 · July 18, 2026
  */
 
 import { StrictMode, useCallback, useReducer, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { CSSProperties } from "react";
 
-import type { SovereignUser } from "../shell-contract";
+import type { SovereignUser, SovereignRole } from "../shell-contract";
 import { createShell } from "./shell";
 import {
   ModuleLoader,
@@ -40,14 +50,47 @@ import { GovernanceHeaderIndicator, CPMIVRSDashboard } from "./governance";
 import { PlatformHome } from "./PlatformHome";
 
 // ============================================================
-// SYNTHETIC DEV USER (Stage 2 — replaced by EAMS SAML 2.0 SSO upstream)
+// DEV PERSONA TOGGLE (DR-1 Tier 1, Session 40)
+// The two roles the toggle supports — both exist in the canonical SovereignRole
+// taxonomy. No new role is added. SYSTEM_ADMIN is the superuser that admits all
+// modules; PROGRAM_MANAGER uses the fail-closed exact-match policy.
 // ============================================================
+
+type DevPersonaRole = "SYSTEM_ADMIN" | "PROGRAM_MANAGER";
+const DEV_PERSONA_ROLES: readonly DevPersonaRole[] = ["SYSTEM_ADMIN", "PROGRAM_MANAGER"];
+const DEV_PERSONA_KEY = "sovereign-dev-persona";
+
+function readDevPersona(): DevPersonaRole {
+  const stored = typeof localStorage !== "undefined"
+    ? localStorage.getItem(DEV_PERSONA_KEY)
+    : null;
+  return (stored != null && (DEV_PERSONA_ROLES as readonly string[]).includes(stored))
+    ? (stored as DevPersonaRole)
+    : "SYSTEM_ADMIN";
+}
+
+const DEV_PERSONA_LABELS: Record<DevPersonaRole, string> = {
+  SYSTEM_ADMIN: "System Admin (all access)",
+  PROGRAM_MANAGER: "Program Manager",
+};
+
+const DEV_PERSONA_NAMES: Record<DevPersonaRole, string> = {
+  SYSTEM_ADMIN: "Platform Developer",
+  PROGRAM_MANAGER: "Dev — Program Manager",
+};
+
+// ============================================================
+// SYNTHETIC DEV USER (Stage 2 — replaced by EAMS SAML 2.0 SSO upstream)
+// Role is read from localStorage so DevPersonaToggle survives a page reload.
+// ============================================================
+
+const _devPersona = readDevPersona();
 
 const DEV_USER: SovereignUser = {
   employee_id: "dev-0001",
-  name: "Platform Developer",
+  name: DEV_PERSONA_NAMES[_devPersona],
   org_unit: "SOVEREIGN Platform Engineering",
-  role: "SYSTEM_ADMIN",
+  role: _devPersona as SovereignRole,
   clearance_level: "CUI",
   cost_code_assignments: [],
 };
@@ -69,6 +112,42 @@ const shell = createShell({
 const loader = new ModuleLoader(shell);
 // Register the product / companion modules that exist on disk this session.
 registerPlatformModules(loader);
+
+// ============================================================
+// DEV PERSONA TOGGLE COMPONENT (DR-1 Tier 1, Session 40)
+// Rendered in the shell header alongside the governance indicator. Clearly
+// labeled DEV so it cannot be mistaken for product UI. On selection change:
+// writes to localStorage and reloads the page — the shell is re-created with
+// the new role, which is the only honest mechanism without a live auth layer.
+// ============================================================
+
+function DevPersonaToggle(): JSX.Element {
+  const current = readDevPersona();
+
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>): void {
+    const next = e.target.value as DevPersonaRole;
+    localStorage.setItem(DEV_PERSONA_KEY, next);
+    window.location.reload();
+  }
+
+  return (
+    <div style={devToggleContainerStyle} title="Dev-only persona switcher — not visible in production">
+      <span style={devBadgeStyle}>DEV</span>
+      <select
+        value={current}
+        onChange={handleChange}
+        style={devSelectStyle}
+        aria-label="Dev persona"
+      >
+        {DEV_PERSONA_ROLES.map((role) => (
+          <option key={role} value={role}>
+            {DEV_PERSONA_LABELS[role]}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 // ============================================================
 // APP
@@ -123,10 +202,13 @@ function App(): JSX.Element {
         showLanding={!hasSelectedModule}
         landing={<PlatformHome ctx={ctx} />}
         headerSlot={
-          <GovernanceHeaderIndicator
-            governance={ctx.governance}
-            onOpenDashboard={() => setShowDashboard((v) => !v)}
-          />
+          <>
+            <DevPersonaToggle />
+            <GovernanceHeaderIndicator
+              governance={ctx.governance}
+              onOpenDashboard={() => setShowDashboard((v) => !v)}
+            />
+          </>
         }
       />
 
@@ -158,6 +240,34 @@ function App(): JSX.Element {
 // ============================================================
 // STYLES (host-local; chrome owns its own theme)
 // ============================================================
+
+const devToggleContainerStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  padding: "3px 8px",
+  background: "#fef9c3",
+  border: "1px solid #fde047",
+  borderRadius: 5,
+  fontFamily: "system-ui, sans-serif",
+};
+
+const devBadgeStyle: CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: 0.5,
+  color: "#713f12",
+  userSelect: "none",
+};
+
+const devSelectStyle: CSSProperties = {
+  fontSize: 11,
+  border: "none",
+  background: "transparent",
+  color: "#713f12",
+  cursor: "pointer",
+  fontFamily: "system-ui, sans-serif",
+};
 
 const emptyNoticeStyle: CSSProperties = {
   position: "fixed",

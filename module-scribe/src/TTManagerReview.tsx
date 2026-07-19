@@ -19,12 +19,20 @@
  *     TRAVEL_APPROVAL event there) — this panel exposes them via the
  *     onTravelDecision callback rather than emitting cross-product events.
  *
+ * Session 40 (DR-2): added "Copy draft" button and "Send via Outlook — Coming Soon"
+ * placeholder button (disabled) next to the send action. The Outlook integration is
+ * genuinely unstarted platform-wide (M365 GCC High service credential declared in
+ * nexus.routing-agent registry but no Graph API code exists anywhere) — the placeholder
+ * matches the platform's existing honest-disclosure pattern ("wired in a later session").
+ *
  * Every Logger event carries workflow_step_id (Standing Constraint #6).
  *
- * Version: 1.0 · Session 28 · July 12, 2026
+ * Version: 1.1 · Session 40 · July 18, 2026
  */
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
+
+import type { CSSProperties } from "react";
 
 import type { TravelRequest, ComplianceFlag } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -83,12 +91,18 @@ function itemLabel(item: TTReviewItem): string {
     : `${item.flag.flag_id} · ${item.flag.employee_id} · ${item.flag.rule_category} · ${item.flag.severity}`;
 }
 
+/** Build the plain-text copy payload from a TTDraft (subject + body). */
+function buildDraftText(draft: TTDraft): string {
+  return draft.subject ? `${draft.subject}\n\n${draft.body}` : draft.body;
+}
+
 export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTManagerReviewProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(
     items.length > 0 ? itemKey(items[0]) : null
   );
   const [error, setError] = useState<string | null>(null);
   const [sentKeys, setSentKeys] = useState<readonly string[]>([]);
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   // Session 35 (GD-19): live VIGIL authorizations from the shared task surface.
   // An item is sendable when its seeded state OR a live VIGIL decision says so.
@@ -97,6 +111,20 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
     item.vigilAuthorized || liveAuthorizedFlagIds.has(item.flag.flag_id);
 
   const selected = items.find((i) => itemKey(i) === selectedKey) ?? null;
+
+  /** Copy the current draft to the clipboard (DR-2 Session 40). */
+  const handleCopyDraft = useCallback((draft: TTDraft) => {
+    navigator.clipboard.writeText(buildDraftText(draft)).then(
+      () => {
+        setCopyFeedback("Copied!");
+        setTimeout(() => setCopyFeedback(null), 2000);
+      },
+      () => {
+        setCopyFeedback("Copy failed — select the text above and use Ctrl+C / Cmd+C.");
+        setTimeout(() => setCopyFeedback(null), 4000);
+      }
+    );
+  }, []);
 
   /** Record that the MANAGER sent a time communication (GD-21 TIME_CORRECTION_SENT). */
   function recordSend(item: TimeReviewItem): void {
@@ -229,14 +257,37 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
                   </p>
                 ) : (
                   <>
-                    <button
-                      type="button"
-                      data-testid="tt-send-communication"
-                      disabled={selected.requiresVigilAuthorization && !isVigilAuthorized(selected)}
-                      onClick={() => recordSend(selected)}
-                    >
-                      I have sent this communication
-                    </button>
+                    <div style={actionRowStyle}>
+                      <button
+                        type="button"
+                        data-testid="tt-send-communication"
+                        disabled={selected.requiresVigilAuthorization && !isVigilAuthorized(selected)}
+                        onClick={() => recordSend(selected)}
+                      >
+                        I have sent this communication
+                      </button>
+                      <button
+                        type="button"
+                        data-testid="tt-copy-draft"
+                        onClick={() => handleCopyDraft(selected.draft)}
+                      >
+                        Copy draft
+                      </button>
+                      <button
+                        type="button"
+                        data-testid="tt-send-outlook"
+                        disabled
+                        title="Outlook / M365 GCC High integration not yet wired — wired in a later session"
+                        style={outlookPlaceholderStyle}
+                      >
+                        Send via Outlook — Coming Soon
+                      </button>
+                    </div>
+                    {copyFeedback && (
+                      <p data-testid="tt-copy-feedback" style={copyFeedbackStyle}>
+                        {copyFeedback}
+                      </p>
+                    )}
                     {selected.requiresVigilAuthorization && !isVigilAuthorized(selected) && (
                       <p data-testid="tt-awaiting-authorization">Awaiting VIGIL authorization</p>
                     )}
@@ -252,3 +303,24 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
     </div>
   );
 }
+
+// ── Styles ────────────────────────────────────────────────────
+
+const actionRowStyle: CSSProperties = {
+  display: "flex",
+  gap: 8,
+  flexWrap: "wrap",
+  alignItems: "center",
+};
+
+const outlookPlaceholderStyle: CSSProperties = {
+  opacity: 0.45,
+  cursor: "not-allowed",
+  fontStyle: "italic",
+};
+
+const copyFeedbackStyle: CSSProperties = {
+  fontSize: 12,
+  color: "#0369a1",
+  margin: "4px 0 0",
+};
