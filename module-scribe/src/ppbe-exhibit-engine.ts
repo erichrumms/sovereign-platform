@@ -157,17 +157,45 @@ const STATIC_NOTICE =
   "records, not a generated narrative. Complete the document from the cited records before review.]";
 
 /**
- * A meaningful static fallback for the mode — never fabricated. Every figure
- * is a supplied obligation (citing its own record) or the plan total (citing
- * plan_source_step_id when the host supplied one). Bracketed text is an
- * instruction to the reviewing official; validation re-runs on the edited
- * result at the sign-off gate.
+ * A meaningful static fallback for the mode — never fabricated. Figures are
+ * mode-appropriate: Evaluation Report cites findings; other modes cite obligations.
+ * Bracketed text is an instruction to the reviewing official; validation re-runs
+ * on the edited result at the sign-off gate.
  */
 export function staticExhibitDraft(input: ExhibitDraftInput): PPBEExhibitDraft {
   const wsid = exhibitWorkflowStepId(input);
   const modeName = PPBE_DOCUMENT_MODE_NAMES[input.mode];
   const title = `${modeName} — ${input.program.name} (${input.program.fiscal_year})`;
 
+  // EVALUATION_REPORT: figures cite findings, not obligations — the two are different
+  // artifact types and mixing them produces a figure list that contradicts the body text.
+  if (input.mode === "EVALUATION_REPORT") {
+    const findings = input.findings ?? [];
+    const feeding = findings.filter((f) => f.feeds_planning_cycle).length;
+    const figures: ExhibitFigure[] = findings.map((f) => ({
+      label: `Evaluation finding: ${f.finding_type.replace(/_/g, " ")} (${
+        f.feeds_planning_cycle ? "feeds planning cycle" : "does not feed planning cycle"
+      })`,
+      value: 1,
+      source_workflow_step_id: f.workflow_step_id,
+    }));
+    const body =
+      findings.length === 0
+        ? "No evaluation findings are recorded for this program. That absence is reported as a fact — " +
+          "it is not evidence of performance."
+        : `This program has ${findings.length} recorded evaluation ${findings.length === 1 ? "finding" : "findings"}, ` +
+          `of which ${feeding} ${feeding === 1 ? "feeds" : "feed"} the planning cycle. ` +
+          "Each finding is cited in the figures below by its source record.";
+    return {
+      document_mode: input.mode,
+      title,
+      narrative: `${STATIC_NOTICE} ${body}`,
+      figures,
+      workflow_step_id: wsid,
+    };
+  }
+
+  // BUDGET_EXHIBIT and CONGRESSIONAL_JUSTIFICATION: obligation-based figures.
   const figures: ExhibitFigure[] = input.obligations.map((o) => ({
     label: `Obligation recorded against cost code ${o.cost_code}`,
     value: o.amount,
@@ -180,26 +208,12 @@ export function staticExhibitDraft(input: ExhibitDraftInput): PPBEExhibitDraft {
       source_workflow_step_id: input.plan_source_step_id,
     });
   }
-
-  let body: string;
-  if (input.mode === "EVALUATION_REPORT") {
-    const findings = input.findings ?? [];
-    const feeding = findings.filter((f) => f.feeds_planning_cycle).length;
-    body =
-      findings.length === 0
-        ? "No evaluation findings are recorded for this program. That absence is reported as a fact — " +
-          "it is not evidence of performance."
-        : `This program has ${findings.length} recorded evaluation ${findings.length === 1 ? "finding" : "findings"}, ` +
-          `of which ${feeding} ${feeding === 1 ? "feeds" : "feed"} the planning cycle. ` +
-          "The findings themselves are the substance of this report — read them from the cited records.";
-  } else {
-    body =
-      input.obligations.length === 0
-        ? "No obligations are recorded against this program. The exhibit cannot present execution " +
-          "figures that do not exist."
-        : `This program has ${input.obligations.length} recorded ${input.obligations.length === 1 ? "obligation" : "obligations"}, ` +
-          "listed in the figures with their source records.";
-  }
+  const body =
+    input.obligations.length === 0
+      ? "No obligations are recorded against this program. The exhibit cannot present execution " +
+        "figures that do not exist."
+      : `This program has ${input.obligations.length} recorded ${input.obligations.length === 1 ? "obligation" : "obligations"}, ` +
+        "listed in the figures with their source records.";
 
   return {
     document_mode: input.mode,

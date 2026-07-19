@@ -19,6 +19,7 @@ import { useEffect, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { minutesRemaining, type AgentApprovalRequest, type ApprovalDecisionAction } from "./approval-contract";
+import { formatIso } from "./vigil-types";
 import { useApprovalBrief } from "./useApprovalBrief";
 import { useApprovalDecision } from "./useApprovalDecision";
 import { ApprovalDecisionPanel } from "./ApprovalDecisionPanel";
@@ -31,6 +32,8 @@ export interface ApprovalDetailProps {
   request: AgentApprovalRequest;
   /** Called after a decision is recorded (request leaves the active queue). */
   onDecided: (requestId: string) => void;
+  /** Optional — fires before onDecided so callers can capture decision info for confirmation feedback. */
+  onDecisionMade?: (requestId: string, action: string, agentId: string, actionType: string) => void;
   /** Required when request.action_type === "ppbe_obligation" (Tier C gate). */
   obligationCase?: PPBEObligationCase;
 }
@@ -54,7 +57,7 @@ const TIER_NOTE: Record<"live" | "cache" | "static", string> = {
   static: "Static brief — the agent service is unavailable. Assembled directly from the request fields, not generated.",
 };
 
-export function ApprovalDetail({ ctx, request, onDecided, obligationCase }: ApprovalDetailProps): JSX.Element {
+export function ApprovalDetail({ ctx, request, onDecided, onDecisionMade, obligationCase }: ApprovalDetailProps): JSX.Element {
   const isObligationRequest = request.action_type === "ppbe_obligation";
   const brief = useApprovalBrief(ctx);
   const decision = useApprovalDecision(ctx);
@@ -71,13 +74,19 @@ export function ApprovalDetail({ ctx, request, onDecided, obligationCase }: Appr
 
   const onDecide = (action: ApprovalDecisionAction, notes: string): boolean => {
     const result = decision.decide(request, action, notes);
-    if (result.ok) onDecided(request.request_id);
+    if (result.ok) {
+      onDecisionMade?.(request.request_id, action, request.requesting_agent_id, request.action_type);
+      onDecided(request.request_id);
+    }
     return result.ok;
   };
 
   const onObligationDecide = (action: "APPROVE" | "REJECT", note: string, counselId: string): boolean => {
     const result = obligationDecision.decide(action, note, counselId);
-    if (result.ok) onDecided(request.request_id);
+    if (result.ok) {
+      onDecisionMade?.(request.request_id, action, request.requesting_agent_id, request.action_type);
+      onDecided(request.request_id);
+    }
     return result.ok;
   };
 
@@ -92,8 +101,8 @@ export function ApprovalDetail({ ctx, request, onDecided, obligationCase }: Appr
         <Row label="Requesting agent" value={`${request.requesting_agent_id} (${request.requesting_agent_class})`} />
         <Row label="Action type" value={request.action_type} />
         <Row label="Risk" value={request.risk_classification} />
-        <Row label="Submitted" value={request.submitted_at} />
-        <Row label="Expires" value={`${request.expires_at} (${remaining >= 0 ? `${remaining} min left` : "EXPIRED"})`} />
+        <Row label="Submitted" value={formatIso(request.submitted_at)} />
+        <Row label="Expires" value={`${formatIso(request.expires_at)} (${remaining >= 0 ? `${remaining} min left` : "EXPIRED"})`} />
         <Row label="Action detail" value={JSON.stringify(request.action_detail)} />
         {request.context ? <Row label="Agent context" value={request.context} /> : null}
       </dl>

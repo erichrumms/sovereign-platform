@@ -29,7 +29,7 @@ describe("ReportCharts", () => {
     expect(within(cost).getByText("Cost over plan")).toBeInTheDocument();
     // Caption carries the variance prose and the priority (Gap 5).
     expect(within(cost).getByText(/8 percentage points above the planned 58 percent/)).toBeInTheDocument();
-    expect(within(cost).getByText(/Priority 2 risk/)).toBeInTheDocument();
+    expect(within(cost).getByText(/Risk Level 2 risk/)).toBeInTheDocument();
   });
 
   it("cost variance indicator is within-plan when no cost-variance flag is present", () => {

@@ -366,9 +366,9 @@ function recommendationCountPhrase(n: number): string {
 }
 
 function severityWord(severity: RiskFinding["severity"]): string {
-  if (severity === "P1") return "Priority 1";
-  if (severity === "P2") return "Priority 2";
-  return "Priority 3";
+  if (severity === "P1") return "Risk Level 1";
+  if (severity === "P2") return "Risk Level 2";
+  return "Risk Level 3";
 }
 
 function trendWord(trend: RiskFinding["trend"]): string {

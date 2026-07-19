@@ -57,10 +57,7 @@ export function PPBEDashboard({ inputs }: PPBEDashboardProps): JSX.Element {
     <section style={rootStyle} aria-label="APEX PPBE Performance Dashboard">
       <header style={{ marginBottom: 16 }}>
         <h1 style={titleStyle}>APEX — Execution Monitoring</h1>
-        <p style={subtitleStyle}>
-          PPBE Phase 5 performance: obligation rate, budget-to-actual variance, dependency health,
-          and learning velocity
-        </p>
+        <p style={subtitleStyle}>PPBE Phase 5 · obligation rate · variance · dependency health · learning velocity</p>
       </header>
 
       {data.is_empty && (

@@ -59,7 +59,7 @@ export function ReportCharts({ program }: ReportChartsProps): JSX.Element {
 
   const costColors = costStateColors(costState);
   const costCaption = costFlag
-    ? `${costFlag.provenance.variance_from_baseline} This is flagged as a Priority ${costFlag.severity.slice(1)} risk.`
+    ? `${costFlag.provenance.variance_from_baseline} This is flagged as a Risk Level ${costFlag.severity.slice(1)} risk.`
     : "Cost is tracking at or below the planned rate. No cost variance is flagged for this program.";
 
   return (

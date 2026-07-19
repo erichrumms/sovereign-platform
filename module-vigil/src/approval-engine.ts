@@ -78,22 +78,85 @@ const RISK_RATIONALE: Record<AgentApprovalRequest["risk_classification"], string
   P3: "P3 — routine; a 4-hour decision window applies.",
 };
 
+/** Plain-prose "what changes" sentence per action type — no field-dump. */
+function describeWhatChanges(
+  actionType: string,
+  agentId: string,
+  detail: Record<string, unknown>
+): string {
+  switch (actionType) {
+    case "model_deployment": {
+      const model = typeof detail.model === "string" ? `"${detail.model}"` : "a model";
+      const target = typeof detail.target_product === "string" ? ` to ${detail.target_product}` : "";
+      const replaces = typeof detail.replaces_version === "string"
+        ? `, replacing version ${detail.replaces_version}` : "";
+      return `${agentId} will deploy model ${model}${target}${replaces}. Once deployed, the model begins serving requests in its assigned surface.`;
+    }
+    case "data_export": {
+      const dataset = typeof detail.dataset === "string" ? `"${detail.dataset}"` : "a dataset";
+      const count = typeof detail.record_count === "number" ? ` (${detail.record_count} records)` : "";
+      const dest = typeof detail.destination === "string" ? ` to "${detail.destination}"` : "";
+      return `${agentId} will export ${dataset}${count}${dest}. This moves data outside the current platform boundary.`;
+    }
+    case "configuration_change": {
+      const param = typeof detail.parameter === "string" ? `"${detail.parameter}"` : "a platform parameter";
+      const from = detail.from !== undefined ? `from ${JSON.stringify(detail.from)} ` : "";
+      const to = detail.to !== undefined ? `to ${JSON.stringify(detail.to)}` : "a new value";
+      return `${agentId} will change ${param} ${from}${to}. Review the before/after values before approving.`;
+    }
+    case "send_formal_escalation_notice": {
+      const employee = typeof detail.employee_id === "string" ? detail.employee_id : "an employee";
+      const category = typeof detail.rule_category === "string"
+        ? detail.rule_category.toLowerCase().replace(/_/g, " ") : "a compliance issue";
+      const count = typeof detail.recurrence_count === "number"
+        ? `${detail.recurrence_count} time(s)` : "multiple times";
+      return `${agentId} will send a formal escalation notice to the supervisor of ${employee} regarding ${category}, which has recurred ${count} in the current review window. This creates an official record and notifies the supervisor directly.`;
+    }
+    case "ppbe_obligation": {
+      const program = typeof detail.program_id === "string" ? `program ${detail.program_id}` : "a program";
+      const amount = typeof detail.amount === "number"
+        ? `$${detail.amount.toLocaleString()}` : "an unspecified amount";
+      const costCode = typeof detail.cost_code === "string" ? ` against cost code ${detail.cost_code}` : "";
+      const obligationId = typeof detail.obligation_id === "string" ? ` (${detail.obligation_id})` : "";
+      return `${agentId} will record a financial obligation of ${amount}${obligationId} against ${program}${costCode}. Once approved, this becomes part of the program's execution record.`;
+    }
+    case "ppbe_phase_transition": {
+      const from = detail.from_phase !== undefined ? `Phase ${String(detail.from_phase)}` : "the current phase";
+      const to = detail.to_phase !== undefined ? `Phase ${String(detail.to_phase)}` : "the next phase";
+      return `${agentId} will transition the PPBE workflow from ${from} to ${to}. This closes the current phase and authorizes the next phase to begin.`;
+    }
+    default: {
+      const entries = Object.entries(detail);
+      if (entries.length === 0) {
+        return `${agentId} will perform "${actionType}". No additional detail was provided with this request.`;
+      }
+      const fields = entries
+        .map(([k, v]) => `${k.replace(/_/g, " ")}: ${typeof v === "object" ? JSON.stringify(v) : String(v)}`)
+        .join("; ");
+      return `${agentId} will perform "${actionType}". Request detail: ${fields}.`;
+    }
+  }
+}
+
 /**
  * The honest static-tier brief — assembled from the request fields (the agent service
- * is unavailable). Same labeled sections as the prompt; no recommendation, no invented
- * detail. The operator still has a complete, accurate brief to decide from.
+ * is unavailable). Same labeled sections as the prompt; plain prose per action type
+ * rather than a field-dump. No recommendation, no invented detail.
  */
 export function staticBrief(request: AgentApprovalRequest): string {
-  const detailLines = Object.entries(request.action_detail)
-    .map(([k, v]) => `  - ${k}: ${typeof v === "object" ? JSON.stringify(v) : String(v)}`)
-    .join("\n");
+  const whatChanges = describeWhatChanges(
+    request.action_type,
+    request.requesting_agent_id,
+    request.action_detail
+  );
   return [
-    "[Brief assembled directly from the request — the vigil-approval-agent service is " +
-      "unavailable. The fields below are the request as submitted, not a generated analysis.]",
+    "The vigil-approval-agent service is unavailable — this brief was assembled directly " +
+      "from the request fields and may not include the agent's own analysis.",
     "",
-    `REQUESTED ACTION: ${request.requesting_agent_id} requests "${request.action_type}".`,
-    `WHAT CHANGES: The action carries this detail:\n${detailLines || "  - (no structured detail provided)"}`,
-    "REVERSIBILITY: Not stated by the agent service (unavailable) — confirm reversibility before approving.",
+    `REQUESTED ACTION: ${request.requesting_agent_id} is requesting to perform "${request.action_type}".`,
+    `WHAT CHANGES: ${whatChanges}`,
+    "REVERSIBILITY: Confirm whether this action can be reversed before approving — " +
+      "the agent service is unavailable and could not assess reversibility for this request.",
     `RISK CLASSIFICATION: ${RISK_RATIONALE[request.risk_classification]}`,
     `AGENT CONTEXT: ${request.context ?? "None provided"}`,
   ].join("\n");

@@ -13,6 +13,7 @@
 import type { CSSProperties } from "react";
 
 import { minutesRemaining, type AgentApprovalRequest, type RiskClassification } from "./approval-contract";
+import { formatIso } from "./vigil-types";
 
 export interface ApprovalQueueProps {
   requests: AgentApprovalRequest[];
@@ -27,8 +28,8 @@ export function ApprovalQueue({ requests, selectedId, onSelect, nowMs }: Approva
   const hasRequests = requests.length > 0;
 
   return (
-    <section style={panelStyle} aria-label="Agent Approval Queue">
-      <h3 style={titleStyle}>Agent Approval Queue</h3>
+    <section style={panelStyle} aria-label="Actions Awaiting Your Approval">
+      <h3 style={titleStyle}>Actions Awaiting Your Approval</h3>
 
       {hasRequests ? (
         <ul style={listStyle}>
@@ -71,7 +72,7 @@ function RequestCard({
             {expired && <span style={expiredBadgeStyle}>EXPIRED</span>}
           </span>
           <span style={cardMetaStyle}>
-            {request.requesting_agent_id} · {request.submitted_at}
+            {request.requesting_agent_id} · {formatIso(request.submitted_at)}
           </span>
           {actionContext(request) && (
             <span style={cardContextStyle}>{actionContext(request)}</span>
@@ -88,15 +89,43 @@ function RequestCard({
 /** §2.1 Supervision Efficiency — surface key context from action_detail inline on the card. */
 function actionContext(request: AgentApprovalRequest): string | null {
   const d = request.action_detail;
-  if (request.action_type === "ppbe_obligation") {
-    const program = typeof d.program_id === "string" ? d.program_id : "—";
-    const amount = typeof d.amount === "number" ? `$${d.amount.toLocaleString()}` : "—";
-    return `Program ${program} · ${amount}`;
+  switch (request.action_type) {
+    case "ppbe_obligation": {
+      const program = typeof d.program_id === "string" ? d.program_id : "—";
+      const amount = typeof d.amount === "number" ? `$${d.amount.toLocaleString()}` : "—";
+      return `Program ${program} · ${amount}`;
+    }
+    case "ppbe_phase_transition":
+      return `Phase ${d.from_phase ?? "?"} → ${d.to_phase ?? "?"}`;
+    case "model_deployment": {
+      const model = typeof d.model === "string" ? d.model : null;
+      const target = typeof d.target_product === "string" ? d.target_product : null;
+      if (!model && !target) return null;
+      return [model, target].filter(Boolean).join(" → ");
+    }
+    case "data_export": {
+      const dataset = typeof d.dataset === "string" ? d.dataset : null;
+      const dest = typeof d.destination === "string" ? d.destination : null;
+      if (!dataset && !dest) return null;
+      return [dataset, dest].filter(Boolean).join(" → ");
+    }
+    case "configuration_change": {
+      const param = typeof d.parameter === "string" ? d.parameter : null;
+      if (!param) return null;
+      const from = d.from !== undefined ? String(d.from) : "?";
+      const to = d.to !== undefined ? String(d.to) : "?";
+      return `${param}: ${from} → ${to}`;
+    }
+    case "send_formal_escalation_notice": {
+      const employee = typeof d.employee_id === "string" ? d.employee_id : null;
+      const category = typeof d.rule_category === "string"
+        ? d.rule_category.toLowerCase().replace(/_/g, " ") : null;
+      if (!employee && !category) return null;
+      return [employee, category].filter(Boolean).join(" · ");
+    }
+    default:
+      return null;
   }
-  if (request.action_type === "ppbe_phase_transition") {
-    return `Phase ${d.from_phase ?? "?"} → ${d.to_phase ?? "?"}`;
-  }
-  return null;
 }
 
 function riskBadgeStyle(risk: RiskClassification): CSSProperties {

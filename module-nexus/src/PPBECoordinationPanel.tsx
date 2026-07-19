@@ -48,7 +48,7 @@ export interface PPBECoordinationPanelProps {
 }
 
 export function PPBECoordinationPanel({ ctx: _ctx }: PPBECoordinationPanelProps): JSX.Element {
-  const [notes, setNotes] = useState(SYNTH_PPBE_MEETING_NOTES);
+  const [notes, setNotes] = useState(SYNTH_PPBE_MEETING_NOTES.trim());
   const [status, setStatus] = useState<AgentStatus>("idle");
   const [outcome, setOutcome] = useState<CoordinationOutcome | null>(null);
 
@@ -115,6 +115,12 @@ export function PPBECoordinationPanel({ ctx: _ctx }: PPBECoordinationPanelProps)
         style={textareaStyle}
         data-testid="ppbe-coordination-notes"
       />
+
+      <p style={staticWarningStyle}>
+        Static tier — if the LLM service is unavailable (e.g. no API key in dev), this will return a
+        deterministic overdue-scan only. Notes will NOT be read by the model. Review notes manually if
+        you see a STATIC badge in the result.
+      </p>
 
       <button
         type="button"
@@ -194,6 +200,10 @@ const staticNoteStyle: CSSProperties = {
 const advisoryStyle: CSSProperties = {
   padding: "2px 8px", background: "#eff6ff", border: "1px solid #bfdbfe",
   borderRadius: 4, fontSize: 11, fontWeight: 600, color: "#1e40af", display: "inline-block",
+};
+const staticWarningStyle: CSSProperties = {
+  margin: "0 0 8px", padding: "5px 8px", background: "#fffbeb", borderRadius: 4,
+  fontSize: 11, color: "#92400e", border: "1px solid #fde68a", maxWidth: 680,
 };
 const btnStyle: CSSProperties = {
   padding: "6px 14px", borderRadius: 6, border: "1px solid #0c4a6e",

@@ -40,6 +40,8 @@ type Tab = "alerts" | "approvals";
 export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
   const operatorRole = "BOTH"; // reaching here means the gate passed (spec §3)
   const [tab, setTab] = useState<Tab>("alerts");
+  const [lastDecision, setLastDecision] = useState<{ action: string; agentId: string; actionType: string } | null>(null);
+  const [expiredRequestCount, setExpiredRequestCount] = useState(0);
 
   // ARIA Suite CLEAR routes compliance violations and governance-calendar timing alerts to
   // the VIGIL Alert Queue (Session 23 · D5). Until the live Alert Dispatcher endpoint is
@@ -76,7 +78,8 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
 
   // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
   useEffect(() => {
-    approvals.expireOverdue(Date.now());
+    const expired = approvals.expireOverdue(Date.now());
+    if (expired.length > 0) setExpiredRequestCount(expired.length);
     // run once on mount; expireOverdue is keyed on the initial request set.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -115,7 +118,7 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
       {/* ---- Tabs ---- */}
       <nav style={tabBarStyle} aria-label="VIGIL surfaces">
         <TabButton id="alerts" label="Alert Queue" active={tab === "alerts"} onClick={setTab} />
-        <TabButton id="approvals" label="Agent Approval Queue" active={tab === "approvals"} onClick={setTab} />
+        <TabButton id="approvals" label="Actions Awaiting Your Approval" active={tab === "approvals"} onClick={setTab} />
       </nav>
 
       {alerts.ingestError && (
@@ -140,18 +143,32 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
         </div>
       ) : (
         <div style={stackStyle}>
+          {lastDecision && (
+            <div role="status" style={confirmBannerStyle}>
+              Decision recorded: <strong>{lastDecision.action}</strong> · {lastDecision.agentId} ({lastDecision.actionType})
+              <button type="button" onClick={() => setLastDecision(null)} style={dismissStyle} aria-label="Dismiss">✕</button>
+            </div>
+          )}
+          {expiredRequestCount > 0 && (
+            <p role="status" style={expiredNoticeStyle}>
+              {expiredRequestCount} request{expiredRequestCount !== 1 ? "s" : ""} expired on load and were auto-rejected (AGENT_ACTION_EXPIRED).
+            </p>
+          )}
           <ApprovalQueue requests={approvals.requests} selectedId={approvals.selectedId} onSelect={approvals.select} />
           {approvals.selected ? (
             <ApprovalDetail
-            ctx={ctx}
-            request={approvals.selected}
-            onDecided={approvals.remove}
-            obligationCase={
-              approvals.selected.action_type === "ppbe_obligation" && demoPPBEObligationCase
-                ? demoPPBEObligationCase
-                : undefined
-            }
-          />
+              ctx={ctx}
+              request={approvals.selected}
+              onDecided={approvals.remove}
+              onDecisionMade={(requestId, action, agentId, actionType) => {
+                setLastDecision({ action, agentId, actionType });
+              }}
+              obligationCase={
+                approvals.selected.action_type === "ppbe_obligation" && demoPPBEObligationCase
+                  ? demoPPBEObligationCase
+                  : undefined
+              }
+            />
           ) : (
             approvals.requests.length > 0 && <p style={hintStyle}>Select a request to review its brief and record a decision.</p>
           )}
@@ -215,6 +232,18 @@ const hintStyle: CSSProperties = { margin: 0, fontSize: 13, color: "#64748b" };
 const errorStyle: CSSProperties = {
   margin: "0 0 12px", padding: "8px 10px", borderRadius: 8, background: "#fef2f2",
   border: "1px solid #fecaca", color: "#991b1b", fontSize: 12, maxWidth: 720,
+};
+const confirmBannerStyle: CSSProperties = {
+  display: "flex", alignItems: "center", justifyContent: "space-between",
+  padding: "8px 12px", borderRadius: 8, background: "#f0fdf4",
+  border: "1px solid #bbf7d0", color: "#166534", fontSize: 13, maxWidth: 720,
+};
+const dismissStyle: CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", color: "#166534", fontWeight: 700, padding: "0 4px",
+};
+const expiredNoticeStyle: CSSProperties = {
+  margin: 0, padding: "7px 12px", borderRadius: 8, background: "#fffbeb",
+  border: "1px solid #fde68a", color: "#92400e", fontSize: 12, maxWidth: 720,
 };
 
 export default VigilApp;

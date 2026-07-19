@@ -36,13 +36,13 @@ describe("VigilApp (scaffold)", () => {
     expect(summary).toHaveTextContent(/5/); // three synthetic AgentOS requests + the seeded TT escalation (Session 29, WE-5) + Tier C obligation (Session 38, Part 3)
   });
 
-  it("switches to the Agent Approval Queue tab and shows the synthetic requests", () => {
+  it("switches to the Actions Awaiting Your Approval tab and shows the synthetic requests", () => {
     render(<VigilApp ctx={makeCtx()} />);
     // Default tab is the Alert Queue; the approval queue is not yet shown.
     expect(screen.getByLabelText("Alert Queue")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("tab", { name: "Agent Approval Queue" }));
-    expect(screen.getByLabelText("Agent Approval Queue")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "Actions Awaiting Your Approval" }));
+    expect(screen.getByLabelText("Actions Awaiting Your Approval")).toBeInTheDocument();
     expect(
       screen.getAllByText(/model_deployment|data_export|configuration_change/).length
     ).toBeGreaterThan(0);

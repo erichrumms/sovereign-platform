@@ -14,14 +14,14 @@ describe("VigilApp — Tier C obligation seeding (Part 3)", () => {
   it("includes the seeded PPBE obligation request in the Approval Queue", () => {
     render(<VigilApp ctx={makeCtx()} />);
     // Switch to Agent Approval Queue tab
-    fireEvent.click(screen.getByRole("tab", { name: "Agent Approval Queue" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Actions Awaiting Your Approval" }));
     // The obligation card appears with action_type "ppbe_obligation"
     expect(screen.getByText("ppbe_obligation")).toBeInTheDocument();
   });
 
   it("shows ObligationDecisionPanel (counselId input) when the obligation card is selected", () => {
     render(<VigilApp ctx={makeCtx()} />);
-    fireEvent.click(screen.getByRole("tab", { name: "Agent Approval Queue" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Actions Awaiting Your Approval" }));
     // Click the obligation card
     const obligationCard = screen.getByText("ppbe_obligation").closest("button");
     if (!obligationCard) throw new Error("obligation card button not found");

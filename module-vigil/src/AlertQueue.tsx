@@ -15,6 +15,7 @@
 import type { CSSProperties } from "react";
 
 import type { SecurityAlert } from "./vigil-types";
+import { formatIso } from "./vigil-types";
 
 export interface AlertQueueProps {
   alerts: SecurityAlert[];
@@ -89,7 +90,7 @@ function AlertCard({
             {unackP1 && <span style={p1DotStyle} aria-label="unacknowledged P1" title="Unacknowledged P1" />}
           </span>
           <span style={cardMetaStyle}>
-            {alert.sourceProduct} · {alert.timestamp} · {alert.status}
+            {alert.sourceProduct} · {formatIso(alert.timestamp)} · {alert.status}
           </span>
           {isCpmiDrift && (
             <span style={cpmiNoteStyle}>

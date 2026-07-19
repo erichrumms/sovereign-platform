@@ -17,6 +17,7 @@ import { useMemo, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { AlertResponseAction, AnomalyContext, SecurityAlert } from "./vigil-types";
+import { formatIso } from "./vigil-types";
 import { useAlertResponse, type RespondResult } from "./useAlertResponse";
 import { AlertResponsePanel } from "./AlertResponsePanel";
 import { AnomalyTriageAssistant } from "./AnomalyTriageAssistant";
@@ -81,7 +82,7 @@ export function AlertDetail({
         <Row label="Type" value={alert.alertType} />
         <Row label="Source product" value={alert.sourceProduct} />
         <Row label="Agent" value={alert.agentId ?? "—"} />
-        <Row label="Detected" value={alert.timestamp} />
+        <Row label="Detected" value={formatIso(alert.timestamp)} />
         <Row label="Status" value={alert.status} />
       </dl>
 

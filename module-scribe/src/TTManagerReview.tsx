@@ -145,21 +145,35 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
       <div data-testid="tt-review-queue" style={{ minWidth: 280 }}>
         <h3>Time &amp; Travel review queue</h3>
         {items.length === 0 && <p>No items awaiting review.</p>}
-        <ul>
-          {items.map((item) => (
-            <li key={itemKey(item)}>
-              <button
-                type="button"
-                data-testid={`tt-queue-item-${itemKey(item)}`}
-                onClick={() => {
-                  setSelectedKey(itemKey(item));
-                  setError(null);
-                }}
-              >
-                {itemLabel(item)}
-              </button>
-            </li>
-          ))}
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+          {items.map((item) => {
+            const key = itemKey(item);
+            const isSelected = key === selectedKey;
+            return (
+              <li key={key}>
+                <button
+                  type="button"
+                  data-testid={`tt-queue-item-${key}`}
+                  aria-pressed={isSelected}
+                  onClick={() => {
+                    setSelectedKey(key);
+                    setError(null);
+                  }}
+                  style={{
+                    display: "block", width: "100%", textAlign: "left",
+                    padding: "6px 10px", borderRadius: 6, cursor: "pointer",
+                    fontSize: 12,
+                    border: isSelected ? "1px solid #0c4a6e" : "1px solid #e2e8f0",
+                    background: isSelected ? "#e0f2fe" : "#f8fafc",
+                    color: isSelected ? "#0c4a6e" : "#0f172a",
+                    fontWeight: isSelected ? 600 : 400,
+                  }}
+                >
+                  {itemLabel(item)}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </div>
 

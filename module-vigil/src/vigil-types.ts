@@ -129,6 +129,18 @@ export const ALERT_LEVEL_ORDER: Record<AlertLevel, number> = {
 };
 
 /**
+ * Convert an ISO 8601 timestamp to a compact local-time display string
+ * ("Jun 23, 2026, 12:00 PM"). Falls back to the raw string on parse failure.
+ */
+export function formatIso(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleString("en-US", {
+    month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
+  });
+}
+
+/**
  * Sort a copy of the alerts by severity (P1 first) then timestamp ascending within
  * each level (oldest-waiting first). Pure; does not mutate the input.
  */
