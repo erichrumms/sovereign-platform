@@ -232,7 +232,7 @@ const sectionTitleStyle: CSSProperties = { margin: "0 0 4px", fontSize: 18 };
 const mutedStyle: CSSProperties = { margin: "0 0 16px", color: "#64748b", fontSize: 13 };
 const fieldStyle: CSSProperties = { display: "block", marginBottom: 16 };
 const fieldLabelStyle: CSSProperties = { display: "block", fontWeight: 600, fontSize: 14, marginBottom: 2 };
-const fieldHintStyle: CSSProperties = { display: "block", color: "#94a3b8", fontSize: 12, marginBottom: 6 };
+const fieldHintStyle: CSSProperties = { display: "block", color: "#475569", fontSize: 12, marginBottom: 6 };
 const textareaStyle: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
@@ -302,6 +302,6 @@ const removeButtonStyle: CSSProperties = {
   cursor: "pointer",
   fontSize: 12,
 };
-const hintStyle: CSSProperties = { margin: "8px 0 0", color: "#94a3b8", fontSize: 12 };
+const hintStyle: CSSProperties = { margin: "8px 0 0", color: "#475569", fontSize: 12 };
 
 export default DecisionFramer;

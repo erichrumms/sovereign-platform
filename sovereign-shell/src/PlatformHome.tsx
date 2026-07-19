@@ -328,7 +328,7 @@ const factRowStyle: CSSProperties = {
 
 const factLabelStyle: CSSProperties = { fontSize: 12, color: "#64748b", fontWeight: 500 };
 const factValueStyle: CSSProperties = { fontSize: 12, color: "#0f172a", fontWeight: 600, textAlign: "right" };
-const factDetailStyle: CSSProperties = { fontWeight: 400, color: "#94a3b8" };
+const factDetailStyle: CSSProperties = { fontWeight: 400, color: "#475569" };
 
 const todoListStyle: CSSProperties = {
   margin: 0,

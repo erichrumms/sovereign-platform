@@ -237,14 +237,14 @@ const btnStyle: CSSProperties = {
   background: "#0c4a6e", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600,
 };
 const btnDisabledStyle: CSSProperties = {
-  ...btnStyle, background: "#e2e8f0", borderColor: "#cbd5e1", color: "#94a3b8", cursor: "not-allowed",
+  ...btnStyle, background: "#e2e8f0", borderColor: "#cbd5e1", color: "#475569", cursor: "not-allowed",
 };
 
 function tierBadgeStyle(tier?: string): CSSProperties {
   if (tier === "live") return { fontSize: 10, fontWeight: 700, color: "#065f46", padding: "2px 6px", borderRadius: 999, background: "#d1fae5" };
   if (tier === "cache") return { fontSize: 10, fontWeight: 700, color: "#92400e", padding: "2px 6px", borderRadius: 999, background: "#fef3c7" };
   if (tier === "static") return { fontSize: 10, fontWeight: 700, color: "#7f1d1d", padding: "2px 6px", borderRadius: 999, background: "#fee2e2" };
-  return { fontSize: 10, fontWeight: 700, color: "#94a3b8", padding: "2px 6px", borderRadius: 999, background: "#f1f5f9" };
+  return { fontSize: 10, fontWeight: 700, color: "#475569", padding: "2px 6px", borderRadius: 999, background: "#f1f5f9" };
 }
 
 export default PPBEAgentsPanel;

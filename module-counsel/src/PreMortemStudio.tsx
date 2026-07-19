@@ -203,7 +203,7 @@ const topActionStyle: CSSProperties = {
   margin: "0 0 12px", padding: "10px 14px", background: "#f0f9ff", border: "1px solid #bae6fd",
   borderRadius: 8, fontSize: 14, color: "#0c4a6e",
 };
-const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const primaryButtonStyle: CSSProperties = {
   padding: "6px 14px", background: "#0c4a6e", color: "#ffffff", border: "none",
   borderRadius: 8, fontSize: 13, cursor: "pointer",

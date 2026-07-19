@@ -2,41 +2,28 @@
 # ============================================================
 # SOVEREIGN Platform — Session-Open Verification Script
 # Authored by: Governance Agent · July 17, 2026 (v2 — corrected after first real run)
+# Updated: Session 43 · July 19, 2026 (v3 — HEAD + hash advanced to current state)
 # Run in Terminal 2 (Terminal 1 is reserved for the Build Agent)
 # ============================================================
 #
-# Purpose: before trusting System Prompt v30 / New Conversation Handoff
-# claims for the Walkthrough F repeat pass, check them against the
-# actual repo — real exit codes (Rule 7), real content not just a
-# successful command (Rule 10), counts taken directly rather than
-# carried forward from a document (Lesson 12).
+# Purpose: before trusting System Prompt / New Conversation Handoff
+# claims at session open, check them against the actual repo — real
+# exit codes (Rule 7), real content not just a successful command
+# (Rule 10), counts taken directly rather than carried forward from a
+# document (Lesson 12).
 #
-# v2 changes, each based on the first real run's actual output rather
-# than a second guess:
-#   - EXPECTED_HEAD updated to dd3e4fa (confirmed: exactly one commit
-#     past 4124867 — a legitimate PromptFix docs commit, not drift).
-#     Update this each session — it WILL go stale the moment something
-#     new is committed, that's expected, not a bug.
-#   - JS/TS tests now discovered from package.json's own "test:*"
-#     scripts and run per-workspace with a real exit code each,
-#     instead of a guessed root "npm test" that doesn't exist.
-#   - Python tests now run via "python3 -m pytest ./sovereign-security"
-#     (confirmed real location) instead of a bare "pytest" binary
-#     that isn't on PATH even though the module is installed.
-#   - Shell contract check now targets the two known real paths
-#     directly, and — since both existed in the first run — also
-#     checks they match EACH OTHER, not just the documented hash
-#     (synchronized-copy drift risk, per AGENT_REFERENCE.md's
-#     Detecting Drift section). The old glob-based version picked an
-#     unrelated markdown governance doc first and produced a false WARN.
+# EXPECTED_HEAD and EXPECTED_CONTRACT_HASH must be updated each session.
+# Both will produce false WARNs the moment new commits land — that's
+# expected and not a bug. Update them at session close when you commit.
+# Shell contract version as of v3: v1.17 (GD-22, Session 41).
 #
 # Run:
 #   chmod +x sovereign_session_verify.sh
 #   ./sovereign_session_verify.sh [path-to-repo-root]
 # ============================================================
 
-EXPECTED_HEAD="dd3e4fa"                                   # update each session — see note above
-EXPECTED_CONTRACT_HASH="521a62daa77a1986a6e23fc2ee29c5bedf082933d7c42b4cd25eb0e7b4fd5fb7"
+EXPECTED_HEAD="1830a0f"                                   # update each session — see note above
+EXPECTED_CONTRACT_HASH="91da8c18890bcc0f6fb3afb7105cf0ff7c63f8da3c5e8d1cefb08c91adbfee78"
 KNOWN_CONTRACT_PATHS="./sovereign-shell/shell-contract.ts ./shell-contract.ts"
 PY_TEST_DIR="./sovereign-security"                        # confirmed real location
 DEFAULT_REPO_ROOT="$HOME/Developer/sovereign-platform"

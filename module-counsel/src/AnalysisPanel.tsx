@@ -175,7 +175,7 @@ const degradedBannerStyle: CSSProperties = {
 const confidenceRowStyle: CSSProperties = { display: "flex", alignItems: "center", gap: 10, marginBottom: 8 };
 const confidenceLabelStyle: CSSProperties = { fontWeight: 600, fontSize: 13, color: "#475569" };
 const confidenceValueStyle: CSSProperties = { fontSize: 18, fontWeight: 700, color: "#0f172a" };
-const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const sectionStyle: CSSProperties = { margin: "16px 0 8px", fontSize: 15 };
 const altCardStyle: CSSProperties = {
   padding: 12,

@@ -276,7 +276,7 @@ const textareaStyle: CSSProperties = {
   border: "1px solid #cbd5e1", fontSize: 13, fontFamily: "inherit", resize: "vertical",
 };
 const actionsRowStyle: CSSProperties = { display: "flex", gap: 8, marginTop: 10 };
-const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const sourceTagStyle: CSSProperties = { fontSize: 11, color: "#475569" };
 const primaryButtonStyle: CSSProperties = {
   padding: "6px 14px", background: "#0c4a6e", color: "#ffffff", border: "none",
   borderRadius: 8, fontSize: 13, cursor: "pointer",

@@ -170,6 +170,17 @@ const MODULE_PAIRS: AuditRow[] = [
   ["#334155", "#f1f5f9", 12, false, "ARIA neutral tag"],
   // Shell host (light notices rendered in the outlet)
   ["#475569", "#f1f5f9", 13, false, "shell main.tsx empty-outlet notice"],
+  // WF-14 additions (Session 43) — pairs that failed AA at #94a3b8 before the fix.
+  // All replaced with #475569; ratios: 7.58:1 on #ffffff, 6.15:1 on #e2e8f0,
+  // 6.92:1 on #f1f5f9, 7.24:1 on #f8fafc.
+  ["#475569", "#ffffff", 12, false, "PlatformHome factDetailStyle — fact supplementary text (WF-14)"],
+  ["#475569", "#e2e8f0", 12, true, "APEX PPBEAgentsPanel disabled button text (WF-14)"],
+  ["#475569", "#f1f5f9", 10, true, "APEX PPBEAgentsPanel tier badge NOT-RUN state (WF-14)"],
+  ["#475569", "#ffffff", 11, false, "COUNSEL PreMortemStudio source tag (WF-14)"],
+  ["#475569", "#f8fafc", 11, false, "COUNSEL CounterargumentPanel source tag — past-turn card (WF-14)"],
+  ["#475569", "#ffffff", 12, false, "COUNSEL DecisionFramer field hint (WF-14)"],
+  ["#475569", "#ffffff", 12, false, "COUNSEL DecisionFramer incomplete-form hint (WF-14)"],
+  ["#475569", "#ffffff", 11, false, "COUNSEL AnalysisPanel source tag (WF-14)"],
 ];
 
 describe("module text/background pairs — full Session 29 audit inventory", () => {
