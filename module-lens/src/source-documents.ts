@@ -15,7 +15,7 @@
  * change, update the matching groundingText/staticSummary here. These are the only
  * facts LENS is permitted to surface.
  *
- * Version: 1.0 · Session 8 · June 22, 2026
+ * Version: 1.1 · Session 42 · July 19, 2026
  */
 
 /** The two LENS knowledge-base source documents (spec §2.1). */
@@ -70,9 +70,11 @@ const AGENT_APPROVALS: LensSourceDocument = {
     "Registered agents and approval class: counsel-analyst (auto-authorized, analysis only), scribe-drafter (human-gated export at Gate 3, not an A2A approval request), scribe-style-analyst (human-gated save, not an A2A request), lens-explainer (auto-authorized, explanation only), lens-orientation (auto-authorized, orientation only), vigil-triage-analyst (auto-authorized, recommendation only — human decides), vigil-approval-agent (routes approval requests, does not self-approve). Agents that only produce analysis, drafts, or recommendations do not route through the Approval Queue — their output is reviewed through the module's own interface. The Queue is specifically for agents whose actions cross product or governance boundaries.",
     "",
     "VIGIL and AgentOS are complementary: AgentOS orchestrates agent execution and lifecycle and routes A2A requests; VIGIL is the human-facing surface that governs that execution, records decisions, and feeds outcomes back to AgentOS. Only PLATFORM_ADMIN and SYSTEM_ADMIN roles can access VIGIL and the Approval Queue.",
+    "",
+    "Approval Queue decision windows (P1/P2/P3 risk classification — note: this is a separate three-tier scale from the Alert Queue's four-tier P1–P4 severity scale): P1 (highest consequence) — 15-minute decision window; P2 (significant) — 60-minute decision window; P3 (routine) — 4-hour decision window. Each approval request in the Queue shows its risk tier, and the deadline is visible on the card. An expired request is auto-rejected. The Alert Queue uses a different scale: P1 critical (immediate response), P2 high (within the hour), P3 medium (within the day), P4 low (next review cycle) — that scale has four tiers and governs how quickly a security alert must be reviewed, not how long a human has to decide on an agent action.",
   ].join("\n"),
   staticSummary:
-    "VIGIL's Agent Approval Queue is where AI agent actions that need human authorization are surfaced, reviewed, and decided — accessible only to PLATFORM_ADMIN and SYSTEM_ADMIN. Agents communicate over the A2A protocol (DEFINED → CARDS_REGISTERED → IMPLEMENTED); the Queue receives live requests only at IMPLEMENTED. Every approval or rejection is a HUMAN_DECISION event, high-consequence actions require two-person authorization, and agents that only produce analysis or drafts do not route through the Queue. VIGIL governs agent actions; AgentOS executes them.",
+    "VIGIL's Agent Approval Queue is where AI agent actions that need human authorization are surfaced, reviewed, and decided — accessible only to PLATFORM_ADMIN and SYSTEM_ADMIN. Agents communicate over the A2A protocol (DEFINED → CARDS_REGISTERED → IMPLEMENTED); the Queue receives live requests only at IMPLEMENTED. Every approval or rejection is a HUMAN_DECISION event, high-consequence actions require two-person authorization, and agents that only produce analysis or drafts do not route through the Queue. Approval Queue decision windows: P1 (highest consequence) = 15 minutes, P2 (significant) = 60 minutes, P3 (routine) = 4 hours — this is a separate three-tier scale from the Alert Queue's four-tier P1–P4 severity scale (critical/high/medium/low). VIGIL governs agent actions; AgentOS executes them.",
 };
 
 /** The complete LENS knowledge base — both documents, always supplied together (spec §2.1). */

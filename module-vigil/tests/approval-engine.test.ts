@@ -72,7 +72,9 @@ describe("staticBrief", () => {
     expect(b).toMatch(/WHAT CHANGES:/);
     expect(b).toMatch(/REVERSIBILITY:/);
     expect(b).toMatch(/RISK CLASSIFICATION:/);
-    expect(b).toMatch(/AGENT CONTEXT: Routine refresh\./);
+    // WF-28 (Session 42): AGENT CONTEXT intentionally removed from the static brief —
+    // it is already shown in the ApprovalDetail metadata table above the brief panel.
+    expect(b).not.toMatch(/AGENT CONTEXT:/);
     expect(b).toMatch(/service is unavailable/i);
     expect(b).not.toMatch(/I recommend|you should approve|you should reject/i);
   });

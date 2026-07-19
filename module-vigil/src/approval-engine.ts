@@ -10,8 +10,11 @@
  *
  * The static tier is honest and useful: because the request is fully structured, the
  * brief is assembled from it (REQUESTED ACTION / WHAT CHANGES / REVERSIBILITY / RISK
- * CLASSIFICATION / AGENT CONTEXT), prefixed with a notice that the live agent was
- * unavailable. It never invents action detail or a recommendation.
+ * CLASSIFICATION), prefixed with a notice that the live agent was unavailable.
+ * It never invents action detail or a recommendation.
+ * Agent context (request.context) is deliberately omitted from the static brief — it is
+ * already displayed in the ApprovalDetail metadata table, which is always visible above
+ * the brief panel. Repeating it here is pure duplication (WF-28, Session 42).
  *
  * Version: 1.0 · Session 10 · June 23, 2026
  */
@@ -140,8 +143,10 @@ function describeWhatChanges(
 
 /**
  * The honest static-tier brief — assembled from the request fields (the agent service
- * is unavailable). Same labeled sections as the prompt; plain prose per action type
- * rather than a field-dump. No recommendation, no invented detail.
+ * is unavailable). Sections: REQUESTED ACTION / WHAT CHANGES / REVERSIBILITY / RISK
+ * CLASSIFICATION. Plain prose per action type, no field-dump, no recommendation, no
+ * invented detail. Agent context is in the ApprovalDetail metadata table above the
+ * brief panel; it is not repeated here (WF-28).
  */
 export function staticBrief(request: AgentApprovalRequest): string {
   const whatChanges = describeWhatChanges(
@@ -158,7 +163,6 @@ export function staticBrief(request: AgentApprovalRequest): string {
     "REVERSIBILITY: Confirm whether this action can be reversed before approving — " +
       "the agent service is unavailable and could not assess reversibility for this request.",
     `RISK CLASSIFICATION: ${RISK_RATIONALE[request.risk_classification]}`,
-    `AGENT CONTEXT: ${request.context ?? "None provided"}`,
   ].join("\n");
 }
 

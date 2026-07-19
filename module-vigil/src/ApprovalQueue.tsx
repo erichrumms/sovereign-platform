@@ -4,10 +4,19 @@
  *
  * Renders pending approval requests (sorted P1-first by useApprovalQueue), each
  * selectable to open its detail. Shows the risk badge, requesting agent, action type,
- * submission time, and expiry countdown (or an EXPIRED badge). Thin presenter — load /
+ * submission time, and expiry deadline (or an EXPIRED badge). Thin presenter — load /
  * sort / expiry live in useApprovalQueue. Empty state per spec §4.3.
  *
- * Version: 1.0 · Session 10 · June 23, 2026
+ * Session 42 (WF-25, WF-26):
+ *   WF-26: submitted time is now labeled ("Submitted [date] at [time]") rather than bare.
+ *   WF-25: the live "Expires in X min" countdown is replaced by a static formatted
+ *          deadline ("Decide by [time]" or "Decide by [date] at [time]" if cross-day).
+ *          Near-deadline threshold: ≤15 minutes remaining shows amber text and bold weight
+ *          (15 minutes = P1's entire decision window; anything at or below is genuinely urgent
+ *          regardless of risk class). Expired requests retain the "Expired — will be
+ *          auto-rejected" label unchanged.
+ *
+ * Version: 1.1 · Session 42 · July 19, 2026
  */
 
 import type { CSSProperties } from "react";
@@ -44,6 +53,37 @@ export function ApprovalQueue({ requests, selectedId, onSelect, nowMs }: Approva
   );
 }
 
+/**
+ * Format a submitted-at ISO string as "Jun 23, 2026 at 12:00 PM".
+ * Falls back to the raw string if unparseable.
+ */
+function formatSubmitted(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const date = d.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+  return `${date} at ${time}`;
+}
+
+/**
+ * Format an expires-at ISO string as a human-readable deadline.
+ * Same day: "9:48 PM". Cross-day: "Jul 20 at 9:48 PM".
+ * Falls back to the raw string if unparseable.
+ */
+function formatDecideBy(expiresAt: string, nowMs: number): string {
+  const exp = new Date(expiresAt);
+  const now = new Date(nowMs);
+  if (isNaN(exp.getTime())) return expiresAt;
+  const sameDay =
+    exp.getFullYear() === now.getFullYear() &&
+    exp.getMonth() === now.getMonth() &&
+    exp.getDate() === now.getDate();
+  const timeStr = exp.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+  if (sameDay) return timeStr;
+  const dateStr = exp.toLocaleString("en-US", { month: "short", day: "numeric" });
+  return `${dateStr} at ${timeStr}`;
+}
+
 function RequestCard({
   request,
   selected,
@@ -57,6 +97,9 @@ function RequestCard({
 }): JSX.Element {
   const remaining = minutesRemaining(request, nowMs);
   const expired = remaining < 0;
+  // WF-25: near-deadline threshold = 15 min (P1's full window; any request at or below
+  // this is urgently near expiry regardless of risk class).
+  const nearDeadline = !expired && remaining <= 15;
   return (
     <li>
       <button
@@ -71,14 +114,18 @@ function RequestCard({
             {request.action_type}
             {expired && <span style={expiredBadgeStyle}>EXPIRED</span>}
           </span>
+          {/* WF-26: labeled submitted time */}
           <span style={cardMetaStyle}>
-            {request.requesting_agent_id} · {formatIso(request.submitted_at)}
+            {request.requesting_agent_id} · Submitted {formatSubmitted(request.submitted_at)}
           </span>
           {actionContext(request) && (
             <span style={cardContextStyle}>{actionContext(request)}</span>
           )}
-          <span style={cardExpiryStyle}>
-            {expired ? "Expired — will be auto-rejected" : `Expires in ${remaining} min`}
+          {/* WF-25: static deadline with near-deadline visual treatment */}
+          <span style={cardExpiryStyle(nearDeadline)}>
+            {expired
+              ? "Expired — will be auto-rejected"
+              : `Decide by ${formatDecideBy(request.expires_at, nowMs)}`}
           </span>
         </span>
       </button>
@@ -153,7 +200,14 @@ const cardMainStyle: CSSProperties = { display: "flex", flexDirection: "column",
 const cardTypeStyle: CSSProperties = { fontSize: 13, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 };
 const cardMetaStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
 const cardContextStyle: CSSProperties = { fontSize: 11, color: "#0c4a6e", fontWeight: 500 };
-const cardExpiryStyle: CSSProperties = { fontSize: 11, color: "#475569" };
+/** WF-25: near-deadline (≤15 min) shows amber text and bold to draw the eye. */
+function cardExpiryStyle(nearDeadline: boolean): CSSProperties {
+  return {
+    fontSize: 11,
+    color: nearDeadline ? "#b45309" : "#475569",
+    fontWeight: nearDeadline ? 600 : 400,
+  };
+}
 const badgeStyle: CSSProperties = {
   color: "#ffffff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999, flexShrink: 0,
 };

@@ -32,10 +32,12 @@ describe("ApprovalQueue", () => {
     expect(screen.getByText(/No pending approvals/i)).toBeInTheDocument();
   });
 
-  it("renders a card per request and shows the expiry countdown", () => {
+  // WF-25 (Session 42): expiry is now a static formatted deadline ("Decide by [time]")
+  // not a live countdown. Near-deadline ≤15 min shows amber/bold treatment.
+  it("renders a card per request and shows the formatted deadline", () => {
     render(<ApprovalQueue requests={[req("a", "P1")]} selectedId={null} onSelect={() => {}} nowMs={anchorMs + 5 * 60_000} />);
     expect(screen.getByText("model_deployment")).toBeInTheDocument();
-    expect(screen.getByText(/Expires in 10 min/)).toBeInTheDocument();
+    expect(screen.getByText(/^Decide by /)).toBeInTheDocument();
   });
 
   it("shows the EXPIRED badge past expiry", () => {
