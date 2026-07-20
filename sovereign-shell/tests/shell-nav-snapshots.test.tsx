@@ -25,7 +25,7 @@
  */
 
 import { render } from "@testing-library/react";
-import type { SovereignRole } from "../shell-contract";
+import type { SovereignRole, ProgramStatusSnapshot } from "../shell-contract";
 import type { RegisteredModuleView } from "../src/module-loader";
 import { ModuleNav } from "../src/navigation/ModuleNav";
 import { PlatformHome } from "../src/PlatformHome";
@@ -225,12 +225,20 @@ describe("ModuleNav role-access snapshots", () => {
 });
 
 // ---- PlatformHome snapshot ----
+// Session 47: updated to include programStatusSurface (required by the new
+// Phase 1 layout) and five role-specific tests verifying D1/D2/D3 visibility.
+// Roles under test mirror those live-verified in the role-access session:
+// SYSTEM_ADMIN, PROGRAM_MANAGER, COMPLIANCE_OFFICER, ANALYST, INDEPENDENT_REVIEWER.
 
 function makePlatformHomeCtx(overrides: {
+  role?: SovereignRole;
+  programSnapshots?: ProgramStatusSnapshot[];
   overall?: "GREEN" | "AMBER" | "RED";
   vrsGates?: VRSGateStatus[];
   pendingGate3?: number;
 } = {}): SovereignShellContext {
+  const role: SovereignRole = overrides.role ?? "SYSTEM_ADMIN";
+  const programSnapshots = overrides.programSnapshots ?? [];
   const overall = overrides.overall ?? "GREEN";
   const vrsGates = overrides.vrsGates ?? [];
   const pendingGate3 = overrides.pendingGate3 ?? 0;
@@ -240,20 +248,19 @@ function makePlatformHomeCtx(overrides: {
         employee_id: "E-TEST-001",
         name: "Test Operator",
         org_unit: "Platform",
-        role: "SYSTEM_ADMIN",
+        role,
         clearance_level: "UNCLASSIFIED",
         cost_code_assignments: [],
       },
       token: "test-token",
       signOut: () => {},
-      hasRole: (r: SovereignRole) => r === "SYSTEM_ADMIN",
+      hasRole: (r: SovereignRole) => r === role,
       hasClearance: () => true,
     },
     governance: {
       cpmiStatus: {
         overall,
         products: [],
-        // Pass an invalid date to avoid locale-dependent output in the snapshot.
         last_updated: "invalid-date",
         pending_gate3_reviews: pendingGate3,
       },
@@ -261,25 +268,93 @@ function makePlatformHomeCtx(overrides: {
       isOnHold: () => false,
     },
     navigation: { navigateTo: () => {}, currentPath: "/", breadcrumb: [] },
+    programStatusSurface: {
+      publish: () => {},
+      get: () => undefined,
+      list: () => programSnapshots as readonly ProgramStatusSnapshot[],
+      subscribe: () => () => {},
+    },
   } as unknown as SovereignShellContext;
 }
 
+/** Sample program snapshots for data-populated tests. */
+const SAMPLE_PROGRAMS: ProgramStatusSnapshot[] = [
+  { program_id: "P-2025-001", percent_obligated: 82, status: "on_track",  narrative: "On track.", updated_at: "2026-07-20" },
+  { program_id: "P-2025-002", percent_obligated: 67, status: "at_risk",   narrative: "At risk.",  updated_at: "2026-07-20" },
+  { program_id: "P-2025-003", percent_obligated: 41, status: "off_track", narrative: "Off track.", updated_at: "2026-07-20" },
+];
+
 describe("PlatformHome snapshots", () => {
-  it("GREEN portfolio, no vrsGates, no pending reviews", () => {
-    const ctx = makePlatformHomeCtx();
+  // ---- Basic layout tests ----
+  it("empty state — no programs, no modules (SYSTEM_ADMIN)", () => {
+    const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN" });
     const { container } = render(<PlatformHome ctx={ctx} />);
     expect(container).toMatchSnapshot();
   });
 
-  it("AMBER portfolio with mixed gate states and a pending Gate 3 review", () => {
-    const vrsGates: VRSGateStatus[] = [
-      { product: "NEXUS", gate_state: "GATE_3_PENDING" },
-      { product: "APEX", gate_state: "GATE_2_COMPLETE" },
-      { product: "CPMI", gate_state: "GATE_4_CERTIFIED" },
-      { product: "VIGIL", gate_state: "HOLD", hold_reason: "Pending legal review" },
-    ];
-    const ctx = makePlatformHomeCtx({ overall: "AMBER", vrsGates, pendingGate3: 1 });
+  it("with program data — 3 programs including at_risk and off_track (SYSTEM_ADMIN)", () => {
+    const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("SYSTEM_ADMIN");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  // ---- Role-visibility tests (D1/D2/D3) — five roles live-tested this session ----
+
+  it("SYSTEM_ADMIN — sees Program Health, Flagged Programs, all 10 modules in orientation", () => {
+    const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("SYSTEM_ADMIN");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it("PROGRAM_MANAGER — sees Program Health, Flagged Programs, 7 accessible modules in orientation", () => {
+    const ctx = makePlatformHomeCtx({ role: "PROGRAM_MANAGER", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("PROGRAM_MANAGER");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it("ANALYST — sees Program Health, Flagged Programs, 3 accessible modules in orientation", () => {
+    const ctx = makePlatformHomeCtx({ role: "ANALYST", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("ANALYST");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it("COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 2 accessible modules in orientation", () => {
+    const ctx = makePlatformHomeCtx({ role: "COMPLIANCE_OFFICER", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("COMPLIANCE_OFFICER");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it("INDEPENDENT_REVIEWER — cannot see Program Health/Flagged, sees 0 accessible modules in orientation", () => {
+    const ctx = makePlatformHomeCtx({ role: "INDEPENDENT_REVIEWER", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("INDEPENDENT_REVIEWER");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  // ---- To Do / Review placeholder visibility (D4) ----
+  it("To Do / Review section renders its honest placeholder for all roles — verified via SYSTEM_ADMIN", () => {
+    const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN" });
     const { container } = render(<PlatformHome ctx={ctx} />);
+    // The placeholder text must be present in the rendered output.
+    expect(container.textContent).toContain("WorkQueueSurface");
+    expect(container.textContent).toContain("wired in a future session");
     expect(container).toMatchSnapshot();
   });
 });

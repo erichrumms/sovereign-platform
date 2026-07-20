@@ -155,7 +155,7 @@ function App(): JSX.Element {
         outletRef={outletRef}
         brand="SOVEREIGN"
         showLanding={!hasSelectedModule}
-        landing={<PlatformHome ctx={ctx} />}
+        landing={<PlatformHome ctx={ctx} modules={modules} isAccessible={isAccessible} />}
         headerSlot={
           <>
             <DevPersonaToggle />

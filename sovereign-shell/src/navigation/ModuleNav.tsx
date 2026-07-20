@@ -23,13 +23,13 @@ import type { CSSProperties } from "react";
 import type { RegisteredModuleView } from "../module-loader";
 import { SOVEREIGN_THEME as T } from "./theme";
 
-interface ModuleInfo {
+export interface ModuleInfo {
   label: string;
   bullets: string[];
 }
 
 /** Three-word labels and hover bullet content per moduleId (Session 42, D1). */
-const MODULE_INFO: Record<string, ModuleInfo> = {
+export const MODULE_INFO: Record<string, ModuleInfo> = {
   "module-counsel": {
     label: "Argues Both Sides",
     bullets: [
