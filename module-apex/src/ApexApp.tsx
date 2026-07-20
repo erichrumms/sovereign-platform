@@ -99,10 +99,12 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
       {/* Session 32 (D5) replaced the Session 17 stub with the live PPBE dashboard;
           Session 33 (goal item 8) wired the host data adapter over the canonical
           seeded portfolio — the dashboard now renders real metrics. A production
-          deployment swaps the adapter, not the component. */}
+          deployment swaps the adapter, not the component.
+          Session 46 (D2): onSelectProgram wired to openProgram — the existing
+          mechanism (setSelectedProgram + setTab("detail")), not a new one. */}
       {tab === "execution" && (
         <>
-          <PPBEDashboard inputs={ppbeInputs} />
+          <PPBEDashboard inputs={ppbeInputs} onSelectProgram={openProgram} />
           <PPBEAgentsPanel ctx={ctx} inputs={ppbeInputs} />
         </>
       )}

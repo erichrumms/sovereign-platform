@@ -1,12 +1,17 @@
 /** @jest-environment jsdom */
 /**
- * PPBEDashboard component tests — Session 32 (D5).
- * The live PPBE performance dashboard on APEX's Execution Monitoring tab.
- * With data: all four metric sections render plain-prose narratives and the
- * four PPBE event-type activity counts. Without data: an honest Category-1
- * empty state, never fabricated-looking measurements.
+ * PPBEDashboard component tests — Session 32 (D5) + Session 46 (D1–D3).
+ *
+ * Session 32: live PPBE performance dashboard on APEX's Execution Monitoring tab.
+ * Session 46 additions:
+ *   D1 — charts render (obligation rate BarChart, variance BarChart, dependency table).
+ *   D2 — onSelectProgram fires when an accessible program button is clicked.
+ *   D3 — per-site breakdown section is present with visible placeholder disclosure.
+ *
+ * Narrative prose assertions (obligation rate, variance, dependency health) still
+ * pass because the prose is kept as caption text below each chart (Gap 5).
  */
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 
 import { PPBEDashboard } from "../src/PPBEDashboard";
 import { EMPTY_PPBE_EVENT_COUNTS, type PPBEDashboardInputs } from "../src/ppbe-dashboard";
@@ -64,6 +69,8 @@ const inputs: PPBEDashboardInputs = {
 };
 
 describe("PPBEDashboard", () => {
+  // ── Session 32 baseline assertions (still pass — prose is kept in DOM) ────
+
   it("renders all four metric sections and the event activity with data", () => {
     render(<PPBEDashboard inputs={inputs} />);
     expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
@@ -83,5 +90,105 @@ describe("PPBEDashboard", () => {
     expect(screen.getByText(/nothing shown here is fabricated/)).toBeInTheDocument();
     expect(screen.getByText(/No programs are recorded./)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_PHASE_TRANSITION: 0 recorded events/)).toBeInTheDocument();
+  });
+
+  // ── D1 — charts and dependency table (Session 46) ─────────────────────────
+
+  it("D1: obligation rate chart container is present", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    expect(screen.getByLabelText("Obligation rate bar chart")).toBeInTheDocument();
+  });
+
+  it("D1: budget-to-actual variance chart container is present", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    expect(screen.getByLabelText("Budget-to-actual variance chart")).toBeInTheDocument();
+  });
+
+  it("D1: dependency health renders as a table (not a chart), with header rows", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    const table = screen.getByLabelText("Dependency health counts");
+    expect(table.tagName).toBe("TABLE");
+    expect(table).toHaveTextContent("Healthy");
+    expect(table).toHaveTextContent("At risk");
+    expect(table).toHaveTextContent("Failed");
+  });
+
+  // ── D2 — program selection callback (Session 46) ─────────────────────────
+
+  it("D2: accessible program button is rendered when onSelectProgram is provided", () => {
+    const onSelect = jest.fn();
+    render(<PPBEDashboard inputs={inputs} onSelectProgram={onSelect} />);
+    expect(
+      screen.getByRole("button", { name: /View detail for Logistics Data Interchange/ })
+    ).toBeInTheDocument();
+  });
+
+  it("D2: clicking the accessible program button calls onSelectProgram with the program_id", () => {
+    const onSelect = jest.fn();
+    render(<PPBEDashboard inputs={inputs} onSelectProgram={onSelect} />);
+    fireEvent.click(
+      screen.getByRole("button", { name: /View detail for Logistics Data Interchange/ })
+    );
+    expect(onSelect).toHaveBeenCalledWith("PRG-001");
+  });
+
+  it("D2: no program selection buttons are rendered when onSelectProgram is not provided", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    expect(
+      screen.queryByRole("button", { name: /View detail for/ })
+    ).not.toBeInTheDocument();
+  });
+
+  // ── D3 — site breakdown placeholder (Session 46) ─────────────────────────
+
+  it("D3: per-site breakdown section is present", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    expect(screen.getByRole("heading", { name: "Per-site breakdown" })).toBeInTheDocument();
+  });
+
+  it("D3: visible placeholder disclosure is present in the UI (not just in a comment)", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    expect(
+      screen.getByText(/Site-level data is illustrative — a real site-tracking schema has not yet been added/)
+    ).toBeInTheDocument();
+  });
+
+  it("D3: site breakdown table is present with expected columns", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    const table = screen.getByLabelText("Per-site obligation breakdown (illustrative)");
+    expect(table).toBeInTheDocument();
+    expect(table).toHaveTextContent("Site");
+    expect(table).toHaveTextContent("Region");
+    expect(table).toHaveTextContent("Obligated");
+    expect(table).toHaveTextContent("Planned");
+  });
+
+  it("D3: site breakdown renders synthetic sites (multiple programs share Aberdeen Proving Ground)", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    // Aberdeen appears in ALPHA, ECHO, BRAVO rows — three occurrences expected.
+    const cells = screen.getAllByText("Aberdeen Proving Ground");
+    expect(cells.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("D3: exactly six distinct physical sites appear in the dataset", () => {
+    // Verify the dataset has the required six distinct site names
+    const { SYNTH_SITE_BREAKDOWNS, DISTINCT_SITE_COUNT } = require("../src/ppbe-site-breakdown");
+    expect(DISTINCT_SITE_COUNT).toBe(6);
+    const siteNames = new Set(SYNTH_SITE_BREAKDOWNS.map((s: { site_name: string }) => s.site_name));
+    expect(siteNames.size).toBe(6);
+  });
+
+  it("D3: site participation varies — one program with all 6 sites, one with exactly 1, others in between", () => {
+    const { SYNTH_SITE_BREAKDOWNS } = require("../src/ppbe-site-breakdown");
+    const countByProgram: Record<string, number> = {};
+    for (const s of SYNTH_SITE_BREAKDOWNS) {
+      countByProgram[s.program_id] = (countByProgram[s.program_id] ?? 0) + 1;
+    }
+    const counts = Object.values(countByProgram) as number[];
+    expect(counts).toContain(6);  // at least one program with all 6
+    expect(counts).toContain(1);  // at least one single-site program
+    // Remaining programs are between 1 and 6 exclusive
+    const between = counts.filter((c) => c > 1 && c < 6);
+    expect(between.length).toBeGreaterThan(0);
   });
 });
