@@ -53,47 +53,11 @@ import { registerPlatformModules } from "./register-modules";
 import { ShellNavChrome } from "./navigation";
 import { GovernanceHeaderIndicator, CPMIVRSDashboard } from "./governance";
 import { PlatformHome } from "./PlatformHome";
-
-// ============================================================
-// DEV PERSONA TOGGLE (DR-1 Tier 1 / GD-22 D4, Sessions 40–41)
-// All 8 canonical SovereignRoles are surfaced so every access-matrix path can be
-// exercised in dev without touching source. SYSTEM_ADMIN is the superuser default
-// (admits all modules). No new role is introduced; all values are drawn from the
-// existing SovereignRole union in the shell-contract.
-// ============================================================
-
-type DevPersonaRole = SovereignRole;
-const DEV_PERSONA_ROLES: readonly DevPersonaRole[] = [
-  "PLATFORM_ADMIN",
-  "SYSTEM_ADMIN",
-  "PROGRAM_MANAGER",
-  "ANALYST",
-  "COMPLIANCE_OFFICER",
-  "AGENT_OPERATOR",
-  "INDEPENDENT_REVIEWER",
-  "READ_ONLY",
-];
-const DEV_PERSONA_KEY = "sovereign-dev-persona";
-
-function readDevPersona(): DevPersonaRole {
-  const stored = typeof localStorage !== "undefined"
-    ? localStorage.getItem(DEV_PERSONA_KEY)
-    : null;
-  return (stored != null && (DEV_PERSONA_ROLES as readonly string[]).includes(stored))
-    ? (stored as DevPersonaRole)
-    : "SYSTEM_ADMIN";
-}
-
-const DEV_PERSONA_LABELS: Record<DevPersonaRole, string> = {
-  PLATFORM_ADMIN:       "Platform Admin (all modules)",
-  SYSTEM_ADMIN:         "System Admin (all access)",
-  PROGRAM_MANAGER:      "Program Manager",
-  ANALYST:              "Analyst",
-  COMPLIANCE_OFFICER:   "Compliance Officer",
-  AGENT_OPERATOR:       "Agent Operator",
-  INDEPENDENT_REVIEWER: "Independent Reviewer",
-  READ_ONLY:            "Read Only",
-};
+import {
+  DevPersonaToggle,
+  readDevPersona,
+  type DevPersonaRole,
+} from "./DevPersonaToggle";
 
 const DEV_PERSONA_NAMES: Record<DevPersonaRole, string> = {
   PLATFORM_ADMIN:       "Dev — Platform Admin",
@@ -139,42 +103,6 @@ const shell = createShell({
 const loader = new ModuleLoader(shell);
 // Register the product / companion modules that exist on disk this session.
 registerPlatformModules(loader);
-
-// ============================================================
-// DEV PERSONA TOGGLE COMPONENT (DR-1 Tier 1, Session 40)
-// Rendered in the shell header alongside the governance indicator. Clearly
-// labeled DEV so it cannot be mistaken for product UI. On selection change:
-// writes to localStorage and reloads the page — the shell is re-created with
-// the new role, which is the only honest mechanism without a live auth layer.
-// ============================================================
-
-function DevPersonaToggle(): JSX.Element {
-  const current = readDevPersona();
-
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>): void {
-    const next = e.target.value as DevPersonaRole;
-    localStorage.setItem(DEV_PERSONA_KEY, next);
-    window.location.reload();
-  }
-
-  return (
-    <div style={devToggleContainerStyle} title="Dev-only persona switcher — not visible in production">
-      <span style={devBadgeStyle}>DEV</span>
-      <select
-        value={current}
-        onChange={handleChange}
-        style={devSelectStyle}
-        aria-label="Dev persona"
-      >
-        {DEV_PERSONA_ROLES.map((role) => (
-          <option key={role} value={role}>
-            {DEV_PERSONA_LABELS[role]}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 // ============================================================
 // APP
@@ -267,34 +195,6 @@ function App(): JSX.Element {
 // ============================================================
 // STYLES (host-local; chrome owns its own theme)
 // ============================================================
-
-const devToggleContainerStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 6,
-  padding: "3px 8px",
-  background: "#fef9c3",
-  border: "1px solid #fde047",
-  borderRadius: 5,
-  fontFamily: "system-ui, sans-serif",
-};
-
-const devBadgeStyle: CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
-  letterSpacing: 0.5,
-  color: "#713f12",
-  userSelect: "none",
-};
-
-const devSelectStyle: CSSProperties = {
-  fontSize: 11,
-  border: "none",
-  background: "transparent",
-  color: "#713f12",
-  cursor: "pointer",
-  fontFamily: "system-ui, sans-serif",
-};
 
 const emptyNoticeStyle: CSSProperties = {
   position: "fixed",

@@ -1,0 +1,2838 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DevPersonaToggle snapshots renders with SYSTEM_ADMIN as the default (empty localStorage) 1`] = `
+<div>
+  <div
+    style="display: flex; align-items: center; gap: 6px; padding: 3px 8px; background: rgb(254, 249, 195); border: 1px solid #fde047; border-radius: 5px; font-family: system-ui, sans-serif;"
+    title="Dev-only persona switcher — not visible in production"
+  >
+    <span
+      style="font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: rgb(113, 63, 18); user-select: none;"
+    >
+      DEV
+    </span>
+    <select
+      aria-label="Dev persona"
+      style="font-size: 11px; background: transparent; color: rgb(113, 63, 18); cursor: pointer; font-family: system-ui, sans-serif;"
+    >
+      <option
+        value="PLATFORM_ADMIN"
+      >
+        Platform Admin (all modules)
+      </option>
+      <option
+        value="SYSTEM_ADMIN"
+      >
+        System Admin (all access)
+      </option>
+      <option
+        value="PROGRAM_MANAGER"
+      >
+        Program Manager
+      </option>
+      <option
+        value="ANALYST"
+      >
+        Analyst
+      </option>
+      <option
+        value="COMPLIANCE_OFFICER"
+      >
+        Compliance Officer
+      </option>
+      <option
+        value="AGENT_OPERATOR"
+      >
+        Agent Operator
+      </option>
+      <option
+        value="INDEPENDENT_REVIEWER"
+      >
+        Independent Reviewer
+      </option>
+      <option
+        value="READ_ONLY"
+      >
+        Read Only
+      </option>
+    </select>
+  </div>
+</div>
+`;
+
+exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX, FLOWPATH, ARIA) 1`] = `
+<div>
+  <nav
+    aria-label="Modules"
+    style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
+  >
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            COUNSEL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Argues Both Sides
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Ghostwrites Your Memos
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="VIGIL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            VIGIL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Approves Agent Actions
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            LENS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Explains The Rules
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="CPMI — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            CPMI
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Signs The Certificate
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="font-size: 10px; color: rgb(179, 163, 217);"
+          title="Enhanced monitoring tier (0.7× anomaly threshold)"
+        >
+          ◆
+        </span>
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="AgentOS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            AgentOS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Manages AI Models
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="NEXUS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, AGENT_OPERATOR, PROGRAM_MANAGER, COMPLIANCE_OFFICER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            NEXUS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Sorts The Mail
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid #6B4FA0; border-radius: 4px; background: rgb(37, 42, 58); color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="APEX"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            APEX
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reads The Gauges
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="FLOWPATH"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Maps Your Workflow
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="ARIA Suite"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Runs The Checklist
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules accessible (NEXUS, ARIA) 1`] = `
+<div>
+  <nav
+    aria-label="Modules"
+    style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
+  >
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            COUNSEL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Argues Both Sides
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Ghostwrites Your Memos
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="VIGIL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            VIGIL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Approves Agent Actions
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            LENS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Explains The Rules
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="CPMI — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            CPMI
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Signs The Certificate
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="font-size: 10px; color: rgb(179, 163, 217);"
+          title="Enhanced monitoring tier (0.7× anomaly threshold)"
+        >
+          ◆
+        </span>
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="AgentOS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            AgentOS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Manages AI Models
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="NEXUS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            NEXUS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Sorts The Mail
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid #6B4FA0; border-radius: 4px; background: rgb(37, 42, 58); color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="APEX — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            APEX
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reads The Gauges
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="FLOWPATH — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, AGENT_OPERATOR, ANALYST, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Maps Your Workflow
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="ARIA Suite"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Runs The Checklist
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 0 modules accessible (all locked) 1`] = `
+<div>
+  <nav
+    aria-label="Modules"
+    style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
+  >
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            COUNSEL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Argues Both Sides
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Ghostwrites Your Memos
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="VIGIL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            VIGIL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Approves Agent Actions
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            LENS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Explains The Rules
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="CPMI — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            CPMI
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Signs The Certificate
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="font-size: 10px; color: rgb(179, 163, 217);"
+          title="Enhanced monitoring tier (0.7× anomaly threshold)"
+        >
+          ◆
+        </span>
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="AgentOS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            AgentOS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Manages AI Models
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="NEXUS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, AGENT_OPERATOR, PROGRAM_MANAGER, COMPLIANCE_OFFICER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            NEXUS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Sorts The Mail
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid #6B4FA0; border-radius: 4px; background: rgb(37, 42, 58); color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="APEX — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            APEX
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reads The Gauges
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="FLOWPATH — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, AGENT_OPERATOR, ANALYST, PROGRAM_MANAGER"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Maps Your Workflow
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="ARIA Suite — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Runs The Checklist
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`ModuleNav role-access snapshots PROGRAM_MANAGER — 7 modules accessible (COUNSEL, SCRIBE, LENS, NEXUS, APEX, FLOWPATH, ARIA) 1`] = `
+<div>
+  <nav
+    aria-label="Modules"
+    style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
+  >
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            COUNSEL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Argues Both Sides
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Ghostwrites Your Memos
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="VIGIL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            VIGIL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Approves Agent Actions
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            LENS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Explains The Rules
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="CPMI — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            CPMI
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Signs The Certificate
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="font-size: 10px; color: rgb(179, 163, 217);"
+          title="Enhanced monitoring tier (0.7× anomaly threshold)"
+        >
+          ◆
+        </span>
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      disabled=""
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="AgentOS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            AgentOS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Manages AI Models
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          style="font-size: 11px;"
+        >
+          🔒
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="NEXUS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            NEXUS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Sorts The Mail
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid #6B4FA0; border-radius: 4px; background: rgb(37, 42, 58); color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="APEX"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            APEX
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reads The Gauges
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="FLOWPATH"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Maps Your Workflow
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="ARIA Suite"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Runs The Checklist
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`ModuleNav role-access snapshots SYSTEM_ADMIN — all 10 modules accessible (universal superuser) 1`] = `
+<div>
+  <nav
+    aria-label="Modules"
+    style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
+  >
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            COUNSEL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Argues Both Sides
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Ghostwrites Your Memos
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="VIGIL"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            VIGIL
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Approves Agent Actions
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            LENS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Explains The Rules
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="CPMI"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            CPMI
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Signs The Certificate
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="font-size: 10px; color: rgb(179, 163, 217);"
+          title="Enhanced monitoring tier (0.7× anomaly threshold)"
+        >
+          ◆
+        </span>
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="AgentOS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            AgentOS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Manages AI Models
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="NEXUS"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            NEXUS
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Sorts The Mail
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid #6B4FA0; border-radius: 4px; background: rgb(37, 42, 58); color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="APEX"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            APEX
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reads The Gauges
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="FLOWPATH"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Maps Your Workflow
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+    <button
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="ARIA Suite"
+      type="button"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px;"
+      >
+        <span
+          aria-label="health: unknown"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(142, 148, 170); flex-shrink: 0;"
+        />
+        <span
+          style="display: flex; flex-direction: column; gap: 1px;"
+        >
+          <span>
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Runs The Checklist
+          </span>
+        </span>
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px;"
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`PlatformHome snapshots AMBER portfolio with mixed gate states and a pending Gate 3 review 1`] = `
+<div>
+  <div
+    style="padding: 28px 32px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; height: 100%; box-sizing: border-box; overflow: auto;"
+  >
+    <header
+      style="margin-bottom: 24px;"
+    >
+      <h1
+        style="margin: 0px 0px 4px; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;"
+      >
+        SOVEREIGN Platform
+      </h1>
+      <p
+        style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+      >
+        Select a module from the left navigation to begin · Status as of
+         
+        Status date unavailable
+      </p>
+    </header>
+    <div
+      style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"
+    >
+      <section
+        aria-label="CPMI-VRS portfolio status"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            CPMI-VRS Status
+          </h2>
+          <span
+            style="padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; border: 1px solid; background: rgb(254, 249, 195); color: rgb(133, 77, 14); border-color: #fde047;"
+          >
+            AMBER
+          </span>
+        </div>
+        <div
+          style="display: flex; flex-direction: column; gap: 4px;"
+        >
+          <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 12px;"
+          >
+            <span
+              style="min-width: 80px; font-weight: 600; color: rgb(15, 23, 42);"
+            >
+              VIGIL
+            </span>
+            <span
+              style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; background: rgb(254, 226, 226); color: rgb(127, 29, 29);"
+            >
+              On Hold
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(127, 29, 29); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;"
+              title="Pending legal review"
+            >
+              Hold: 
+              Pending legal review
+            </span>
+          </div>
+          <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 12px;"
+          >
+            <span
+              style="min-width: 80px; font-weight: 600; color: rgb(15, 23, 42);"
+            >
+              APEX
+            </span>
+            <span
+              style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; background: rgb(241, 245, 249); color: rgb(71, 85, 105);"
+            >
+              Gate 2 complete
+            </span>
+          </div>
+          <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 12px;"
+          >
+            <span
+              style="min-width: 80px; font-weight: 600; color: rgb(15, 23, 42);"
+            >
+              NEXUS
+            </span>
+            <span
+              style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; background: rgb(254, 249, 195); color: rgb(133, 77, 14);"
+            >
+              Gate 3 pending
+            </span>
+          </div>
+          <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 12px;"
+          >
+            <span
+              style="min-width: 80px; font-weight: 600; color: rgb(15, 23, 42);"
+            >
+              CPMI
+            </span>
+            <span
+              style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; background: rgb(220, 252, 231); color: rgb(22, 101, 52);"
+            >
+              Certified
+            </span>
+          </div>
+        </div>
+        <p
+          style="margin: 0px; font-size: 12px; color: rgb(133, 77, 14); font-weight: 600; background: rgb(254, 249, 195); padding: 4px 10px; border-radius: 6px; border: 1px solid #fde047;"
+        >
+          1
+           Gate 3 review
+           pending
+        </p>
+      </section>
+      <section
+        aria-label="Platform facts"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Platform State
+          </h2>
+        </div>
+        <dl
+          style="margin: 0px; display: flex; flex-direction: column; gap: 6px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Registered modules
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              10
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                 (
+                6
+                 primary · 
+                4
+                 companion)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Registered agents
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              44
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                 (Agent Identity Standard v1.0)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Governance clock
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              OFF 
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (Stage 2 synthetic — EAMS SSO not wired)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Data classification
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              UNCLASSIFIED / SYNTH- 
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (GD-10)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Operator
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              Test Operator
+               
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (
+                SYSTEM_ADMIN
+                )
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </section>
+      <section
+        aria-label="Things to do"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px; grid-column: 1 / -1;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Things to Do
+          </h2>
+          <span
+            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139);"
+          >
+            Cross-product · current state
+          </span>
+        </div>
+        <ul
+          style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+        >
+          <li
+            style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; background: rgb(254, 249, 195); color: rgb(120, 53, 15);"
+          >
+            <span
+              aria-hidden="true"
+              style="width: 8px; height: 8px; border-radius: 50%; background: rgb(217, 119, 6); flex-shrink: 0; margin-top: 3px;"
+            />
+            NEXUS — Gate 3 review ready for certifying officer
+          </li>
+          <li
+            style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; background: rgb(254, 249, 195); color: rgb(120, 53, 15);"
+          >
+            <span
+              aria-hidden="true"
+              style="width: 8px; height: 8px; border-radius: 50%; background: rgb(217, 119, 6); flex-shrink: 0; margin-top: 3px;"
+            />
+            1 pending Gate 3 review — open CPMI for details
+          </li>
+          <li
+            style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; background: rgb(254, 249, 195); color: rgb(120, 53, 15);"
+          >
+            <span
+              aria-hidden="true"
+              style="width: 8px; height: 8px; border-radius: 50%; background: rgb(217, 119, 6); flex-shrink: 0; margin-top: 3px;"
+            />
+            Portfolio overall: AMBER — review product status in CPMI
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PlatformHome snapshots GREEN portfolio, no vrsGates, no pending reviews 1`] = `
+<div>
+  <div
+    style="padding: 28px 32px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; height: 100%; box-sizing: border-box; overflow: auto;"
+  >
+    <header
+      style="margin-bottom: 24px;"
+    >
+      <h1
+        style="margin: 0px 0px 4px; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;"
+      >
+        SOVEREIGN Platform
+      </h1>
+      <p
+        style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+      >
+        Select a module from the left navigation to begin · Status as of
+         
+        Status date unavailable
+      </p>
+    </header>
+    <div
+      style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"
+    >
+      <section
+        aria-label="CPMI-VRS portfolio status"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            CPMI-VRS Status
+          </h2>
+          <span
+            style="padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; border: 1px solid; background: rgb(220, 252, 231); color: rgb(22, 101, 52); border-color: #86efac;"
+          >
+            GREEN
+          </span>
+        </div>
+        <div
+          style="display: flex; flex-direction: column; gap: 4px;"
+        >
+          <p
+            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139);"
+          >
+            No product gate status available.
+          </p>
+        </div>
+      </section>
+      <section
+        aria-label="Platform facts"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Platform State
+          </h2>
+        </div>
+        <dl
+          style="margin: 0px; display: flex; flex-direction: column; gap: 6px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Registered modules
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              10
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                 (
+                6
+                 primary · 
+                4
+                 companion)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Registered agents
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              44
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                 (Agent Identity Standard v1.0)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Governance clock
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              OFF 
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (Stage 2 synthetic — EAMS SSO not wired)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Data classification
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              UNCLASSIFIED / SYNTH- 
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (GD-10)
+              </span>
+            </dd>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;"
+          >
+            <dt
+              style="font-size: 12px; color: rgb(100, 116, 139); font-weight: 500;"
+            >
+              Operator
+            </dt>
+            <dd
+              style="font-size: 12px; color: rgb(15, 23, 42); font-weight: 600; text-align: right;"
+            >
+              Test Operator
+               
+              <span
+                style="font-weight: 400; color: rgb(71, 85, 105);"
+              >
+                (
+                SYSTEM_ADMIN
+                )
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </section>
+      <section
+        aria-label="Things to do"
+        style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 10px; grid-column: 1 / -1;"
+      >
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; gap: 8px;"
+        >
+          <h2
+            style="margin: 0px; font-size: 13px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Things to Do
+          </h2>
+          <span
+            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139);"
+          >
+            Cross-product · current state
+          </span>
+        </div>
+        <ul
+          style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+        >
+          <li
+            style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; background: rgb(240, 253, 244); color: rgb(22, 101, 52);"
+          >
+            <span
+              aria-hidden="true"
+              style="width: 8px; height: 8px; border-radius: 50%; background: rgb(22, 163, 74); flex-shrink: 0; margin-top: 3px;"
+            />
+            No actions required — all products GREEN
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
+`;

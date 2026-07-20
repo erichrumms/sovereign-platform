@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "npm run dev --workspace @sovereign/shell",
     "typecheck": "npm run typecheck --workspace @sovereign/shell",
+    "test:shell": "npm run test --workspace @sovereign/shell",
     "test:data": "npm run test --workspace @sovereign/data",
     "test:api-client": "npm run test --workspace @sovereign/api-client",
     "test:counsel": "npm run test --workspace @sovereign/module-counsel",
