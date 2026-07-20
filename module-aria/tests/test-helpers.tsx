@@ -11,6 +11,8 @@ import type {
   SovereignRole,
   SovereignLogEvent,
   AriaCertification,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../../sovereign-shell/shell-contract";
 
 export interface CtxOverrides {
@@ -35,10 +37,24 @@ export function makeAriaSurface() {
   };
 }
 
+function createNoopWorkQueueSurface(): WorkQueueSurface {
+  const queues = new Map<string, WorkQueueSummary>();
+  const listeners = new Set<(s: readonly WorkQueueSummary[]) => void>();
+  const snapshot = (): readonly WorkQueueSummary[] => Array.from(queues.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (s) => { queues.set(`${s.module_id}::${s.queue_label}`, s); notify(); },
+    listForModule: (id) => snapshot().filter(s => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
 export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
   const role: SovereignRole = over.role ?? "PLATFORM_ADMIN";
   return {
     aria: makeAriaSurface(),
+    workQueueSurface: createNoopWorkQueueSurface(),
     auth: {
       user: {
         employee_id: "E-900",

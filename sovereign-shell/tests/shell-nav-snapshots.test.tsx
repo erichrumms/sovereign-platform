@@ -41,6 +41,8 @@ import type {
   ProgramStatusSnapshot,
   SovereignShellContext,
   VRSGateStatus,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../shell-contract";
 import { ModuleLoader } from "../src/module-loader";
 import type { RegisteredModuleView } from "../src/module-loader";
@@ -198,7 +200,21 @@ function makePlatformHomeCtx(overrides: {
       list: () => programSnapshots as readonly ProgramStatusSnapshot[],
       subscribe: () => () => {},
     },
+    workQueueSurface: makeNoopWorkQueueSurface(),
   } as unknown as SovereignShellContext;
+}
+
+function makeNoopWorkQueueSurface(): WorkQueueSurface {
+  const queues = new Map<string, WorkQueueSummary>();
+  const listeners = new Set<(s: readonly WorkQueueSummary[]) => void>();
+  const snapshot = (): readonly WorkQueueSummary[] => Array.from(queues.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (s) => { queues.set(`${s.module_id}::${s.queue_label}`, s); notify(); },
+    listForModule: (id) => snapshot().filter(s => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
 }
 
 /** Sample program snapshots for data-populated tests. */
@@ -273,13 +289,14 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  // ---- To Do / Review placeholder visibility (D4) ----
-  it("To Do / Review section renders its honest placeholder for all roles — verified via SYSTEM_ADMIN", () => {
+  // ---- To Do / Review — WorkQueueSurface (GD-24, Session 49) ----
+  // The placeholder was replaced by real WorkQueueSurface tiles. With no modules
+  // having published yet (empty surface), the section shows the empty-state message.
+  it("To Do / Review section shows empty state when no modules have published (GD-24)", () => {
     const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN" });
     const { container } = render(<PlatformHome ctx={ctx} />);
-    // The placeholder text must be present in the rendered output.
-    expect(container.textContent).toContain("WorkQueueSurface");
-    expect(container.textContent).toContain("wired in a future session");
+    expect(container.textContent).toContain("No pending reviews");
+    expect(container.textContent).not.toContain("wired in a future session");
     expect(container).toMatchSnapshot();
   });
 });

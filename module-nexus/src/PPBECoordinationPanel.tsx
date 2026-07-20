@@ -18,7 +18,7 @@
  * Version: 1.0 · Session 38 · July 16, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 import { createSovereignClient } from "@sovereign/api-client";
 import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
@@ -38,6 +38,7 @@ import {
 import { readAnthropicKey } from "../../module-scribe/src/anthropic-key";
 
 import coordinationPromptRaw from "../../ppbe/prompts/coordination_system.md?raw";
+import { publishNexusWorkQueues } from "./nexus-work-queue-publisher";
 
 const COORDINATION_SYSTEM_PROMPT = coordinationPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 
@@ -47,13 +48,21 @@ export interface PPBECoordinationPanelProps {
   ctx: SovereignShellContext;
 }
 
-export function PPBECoordinationPanel({ ctx: _ctx }: PPBECoordinationPanelProps): JSX.Element {
+export function PPBECoordinationPanel({ ctx }: PPBECoordinationPanelProps): JSX.Element {
   const [notes, setNotes] = useState(SYNTH_PPBE_MEETING_NOTES.trim());
   const [status, setStatus] = useState<AgentStatus>("idle");
   const [outcome, setOutcome] = useState<CoordinationOutcome | null>(null);
 
   const asOfIso = "2026-07-16T12:00:00Z";
   const overdueCount = detectCoordinationFailures(SYNTH_PPBE_COORDINATION_ITEMS, asOfIso).length;
+  const openItemCount = SYNTH_PPBE_COORDINATION_ITEMS.filter(i => i.status === "OPEN").length;
+
+  // GD-24 — publish NEXUS's WorkQueueSurface summary on mount.
+  // openItemCount reuses the same count displayed in the stats row below.
+  const { workQueueSurface } = ctx;
+  useEffect(() => {
+    publishNexusWorkQueues(openItemCount, workQueueSurface, new Date().toISOString());
+  }, [workQueueSurface, openItemCount]);
 
   async function runTracking(): Promise<void> {
     setStatus("running");
@@ -95,7 +104,7 @@ export function PPBECoordinationPanel({ ctx: _ctx }: PPBECoordinationPanelProps)
           <strong>{SYNTH_PPBE_COORDINATION_ITEMS.length}</strong> tracked items
         </span>
         <span style={statStyle}>
-          <strong>{SYNTH_PPBE_COORDINATION_ITEMS.filter(i => i.status === "OPEN").length}</strong> open
+          <strong>{openItemCount}</strong> open
         </span>
         {overdueCount > 0 && (
           <span style={overdueStatStyle}>

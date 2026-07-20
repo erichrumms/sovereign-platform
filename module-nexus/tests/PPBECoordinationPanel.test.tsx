@@ -40,6 +40,7 @@ function makeCtx(): SovereignShellContext {
     flowpathPublisher: { publishArtifact: () => {} },
     agentosRegistry: { register: () => {}, list: () => [] },
     taskSurface: { publish: () => {}, subscribe: () => () => {} },
+    workQueueSurface: { publish: () => {}, listForModule: () => [], list: () => [], subscribe: () => () => {} },
     client: {} as SovereignShellContext["client"],
   } as unknown as SovereignShellContext;
 }

@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.18
+ * Version: 1.19
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,26 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.19 (July 20, 2026) — GD-24 (WorkQueueSurface, approved by the Project Principal
+ *                       July 20, 2026, Session 49, per docs/21). Added two new types:
+ *                       WorkQueueSummary (aggregate queue summary carrying module_id,
+ *                       queue_label, count, highest_severity, updated_at) and
+ *                       WorkQueueSurface (publish/listForModule/list/subscribe —
+ *                       last-write-wins by module_id+queue_label, same shell-owned
+ *                       in-memory lifetime as AriaCertificationSurface and
+ *                       ProgramStatusSurface; listForModule is the one addition
+ *                       over the prior two surfaces, needed for grouping by module on
+ *                       the Home Dashboard). Added `workQueueSurface` as the TWELFTH
+ *                       export on SovereignShellContext (Standing Constraint #7 relaxed
+ *                       from eleven to twelve for this GD). Impact assessment: NO
+ *                       HumanDecisionType change (not synced to shared-types.ts or Python
+ *                       logger — Constraint #11 has nothing to propagate). NO
+ *                       SovereignEventType change. NO AgentClass change. NO SovereignRole /
+ *                       SovereignProduct change. Additive only: two new exported types, one
+ *                       new context field. CONSUMERS: VIGIL, SCRIBE, ARIA, NEXUS publish
+ *                       queue summaries on module mount; PlatformHome reads and displays
+ *                       them in the "To Do / Review" section. Both shell-contract copies
+ *                       SHA-256 re-verified identical at v1.19.
  *   v1.18 (July 19, 2026) — GD-23 (ProgramStatusSurface, approved by the Project Principal
  *                       July 19, 2026, Session 44, per docs/20). Added two new types:
  *                       ProgramStatusSnapshot (narrow snapshot carrying program_id,
@@ -1146,11 +1166,44 @@ export interface ProgramStatusSurface {
 
 
 // ============================================================
+// WORK QUEUE SURFACE — the twelfth export (GD-24, shell-contract v1.19)
+// Cross-module aggregate queue summaries for the Home Dashboard "To Do / Review"
+// section. Mirrors the publish/list/subscribe shape of ProgramStatusSurface and
+// AriaCertificationSurface; listForModule() is the one addition — needed because
+// the Home Dashboard groups tiles by source module (Pending Approvals under VIGIL,
+// T&T Reviews under SCRIBE, etc.). Last-write-wins by module_id + queue_label.
+// Shell-owned, in-memory, one session's lifetime. No governance authority of its own
+// (Constraint #1) — publishing a summary does not log, approve, or route anything.
+// Governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+export interface WorkQueueSummary {
+  readonly module_id: string;          // "vigil" | "scribe" | "aria" | "nexus"
+  readonly queue_label: string;        // human-readable, e.g. "Pending Approvals"
+  readonly count: number;
+  readonly highest_severity: "P1" | "P2" | "P3" | "P4" | null;
+  readonly updated_at: string;         // ISO timestamp
+}
+
+export interface WorkQueueSurface {
+  /** Publish (or replace, by module_id + queue_label) one module's queue summary. */
+  publish: (summary: WorkQueueSummary) => void;
+  /** Every published summary for one module. */
+  listForModule: (module_id: string) => readonly WorkQueueSummary[];
+  /** Every published summary, across all modules. */
+  list: () => readonly WorkQueueSummary[];
+  /** Subscribe to surface changes; returns an unsubscribe function. */
+  subscribe: (listener: (summaries: readonly WorkQueueSummary[]) => void) => () => void;
+}
+
+
+// ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
-// As of shell-contract v1.18 (GD-23) the context provides ELEVEN exports
-// (Standing Constraint #7 relaxed from ten to eleven for programStatusSurface;
-// aria was the tenth at v1.15 / GD-20; taskSurface was the ninth at v1.14 /
-// GD-19). No further export without a new GD.
+// As of shell-contract v1.19 (GD-24) the context provides TWELVE exports
+// (Standing Constraint #7 relaxed from eleven to twelve for workQueueSurface;
+// programStatusSurface was the eleventh at v1.18 / GD-23; aria was the tenth
+// at v1.15 / GD-20; taskSurface was the ninth at v1.14 / GD-19). No further
+// export without a new GD.
 // ============================================================
 
 export interface SovereignShellContext {
@@ -1187,6 +1240,8 @@ export interface SovereignShellContext {
   aria: AriaCertificationSurface;
   // Eleventh export — GD-23 (shell-contract v1.18). The per-program obligation status surface.
   programStatusSurface: ProgramStatusSurface;
+  // Twelfth export — GD-24 (shell-contract v1.19). Cross-module work queue summaries for Home.
+  workQueueSurface: WorkQueueSurface;
 }
 
 

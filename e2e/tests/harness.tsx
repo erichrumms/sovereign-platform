@@ -21,6 +21,8 @@ import type {
   TaskSurface,
   ProgramStatusSnapshot,
   ProgramStatusSurface,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../../sovereign-shell/shell-contract";
 
 import { useRequestRegistry } from "../../module-nexus/src/useRequestRegistry";
@@ -29,6 +31,20 @@ import { useTaskRegistry } from "../../module-agentos/src/useTaskRegistry";
 import { useAgentDispatcher } from "../../module-agentos/src/useAgentDispatcher";
 import { createAgentOSBackedPort, type AgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "../../module-apex/src/apex-data-adapter";
+
+/** A minimal in-memory WorkQueueSurface (GD-24 twelfth export) for convergence tests. */
+export function createInMemoryWorkQueueSurface(): WorkQueueSurface {
+  const queues = new Map<string, WorkQueueSummary>();
+  const listeners = new Set<(s: readonly WorkQueueSummary[]) => void>();
+  const snapshot = (): readonly WorkQueueSummary[] => Array.from(queues.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (s) => { queues.set(`${s.module_id}::${s.queue_label}`, s); notify(); },
+    listForModule: (id) => snapshot().filter(s => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
 
 /** A minimal in-memory ProgramStatusSurface (GD-23 eleventh export) for convergence tests. */
 function createInMemoryProgramStatusSurface(): ProgramStatusSurface {
@@ -64,6 +80,7 @@ export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
   return {
     taskSurface: createInMemoryTaskSurface(),
     programStatusSurface: createInMemoryProgramStatusSurface(),
+    workQueueSurface: createInMemoryWorkQueueSurface(),
     auth: {
       user: { employee_id: "E-001", name: "E2E Operator", org_unit: "Platform", role, clearance_level: "UNCLASSIFIED", cost_code_assignments: [] },
       token: "test-token",

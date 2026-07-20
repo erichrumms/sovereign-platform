@@ -30,6 +30,7 @@ import { DEMO_ARIA_ALERTS } from "./aria-alert-routing";
 import { DEMO_TT_ALERTS, makeDemoTTApprovalRequest } from "./tt-synthetic-alerts";
 import { createDevApprovalPort } from "./approval-port";
 import { openObligationGate, type PPBEObligationCase } from "./ppbe-authorization";
+import { publishVigilWorkQueues } from "./vigil-work-queue-publisher";
 
 export interface VigilAppProps {
   ctx: SovereignShellContext;
@@ -83,6 +84,20 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
     // run once on mount; expireOverdue is keyed on the initial request set.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // GD-24 — publish VIGIL's two WorkQueueSurface summaries whenever the counts change.
+  // Reuses the counts already computed by useApprovalQueue / useAlertQueue above.
+  const { workQueueSurface } = ctx;
+  useEffect(() => {
+    publishVigilWorkQueues(
+      approvals.pendingCount,
+      approvals.hasPendingP1,
+      alerts.unacknowledgedCount,
+      alerts.hasUnacknowledgedP1,
+      workQueueSurface,
+      new Date().toISOString()
+    );
+  }, [workQueueSurface, approvals.pendingCount, approvals.hasPendingP1, alerts.unacknowledgedCount, alerts.hasUnacknowledgedP1]);
 
   return (
     <section style={rootStyle}>

@@ -26,7 +26,8 @@
  * Version: 1.4 · Session 41 (GD-22 per-tab role gating) · July 18, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 
 import type { SovereignShellContext, SovereignRole } from "../../sovereign-shell/shell-contract";
 import {
@@ -37,6 +38,8 @@ import {
   subtitleStyle,
 } from "./banners";
 import { ClearPanel } from "./ClearPanel";
+import { CLEAR_DEMO_ITEM_COUNT } from "./ClearCertificationQueue";
+import { publishAriaWorkQueues } from "./aria-work-queue-publisher";
 import { TracerExplorer } from "./TracerExplorer";
 import { ArcImpactModeler } from "./ArcImpactModeler";
 import { AriaVrsGates } from "./AriaVrsGates";
@@ -83,6 +86,23 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
   // fall back to "clear" — the module gate should have blocked entry before this point.
   const defaultTab = TAB_ORDER.find(canAccessTab) ?? "clear";
   const [tab, setTab] = useState<Tab>(defaultTab);
+
+  // GD-24 — publish ARIA's WorkQueueSurface summary, updated whenever the certification
+  // surface changes. Pending count = CLEAR_DEMO_ITEM_COUNT minus decided items
+  // (each decide() call records to ctx.aria, tracked here via subscription).
+  const { workQueueSurface, aria } = ctx;
+  const [pendingCertCount, setPendingCertCount] = useState(
+    () => Math.max(0, CLEAR_DEMO_ITEM_COUNT - aria.list().length)
+  );
+  useEffect(() => {
+    const unsub = aria.subscribe((certs) => {
+      setPendingCertCount(Math.max(0, CLEAR_DEMO_ITEM_COUNT - certs.length));
+    });
+    return unsub;
+  }, [aria]);
+  useEffect(() => {
+    publishAriaWorkQueues(pendingCertCount, workQueueSurface, new Date().toISOString());
+  }, [workQueueSurface, pendingCertCount]);
 
   return (
     <section style={rootStyle}>

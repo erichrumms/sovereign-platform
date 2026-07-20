@@ -43,6 +43,9 @@ import { useAriaCertifications } from "./useAriaCertifications";
 /** Minimum length of a certification decision note (matches the VIGIL decision-note minimum). */
 export const DECISION_NOTE_MIN = 10;
 
+/** The number of items in the default CLEAR certification demo queue (GD-24 — read by AriaApp). */
+export const CLEAR_DEMO_ITEM_COUNT = 3;
+
 export interface ClearCertificationQueueProps {
   ctx: SovereignShellContext;
   /** Documents awaiting clearance. Defaults to the synthetic demo set (Governance Clock OFF). */

@@ -22,7 +22,7 @@
  * Version: 1.2 · Session 29 · July 12, 2026
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -38,6 +38,7 @@ import { StyleDNAManager } from "./StyleDNAManager";
 import { TTManagerReview } from "./TTManagerReview";
 import { DEMO_TT_REVIEW_ITEMS } from "./tt-synthetic-review";
 import { PPBEExhibitPanel } from "./PPBEExhibitPanel";
+import { publishScribeWorkQueues } from "./scribe-work-queue-publisher";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
@@ -48,6 +49,13 @@ type ScribeSurface = "drafting" | "tt-review" | "ppbe-exhibits";
 export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
   const [surface, setSurface] = useState<ScribeSurface>("drafting");
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
+
+  // GD-24 — publish SCRIBE's WorkQueueSurface summary on mount.
+  // DEMO_TT_REVIEW_ITEMS.length is the same count TTManagerReview renders.
+  const { workQueueSurface } = ctx;
+  useEffect(() => {
+    publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, workQueueSurface, new Date().toISOString());
+  }, [workQueueSurface]);
   const descriptor = selected ? describeMode(selected) : null;
 
   // Style DNA: one session-scoped store + hook shared across the module, so a saved

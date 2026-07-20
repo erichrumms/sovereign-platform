@@ -25,11 +25,12 @@
  * Version: 2.0 · Session 47 · July 20, 2026
  */
 
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import type {
   SovereignShellContext,
   ProgramStatusSnapshot,
   SovereignRole,
+  WorkQueueSummary,
 } from "../shell-contract";
 import type { RegisteredModuleView } from "./module-loader";
 import { MODULE_INFO } from "./navigation/ModuleNav";
@@ -175,6 +176,47 @@ function FlaggedProgramsPanel({
   );
 }
 
+function WorkQueueTile({ summary }: { summary: WorkQueueSummary }): JSX.Element {
+  const severityColor =
+    summary.highest_severity === "P1" ? "#7f1d1d"
+    : summary.highest_severity === "P2" ? "#92400e"
+    : "#334155";
+  return (
+    <div style={workQueueTileStyle}>
+      <span style={workQueueCountStyle}>{summary.count}</span>
+      <span style={workQueueLabelStyle}>{summary.queue_label}</span>
+      {summary.highest_severity && (
+        <span style={{ ...workQueueSeverityStyle, color: severityColor }}>
+          {summary.highest_severity} pending
+        </span>
+      )}
+    </div>
+  );
+}
+
+function WorkQueueModuleGroup({
+  moduleId,
+  label,
+  summaries,
+}: {
+  moduleId: string;
+  label: string;
+  summaries: readonly WorkQueueSummary[];
+}): JSX.Element {
+  const relevant = summaries.filter((s) => s.module_id === moduleId);
+  if (relevant.length === 0) return <></>;
+  return (
+    <div style={workQueueGroupStyle}>
+      <span style={workQueueGroupLabelStyle}>{label}</span>
+      <div style={workQueueGroupTilesStyle}>
+        {relevant.map((s) => (
+          <WorkQueueTile key={s.queue_label} summary={s} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ModuleOrientationPanel({
   modules,
 }: {
@@ -215,6 +257,24 @@ export function PlatformHome({
   const flagged = programs.filter((p) => p.status !== "on_track");
   const accessibleModules = modules.filter(isAccessible);
   const canSeeProgramData = PROGRAM_DATA_ROLES.has(ctx.auth.user.role);
+
+  // GD-24 — subscribe to WorkQueueSurface so the "To Do / Review" section
+  // updates reactively whenever a module publishes (or re-publishes) its counts.
+  const [workQueues, setWorkQueues] = useState<readonly WorkQueueSummary[]>(
+    () => ctx.workQueueSurface.list()
+  );
+  useEffect(() => {
+    const unsub = ctx.workQueueSurface.subscribe(setWorkQueues);
+    return unsub;
+  }, [ctx.workQueueSurface]);
+
+  // Filter to queues from modules this role can actually access — reuse the same
+  // isAccessible / module minimumRole check wired for Module Orientation (Session 47).
+  // No new role list; tile visibility derives from the live module registry.
+  const accessibleQueues = workQueues.filter((q) => {
+    const mod = modules.find((m) => m.moduleId === `module-${q.module_id}`);
+    return mod ? isAccessible(mod) : false;
+  });
 
   return (
     <div style={pageStyle}>
@@ -262,21 +322,31 @@ export function PlatformHome({
         )}
       </section>
 
-      {/* ---- To Do / Review — Phase 2 placeholder ---- */}
+      {/* ---- To Do / Review — WorkQueueSurface (GD-24, Session 49) ---- */}
       <section style={sectionStyle} aria-label="To do and review">
         <div style={sectionHeaderRowStyle}>
           <h2 style={sectionTitleStyle}>To Do / Review</h2>
+          {accessibleQueues.length > 0 && (
+            <span style={issueCountBadgeStyle}>
+              {accessibleQueues.reduce((n, s) => n + s.count, 0)} items
+            </span>
+          )}
         </div>
-        <div style={placeholderBoxStyle}>
-          <p style={placeholderPrimaryStyle}>
-            Pending approvals and reviews across modules — wired in a future
-            session (WorkQueueSurface).
-          </p>
-          <p style={placeholderSecondaryStyle}>
-            Will include: Pending Approvals, T&amp;T Reviews, Certifications,
-            Coordination Items.
-          </p>
-        </div>
+        {accessibleQueues.length === 0 ? (
+          <div style={emptyStateBoxStyle}>
+            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
+            <span style={{ fontSize: 13, color: "#166534" }}>
+              No pending reviews — queues are clear, or no accessible modules have published yet.
+            </span>
+          </div>
+        ) : (
+          <div style={workQueueSectionStyle}>
+            <WorkQueueModuleGroup moduleId="vigil" label="VIGIL" summaries={accessibleQueues} />
+            <WorkQueueModuleGroup moduleId="scribe" label="SCRIBE" summaries={accessibleQueues} />
+            <WorkQueueModuleGroup moduleId="aria" label="ARIA" summaries={accessibleQueues} />
+            <WorkQueueModuleGroup moduleId="nexus" label="NEXUS" summaries={accessibleQueues} />
+          </div>
+        )}
       </section>
     </div>
   );
@@ -448,24 +518,58 @@ const moduleLabelStyle: CSSProperties = {
   color: "#64748b",
 };
 
-const placeholderBoxStyle: CSSProperties = {
-  padding: "12px 16px",
-  background: "#f8fafc",
-  border: "1px dashed #cbd5e1",
-  borderRadius: 8,
+const workQueueSectionStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 4,
+  gap: 12,
 };
 
-const placeholderPrimaryStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 13,
-  color: "#475569",
+const workQueueGroupStyle: CSSProperties = {
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  padding: "10px 12px",
+  background: "#ffffff",
 };
 
-const placeholderSecondaryStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 11,
-  color: "#94a3b8",
+const workQueueGroupLabelStyle: CSSProperties = {
+  display: "block",
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: 0.8,
+  textTransform: "uppercase",
+  color: "#64748b",
+  marginBottom: 8,
+};
+
+const workQueueGroupTilesStyle: CSSProperties = {
+  display: "flex",
+  gap: 10,
+  flexWrap: "wrap",
+};
+
+const workQueueTileStyle: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+  padding: "8px 12px",
+  borderRadius: 6,
+  border: "1px solid #e2e8f0",
+  background: "#f8fafc",
+  minWidth: 140,
+};
+
+const workQueueCountStyle: CSSProperties = {
+  fontSize: 22,
+  fontWeight: 700,
+  color: "#0c4a6e",
+};
+
+const workQueueLabelStyle: CSSProperties = {
+  fontSize: 12,
+  color: "#334155",
+};
+
+const workQueueSeverityStyle: CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
 };

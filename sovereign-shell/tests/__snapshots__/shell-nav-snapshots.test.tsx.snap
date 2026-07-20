@@ -2635,18 +2635,17 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -2795,18 +2794,17 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -2927,18 +2925,17 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -3307,18 +3304,17 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -3729,25 +3725,24 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
 </div>
 `;
 
-exports[`PlatformHome snapshots To Do / Review section renders its honest placeholder for all roles — verified via SYSTEM_ADMIN 1`] = `
+exports[`PlatformHome snapshots To Do / Review section shows empty state when no modules have published (GD-24) 1`] = `
 <div>
   <div
     style="padding: 24px 28px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; box-sizing: border-box; overflow: auto; display: flex; flex-direction: column; gap: 24px;"
@@ -3856,18 +3851,17 @@ exports[`PlatformHome snapshots To Do / Review section renders its honest placeh
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -3983,18 +3977,17 @@ exports[`PlatformHome snapshots empty state — no programs, no modules (SYSTEM_
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>
@@ -4405,18 +4398,17 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
         </h2>
       </div>
       <div
-        style="padding: 12px 16px; background: rgb(248, 250, 252); border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; gap: 4px;"
+        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
-        <p
-          style="margin: 0px; font-size: 13px; color: rgb(71, 85, 105);"
+        <span
+          aria-hidden="true"
+          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
+        />
+        <span
+          style="font-size: 13px; color: rgb(22, 101, 52);"
         >
-          Pending approvals and reviews across modules — wired in a future session (WorkQueueSurface).
-        </p>
-        <p
-          style="margin: 0px; font-size: 11px; color: rgb(148, 163, 184);"
-        >
-          Will include: Pending Approvals, T&T Reviews, Certifications, Coordination Items.
-        </p>
+          No pending reviews — queues are clear, or no accessible modules have published yet.
+        </span>
       </div>
     </section>
   </div>

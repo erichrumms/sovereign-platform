@@ -12,6 +12,8 @@ import type {
   AriaCertification,
   SharedTask,
   TaskSurface,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../../sovereign-shell/shell-contract";
 
 /**
@@ -45,6 +47,20 @@ export function createInMemoryTaskSurface(): TaskSurface {
         listeners.delete(l);
       };
     },
+  };
+}
+
+/** Minimal in-memory WorkQueueSurface (GD-24 twelfth export) for component tests. */
+function createNoopWorkQueueSurface(): WorkQueueSurface {
+  const queues = new Map<string, WorkQueueSummary>();
+  const listeners = new Set<(s: readonly WorkQueueSummary[]) => void>();
+  const snapshot = (): readonly WorkQueueSummary[] => Array.from(queues.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (s) => { queues.set(`${s.module_id}::${s.queue_label}`, s); notify(); },
+    listForModule: (id) => snapshot().filter(s => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
   };
 }
 
@@ -85,6 +101,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
   return {
     aria,
     taskSurface: over.taskSurface ?? createInMemoryTaskSurface(),
+    workQueueSurface: createNoopWorkQueueSurface(),
     auth: {
       user: {
         employee_id: "E-700",

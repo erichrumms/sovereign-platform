@@ -71,6 +71,8 @@ import type {
   AriaCertification,
   ProgramStatusSurface,
   ProgramStatusSnapshot,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../shell-contract";
 
 // Canonical shared data package (Session 4 — npm workspace linkage). Value
@@ -657,6 +659,48 @@ class ShellProgramStatusSurface implements ProgramStatusSurface {
 }
 
 // ============================================================
+// WORK QUEUE SURFACE — the twelfth export (GD-24, shell-contract v1.19)
+// A shell-owned, in-memory record of per-module queue summaries. VIGIL, SCRIBE,
+// ARIA, and NEXUS publish via publish() on mount/change; PlatformHome reads via
+// list() in the "To Do / Review" section. Carries no governance authority of its
+// own (Constraint #1): publishing a summary does not log, approve, or route
+// anything — modules still emit their own governed Logger events. The surface only
+// makes queue counts visible to other products. Mirrors ShellProgramStatusSurface
+// with one addition: listForModule(), which groups by source module for the
+// Home Dashboard tile layout. Last-write-wins by module_id + queue_label.
+// ============================================================
+
+class ShellWorkQueueSurface implements WorkQueueSurface {
+  // keyed by `${module_id}::${queue_label}` — last-write-wins per named queue
+  private readonly queues: Map<string, WorkQueueSummary> = new Map();
+  private readonly listeners: Set<(summaries: readonly WorkQueueSummary[]) => void> = new Set();
+
+  publish = (summary: WorkQueueSummary): void => {
+    this.queues.set(`${summary.module_id}::${summary.queue_label}`, summary);
+    this.notify();
+  };
+
+  listForModule = (module_id: string): readonly WorkQueueSummary[] =>
+    Array.from(this.queues.values()).filter((s) => s.module_id === module_id);
+
+  list = (): readonly WorkQueueSummary[] => Array.from(this.queues.values());
+
+  subscribe = (listener: (summaries: readonly WorkQueueSummary[]) => void): (() => void) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
+
+  private notify(): void {
+    const snapshot = this.list();
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -703,6 +747,7 @@ export class SovereignShell implements SovereignShellContext {
   readonly taskSurface: TaskSurface;
   readonly aria: AriaCertificationSurface;
   readonly programStatusSurface: ProgramStatusSurface;
+  readonly workQueueSurface: WorkQueueSurface;
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
@@ -756,6 +801,8 @@ export class SovereignShell implements SovereignShellContext {
     this.aria = new ShellAriaSurface();
     // Eleventh export (GD-23, v1.18) — the per-program obligation status surface.
     this.programStatusSurface = new ShellProgramStatusSurface();
+    // Twelfth export (GD-24, v1.19) — the cross-module work queue summary surface.
+    this.workQueueSurface = new ShellWorkQueueSurface();
   }
 
   /**
