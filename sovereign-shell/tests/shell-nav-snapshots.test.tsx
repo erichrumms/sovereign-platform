@@ -22,130 +22,50 @@
  *   live-verified correct on July 19, 2026 against all five roles exercised
  *   in the role-access verification session. This file protects that
  *   verified state from silent future regression.
+ *
+ * SESSION 47 FIX: ALL_MODULES is now derived from the live ModuleLoader
+ *   (createShell + ModuleLoader + registerPlatformModules) instead of being
+ *   hand-copied. This eliminates the source of drift found in the Session 47
+ *   review: the hand-copied fixture had stale minimumRole arrays for
+ *   module-counsel (missing ANALYST, COMPLIANCE_OFFICER, INDEPENDENT_REVIEWER),
+ *   module-scribe (missing ANALYST), and module-lens (missing ANALYST,
+ *   COMPLIANCE_OFFICER, AGENT_OPERATOR, INDEPENDENT_REVIEWER, READ_ONLY).
+ *   Corrected counts: ANALYST=6, COMPLIANCE_OFFICER=4, INDEPENDENT_REVIEWER=2
+ *   (was 3, 2, 0 respectively in the stale fixture).
  */
 
 import { render } from "@testing-library/react";
-import type { SovereignRole, ProgramStatusSnapshot } from "../shell-contract";
+import type {
+  SovereignRole,
+  SovereignUser,
+  ProgramStatusSnapshot,
+  SovereignShellContext,
+  VRSGateStatus,
+} from "../shell-contract";
+import { ModuleLoader } from "../src/module-loader";
 import type { RegisteredModuleView } from "../src/module-loader";
+import { createShell } from "../src/shell";
+import { registerPlatformModules } from "../src/register-modules";
 import { ModuleNav } from "../src/navigation/ModuleNav";
 import { PlatformHome } from "../src/PlatformHome";
 import { DevPersonaToggle } from "../src/DevPersonaToggle";
-import type { SovereignShellContext, VRSGateStatus } from "../shell-contract";
 
-// ---- Canonical module list (matches register-modules.ts + GD-22 role access matrix) ----
-// minimumRole arrays sourced directly from each module's index.ts as of July 19, 2026.
-// If these diverge from the actual modules, update both here and the matrix.
+// ---- Live module fixture — derived from the real loader, never hand-copied ----
+// Using the same path as main.tsx (createShell → ModuleLoader → registerPlatformModules)
+// means a minimumRole change in any module's index.ts is automatically reflected here.
 
-const ALL_MODULES: RegisteredModuleView[] = [
-  {
-    moduleId: "module-counsel",
-    displayName: "COUNSEL",
-    mountPath: "/counsel",
-    product: "COUNSEL",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-scribe",
-    displayName: "SCRIBE",
-    mountPath: "/scribe",
-    product: "SCRIBE",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-vigil",
-    displayName: "VIGIL",
-    mountPath: "/vigil",
-    product: "VIGIL",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-lens",
-    displayName: "LENS",
-    mountPath: "/lens",
-    product: "LENS",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-cpmi",
-    displayName: "CPMI",
-    mountPath: "/cpmi",
-    product: "CPMI",
-    tier: "enhanced",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-agentos",
-    displayName: "AgentOS",
-    mountPath: "/agentos",
-    product: "AGENTOS",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-nexus",
-    displayName: "NEXUS",
-    mountPath: "/nexus",
-    product: "NEXUS",
-    tier: "standard",
-    minimumRole: [
-      "PLATFORM_ADMIN",
-      "SYSTEM_ADMIN",
-      "AGENT_OPERATOR",
-      "PROGRAM_MANAGER",
-      "COMPLIANCE_OFFICER",
-    ],
-    mounted: false,
-  },
-  {
-    moduleId: "module-apex",
-    displayName: "APEX",
-    mountPath: "/apex",
-    product: "APEX",
-    tier: "standard",
-    minimumRole: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"],
-    mounted: false,
-  },
-  {
-    moduleId: "module-flowpath",
-    displayName: "FLOWPATH",
-    mountPath: "/flowpath",
-    product: "FLOWPATH",
-    tier: "standard",
-    minimumRole: [
-      "PLATFORM_ADMIN",
-      "SYSTEM_ADMIN",
-      "AGENT_OPERATOR",
-      "ANALYST",
-      "PROGRAM_MANAGER",
-    ],
-    mounted: false,
-  },
-  {
-    moduleId: "module-aria",
-    displayName: "ARIA Suite",
-    mountPath: "/aria",
-    product: "ARIA",
-    tier: "standard",
-    minimumRole: [
-      "PLATFORM_ADMIN",
-      "SYSTEM_ADMIN",
-      "COMPLIANCE_OFFICER",
-      "PROGRAM_MANAGER",
-      "ANALYST",
-    ],
-    mounted: false,
-  },
-];
+const _testUser: SovereignUser = {
+  employee_id: "test-0001",
+  name: "Test User",
+  org_unit: "Platform Test",
+  role: "SYSTEM_ADMIN",
+  clearance_level: "UNCLASSIFIED",
+  cost_code_assignments: [],
+};
+const _testShell = createShell({ user: _testUser, token: "test-token" });
+const _testLoader = new ModuleLoader(_testShell);
+registerPlatformModules(_testLoader);
+const ALL_MODULES: RegisteredModuleView[] = _testLoader.list();
 
 // Mirrors defaultRoleAccessPolicy: SYSTEM_ADMIN is universal superuser, or role in minimumRole.
 function makeIsAccessible(role: SovereignRole) {
@@ -154,6 +74,11 @@ function makeIsAccessible(role: SovereignRole) {
 }
 
 // ---- ModuleNav snapshots — one per role verified live on July 19, 2026 ----
+// Counts are derived from the real minimumRole arrays via makeIsAccessible above.
+// Corrected from the stale hand-copied fixture (Session 47 fix):
+//   ANALYST:              3 → 6 (COUNSEL, SCRIBE, LENS, APEX, FLOWPATH, ARIA)
+//   COMPLIANCE_OFFICER:   2 → 4 (COUNSEL, LENS, NEXUS, ARIA)
+//   INDEPENDENT_REVIEWER: 0 → 2 (COUNSEL, LENS)
 describe("ModuleNav role-access snapshots", () => {
   const noop = (): void => {};
   const ACTIVE_PATH = "/apex"; // arbitrary stable active path for all snapshots
@@ -184,7 +109,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("COMPLIANCE_OFFICER — 2 modules accessible (NEXUS, ARIA)", () => {
+  it("COMPLIANCE_OFFICER — 4 modules accessible (COUNSEL, LENS, NEXUS, ARIA)", () => {
     const isAccessible = makeIsAccessible("COMPLIANCE_OFFICER");
     const { container } = render(
       <ModuleNav
@@ -197,7 +122,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("ANALYST — 3 modules accessible (APEX, FLOWPATH, ARIA)", () => {
+  it("ANALYST — 6 modules accessible (COUNSEL, SCRIBE, LENS, APEX, FLOWPATH, ARIA)", () => {
     const isAccessible = makeIsAccessible("ANALYST");
     const { container } = render(
       <ModuleNav
@@ -210,7 +135,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("INDEPENDENT_REVIEWER — 0 modules accessible (all locked)", () => {
+  it("INDEPENDENT_REVIEWER — 2 modules accessible (COUNSEL, LENS)", () => {
     const isAccessible = makeIsAccessible("INDEPENDENT_REVIEWER");
     const { container } = render(
       <ModuleNav
@@ -227,8 +152,7 @@ describe("ModuleNav role-access snapshots", () => {
 // ---- PlatformHome snapshot ----
 // Session 47: updated to include programStatusSurface (required by the new
 // Phase 1 layout) and five role-specific tests verifying D1/D2/D3 visibility.
-// Roles under test mirror those live-verified in the role-access session:
-// SYSTEM_ADMIN, PROGRAM_MANAGER, COMPLIANCE_OFFICER, ANALYST, INDEPENDENT_REVIEWER.
+// Session 47 fix: module orientation counts corrected via live ALL_MODULES derivation.
 
 function makePlatformHomeCtx(overrides: {
   role?: SovereignRole;
@@ -302,6 +226,7 @@ describe("PlatformHome snapshots", () => {
   });
 
   // ---- Role-visibility tests (D1/D2/D3) — five roles live-tested this session ----
+  // Module orientation counts use corrected values from the live loader (Session 47 fix).
 
   it("SYSTEM_ADMIN — sees Program Health, Flagged Programs, all 10 modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN", programSnapshots: SAMPLE_PROGRAMS });
@@ -321,7 +246,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("ANALYST — sees Program Health, Flagged Programs, 3 accessible modules in orientation", () => {
+  it("ANALYST — sees Program Health, Flagged Programs, 6 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "ANALYST", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("ANALYST");
     const { container } = render(
@@ -330,7 +255,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 2 accessible modules in orientation", () => {
+  it("COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 4 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "COMPLIANCE_OFFICER", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("COMPLIANCE_OFFICER");
     const { container } = render(
@@ -339,7 +264,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("INDEPENDENT_REVIEWER — cannot see Program Health/Flagged, sees 0 accessible modules in orientation", () => {
+  it("INDEPENDENT_REVIEWER — cannot see Program Health/Flagged, sees 2 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "INDEPENDENT_REVIEWER", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("INDEPENDENT_REVIEWER");
     const { container } = render(

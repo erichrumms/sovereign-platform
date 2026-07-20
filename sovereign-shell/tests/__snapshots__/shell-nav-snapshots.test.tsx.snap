@@ -60,16 +60,15 @@ exports[`DevPersonaToggle snapshots renders with SYSTEM_ADMIN as the default (em
 </div>
 `;
 
-exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX, FLOWPATH, ARIA) 1`] = `
+exports[`ModuleNav role-access snapshots ANALYST — 6 modules accessible (COUNSEL, SCRIBE, LENS, APEX, FLOWPATH, ARIA) 1`] = `
 <div>
   <nav
     aria-label="Modules"
     style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
   >
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL"
       type="button"
     >
       <span
@@ -105,18 +104,11 @@ exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX,
             ⓘ
           </span>
         </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
-        </span>
       </span>
     </button>
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="SCRIBE"
       type="button"
     >
       <span
@@ -151,12 +143,6 @@ exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX,
           >
             ⓘ
           </span>
-        </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
         </span>
       </span>
     </button>
@@ -208,9 +194,8 @@ exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX,
       </span>
     </button>
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS"
       type="button"
     >
       <span
@@ -245,12 +230,6 @@ exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX,
           >
             ⓘ
           </span>
-        </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
         </span>
       </span>
     </button>
@@ -525,16 +504,15 @@ exports[`ModuleNav role-access snapshots ANALYST — 3 modules accessible (APEX,
 </div>
 `;
 
-exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules accessible (NEXUS, ARIA) 1`] = `
+exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 4 modules accessible (COUNSEL, LENS, NEXUS, ARIA) 1`] = `
 <div>
   <nav
     aria-label="Modules"
     style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
   >
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL"
       type="button"
     >
       <span
@@ -570,18 +548,12 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules access
             ⓘ
           </span>
         </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
-        </span>
       </span>
     </button>
     <button
       disabled=""
       style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST"
       type="button"
     >
       <span
@@ -673,9 +645,8 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules access
       </span>
     </button>
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS"
       type="button"
     >
       <span
@@ -710,12 +681,6 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules access
           >
             ⓘ
           </span>
-        </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
         </span>
       </span>
     </button>
@@ -997,16 +962,15 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 2 modules access
 </div>
 `;
 
-exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 0 modules accessible (all locked) 1`] = `
+exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 2 modules accessible (COUNSEL, LENS) 1`] = `
 <div>
   <nav
     aria-label="Modules"
     style="display: flex; flex-direction: column; gap: 2px; padding: 8px; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;"
   >
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="COUNSEL — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="COUNSEL"
       type="button"
     >
       <span
@@ -1042,18 +1006,12 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 0 modules acce
             ⓘ
           </span>
         </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
-        </span>
       </span>
     </button>
     <button
       disabled=""
       style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      title="SCRIBE — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST"
       type="button"
     >
       <span
@@ -1145,9 +1103,8 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 0 modules acce
       </span>
     </button>
     <button
-      disabled=""
-      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="LENS — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER"
+      style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(230, 232, 239); cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
+      title="LENS"
       type="button"
     >
       <span
@@ -1182,12 +1139,6 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 0 modules acce
           >
             ⓘ
           </span>
-        </span>
-        <span
-          aria-hidden="true"
-          style="font-size: 11px;"
-        >
-          🔒
         </span>
       </span>
     </button>
@@ -2336,7 +2287,7 @@ exports[`ModuleNav role-access snapshots SYSTEM_ADMIN — all 10 modules accessi
 </div>
 `;
 
-exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Programs, 3 accessible modules in orientation 1`] = `
+exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Programs, 6 accessible modules in orientation 1`] = `
 <div>
   <div
     style="padding: 24px 28px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; box-sizing: border-box; overflow: auto; display: flex; flex-direction: column; gap: 24px;"
@@ -2494,6 +2445,48 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
           <ul
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                COUNSEL
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Argues Both Sides
+              </span>
+            </li>
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                SCRIBE
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Ghostwrites Your Memos
+              </span>
+            </li>
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                LENS
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Explains The Rules
+              </span>
+            </li>
             <li
               style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
             >
@@ -2660,7 +2653,7 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
 </div>
 `;
 
-exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 2 accessible modules in orientation 1`] = `
+exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 4 accessible modules in orientation 1`] = `
 <div>
   <div
     style="padding: 24px 28px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; box-sizing: border-box; overflow: auto; display: flex; flex-direction: column; gap: 24px;"
@@ -2709,6 +2702,34 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
           <ul
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                COUNSEL
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Argues Both Sides
+              </span>
+            </li>
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                LENS
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Explains The Rules
+              </span>
+            </li>
             <li
               style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
             >
@@ -2792,7 +2813,7 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
 </div>
 `;
 
-exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Health/Flagged, sees 0 accessible modules in orientation 1`] = `
+exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Health/Flagged, sees 2 accessible modules in orientation 1`] = `
 <div>
   <div
     style="padding: 24px 28px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; box-sizing: border-box; overflow: auto; display: flex; flex-direction: column; gap: 24px;"
@@ -2838,11 +2859,38 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
           >
             Module Orientation
           </h3>
-          <p
-            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
+          <ul
+            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
-            No modules accessible with your current role.
-          </p>
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                COUNSEL
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Argues Both Sides
+              </span>
+            </li>
+            <li
+              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              >
+                LENS
+              </span>
+              <span
+                style="font-size: 11px; color: rgb(100, 116, 139);"
+              >
+                Explains The Rules
+              </span>
+            </li>
+          </ul>
         </div>
       </div>
     </section>

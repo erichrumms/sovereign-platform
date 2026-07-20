@@ -46,6 +46,12 @@
           }
         }
       ]
+    },
+    "moduleNameMapper": {
+      "^.*/anthropic-key(\\.ts)?$": "<rootDir>/tests/__mocks__/anthropic-key.ts",
+      "^.*/vigil-endpoint(\\.ts)?$": "<rootDir>/tests/__mocks__/vigil-endpoint.ts",
+      "^.*/cpmi-world-model-endpoint(\\.ts)?$": "<rootDir>/tests/__mocks__/cpmi-world-model-endpoint.ts",
+      "^.+\\.md\\?raw$": "<rootDir>/tests/__mocks__/raw-string.ts"
     }
   }
 }
