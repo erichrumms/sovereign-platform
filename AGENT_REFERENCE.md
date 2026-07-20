@@ -1,14 +1,19 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.0 — July 18, 2026**
-**Supersedes:** BOTH prior lineages — the repo copy (1014 lines, last
-committed June 26, 2026, containing Lessons 1-12 and the SOVEREIGN-specific
-sections) and the project-knowledge copy v2.0 (530 lines, July 18,
-containing Rules 1-10 through the July 15 incidents).
+**Version: 3.1 — July 19, 2026**
+**Supersedes:** v3.0 (July 18, 2026), which itself merged BOTH prior lineages — the
+repo copy (1014 lines, last committed June 26, 2026, containing Lessons 1-12 and
+the SOVEREIGN-specific sections) and the project-knowledge copy v2.0 (530 lines,
+July 18, containing Rules 1-10 through the July 15 incidents).
 **Merge decision:** Project Principal, July 18, 2026 — one canonical
 document, placed identically in the repo, at the iCloud root, and in
 project knowledge.
+**v3.1 change:** one addition — the sub-module (per-tab) role-gating pattern
+(new in GD-22, Session 41), added to Known Codebase Facts so a second
+implementation doesn't diverge from the first. Nothing else in v3.0 changed.
+The v3.0/v3.1 counter still continues from the stated v2.0 assumption noted
+below — the true pre-June-26 original counter value remains unrecovered.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -520,6 +525,32 @@ before building any port implementation on the AgentOS side.
 data only. CUI, SECRET, and TOP_SECRET throw `ClassificationNotAuthorizedError`
 with the exact message: "This classification level is not authorized for processing
 in SOVEREIGN. Contact your system administrator."
+
+**Sub-module (per-tab) role gating — the pattern, added July 19, 2026, after GD-22
+(Session 41):** every module's access control was single-role, checked once at
+mount, until ARIA needed four internally distinct components (CLEAR, TRACER, ARC,
+CPMI-VRS) each serving a different role. Rather than invent a new shell-contract
+primitive, the working pattern is entirely module-local:
+
+1. The module's own mount-level gate widens to the *union* of every role any of its
+   sub-components need — narrower than this and nobody can even reach the module to
+   have their specific tab checked.
+2. Inside the module, a local `Record<TabId, SovereignRole[]>` map states each
+   component's own required roles.
+3. A local `canAccessTab(id)` helper — `TAB_ROLES[id].some(r => ctx.auth.hasRole(r))`
+   — reuses the existing `hasRole()` primitive already on `ctx.auth`. No new shared
+   type, no shell-contract change.
+4. Each sub-component renders visibly but disabled/locked if the current role fails
+   its check, with an honest tooltip stating the required role — never silently
+   hidden, never a blank/broken panel.
+
+Reference implementation: `module-aria/src/AriaApp.tsx` (`TAB_ROLES`, `canAccessTab`,
+`LockedTabNotice`) and `module-aria/src/index.ts` (the widened union mount gate).
+This is currently the *only* instance of this pattern in the codebase. **If a second
+module adopts it, build it against this same shape — a local role-list map plus
+`hasRole()` — rather than inventing a second implementation of the same idea.** If a
+future case genuinely can't be served by this shape, that's worth a real governance
+conversation before diverging, not a silent second pattern.
 
 ---
 

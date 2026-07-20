@@ -995,7 +995,15 @@ Integration Brief's count. This table is the authoritative count.**
 | `ppbe-exhibit-drafter` | PPBE layer | Operational | Yes | Registered (Phase III) |
 | `ppbe-coordination-assistant` | PPBE layer | Operational | Yes | Registered (Phase II) |
 
-**Total registered agents: 36**
+**Total registered agents: 36** — *this was the correct count at this specific point
+in the document's append history (before the Time & Travel Workflow Layer Additions
+below), and is preserved here as an accurate historical snapshot. **It is not the
+current total.** See "Updated Agent Count — Full Platform" later in this document
+(44) for the current figure. Flagged July 19, 2026 — the End-to-End Assessment
+following Sessions 39-43 found this line and the later "44" line both stated as
+unqualified totals in the same file, which is exactly the Lesson 12 failure mode
+this note originally warned against. Do not read this number as current without
+checking whether a later section supersedes it.*
 
 Note on prior count discrepancy: Integration Brief v1.30 claimed 21 agents. The
 actual count in this file as of June 29, 2026 is 36. The discrepancy arose from
@@ -1533,5 +1541,45 @@ Script section already calls for as a standing tool. They should be
 committed properly rather than left as local, uncommitted files — an
 integrity-check tool that isn't itself in version control is a small
 version of the same problem it exists to catch.
+
+---
+
+# Agent Identity Standard — Correction Note (Post-Session-43 Assessment)
+## Append to Agent_Identity_Standard.md, after the Session Findings Note (July 17)
+
+**Date:** July 19, 2026
+**Recorded by:** Governance Agent, following the End-to-End Verification + Technical
+Assessment run after Sessions 39-43
+
+### Agent count drift — direct table edit applied, not a new append-only incident
+
+`sovereign_session_verify.sh`, re-run as part of the post-milestone assessment,
+surfaced the exact Lesson 12 failure mode again: this file states "Total registered
+agents: 36" at one point (line ~998, correct as of June 29, before the Time & Travel
+additions) and "44" at another (the actual current total, confirmed by direct count).
+Both are real, accurate claims *for their point in the document's history* — the
+problem is that nothing at the first location told a reader it had been superseded.
+
+**Fix applied directly to the "36" line above** (not a new incident write-up, since
+nothing was actually wrong — it was a stale-looking correct number, not an error) —
+the line now states plainly that it is a historical snapshot, not current, and points
+to the real total.
+
+**Standing guidance this reinforces:** any document maintained by append, where a
+running total gets restated at each addition, needs each earlier total to say
+explicitly "superseded, see below" the moment a later one supersedes it — not rely on
+a reader noticing the dates. This applies to every append-only document in this
+project, not just this one.
+
+### Confirmed current total, re-verified July 19, 2026
+
+**44 registered agents** — re-confirmed by direct file count during the post-Session-43
+assessment, independent of any carried-forward claim. No change since June 29.
+
+---
+
+*Agent Identity Standard — Correction Note*
+*July 19, 2026 · Recorded by Governance Agent, following the Sessions 39-43 assessment*
+*Pre-Decisional · Internal Working Document*
 
 ---
