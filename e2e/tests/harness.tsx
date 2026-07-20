@@ -19,6 +19,8 @@ import type {
   SovereignLogEvent,
   SharedTask,
   TaskSurface,
+  ProgramStatusSnapshot,
+  ProgramStatusSurface,
 } from "../../sovereign-shell/shell-contract";
 
 import { useRequestRegistry } from "../../module-nexus/src/useRequestRegistry";
@@ -27,6 +29,20 @@ import { useTaskRegistry } from "../../module-agentos/src/useTaskRegistry";
 import { useAgentDispatcher } from "../../module-agentos/src/useAgentDispatcher";
 import { createAgentOSBackedPort, type AgentOSBackedPort } from "../../module-agentos/src/nexus-agentos-port";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "../../module-apex/src/apex-data-adapter";
+
+/** A minimal in-memory ProgramStatusSurface (GD-23 eleventh export) for convergence tests. */
+function createInMemoryProgramStatusSurface(): ProgramStatusSurface {
+  const statuses = new Map<string, ProgramStatusSnapshot>();
+  const listeners = new Set<(s: readonly ProgramStatusSnapshot[]) => void>();
+  const snapshot = (): readonly ProgramStatusSnapshot[] => Array.from(statuses.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (status) => { statuses.set(status.program_id, status); notify(); },
+    get: (id) => statuses.get(id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
 
 /** A minimal in-memory TaskSurface (GD-19 ninth export) so the live AgentOS-backed port publishes. */
 function createInMemoryTaskSurface(): TaskSurface {
@@ -47,6 +63,7 @@ export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
   const role: SovereignRole = "SYSTEM_ADMIN";
   return {
     taskSurface: createInMemoryTaskSurface(),
+    programStatusSurface: createInMemoryProgramStatusSurface(),
     auth: {
       user: { employee_id: "E-001", name: "E2E Operator", org_unit: "Platform", role, clearance_level: "UNCLASSIFIED", cost_code_assignments: [] },
       token: "test-token",

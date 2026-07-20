@@ -69,6 +69,8 @@ import type {
   SharedTask,
   AriaCertificationSurface,
   AriaCertification,
+  ProgramStatusSurface,
+  ProgramStatusSnapshot,
 } from "../shell-contract";
 
 // Canonical shared data package (Session 4 — npm workspace linkage). Value
@@ -614,6 +616,47 @@ class ShellAriaSurface implements AriaCertificationSurface {
 }
 
 // ============================================================
+// PROGRAM STATUS SURFACE — the eleventh export (GD-23, shell-contract v1.18)
+// A shell-owned, in-memory record of per-program obligation status snapshots.
+// APEX publishes via publish() on data load; VIGIL reads via get() in the
+// ppbe_obligation approval brief case. Carries no governance authority of its
+// own (Constraint #1): publishing a snapshot does not log, approve, or route
+// anything — APEX still emits its own governed Logger events. The surface only
+// makes obligation status visible to other products. Mirrors ShellAriaSurface
+// exactly: last-write-wins by program_id, same notify-on-change subscribe
+// pattern, state lives for the lifetime of one platform session.
+// ============================================================
+
+class ShellProgramStatusSurface implements ProgramStatusSurface {
+  private readonly statuses: Map<string, ProgramStatusSnapshot> = new Map();
+  private readonly listeners: Set<(statuses: readonly ProgramStatusSnapshot[]) => void> = new Set();
+
+  publish = (status: ProgramStatusSnapshot): void => {
+    // Last-write-wins by program_id: a later publish supersedes the prior snapshot.
+    this.statuses.set(status.program_id, status);
+    this.notify();
+  };
+
+  get = (program_id: string): ProgramStatusSnapshot | undefined => this.statuses.get(program_id);
+
+  list = (): readonly ProgramStatusSnapshot[] => Array.from(this.statuses.values());
+
+  subscribe = (listener: (statuses: readonly ProgramStatusSnapshot[]) => void): (() => void) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
+
+  private notify(): void {
+    const snapshot = this.list();
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -659,6 +702,7 @@ export class SovereignShell implements SovereignShellContext {
   readonly agui: SovereignAGUIInterface;
   readonly taskSurface: TaskSurface;
   readonly aria: AriaCertificationSurface;
+  readonly programStatusSurface: ProgramStatusSurface;
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
@@ -710,6 +754,8 @@ export class SovereignShell implements SovereignShellContext {
     this.taskSurface = new ShellTaskSurface();
     // Tenth export (GD-20, v1.15) — the ARIA Suite CLEAR certification surface.
     this.aria = new ShellAriaSurface();
+    // Eleventh export (GD-23, v1.18) — the per-program obligation status surface.
+    this.programStatusSurface = new ShellProgramStatusSurface();
   }
 
   /**

@@ -14,7 +14,7 @@
  * Version: 1.1 (CPMI-VRS Gates tab) · Session 18 · June 26, 2026
  */
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "./apex-data-adapter";
@@ -25,6 +25,7 @@ import { GateRunnerPanel } from "./GateRunnerPanel";
 import { PPBEDashboard } from "./PPBEDashboard";
 import { PPBEAgentsPanel } from "./PPBEAgentsPanel";
 import { createSyntheticPPBEDashboardInputs } from "./ppbe-data-adapter";
+import { publishProgramStatuses } from "./ppbe-dashboard";
 
 export interface ApexAppProps {
   ctx: SovereignShellContext;
@@ -46,6 +47,12 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
   const adapter = useMemo(() => injected ?? createSyntheticApexDataAdapter(), [injected]);
   const ppbeInputs = useMemo(() => createSyntheticPPBEDashboardInputs(), []);
   const [tab, setTab] = useState<Tab>("portfolio");
+
+  // GD-23: publish per-program obligation status to the shared surface whenever
+  // PPBE inputs are available. Runs once on mount (ppbeInputs is stable).
+  useEffect(() => {
+    publishProgramStatuses(ppbeInputs, ctx.programStatusSurface, new Date().toISOString());
+  }, [ppbeInputs, ctx.programStatusSurface]);
   const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
 
   const openProgram = (programId: string): void => {

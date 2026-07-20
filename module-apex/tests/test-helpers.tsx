@@ -11,7 +11,22 @@ import type {
   SovereignRole,
   SovereignLogEvent,
   SovereignProduct,
+  ProgramStatusSnapshot,
+  ProgramStatusSurface,
 } from "../../sovereign-shell/shell-contract";
+
+function createInMemoryProgramStatusSurface(): ProgramStatusSurface {
+  const statuses = new Map<string, ProgramStatusSnapshot>();
+  const listeners = new Set<(s: readonly ProgramStatusSnapshot[]) => void>();
+  const snapshot = (): readonly ProgramStatusSnapshot[] => Array.from(statuses.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (status) => { statuses.set(status.program_id, status); notify(); },
+    get: (id) => statuses.get(id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
 
 export interface CtxOverrides {
   role?: SovereignRole;
@@ -53,5 +68,6 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       isOnHold: (product: SovereignProduct) => held.has(product),
     },
     navigation: { navigateTo: () => {}, currentPath: "/apex", breadcrumb: [] },
+    programStatusSurface: createInMemoryProgramStatusSurface(),
   } as unknown as SovereignShellContext;
 }

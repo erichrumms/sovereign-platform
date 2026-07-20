@@ -30,6 +30,8 @@ import type {
   ProgramRecord,
 } from "@sovereign/data";
 
+import type { ProgramStatusSurface } from "../../sovereign-shell/shell-contract";
+
 // ============================================================
 // PPBE EVENT ACTIVITY (the four Python-only event types, docs/18 §4)
 // ============================================================
@@ -226,4 +228,50 @@ export function buildPPBEDashboard(inputs: PPBEDashboardInputs): PPBEDashboardDa
       inputs.dependencies.length === 0 &&
       inputs.findings.length === 0,
   };
+}
+
+// ============================================================
+// PROGRAM STATUS SURFACE PUBLISHER (GD-23)
+// ============================================================
+
+/**
+ * Derive a ProgramStatusSnapshot status field from an obligation rate.
+ *
+ * Threshold rule (Build Agent judgment, Session 44 D2):
+ *   ≥ 80 %  → on_track  (program is obligating close to plan)
+ *   ≥ 50 %  → at_risk   (noticeable shortfall but not critical)
+ *   < 50 % or null → off_track  (major under-obligation or no plan at all)
+ *
+ * "off_track" for null follows the same honest-empty-state principle as the
+ * narrative: a rate that cannot be computed is not healthy by default.
+ */
+export function statusFromObligationRate(
+  rate: number | null
+): "on_track" | "at_risk" | "off_track" {
+  if (rate === null || rate < 50) return "off_track";
+  if (rate < 80) return "at_risk";
+  return "on_track";
+}
+
+/**
+ * Publish one ProgramStatusSnapshot per program to the shared surface (GD-23).
+ * Reads `percent_obligated` and `narrative` from the deterministic
+ * `obligationRate()` function — one computation, no second summarization path
+ * (docs/20 §2). `nowIso` is supplied by the caller so this function stays pure.
+ */
+export function publishProgramStatuses(
+  inputs: PPBEDashboardInputs,
+  surface: ProgramStatusSurface,
+  nowIso: string
+): void {
+  for (const program of inputs.programs) {
+    const metric = obligationRate(program, inputs.obligations);
+    surface.publish({
+      program_id: metric.program_id,
+      percent_obligated: metric.rate_percent ?? 0,
+      status: statusFromObligationRate(metric.rate_percent),
+      narrative: metric.narrative,
+      updated_at: nowIso,
+    });
+  }
 }

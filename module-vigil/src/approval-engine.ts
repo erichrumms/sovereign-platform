@@ -25,6 +25,8 @@ import type {
   SovereignLLMResponse,
 } from "@sovereign/api-client";
 
+import type { ProgramStatusSurface } from "../../sovereign-shell/shell-contract";
+
 import {
   hasUsableBrief,
   type AgentApprovalRequest,
@@ -46,6 +48,8 @@ export interface BriefDeps {
   ) => Promise<SovereignLLMResponse>;
   cacheGet: (key: string) => string | null;
   cacheSet: (key: string, value: string) => void;
+  /** GD-23 — provides program obligation context for the ppbe_obligation static brief (WF-20). */
+  programStatusSurface?: ProgramStatusSurface;
 }
 
 /** Per-request cache key (one brief per request). */
@@ -85,7 +89,8 @@ const RISK_RATIONALE: Record<AgentApprovalRequest["risk_classification"], string
 function describeWhatChanges(
   actionType: string,
   agentId: string,
-  detail: Record<string, unknown>
+  detail: Record<string, unknown>,
+  programStatusSurface?: ProgramStatusSurface
 ): string {
   switch (actionType) {
     case "model_deployment": {
@@ -116,12 +121,21 @@ function describeWhatChanges(
       return `${agentId} will send a formal escalation notice to the supervisor of ${employee} regarding ${category}, which has recurred ${count} in the current review window. This creates an official record and notifies the supervisor directly.`;
     }
     case "ppbe_obligation": {
-      const program = typeof detail.program_id === "string" ? `program ${detail.program_id}` : "a program";
+      const programId = typeof detail.program_id === "string" ? detail.program_id : undefined;
+      const program = programId ? `program ${programId}` : "a program";
       const amount = typeof detail.amount === "number"
         ? `$${detail.amount.toLocaleString()}` : "an unspecified amount";
       const costCode = typeof detail.cost_code === "string" ? ` against cost code ${detail.cost_code}` : "";
       const obligationId = typeof detail.obligation_id === "string" ? ` (${detail.obligation_id})` : "";
-      return `${agentId} will record a financial obligation of ${amount}${obligationId} against ${program}${costCode}. Once approved, this becomes part of the program's execution record.`;
+      const base = `${agentId} will record a financial obligation of ${amount}${obligationId} against ${program}${costCode}. Once approved, this becomes part of the program's execution record.`;
+      // GD-23 (WF-20): include current program status from the shared surface when available.
+      if (programId && programStatusSurface) {
+        const snapshot = programStatusSurface.get(programId);
+        if (snapshot) {
+          return `${base} Current program status: ${snapshot.narrative}`;
+        }
+      }
+      return base;
     }
     case "ppbe_phase_transition": {
       const from = detail.from_phase !== undefined ? `Phase ${String(detail.from_phase)}` : "the current phase";
@@ -147,12 +161,19 @@ function describeWhatChanges(
  * CLASSIFICATION. Plain prose per action type, no field-dump, no recommendation, no
  * invented detail. Agent context is in the ApprovalDetail metadata table above the
  * brief panel; it is not repeated here (WF-28).
+ *
+ * GD-23: accepts an optional programStatusSurface so the ppbe_obligation case can
+ * include current program financial context (WF-20 resolution).
  */
-export function staticBrief(request: AgentApprovalRequest): string {
+export function staticBrief(
+  request: AgentApprovalRequest,
+  programStatusSurface?: ProgramStatusSurface
+): string {
   const whatChanges = describeWhatChanges(
     request.action_type,
     request.requesting_agent_id,
-    request.action_detail
+    request.action_detail,
+    programStatusSurface
   );
   return [
     "The vigil-approval-agent service is unavailable — this brief was assembled directly " +
@@ -203,5 +224,5 @@ export async function runApprovalBrief(
   }
 
   // ---- Tier 3: static (assembled from the request) ----
-  return { brief: staticBrief(request), tier: "static", detail };
+  return { brief: staticBrief(request, deps.programStatusSurface), tier: "static", detail };
 }

@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.17
+ * Version: 1.18
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,24 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.18 (July 19, 2026) — GD-23 (ProgramStatusSurface, approved by the Project Principal
+ *                       July 19, 2026, Session 44, per docs/20). Added two new types:
+ *                       ProgramStatusSnapshot (narrow snapshot carrying program_id,
+ *                       percent_obligated, status, narrative, updated_at) and
+ *                       ProgramStatusSurface (publish/get/list/subscribe — mirrors
+ *                       AriaCertificationSurface exactly: same four methods, same
+ *                       last-write-wins-by-id semantics, same shell-owned in-memory lifetime).
+ *                       Added `programStatusSurface` as the ELEVENTH export on
+ *                       SovereignShellContext (Standing Constraint #7 relaxed from ten to
+ *                       eleven for this GD). Impact assessment: NO HumanDecisionType change
+ *                       (not synced to shared-types.ts or Python logger — Constraint #11
+ *                       has nothing to propagate). NO SovereignEventType change. NO AgentClass
+ *                       change. NO SovereignRole / SovereignProduct change. Additive only:
+ *                       two new exported types, one new context field. CONSUMERS: APEX
+ *                       publishes a ProgramStatusSnapshot per program on data load;
+ *                       VIGIL reads in describeWhatChanges() ppbe_obligation case (WF-20
+ *                       resolution). Both shell-contract copies SHA-256 re-verified
+ *                       identical at v1.18.
  *   v1.17 (July 18, 2026) — GD-22 (Role-Based Access Matrix, pre-approved Session 41 opening
  *                       prompt). Widened `minimumRole: SovereignRole` to `minimumRole:
  *                       SovereignRole[]` on `SovereignModuleContract` (Section 8). This is the
@@ -1090,11 +1108,49 @@ export interface AriaCertificationSurface {
 }
 
 
+// ------------------------------------------------------------
+// PROGRAM STATUS SURFACE TYPES (shell-contract v1.18 — GD-23)
+// A shell-owned, in-memory record of per-program obligation status. APEX
+// publishes a ProgramStatusSnapshot per program whenever program data is
+// loaded or changes; VIGIL reads via get() in the ppbe_obligation approval
+// brief — providing the approving operator with current program financial
+// context (WF-20 resolution). Deliberately narrow: solves the concrete case
+// (VIGIL needs program-level obligation context) without becoming a general
+// cross-module query mechanism. See docs/20 for the full design rationale.
+// Mirrors AriaCertificationSurface exactly: same four methods
+// (publish/get/list/subscribe), same last-write-wins-by-id semantics, same
+// shell-owned in-memory lifetime per platform session.
+// Governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+export interface ProgramStatusSnapshot {
+  readonly program_id: string;
+  readonly percent_obligated: number;
+  readonly status: "on_track" | "at_risk" | "off_track";
+  /** Pre-composed, human-readable summary — reuses APEX's obligationRate() narrative
+      rather than building a second summarization path (docs/20 §2). */
+  readonly narrative: string;
+  readonly updated_at: string; // ISO 8601
+}
+
+export interface ProgramStatusSurface {
+  /** Publish (or replace, by program_id) a program's current obligation status. */
+  publish: (status: ProgramStatusSnapshot) => void;
+  /** Look up one program's status by id. */
+  get: (program_id: string) => ProgramStatusSnapshot | undefined;
+  /** A read-only snapshot of every published program status. */
+  list: () => readonly ProgramStatusSnapshot[];
+  /** Subscribe to surface changes; returns an unsubscribe function. */
+  subscribe: (listener: (statuses: readonly ProgramStatusSnapshot[]) => void) => () => void;
+}
+
+
 // ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
-// As of shell-contract v1.15 (GD-20) the context provides TEN exports
-// (Standing Constraint #7 relaxed from nine to ten for aria; taskSurface was
-// the ninth at v1.14 / GD-19). No further export without a new GD.
+// As of shell-contract v1.18 (GD-23) the context provides ELEVEN exports
+// (Standing Constraint #7 relaxed from ten to eleven for programStatusSurface;
+// aria was the tenth at v1.15 / GD-20; taskSurface was the ninth at v1.14 /
+// GD-19). No further export without a new GD.
 // ============================================================
 
 export interface SovereignShellContext {
@@ -1129,6 +1185,8 @@ export interface SovereignShellContext {
   taskSurface: TaskSurface;
   // Tenth export — GD-20 (shell-contract v1.15). The CLEAR certification surface.
   aria: AriaCertificationSurface;
+  // Eleventh export — GD-23 (shell-contract v1.18). The per-program obligation status surface.
+  programStatusSurface: ProgramStatusSurface;
 }
 
 
