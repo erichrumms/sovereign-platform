@@ -14,6 +14,8 @@ import type {
   TaskSurface,
   WorkQueueSurface,
   WorkQueueSummary,
+  ReviewerWorkspaceSurface,
+  WorkspaceReviewItem,
 } from "../../sovereign-shell/shell-contract";
 
 /**
@@ -64,6 +66,21 @@ function createNoopWorkQueueSurface(): WorkQueueSurface {
   };
 }
 
+/** Minimal in-memory ReviewerWorkspaceSurface (GD-25 thirteenth export) for component tests. */
+export function createInMemoryReviewerWorkspaceSurface(): ReviewerWorkspaceSurface {
+  const items = new Map<string, WorkspaceReviewItem>();
+  const listeners = new Set<(i: readonly WorkspaceReviewItem[]) => void>();
+  const snapshot = (): readonly WorkspaceReviewItem[] => Array.from(items.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (item) => { items.set(`${item.module_id}::${item.item_id}`, item); notify(); },
+    remove: (module_id, item_id) => { if (items.delete(`${module_id}::${item_id}`)) notify(); },
+    listForModule: (id) => snapshot().filter(i => i.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
 export interface CtxOverrides {
   role?: SovereignRole;
   log?: (event: SovereignLogEvent) => void;
@@ -102,6 +119,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
     aria,
     taskSurface: over.taskSurface ?? createInMemoryTaskSurface(),
     workQueueSurface: createNoopWorkQueueSurface(),
+    reviewerWorkspaceSurface: createInMemoryReviewerWorkspaceSurface(),
     auth: {
       user: {
         employee_id: "E-700",

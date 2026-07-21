@@ -26,6 +26,7 @@ import { nexusModule } from "@sovereign/module-nexus";
 import { apexModule } from "@sovereign/module-apex";
 import { flowpathModule } from "@sovereign/module-flowpath";
 import { ariaModule } from "@sovereign/module-aria";
+import { workspaceModule } from "@sovereign/module-workspace";
 
 export function registerPlatformModules(loader: ModuleLoader): void {
   // COUNSEL — first companion module (GD-5). Core complete (Session 5).
@@ -83,4 +84,12 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // in Agent_Identity_Standard.md (Constraint #10). module-aria/ARIA is pre-wired in the loader's
   // MODULE_PRODUCT map. CLEAR/TRACER/ARC logic arrives in Sessions 23–25.
   loader.register(ariaModule);
+  // Reviewer's Workspace — cross-module decision surface (GD-25, Session 50, docs/23).
+  // Module gate: the union of every role any of its three sections needs (the ARIA
+  // GD-22 pattern) — PLATFORM_ADMIN/SYSTEM_ADMIN/COMPLIANCE_OFFICER/PROGRAM_MANAGER/
+  // ANALYST; per-section gating inside WorkspaceApp. Registers no agents (it embeds
+  // VIGIL/ARIA/SCRIBE's real decision components; those modules own the agents).
+  // module-workspace maps to product VIGIL in MODULE_PRODUCT (nearest existing
+  // product — see the reconciliation note there; a WORKSPACE member needs a future GD).
+  loader.register(workspaceModule);
 }

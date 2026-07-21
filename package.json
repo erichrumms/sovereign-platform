@@ -17,6 +17,7 @@
     "module-apex",
     "module-flowpath",
     "module-aria",
+    "module-workspace",
     "e2e"
   ],
   "scripts": {
@@ -35,6 +36,7 @@
     "test:apex": "npm run test --workspace @sovereign/module-apex",
     "test:flowpath": "npm run test --workspace @sovereign/module-flowpath",
     "test:aria": "npm run test --workspace @sovereign/module-aria",
+    "test:workspace": "npm run test --workspace @sovereign/module-workspace",
     "test:e2e": "npm run test --workspace @sovereign/e2e"
   }
 }

@@ -79,7 +79,13 @@ export interface TTManagerReviewProps {
   onSent?: (item: TimeReviewItem) => void;
 }
 
-function itemKey(item: TTReviewItem): string {
+/**
+ * The stable identity of one review item. Exported for GD-25 (Session 50): the
+ * scribe-workspace-publisher and the Reviewer's Workspace module use the same
+ * derivation as this component's own selection/sent-state keys — one source,
+ * no divergent duplicate (Constraint #2).
+ */
+export function ttReviewItemKey(item: TTReviewItem): string {
   return item.kind === "travel" ? `travel-${item.request.request_id}` : `time-${item.flag.flag_id}`;
 }
 
@@ -98,7 +104,7 @@ function buildDraftText(draft: TTDraft): string {
 
 export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTManagerReviewProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(
-    items.length > 0 ? itemKey(items[0]) : null
+    items.length > 0 ? ttReviewItemKey(items[0]) : null
   );
   const [error, setError] = useState<string | null>(null);
   const [sentKeys, setSentKeys] = useState<readonly string[]>([]);
@@ -110,7 +116,7 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
   const isVigilAuthorized = (item: TimeReviewItem): boolean =>
     item.vigilAuthorized || liveAuthorizedFlagIds.has(item.flag.flag_id);
 
-  const selected = items.find((i) => itemKey(i) === selectedKey) ?? null;
+  const selected = items.find((i) => ttReviewItemKey(i) === selectedKey) ?? null;
 
   /** Copy the current draft to the clipboard (DR-2 Session 40). */
   const handleCopyDraft = useCallback((draft: TTDraft) => {
@@ -163,7 +169,7 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
       );
       return;
     }
-    setSentKeys((prev) => [...prev, itemKey(item)]);
+    setSentKeys((prev) => [...prev, ttReviewItemKey(item)]);
     onSent?.(item);
   }
 
@@ -175,7 +181,7 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
         {items.length === 0 && <p>No items awaiting review.</p>}
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}>
           {items.map((item) => {
-            const key = itemKey(item);
+            const key = ttReviewItemKey(item);
             const isSelected = key === selectedKey;
             return (
               <li key={key}>
@@ -251,7 +257,7 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTMana
 
             {selected.kind === "time" && (
               <div data-testid="tt-time-actions">
-                {sentKeys.includes(itemKey(selected)) ? (
+                {sentKeys.includes(ttReviewItemKey(selected)) ? (
                   <p data-testid="tt-sent-confirmation">
                     Send recorded — the communication was sent by you, from your identity.
                   </p>

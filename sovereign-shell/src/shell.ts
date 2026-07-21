@@ -73,6 +73,8 @@ import type {
   ProgramStatusSnapshot,
   WorkQueueSurface,
   WorkQueueSummary,
+  ReviewerWorkspaceSurface,
+  WorkspaceReviewItem,
 } from "../shell-contract";
 
 // Canonical shared data package (Session 4 — npm workspace linkage). Value
@@ -701,6 +703,59 @@ class ShellWorkQueueSurface implements WorkQueueSurface {
 }
 
 // ============================================================
+// REVIEWER'S WORKSPACE SURFACE — the thirteenth export (GD-25, shell-contract v1.20)
+// A shell-owned, in-memory record of cross-module reviewable items. VIGIL, ARIA,
+// and SCRIBE publish their real queue items via publish() on load/change and call
+// remove() on their existing decision-commit paths (VIGIL onDecided, the ARIA
+// certify handler, SCRIBE onSent); the Reviewer's Workspace module reads via
+// list(), type-narrows each payload by module_id, and renders the real decision
+// component. Carries no governance authority of its own (Constraint #1):
+// publishing an item does not log, approve, or route anything — the source module
+// still emits its own governed Logger events at decision time. Mirrors
+// ShellWorkQueueSurface (last-write-wins by module_id + item_id, same
+// notify-on-change subscribe pattern, one platform session's lifetime); remove()
+// is the one addition — a decided item must actually leave the Workspace, not
+// just get overwritten on next publish.
+// ============================================================
+
+class ShellReviewerWorkspaceSurface implements ReviewerWorkspaceSurface {
+  // keyed by `${module_id}::${item_id}` — last-write-wins per published item
+  private readonly items: Map<string, WorkspaceReviewItem> = new Map();
+  private readonly listeners: Set<(items: readonly WorkspaceReviewItem[]) => void> = new Set();
+
+  publish = (item: WorkspaceReviewItem): void => {
+    this.items.set(`${item.module_id}::${item.item_id}`, item);
+    this.notify();
+  };
+
+  remove = (module_id: string, item_id: string): void => {
+    // No-op for an unknown key (never notifies on a non-change).
+    if (this.items.delete(`${module_id}::${item_id}`)) {
+      this.notify();
+    }
+  };
+
+  listForModule = (module_id: string): readonly WorkspaceReviewItem[] =>
+    Array.from(this.items.values()).filter((i) => i.module_id === module_id);
+
+  list = (): readonly WorkspaceReviewItem[] => Array.from(this.items.values());
+
+  subscribe = (listener: (items: readonly WorkspaceReviewItem[]) => void): (() => void) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
+
+  private notify(): void {
+    const snapshot = this.list();
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -748,6 +803,7 @@ export class SovereignShell implements SovereignShellContext {
   readonly aria: AriaCertificationSurface;
   readonly programStatusSurface: ProgramStatusSurface;
   readonly workQueueSurface: WorkQueueSurface;
+  readonly reviewerWorkspaceSurface: ReviewerWorkspaceSurface;
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
@@ -803,6 +859,8 @@ export class SovereignShell implements SovereignShellContext {
     this.programStatusSurface = new ShellProgramStatusSurface();
     // Twelfth export (GD-24, v1.19) — the cross-module work queue summary surface.
     this.workQueueSurface = new ShellWorkQueueSurface();
+    // Thirteenth export (GD-25, v1.20) — the Reviewer's Workspace item surface.
+    this.reviewerWorkspaceSurface = new ShellReviewerWorkspaceSurface();
   }
 
   /**

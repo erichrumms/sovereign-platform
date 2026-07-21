@@ -31,6 +31,10 @@ import { DEMO_TT_ALERTS, makeDemoTTApprovalRequest } from "./tt-synthetic-alerts
 import { createDevApprovalPort } from "./approval-port";
 import { openObligationGate, type PPBEObligationCase } from "./ppbe-authorization";
 import { publishVigilWorkQueues } from "./vigil-work-queue-publisher";
+import {
+  publishVigilWorkspaceItems,
+  VIGIL_WORKSPACE_MODULE_ID,
+} from "./vigil-workspace-publisher";
 
 export interface VigilAppProps {
   ctx: SovereignShellContext;
@@ -98,6 +102,20 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
       new Date().toISOString()
     );
   }, [workQueueSurface, approvals.pendingCount, approvals.hasPendingP1, alerts.unacknowledgedCount, alerts.hasUnacknowledgedP1]);
+
+  // GD-25 — publish the FULL pending approval requests (with the Tier C obligation
+  // case where applicable) to the Reviewer's Workspace surface whenever the queue
+  // changes. The publisher also reconciles away items no longer in the live queue
+  // (decided or expired), so a resolved request does not linger in the Workspace.
+  const { reviewerWorkspaceSurface } = ctx;
+  useEffect(() => {
+    publishVigilWorkspaceItems(
+      approvals.requests,
+      demoPPBEObligationCase,
+      reviewerWorkspaceSurface,
+      new Date().toISOString()
+    );
+  }, [reviewerWorkspaceSurface, approvals.requests, demoPPBEObligationCase]);
 
   return (
     <section style={rootStyle}>
@@ -174,7 +192,12 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
             <ApprovalDetail
               ctx={ctx}
               request={approvals.selected}
-              onDecided={approvals.remove}
+              onDecided={(requestId) => {
+                // GD-25 — the decision-commit path: a decided request leaves the
+                // Reviewer's Workspace, then the local queue.
+                reviewerWorkspaceSurface.remove(VIGIL_WORKSPACE_MODULE_ID, requestId);
+                approvals.remove(requestId);
+              }}
               onDecisionMade={(requestId, action, agentId, actionType) => {
                 setLastDecision({ action, agentId, actionType });
               }}

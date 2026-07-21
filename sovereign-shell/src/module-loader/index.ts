@@ -54,11 +54,12 @@ import type { SovereignShell } from "../shell";
 
 // ============================================================
 // CANONICAL MODULE -> PRODUCT / TIER MAP
-// moduleId is "module-[productname]". Ten canonical modules exist: the six
-// primary products plus the four companion suite modules (GD-5, June 13, 2026,
-// shell-contract v1.3). CPMI runs the enhanced monitoring tier (0.7x threshold)
-// — architectural, not configurable (system_prompt Decision 4); every other
-// module, primary or companion, is standard tier.
+// moduleId is "module-[productname]". Eleven canonical modules exist: the six
+// primary products, the four companion suite modules (GD-5, June 13, 2026,
+// shell-contract v1.3), and the cross-module Reviewer's Workspace (GD-25,
+// July 20, 2026 — see the reconciliation note on its entry). CPMI runs the
+// enhanced monitoring tier (0.7x threshold) — architectural, not configurable
+// (system_prompt Decision 4); every other module is standard tier.
 // ============================================================
 
 const MODULE_PRODUCT: Record<string, SovereignProduct> = {
@@ -74,6 +75,16 @@ const MODULE_PRODUCT: Record<string, SovereignProduct> = {
   "module-scribe": "SCRIBE",
   "module-lens": "LENS",
   "module-vigil": "VIGIL",
+  // Reviewer's Workspace — GD-25 (Session 50, docs/23). RECONCILIATION (surfaced, not
+  // hidden): the frozen SovereignProduct union has no WORKSPACE member, and adding one
+  // is a shell-contract change GD-25 does NOT authorize. The Workspace maps to the
+  // NEAREST EXISTING product, VIGIL — the module whose entire domain is "actions
+  // awaiting a human decision" — a loader bookkeeping entry only (it sets the tier and
+  // the product field on shell health-fallback events; the embedded components emit
+  // their own governed events under their own real products). Same posture as NEXUS's
+  // "nearest existing role" gate (Session 15). A dedicated WORKSPACE product member is
+  // flagged for a future GD.
+  "module-workspace": "VIGIL",
 };
 
 function tierForProduct(product: SovereignProduct): SovereignTier {
@@ -289,9 +300,10 @@ export class ModuleLoader {
   private validateContract(module: SovereignModuleContract): void {
     if (!(module.moduleId in MODULE_PRODUCT)) {
       throw new ModuleContractError(
-        `moduleId "${module.moduleId}" is not one of the ten canonical modules ` +
+        `moduleId "${module.moduleId}" is not one of the eleven canonical modules ` +
           `(primary: module-nexus|cpmi|apex|flowpath|agentos|aria; ` +
-          `companion: module-counsel|scribe|lens|vigil)`
+          `companion: module-counsel|scribe|lens|vigil; ` +
+          `cross-module: module-workspace [GD-25])`
       );
     }
     if (!MOUNT_PATH_PATTERN.test(module.mountPath)) {

@@ -39,12 +39,10 @@ import { SeverityBadge, StatusPill, ClearDeterminismNotice } from "./clear-ui";
 import { clearWorkflowStep, evaluateDocument } from "./clear-engine";
 import type { ClearEvaluationInput } from "./clear-types";
 import { useAriaCertifications } from "./useAriaCertifications";
+import { ARIA_WORKSPACE_MODULE_ID } from "./aria-workspace-publisher";
 
 /** Minimum length of a certification decision note (matches the VIGIL decision-note minimum). */
 export const DECISION_NOTE_MIN = 10;
-
-/** The number of items in the default CLEAR certification demo queue (GD-24 — read by AriaApp). */
-export const CLEAR_DEMO_ITEM_COUNT = 3;
 
 export interface ClearCertificationQueueProps {
   ctx: SovereignShellContext;
@@ -53,7 +51,9 @@ export interface ClearCertificationQueueProps {
 }
 
 // ── Synthetic demo queue (Governance Clock OFF — all data is synthetic) ─────────────────
-const DEMO_ITEMS: ClearEvaluationInput[] = [
+// Exported for GD-25 (Session 50): AriaApp publishes the still-pending demo items to the
+// Reviewer's Workspace surface — the same full ClearEvaluationInput objects this queue renders.
+export const CLEAR_DEMO_ITEMS: ClearEvaluationInput[] = [
   {
     document_id: "DOC-A11-FY26-OM",
     document_name: "FY 2026 O&M Budget Exhibit",
@@ -92,7 +92,10 @@ const DEMO_ITEMS: ClearEvaluationInput[] = [
   },
 ];
 
-export function ClearCertificationQueue({ ctx, items = DEMO_ITEMS }: ClearCertificationQueueProps): JSX.Element {
+/** The number of items in the default CLEAR certification demo queue (GD-24 — read by AriaApp). */
+export const CLEAR_DEMO_ITEM_COUNT = CLEAR_DEMO_ITEMS.length;
+
+export function ClearCertificationQueue({ ctx, items = CLEAR_DEMO_ITEMS }: ClearCertificationQueueProps): JSX.Element {
   const { statusOf } = useAriaCertifications(ctx);
   // Capture one evaluation timestamp for this panel session so evaluations are stable.
   const [evaluatedAt] = useState(() => new Date().toISOString());
@@ -144,6 +147,10 @@ export function ClearCertificationQueue({ ctx, items = DEMO_ITEMS }: ClearCertif
       workflow_step_id,
       certified_at,
     });
+
+    // GD-25 — the decision-commit path: a certified or flagged document leaves the
+    // Reviewer's Workspace (whether decided here in ARIA or in the embedded Workspace copy).
+    ctx.reviewerWorkspaceSurface.remove(ARIA_WORKSPACE_MODULE_ID, input.document_id);
 
     // 2) Emit the governed Logger event for the human decision (Constraint #4 — decision_type).
     if (certified) {

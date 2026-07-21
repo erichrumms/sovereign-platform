@@ -85,7 +85,7 @@ describe("ModuleNav role-access snapshots", () => {
   const noop = (): void => {};
   const ACTIVE_PATH = "/apex"; // arbitrary stable active path for all snapshots
 
-  it("SYSTEM_ADMIN — all 10 modules accessible (universal superuser)", () => {
+  it("SYSTEM_ADMIN — all 11 modules accessible (universal superuser)", () => {
     const isAccessible = makeIsAccessible("SYSTEM_ADMIN");
     const { container } = render(
       <ModuleNav
@@ -98,7 +98,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("PROGRAM_MANAGER — 7 modules accessible (COUNSEL, SCRIBE, LENS, NEXUS, APEX, FLOWPATH, ARIA)", () => {
+  it("PROGRAM_MANAGER — 8 modules accessible (COUNSEL, SCRIBE, LENS, NEXUS, APEX, FLOWPATH, ARIA, WORKSPACE)", () => {
     const isAccessible = makeIsAccessible("PROGRAM_MANAGER");
     const { container } = render(
       <ModuleNav
@@ -111,7 +111,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("COMPLIANCE_OFFICER — 4 modules accessible (COUNSEL, LENS, NEXUS, ARIA)", () => {
+  it("COMPLIANCE_OFFICER — 5 modules accessible (COUNSEL, LENS, NEXUS, ARIA, WORKSPACE)", () => {
     const isAccessible = makeIsAccessible("COMPLIANCE_OFFICER");
     const { container } = render(
       <ModuleNav
@@ -124,7 +124,7 @@ describe("ModuleNav role-access snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("ANALYST — 6 modules accessible (COUNSEL, SCRIBE, LENS, APEX, FLOWPATH, ARIA)", () => {
+  it("ANALYST — 7 modules accessible (COUNSEL, SCRIBE, LENS, APEX, FLOWPATH, ARIA, WORKSPACE)", () => {
     const isAccessible = makeIsAccessible("ANALYST");
     const { container } = render(
       <ModuleNav
@@ -244,7 +244,7 @@ describe("PlatformHome snapshots", () => {
   // ---- Role-visibility tests (D1/D2/D3) — five roles live-tested this session ----
   // Module orientation counts use corrected values from the live loader (Session 47 fix).
 
-  it("SYSTEM_ADMIN — sees Program Health, Flagged Programs, all 10 modules in orientation", () => {
+  it("SYSTEM_ADMIN — sees Program Health, Flagged Programs, all 11 modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("SYSTEM_ADMIN");
     const { container } = render(
@@ -253,7 +253,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("PROGRAM_MANAGER — sees Program Health, Flagged Programs, 7 accessible modules in orientation", () => {
+  it("PROGRAM_MANAGER — sees Program Health, Flagged Programs, 8 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "PROGRAM_MANAGER", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("PROGRAM_MANAGER");
     const { container } = render(
@@ -262,7 +262,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("ANALYST — sees Program Health, Flagged Programs, 6 accessible modules in orientation", () => {
+  it("ANALYST — sees Program Health, Flagged Programs, 7 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "ANALYST", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("ANALYST");
     const { container } = render(
@@ -271,7 +271,7 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 4 accessible modules in orientation", () => {
+  it("COMPLIANCE_OFFICER — cannot see Program Health/Flagged, sees 5 accessible modules in orientation", () => {
     const ctx = makePlatformHomeCtx({ role: "COMPLIANCE_OFFICER", programSnapshots: SAMPLE_PROGRAMS });
     const isAccessible = makeIsAccessible("COMPLIANCE_OFFICER");
     const { container } = render(

@@ -35,10 +35,14 @@ import { useStyleProfile } from "./useStyleProfile";
 import { DraftWorkspace } from "./DraftWorkspace";
 import { IntermediateWorkspace } from "./IntermediateWorkspace";
 import { StyleDNAManager } from "./StyleDNAManager";
-import { TTManagerReview } from "./TTManagerReview";
+import { TTManagerReview, ttReviewItemKey } from "./TTManagerReview";
 import { DEMO_TT_REVIEW_ITEMS } from "./tt-synthetic-review";
 import { PPBEExhibitPanel } from "./PPBEExhibitPanel";
 import { publishScribeWorkQueues } from "./scribe-work-queue-publisher";
+import {
+  publishScribeWorkspaceItems,
+  SCRIBE_WORKSPACE_MODULE_ID,
+} from "./scribe-workspace-publisher";
 
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
@@ -56,6 +60,14 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
   useEffect(() => {
     publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, workQueueSurface, new Date().toISOString());
   }, [workQueueSurface]);
+
+  // GD-25 — publish the FULL TTReviewItem objects to the Reviewer's Workspace
+  // surface on mount. DEMO_TT_REVIEW_ITEMS is the same list TTManagerReview
+  // renders below; removal happens on the decision-commit path (onSent).
+  const { reviewerWorkspaceSurface } = ctx;
+  useEffect(() => {
+    publishScribeWorkspaceItems(DEMO_TT_REVIEW_ITEMS, reviewerWorkspaceSurface, new Date().toISOString());
+  }, [reviewerWorkspaceSurface]);
   const descriptor = selected ? describeMode(selected) : null;
 
   // Style DNA: one session-scoped store + hook shared across the module, so a saved
@@ -111,7 +123,15 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
       </nav>
 
       {surface === "tt-review" ? (
-        <TTManagerReview ctx={ctx} items={DEMO_TT_REVIEW_ITEMS} />
+        <TTManagerReview
+          ctx={ctx}
+          items={DEMO_TT_REVIEW_ITEMS}
+          // GD-25 — the decision-commit path: a sent communication leaves the
+          // Reviewer's Workspace rather than lingering.
+          onSent={(item) =>
+            reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item))
+          }
+        />
       ) : surface === "ppbe-exhibits" ? (
         <PPBEExhibitPanel ctx={ctx} />
       ) : (

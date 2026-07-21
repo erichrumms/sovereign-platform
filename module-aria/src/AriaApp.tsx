@@ -26,7 +26,7 @@
  * Version: 1.4 · Session 41 (GD-22 per-tab role gating) · July 18, 2026
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
 import type { SovereignShellContext, SovereignRole } from "../../sovereign-shell/shell-contract";
@@ -38,8 +38,10 @@ import {
   subtitleStyle,
 } from "./banners";
 import { ClearPanel } from "./ClearPanel";
-import { CLEAR_DEMO_ITEM_COUNT } from "./ClearCertificationQueue";
+import { CLEAR_DEMO_ITEMS } from "./ClearCertificationQueue";
 import { publishAriaWorkQueues } from "./aria-work-queue-publisher";
+import { publishAriaWorkspaceItems } from "./aria-workspace-publisher";
+import { useAriaCertifications } from "./useAriaCertifications";
 import { TracerExplorer } from "./TracerExplorer";
 import { ArcImpactModeler } from "./ArcImpactModeler";
 import { AriaVrsGates } from "./AriaVrsGates";
@@ -87,22 +89,28 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
   const defaultTab = TAB_ORDER.find(canAccessTab) ?? "clear";
   const [tab, setTab] = useState<Tab>(defaultTab);
 
-  // GD-24 — publish ARIA's WorkQueueSurface summary, updated whenever the certification
-  // surface changes. Pending count = CLEAR_DEMO_ITEM_COUNT minus decided items
-  // (each decide() call records to ctx.aria, tracked here via subscription).
-  const { workQueueSurface, aria } = ctx;
-  const [pendingCertCount, setPendingCertCount] = useState(
-    () => Math.max(0, CLEAR_DEMO_ITEM_COUNT - aria.list().length)
+  // GD-24 / GD-25 — the still-pending CLEAR demo items, derived from the certification
+  // surface via the existing useAriaCertifications subscription (each decide() call
+  // records to ctx.aria; statusOf changes identity when the surface changes).
+  const { workQueueSurface, reviewerWorkspaceSurface } = ctx;
+  const { statusOf } = useAriaCertifications(ctx);
+  const pendingItems = useMemo(
+    () => CLEAR_DEMO_ITEMS.filter((item) => statusOf(item.document_id) === "pending"),
+    [statusOf]
   );
-  useEffect(() => {
-    const unsub = aria.subscribe((certs) => {
-      setPendingCertCount(Math.max(0, CLEAR_DEMO_ITEM_COUNT - certs.length));
-    });
-    return unsub;
-  }, [aria]);
+  const pendingCertCount = pendingItems.length;
+
+  // GD-24 — publish ARIA's WorkQueueSurface summary whenever the pending count changes.
   useEffect(() => {
     publishAriaWorkQueues(pendingCertCount, workQueueSurface, new Date().toISOString());
   }, [workQueueSurface, pendingCertCount]);
+
+  // GD-25 — publish the FULL pending ClearEvaluationInput items to the Reviewer's
+  // Workspace surface. The publisher also reconciles away decided items, so a
+  // certified/flagged document does not linger in the Workspace.
+  useEffect(() => {
+    publishAriaWorkspaceItems(pendingItems, reviewerWorkspaceSurface, new Date().toISOString());
+  }, [reviewerWorkspaceSurface, pendingItems]);
 
   return (
     <section style={rootStyle}>

@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.19
+ * Version: 1.20
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,41 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.20 (July 20, 2026) — GD-25 (Reviewer's Workspace, approved by the Project Principal
+ *                       July 20, 2026, Session 50, per docs/23 §2). Added two new types:
+ *                       WorkspaceReviewItem (one reviewable item carrying module_id,
+ *                       item_id, an intentionally OPAQUE payload (unknown), and
+ *                       published_at) and ReviewerWorkspaceSurface
+ *                       (publish/remove/listForModule/list/subscribe — last-write-wins
+ *                       by module_id + item_id, same shell-owned in-memory lifetime as
+ *                       WorkQueueSurface; remove() is the one addition over the prior
+ *                       surfaces, needed because an individual reviewable item must
+ *                       actually LEAVE the Workspace once its source module records the
+ *                       decision, not just get overwritten on next publish). The payload
+ *                       is deliberately `unknown`: the shell contract never imports a
+ *                       module's own types (dependency direction preserved) — the
+ *                       consuming Workspace module does the real type narrowing by
+ *                       module_id, via the established cross-module type-only import
+ *                       pattern (module-agentos/src/approval-port.ts,
+ *                       useAgentDispatcher.ts, nexus-agentos-port.ts, NexusApp.tsx).
+ *                       Added `reviewerWorkspaceSurface` as the THIRTEENTH export on
+ *                       SovereignShellContext (Standing Constraint #7 relaxed from
+ *                       twelve to thirteen for this GD). Impact assessment: NO
+ *                       HumanDecisionType change (not synced to shared-types.ts or
+ *                       Python logger — Constraint #11 has nothing to propagate). NO
+ *                       SovereignEventType change. NO AgentClass change. NO
+ *                       SovereignRole / SovereignProduct change. AgentApprovalRequest,
+ *                       ClearEvaluationInput, and TTReviewItem are consumed AS-IS by
+ *                       the Workspace (docs/23 §6) — none is added, renamed, or
+ *                       reshaped here. Additive only: two new exported types, one new
+ *                       context field. CONSUMERS: VIGIL, ARIA, and SCRIBE publish their
+ *                       real queue items on load/change and call remove() on their
+ *                       existing decision-commit paths (VIGIL onDecided, the ARIA
+ *                       certify handler, SCRIBE onSent); the new module-workspace reads
+ *                       via list(), type-narrows by module_id, and renders the real
+ *                       decision components (ApprovalDetail, ClearCertificationQueue,
+ *                       TTManagerReview). Both shell-contract copies SHA-256
+ *                       re-verified identical at v1.20.
  *   v1.19 (July 20, 2026) — GD-24 (WorkQueueSurface, approved by the Project Principal
  *                       July 20, 2026, Session 49, per docs/21). Added two new types:
  *                       WorkQueueSummary (aggregate queue summary carrying module_id,
@@ -1198,9 +1233,50 @@ export interface WorkQueueSurface {
 
 
 // ============================================================
+// REVIEWER'S WORKSPACE SURFACE — the thirteenth export (GD-25, shell-contract v1.20)
+// Cross-module reviewable items for the Reviewer's Workspace module (docs/23).
+// Mirrors the publish/list/subscribe shape of WorkQueueSurface; remove() is the
+// one addition — an individual reviewable item must actually LEAVE the Workspace
+// once its source module records the decision (approved, certified, sent), not
+// just get overwritten on next publish. Last-write-wins by module_id + item_id.
+// The payload is intentionally OPAQUE (unknown): the shell contract never imports
+// a module's own types — modules import from the shell contract, never the
+// reverse. The consuming Workspace module does the real type narrowing by
+// module_id, via the established cross-module type-only import pattern
+// (module-agentos/src/approval-port.ts et al.). Shell-owned, in-memory, one
+// session's lifetime. No governance authority of its own (Constraint #1) —
+// publishing an item does not log, approve, or route anything; the source module
+// still emits its own governed Logger events at decision time.
+// Governance-frozen field names — never rename, never omit a required field.
+// ------------------------------------------------------------
+
+export interface WorkspaceReviewItem {
+  readonly module_id: string; // "vigil" | "aria" | "scribe"
+  readonly item_id: string;
+  readonly payload: unknown; // narrowed by the consuming Workspace module, not the shell
+  readonly published_at: string;
+}
+
+export interface ReviewerWorkspaceSurface {
+  /** Publish (or replace, by module_id + item_id) one reviewable item. */
+  publish: (item: WorkspaceReviewItem) => void;
+  /** Remove an item once it's been decided (approved, certified, sent) — it should not
+      linger in the Workspace after the source module has resolved it. */
+  remove: (module_id: string, item_id: string) => void;
+  /** Every item published by one module. */
+  listForModule: (module_id: string) => readonly WorkspaceReviewItem[];
+  /** Every item, across all three modules. */
+  list: () => readonly WorkspaceReviewItem[];
+  /** Subscribe to surface changes; returns an unsubscribe function. */
+  subscribe: (listener: (items: readonly WorkspaceReviewItem[]) => void) => () => void;
+}
+
+
+// ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
-// As of shell-contract v1.19 (GD-24) the context provides TWELVE exports
-// (Standing Constraint #7 relaxed from eleven to twelve for workQueueSurface;
+// As of shell-contract v1.20 (GD-25) the context provides THIRTEEN exports
+// (Standing Constraint #7 relaxed from twelve to thirteen for
+// reviewerWorkspaceSurface; workQueueSurface was the twelfth at v1.19 / GD-24;
 // programStatusSurface was the eleventh at v1.18 / GD-23; aria was the tenth
 // at v1.15 / GD-20; taskSurface was the ninth at v1.14 / GD-19). No further
 // export without a new GD.
@@ -1242,6 +1318,9 @@ export interface SovereignShellContext {
   programStatusSurface: ProgramStatusSurface;
   // Twelfth export — GD-24 (shell-contract v1.19). Cross-module work queue summaries for Home.
   workQueueSurface: WorkQueueSurface;
+  // Thirteenth export — GD-25 (shell-contract v1.20). Cross-module reviewable items for the
+  // Reviewer's Workspace module (docs/23).
+  reviewerWorkspaceSurface: ReviewerWorkspaceSurface;
 }
 
 

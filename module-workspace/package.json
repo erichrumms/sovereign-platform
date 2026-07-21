@@ -1,10 +1,14 @@
 {
-  "name": "@sovereign/e2e",
+  "name": "@sovereign/module-workspace",
   "version": "1.0.0",
-  "description": "SOVEREIGN Platform — end-to-end pipeline tests (NEXUS -> AgentOS -> VIGIL)",
+  "description": "SOVEREIGN Platform — Reviewer's Workspace module (GD-25, docs/23: one place where a reviewer acts on VIGIL approvals, ARIA CLEAR certifications, and SCRIBE T&T reviews — the real embedded components, not summaries)",
   "type": "module",
-  "private": true,
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
+    "lint": "tsc --noEmit",
     "test": "jest"
   },
   "dependencies": {

@@ -23,6 +23,10 @@ import type {
   ProgramStatusSurface,
   WorkQueueSurface,
   WorkQueueSummary,
+  ReviewerWorkspaceSurface,
+  WorkspaceReviewItem,
+  AriaCertification,
+  AriaCertificationSurface,
 } from "../../sovereign-shell/shell-contract";
 
 import { useRequestRegistry } from "../../module-nexus/src/useRequestRegistry";
@@ -41,6 +45,36 @@ export function createInMemoryWorkQueueSurface(): WorkQueueSurface {
   return {
     publish: (s) => { queues.set(`${s.module_id}::${s.queue_label}`, s); notify(); },
     listForModule: (id) => snapshot().filter(s => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
+/** A minimal in-memory ReviewerWorkspaceSurface (GD-25 thirteenth export) for convergence tests. */
+export function createInMemoryReviewerWorkspaceSurface(): ReviewerWorkspaceSurface {
+  const items = new Map<string, WorkspaceReviewItem>();
+  const listeners = new Set<(i: readonly WorkspaceReviewItem[]) => void>();
+  const snapshot = (): readonly WorkspaceReviewItem[] => Array.from(items.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (item) => { items.set(`${item.module_id}::${item.item_id}`, item); notify(); },
+    remove: (module_id, item_id) => { if (items.delete(`${module_id}::${item_id}`)) notify(); },
+    listForModule: (id) => snapshot().filter(i => i.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
+/** A minimal in-memory AriaCertificationSurface (GD-20 tenth export) — the embedded CLEAR queue records to it. */
+export function createInMemoryAriaSurface(): AriaCertificationSurface {
+  const certs = new Map<string, AriaCertification>();
+  const listeners = new Set<(c: readonly AriaCertification[]) => void>();
+  const snapshot = (): readonly AriaCertification[] => Array.from(certs.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    record: (c) => { certs.set(c.document_id, c); notify(); },
+    isCertified: (id) => certs.get(id)?.certified === true,
+    get: (id) => certs.get(id),
     list: () => snapshot(),
     subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
   };
@@ -81,6 +115,8 @@ export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
     taskSurface: createInMemoryTaskSurface(),
     programStatusSurface: createInMemoryProgramStatusSurface(),
     workQueueSurface: createInMemoryWorkQueueSurface(),
+    reviewerWorkspaceSurface: createInMemoryReviewerWorkspaceSurface(),
+    aria: createInMemoryAriaSurface(),
     auth: {
       user: { employee_id: "E-001", name: "E2E Operator", org_unit: "Platform", role, clearance_level: "UNCLASSIFIED", cost_code_assignments: [] },
       token: "test-token",
