@@ -61,11 +61,21 @@ import { SCRIBE_WORKSPACE_MODULE_ID } from "../../module-scribe/src/scribe-works
 
 import { useReviewerWorkspaceItems } from "./useReviewerWorkspaceItems";
 
+// Local literal union for the three module IDs this Workspace handles (GD-25, v1 scope).
+// Derived from the imported constants — stays in sync if a constant changes its string value.
+// Stays local: WorkspaceReviewItem.module_id remains `string` on the shell contract so the
+// contract never imports module-level types. Adding a fourth ID here without a matching
+// case in renderSection()'s switch causes a TypeScript error via assertHandled().
+type WorkspaceModuleId =
+  | typeof VIGIL_WORKSPACE_MODULE_ID
+  | typeof ARIA_WORKSPACE_MODULE_ID
+  | typeof SCRIBE_WORKSPACE_MODULE_ID;
+
 export interface WorkspaceAppProps {
   ctx: SovereignShellContext;
 }
 
-type Section = "vigil" | "aria" | "scribe";
+type Section = WorkspaceModuleId;
 
 // Per-section role definitions (GD-25 / docs/23 §3). Admin roles are included in every
 // list — the check is straightforward list membership, no separate superuser path —
@@ -92,6 +102,20 @@ const SECTIONS: Array<{ id: Section; label: string }> = [
 // Sections in order — used to pick the default active section.
 const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe"];
 
+// Never-return exhaustiveness guard. renderSection()'s switch default calls this so
+// TypeScript flags any new Section member without a corresponding render branch.
+function assertHandled(id: never): never {
+  throw new Error(`Unhandled workspace section: ${String(id)}`);
+}
+
+// Type-narrowed item filter — ensures every filter call references a known WorkspaceModuleId.
+function itemsFor(
+  all: readonly WorkspaceReviewItem[],
+  moduleId: WorkspaceModuleId
+): readonly WorkspaceReviewItem[] {
+  return all.filter((i) => i.module_id === moduleId);
+}
+
 export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
   const canAccessSection = (id: Section) =>
     SECTION_ROLES[id].some((r) => ctx.auth.hasRole(r));
@@ -102,22 +126,34 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
   const [section, setSection] = useState<Section>(defaultSection);
 
   const items = useReviewerWorkspaceItems(ctx);
-  const vigilItems = useMemo(
-    () => items.filter((i) => i.module_id === VIGIL_WORKSPACE_MODULE_ID),
-    [items]
-  );
-  const ariaItems = useMemo(
-    () => items.filter((i) => i.module_id === ARIA_WORKSPACE_MODULE_ID),
-    [items]
-  );
-  const scribeItems = useMemo(
-    () => items.filter((i) => i.module_id === SCRIBE_WORKSPACE_MODULE_ID),
-    [items]
-  );
+  const vigilItems = useMemo(() => itemsFor(items, VIGIL_WORKSPACE_MODULE_ID), [items]);
+  const ariaItems = useMemo(() => itemsFor(items, ARIA_WORKSPACE_MODULE_ID), [items]);
+  const scribeItems = useMemo(() => itemsFor(items, SCRIBE_WORKSPACE_MODULE_ID), [items]);
   const countFor: Record<Section, number> = {
     vigil: vigilItems.length,
     aria: ariaItems.length,
     scribe: scribeItems.length,
+  };
+
+  // Exhaustiveness-checked section renderer. TypeScript reports an error at the
+  // assertHandled(s) default if Section gains a new member without a render branch.
+  const renderSection = (s: Section): JSX.Element => {
+    switch (s) {
+      case VIGIL_WORKSPACE_MODULE_ID:
+        return canAccessSection("vigil")
+          ? <VigilWorkspaceSection ctx={ctx} items={vigilItems} />
+          : <LockedSectionNotice sectionLabel="VIGIL Approvals" requiredRole={SECTION_PRIMARY_ROLE.vigil} />;
+      case ARIA_WORKSPACE_MODULE_ID:
+        return canAccessSection("aria")
+          ? <AriaWorkspaceSection ctx={ctx} items={ariaItems} />
+          : <LockedSectionNotice sectionLabel="ARIA Certifications" requiredRole={SECTION_PRIMARY_ROLE.aria} />;
+      case SCRIBE_WORKSPACE_MODULE_ID:
+        return canAccessSection("scribe")
+          ? <ScribeWorkspaceSection ctx={ctx} items={scribeItems} />
+          : <LockedSectionNotice sectionLabel="SCRIBE T&T Reviews" requiredRole={SECTION_PRIMARY_ROLE.scribe} />;
+      default:
+        return assertHandled(s);
+    }
   };
 
   return (
@@ -166,24 +202,8 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
         })}
       </nav>
 
-      {/* Render only the active section. The canAccessSection guard below is defensive:
-          the module gate + disabled tabs mean an inaccessible panel should never be
-          reached in normal use — same defense-in-depth as AriaApp's LockedTabNotice. */}
-      {section === "vigil" && (
-        canAccessSection("vigil")
-          ? <VigilWorkspaceSection ctx={ctx} items={vigilItems} />
-          : <LockedSectionNotice sectionLabel="VIGIL Approvals" requiredRole={SECTION_PRIMARY_ROLE.vigil} />
-      )}
-      {section === "aria" && (
-        canAccessSection("aria")
-          ? <AriaWorkspaceSection ctx={ctx} items={ariaItems} />
-          : <LockedSectionNotice sectionLabel="ARIA Certifications" requiredRole={SECTION_PRIMARY_ROLE.aria} />
-      )}
-      {section === "scribe" && (
-        canAccessSection("scribe")
-          ? <ScribeWorkspaceSection ctx={ctx} items={scribeItems} />
-          : <LockedSectionNotice sectionLabel="SCRIBE T&T Reviews" requiredRole={SECTION_PRIMARY_ROLE.scribe} />
-      )}
+      {/* Exhaustiveness-checked dispatch — renderSection()'s switch handles all Section members. */}
+      {renderSection(section)}
     </section>
   );
 }

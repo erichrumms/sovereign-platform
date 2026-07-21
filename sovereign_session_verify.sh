@@ -3,6 +3,7 @@
 # SOVEREIGN Platform — Session-Open Verification Script
 # Authored by: Governance Agent · July 17, 2026 (v2 — corrected after first real run)
 # Updated: Session 43 · July 19, 2026 (v3 — HEAD + hash advanced to current state)
+# Updated: Session 51 · July 20, 2026 (v4 — HEAD + hash advanced; v1.20 / GD-25)
 # Run in Terminal 2 (Terminal 1 is reserved for the Build Agent)
 # ============================================================
 #
@@ -15,15 +16,15 @@
 # EXPECTED_HEAD and EXPECTED_CONTRACT_HASH must be updated each session.
 # Both will produce false WARNs the moment new commits land — that's
 # expected and not a bug. Update them at session close when you commit.
-# Shell contract version as of v3: v1.17 (GD-22, Session 41).
+# Shell contract version as of v4: v1.20 (GD-25, Session 50/51).
 #
 # Run:
 #   chmod +x sovereign_session_verify.sh
 #   ./sovereign_session_verify.sh [path-to-repo-root]
 # ============================================================
 
-EXPECTED_HEAD="3c35131"                                   # update each session — see note above
-EXPECTED_CONTRACT_HASH="91da8c18890bcc0f6fb3afb7105cf0ff7c63f8da3c5e8d1cefb08c91adbfee78"
+EXPECTED_HEAD="PLACEHOLDER_UPDATED_AT_CLOSE"             # update each session — see note above
+EXPECTED_CONTRACT_HASH="22ee233525ac2c636153cb604ec6a7c1822889a02f9d38bfbc0dda3d921f63d3"
 KNOWN_CONTRACT_PATHS="./sovereign-shell/shell-contract.ts ./shell-contract.ts"
 PY_TEST_DIR="./sovereign-security"                        # confirmed real location
 DEFAULT_REPO_ROOT="$HOME/Developer/sovereign-platform"
@@ -94,9 +95,9 @@ for f in $KNOWN_CONTRACT_PATHS; do
     H=$(sha256sum "$f" | awk '{print $1}')
     HASHES_SEEN="$HASHES_SEEN|$f:$H"
     if [ "$H" = "$EXPECTED_CONTRACT_HASH" ]; then
-      pass "$f matches documented v1.16 hash"
+      pass "$f matches documented v1.20 hash"
     else
-      warn "$f hash is $H — does NOT match documented v1.16 hash"
+      warn "$f hash is $H — does NOT match documented v1.20 hash"
     fi
   fi
 done

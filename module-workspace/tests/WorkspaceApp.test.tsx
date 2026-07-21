@@ -14,10 +14,16 @@
  * against a published payload and that its decide() removes the item from the
  * ReviewerWorkspaceSurface (the GD-25 decision-commit path).
  */
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
+import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import { WorkspaceApp } from "../src/WorkspaceApp";
 import { CLEAR_DEMO_ITEMS } from "../../module-aria/src/ClearCertificationQueue";
+import { createDevApprovalPort } from "../../module-vigil/src/approval-port";
+import { VIGIL_WORKSPACE_MODULE_ID } from "../../module-vigil/src/vigil-workspace-publisher";
+import { DEMO_TT_REVIEW_ITEMS } from "../../module-scribe/src/tt-synthetic-review";
+import { SCRIBE_WORKSPACE_MODULE_ID } from "../../module-scribe/src/scribe-workspace-publisher";
+import { ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 import { makeCtx, createInMemoryReviewerWorkspaceSurface } from "./test-helpers";
 
 function tab(name: RegExp): HTMLElement {
@@ -77,6 +83,79 @@ describe("WorkspaceApp per-section gating (docs/23 §3 — the AriaApp TAB_ROLES
     expect(screen.getByTestId("workspace-empty-section")).toHaveTextContent(
       /VIGIL has published no pending approval requests this session/
     );
+  });
+});
+
+describe("WorkspaceApp VIGIL embed — real component, published payload, decision-commit removal", () => {
+  it("renders the real ApprovalDetail from a published item and removes it on approve", async () => {
+    const surface = createInMemoryReviewerWorkspaceSurface();
+    const logged: SovereignLogEvent[] = [];
+    const anchor = "2026-07-20T00:00:00.000Z";
+    const [request] = createDevApprovalPort(anchor).listPending(); // req-dev-001, model_deployment P1
+    surface.publish({
+      module_id: VIGIL_WORKSPACE_MODULE_ID,
+      item_id: request.request_id,
+      payload: { request },
+      published_at: anchor,
+    });
+    const ctx = makeCtx({ role: "SYSTEM_ADMIN", reviewerWorkspaceSurface: surface, logSink: logged });
+
+    render(<WorkspaceApp ctx={ctx} />);
+
+    // SYSTEM_ADMIN defaults to the VIGIL section; the real ApprovalQueue renders the request.
+    const row = screen.getByRole("button", { name: /model_deployment/ });
+    fireEvent.click(row);
+
+    // Wait for the static (key-less) brief to appear before the decision panel is active.
+    await waitFor(() => expect(screen.getByText("STATIC")).toBeInTheDocument());
+
+    fireEvent.change(screen.getByLabelText("Decision note"), {
+      target: { value: "Reviewed the full request detail; approving from the Workspace." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Approve" }));
+
+    // The GD-25 decision-commit path: the decided item left the Workspace surface.
+    expect(surface.listForModule(VIGIL_WORKSPACE_MODULE_ID)).toHaveLength(0);
+    // The decision of record is VIGIL's own governed Logger event.
+    const decisions = logged.filter((e) => e.event_type === "AGENT_ACTION_APPROVED");
+    expect(decisions).toHaveLength(1);
+    expect(decisions[0]).toMatchObject({ product: "VIGIL", decision_type: "AGENT_APPROVAL" });
+    // The Workspace reflects the removal in place — back to the honest empty state.
+    expect(screen.getByTestId("workspace-empty-section")).toBeInTheDocument();
+  });
+});
+
+describe("WorkspaceApp SCRIBE embed — real component, published payload, decision-commit removal", () => {
+  it("renders the real TTManagerReview from a published item and removes it on send", () => {
+    const surface = createInMemoryReviewerWorkspaceSurface();
+    const logged: SovereignLogEvent[] = [];
+    const item = DEMO_TT_REVIEW_ITEMS.find((i) => !i.requiresVigilAuthorization)!;
+    const key = ttReviewItemKey(item);
+    surface.publish({
+      module_id: SCRIBE_WORKSPACE_MODULE_ID,
+      item_id: key,
+      payload: item,
+      published_at: "2026-07-20T00:00:00.000Z",
+    });
+    const ctx = makeCtx({ role: "PROGRAM_MANAGER", reviewerWorkspaceSurface: surface, logSink: logged });
+
+    render(<WorkspaceApp ctx={ctx} />);
+    fireEvent.click(screen.getByRole("tab", { name: /SCRIBE T&T Reviews/ }));
+
+    // The real TTManagerReview renders the published item.
+    expect(screen.getByTestId("tt-manager-review")).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId(`tt-queue-item-${key}`));
+    fireEvent.click(screen.getByTestId("tt-send-communication"));
+
+    // The GD-25 decision-commit path: the decided item left the Workspace surface.
+    expect(surface.listForModule(SCRIBE_WORKSPACE_MODULE_ID)).toHaveLength(0);
+    // The decision of record is SCRIBE's own governed Logger event.
+    const sends = logged.filter(
+      (e) => e.event_type === "HUMAN_DECISION" && e.decision_type === "TIME_CORRECTION_SENT"
+    );
+    expect(sends).toHaveLength(1);
+    // The Workspace reflects the removal in place — back to the honest empty state.
+    expect(screen.getByTestId("workspace-empty-section")).toBeInTheDocument();
   });
 });
 
