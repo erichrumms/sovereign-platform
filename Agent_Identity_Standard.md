@@ -299,15 +299,30 @@ Decision Record or is discarded.
 
 **Description:** The primary LLM-backed drafting agent for SCRIBE. Handles all
 product-aligned drafting modes (Correspondence Draft, Program Narrative, Report
-Commentary, VVR Description, Governance Memo, Rule Change Proposal), source synthesis,
-and workflow framing under three registered prompts. One LLM call per user action —
-no chained calls, no parallel requests, no agent state persisted across calls. All
-calls route through `sovereign-api-client`.
+Commentary, VVR Description, Governance Memo, Rule Change Proposal) under one
+registered prompt. Source synthesis and workflow framing (the two intermediate,
+non-exportable modes) run on the platform's standard three-tier fallback
+(live → cache → static); the static tier produces real, meaningful mode-specific
+prose, not an empty stub — confirmed by direct code read, `intermediate-engine.ts`.
+One LLM call per user action — no chained calls, no parallel requests, no agent
+state persisted across calls. All calls route through `sovereign-api-client`.
 
 **Prompt registrations required:**
 - `module-scribe/prompts/drafting_system.md`
-- `module-scribe/prompts/synthesis_system.md`
-- `module-scribe/prompts/framing_system.md`
+
+**Synthesis and framing prompts — deferred July 19, 2026 (Project Principal
+decision, matching `lens-orientation`'s PR-LENS-002 precedent):**
+`module-scribe/prompts/synthesis_system.md` and
+`module-scribe/prompts/framing_system.md` were registered as required but never
+authored — found by the July 19 end-to-end assessment, with no prior documented
+deferral decision, unlike PR-LENS-002. Deferral is deliberate, not an oversight:
+both modes already produce honest, working output via the standard fallback
+engine (confirmed real, mode-specific static prose, not a broken path), and no
+live key is expected to be active during the CTO demo regardless — authoring
+real prompts now would be invisible effort until that changes. **Do not add
+these two files back as required** unless a live key is confirmed active for a
+demo that specifically exercises Synthesis or Framing — at that point, schedule
+a real prompt-authoring session rather than reversing this note quietly.
 
 **Logger event fields this agent_id appears on:**
 - `SCRIBE_DRAFT_CREATED`
