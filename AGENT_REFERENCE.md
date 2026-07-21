@@ -552,6 +552,16 @@ module adopts it, build it against this same shape — a local role-list map plu
 future case genuinely can't be served by this shape, that's worth a real governance
 conversation before diverging, not a silent second pattern.
 
+**Informed decision-making design philosophy — `docs/22`, added July 20, 2026.**
+Before building or redesigning any screen where a human makes a real decision
+(approve, reject, certify, attest, record), read `docs/22_Informed_Decision_Making.md`
+first. It is the design authority for how SOVEREIGN supports decision-makers across
+the whole platform — the curated-context principle, the three-doors progressive
+disclosure model, and the explicit rule that role and expertise are separate axes,
+never conflated into per-experience-level screen variants. Developed while scoping
+the Reviewer's Workspace, but applies to every decision-facing feature, not just
+that one — cite it, don't restate it.
+
 ---
 
 ## Spec-vs-Codebase Reconciliation Protocol
