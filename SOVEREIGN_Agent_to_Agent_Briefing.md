@@ -1,133 +1,122 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
-## Updated July 18, 2026 — governance reconciliation pass complete; SBOM lineage closed to v1.40; AGENT_REFERENCE lineages merged
+## Updated July 21, 2026 — GD-22 through GD-27 closed; Reviewer's Workspace v1 built; documentation-currency pass underway
 
 ---
 
 ## Who You Are Talking To
 
 The Project Principal is the sole human decision-maker. Non-technical
-background, highly engaged, catches process gaps fast — caught a dropped
-version counter, a filename drift, and a double-appended manifest row in
-one evening. Big picture first, components second. The Build Agent runs
-autonomously and may be unattended for extended periods.
+background, highly engaged, catches process gaps fast — has independently
+spotted a Build Agent authoring a governance document it shouldn't have
+(Session 52), and nearly caught a stale, obsolete file before it got treated
+as a legitimate close-protocol checklist. Big picture first, components
+second. The Build Agent runs autonomously and may be unattended for
+extended periods.
 
-**Naming convention, unchanged:** the two AI roles are referred to only as
-"Governance Agent" and "Build Agent" throughout — no model or product names
-anywhere in this or future governing documents.
+**Naming convention, unchanged, strictly enforced:** the two AI roles are
+referred to only as "Governance Agent" and "Build Agent" throughout — no
+model or product names anywhere in this or any governing document.
 
 **Two operational facts worth knowing before anything else:**
 1. **The repo is public and cloneable:** `github.com/erichrumms/
    sovereign-platform`. Any agent with code execution should clone it
    directly for anything committed, rather than waiting on pasted content.
-2. **Large chat attachments can fail silently** (arrived empty, mechanism
-   never diagnosed). If pasted content seems missing, say so — don't guess
-   at its contents.
+2. **A `docs/NN` spec being named in an opening prompt is not evidence it's
+   actually in the repo.** This has caused two real Hard Stops — `docs/20`
+   at Session 44, `docs/25` at Session 53. Verify with `ls` before any
+   session that depends on one.
 
 ---
 
-## What's New Since the Last Briefing (July 14 → July 18)
+## What's New Since the Last Briefing (July 18 → July 21)
 
-**No build work happened in this window.** What happened instead was a
-full governance/documentation reconciliation pass, because an orientation
-check kept surfacing real unverified claims. Full detail:
-`SOVEREIGN_Governance_Investigation_Report_20260718.md`. Highlights:
+**A great deal of build work happened in this window — GD-22 through GD-27,
+six governance decisions, roughly fifteen sessions.** In order:
 
-1. **The SBOM lineage was found intact, not broken.** A repo-only check
-   wrongly concluded no merge existed since Session 17. A continuous,
-   real, properly maintained registry (v1.8→v1.39) existed in iCloud the
-   whole time — exactly where Lesson 13 says it belongs. The actual gap
-   was only Sessions 38 + PromptFix, now closed with **SBOM Registry
-   v1.40** (iCloud, placed, checksum-verified). This produced **Lesson
-   23**: check every documented storage location before declaring
-   anything missing.
-2. **AGENT_REFERENCE's two divergent lineages were merged.** Repo version
-   (full SOVEREIGN reference, Lessons 1-12, stopped June 26) and
-   project-knowledge version (condensed, Rules 1-10, through July 15) are
-   now **Unified v3.0** — one document, confirmed committed to the repo
-   root and copied to the iCloud root. **Project-knowledge placement is
-   unconfirmed — verify with the Project Principal, don't assume.**
-3. **`lens-orientation`'s registry entry was corrected — in the file, not
-   yet in the repo.** It described an LLM-backed dialogue agent; it's
-   actually a static, non-LLM Pipeline Navigator. The corrected
-   `Agent_Identity_Standard.md` (1537 lines, `e5e207e8…`) says so
-   directly, but **the repo still holds the pre-fix 1527-line version**
-   (`a1f0f0d0…`) as of HEAD `ca0e1c9` — this is a queued placement, not
-   yet done.
-4. **`docs/18` was stale v1.0; replaced with the real v1.1** (corrects a
-   prompt-requirement analysis and two placeholder schemas).
-5. **The four PPBE prompts' approval was traced and resolved as legitimate
-   but off-process:** a real, dated, attributed commit (`33495da`, July
-   13) exists; the formal Prompt Approval Record artifact was never
-   created for it. **Decision: logged as a one-time deviation, monitored
-   through the Walkthrough F repeat pass** — any prompt-content issue
-   found there reopens the question.
-6. **Repo root cleanup — DONE.** 45 superseded documents plus one stray
-   `.docx` moved to iCloud For Disposal, each copy-verified before
-   removal; commits `c023baf`/`ca0e1c9`.
-7. **Four verification scripts committed:** `sovereign_session_verify.sh`,
-   `sovereign_platform_map.sh`, `repo_integrity_check.sh` (bash 3.2
-   compatible — macOS default), `check_steps_4_5.sh`.
-8. **Two documents were found orphaned — the Walkthrough F compiled
-   document (existed only as a chat upload, never placed) and this
-   Briefing itself (was stale since July 14, now rewritten as of this
-   version). Neither is committed to the repo yet** as of HEAD `ca0e1c9`
-   — both are queued placements, same as item 3 above.
+**Walkthrough F repeat pass (Sessions 39-43):** twelve new findings
+(WF-13-24), all fixed and re-verified live. Most significant: **GD-22**
+(Session 41) — `minimumRole` widened from a single role to a role list,
+closing a gap where every non-admin role, including SCRIBE's own documented
+user, could not reach any module at all. ARIA got the platform's first
+per-tab role gate as a direct consequence — the template every later
+role-gated feature in this window reused.
+
+**The Home Dashboard arc (Sessions 44-49):** **GD-23** built
+`ProgramStatusSurface`, the platform's first cross-module data surface,
+resolving an architecture question open since Session 40's own Hard Stop.
+APEX's Execution Monitoring was converted from prose to real charts. The
+Home Dashboard shipped in two phases — Program Health/Flagged Programs
+(Session 47), then real cross-module queue tiles via **GD-24**
+(`WorkQueueSurface`, Session 49). A real test-fixture drift bug was found
+and fixed along the way (Session 48) — a hand-copied role list had gone
+stale, giving false-passing tests for three roles.
+
+**The Reviewer's Workspace (Sessions 50-53):** the most significant single
+piece of work in this window. **GD-25** built a genuinely new kind of
+platform capability — real, working VIGIL, ARIA, and SCRIBE decision
+components embedded directly in one consolidated module, not summaries, not
+links out. Grounded in a real design-philosophy document
+(`docs/22_Informed_Decision_Making.md`) developed in direct conversation
+with the Project Principal about what "informed decision-making in an
+AI-enabled organization" actually requires. **GD-26** gave the Workspace a
+real product identity. **GD-27** built the cross-module navigation
+primitive, completing all three "doors" `docs/22` names — and found a real
+pre-existing bug as a side effect (module switching had never actually
+unmounted the prior module).
+
+**Two real process lessons from this window, now standing rules:**
+1. Build Agent does not author or restructure any `docs/NN` spec file or
+   `AGENT_REFERENCE.md` — Session 52 saw `docs/24` quietly rewritten
+   post-build with accurate content but a real boundary crossed.
+2. Verify a spec's actual presence in the repo before a session that
+   depends on it — Sessions 44 and 53 both hit the same placement gap.
 
 ---
 
-## Current State — July 18, 2026
+## Current State (verify fresh — do not carry this forward blindly)
 
-| Item | State |
-|---|---|
-| HEAD | `ca0e1c9` — verify fresh via `git log -1` |
-| shell-contract.ts | v1.16, triple-confirmed, unchanged since GD-21 |
-| Platform tests | **1923** (1728 JS/TS + 195 Python), independently re-derived, exact match across two derivation methods |
-| Registered agents | 44, most-reverified number in the project |
-| Prompt registry | 20 registered = 19 approved + 1 pending; PPBE approvals traced to `33495da`, logged as a monitored deviation |
-| SBOM lineage | **v1.40**, iCloud, complete and current |
-| AGENT_REFERENCE | **Unified v3.0** — confirmed in repo + iCloud root; **project knowledge unconfirmed** |
-| Integration Brief | v1.47, but **the committed copy (`26a34dab…`) is one revision behind** a corrected version (`aa642f61…`) — reconcile before treating the placed Brief as authoritative |
-| docs/18 | **v1.1**, placed, replaces stale v1.0 |
-| Walkthrough F | Repeat pass (Priorities 1-5) — **still not run**, the actual next task |
-| CPMI-VRS Gate 3 (APEX) | Unblocked, still not attested |
+**HEAD:** `d9887f8` — verify via `git log -1`.
 
----
+**Shell contract: v1.22.** SHA-256
+`28ca61d1b761e1805dac200f15e73489dbf3d995e2e7d1063d9ee09646e94443`, both
+copies confirmed identical. **Fourteen** `SovereignShellContext` exports —
+not frozen at any fixed number; grows under governance decision as the
+platform does.
 
-## What's Next
+**Six shell-owned cross-module primitives now exist** — `TaskSurface`,
+`AriaCertificationSurface`, `ProgramStatusSurface`, `WorkQueueSurface`,
+`ReviewerWorkspaceSurface`, and `navigateToModule`. Cataloged in one place
+for the first time in `SOVEREIGN_Shell_Surface_Reference_20260721.md` — read
+this before proposing a seventh.
 
-1. **The Walkthrough F repeat pass.** Nothing else is genuinely ahead of
-   it in the critical path. Priorities 1-5, then A3/A5/A6 and Part B if
-   1-2 hold.
-2. Process the Session 38 + PromptFix handoffs' non-SBOM content against
-   the Brief — never done.
-3. WF-2, WF-6, WF-8 — best decided live, while looking at the actual
-   screens during the repeat pass.
-4. Standing, low-urgency: exhibit-drafter validation failure; PPBE
-   `max_tokens` host wiring; ARIA-EXPORT-GD; the two uninvestigated audit
-   flags (F-2 uncarded AgentOS agents; F-3 `vigil-approval-agent`'s
-   unexplained prompt file).
+**Agent registry: 44, unchanged across this entire window.** No new agent
+identity was created by any of GD-22 through GD-27 — `module-workspace`
+registers zero agents by design; it embeds other modules' existing
+components rather than owning new ones.
+
+**Prompt registry: 20 = 19 approved + 1 pending.** Unchanged this window.
+
+**Eleven top-level modules now exist** (was ten) — the Reviewer's Workspace
+is the newest, joining the original six primary products and four companion
+modules.
 
 ---
 
-## Corrections to Carry Forward
+## The Four Things That Most Commonly Break Sessions (updated)
 
-- SBOM lineage: **complete through v1.40.** Don't re-open "was there ever
-  a merge" — there was, continuously, in iCloud. That question is closed.
-- AGENT_REFERENCE: **one document now, Unified v3.0.** Don't treat the
-  repo and project-knowledge versions as separate anymore.
-- `lens-orientation`: **static, non-LLM, no prompt required.** Don't
-  re-flag it as missing a prompt file.
-- Test count: **1923**, independently confirmed twice. Trust it without
-  re-deriving, unless something material has changed since.
-- All standing lessons (13-21) remain in force. **Lesson 22** (verification
-  tooling can itself be the source of a false alarm — trace it, don't
-  trust or dismiss on sight) and **Lesson 23** (check every storage
-  location before declaring something missing) both apply with force to
-  any future governance investigation.
+1. **A `docs/NN` spec referenced but not actually placed.** Verify with
+   `ls`, every time, before a session opens against one.
+2. **A hand-copied value drifting from its real source.** Happened once
+   already this window (Session 48's role-list fixture) — the fix pattern
+   is always the same: derive from the live source, don't hand-copy.
+3. **Build Agent editing a governance document it shouldn't.** Even
+   accurate content, if it's a `docs/NN` spec or `AGENT_REFERENCE.md`, is
+   out of scope — reconciliations belong in the Handoff.
+4. **A chat recap treated as evidence of a real close.** The Close Protocol
+   — real `git push` output shown — remains non-negotiable, unchanged since
+   Session 31.
 
 ---
 
-*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 18, 2026*
-*Supersedes the July 14 version*
+*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 21, 2026*
 *Pre-Decisional · Internal Working Document*
-*File to: git repo root, as `SOVEREIGN_Agent_to_Agent_Briefing.md` (no date suffix)*

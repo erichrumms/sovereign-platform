@@ -1,14 +1,20 @@
 # SOVEREIGN Platform — Role Access Matrix
 ## ARIA Suite Definition + Final Cross-Platform Access Decisions
+## Updated to include the Reviewer's Workspace (GD-25)
 
-**Date:** July 18, 2026
+**Original date:** July 18, 2026 · **Updated:** July 21, 2026
 **Prepared by:** Governance Agent, with the Project Principal
-**Document type:** Addendum to `SOVEREIGN_Design_Recommendations_20260718.md` (DR-1) — this is the finalized specification, not a proposal
+**Document type:** The finalized access-control specification — GD-22 was built
+directly from this document's original content; this update adds the one
+module built since (`module-workspace`, GD-25) that needs the same treatment.
 **Status:** Pre-Decisional · Internal Working Document
 
 ---
 
 ## ARIA Suite — Definition
+
+*(Unchanged from the original — see below. No content in this section
+changed; reproduced here so this remains a complete, standalone reference.)*
 
 ARIA is SOVEREIGN's deterministic governance layer — the one part of the platform that guarantees no AI ever touches a decision. Every other product uses AI to draft, analyze, or recommend; ARIA only evaluates fixed rules against fixed inputs, so the same input always produces the same output, and every finding traces to a specific regulation, never a model's judgment. Its role is to be the trust anchor other products lean on when something needs to be provably rule-based, not AI-assisted — most concretely, SCRIBE cannot export a PPBE exhibit until ARIA has certified it.
 
@@ -22,7 +28,7 @@ ARIA is SOVEREIGN's deterministic governance layer — the one part of the platf
 
 ---
 
-## Role assignment, derived directly from the above
+## Role assignment, ARIA — unchanged
 
 | ARIA component | Assigned role | Why |
 |---|---|---|
@@ -31,11 +37,33 @@ ARIA is SOVEREIGN's deterministic governance layer — the one part of the platf
 | ARC | **ANALYST** | Modeling and impact-scoring is analytical work by nature |
 | CPMI-VRS | *(unchanged)* | A proof mechanism, not a role-facing working tool — stays admin-only |
 
-**This produces a real, coherent workflow, worth naming explicitly since it's a strong demo story:** an Analyst drafts a PPBE exhibit in SCRIBE → a Compliance Officer certifies it in ARIA's CLEAR → a Program Manager traces its full chain of authority in ARIA's TRACER before signing off on export. Three distinct roles, three distinct tools, one governed workflow — exactly the kind of thing worth walking a CTO through directly.
+---
+
+## New — the Reviewer's Workspace (GD-25, `module-workspace`), same treatment ARIA got
+
+Built July 20, this module embeds real, working decision components from
+three other modules directly — not summaries, not links out. Its
+per-section role assignment isn't new policy — **it exactly inherits each
+embedded component's own already-decided access rule**, the same way the
+Workspace's module-level gate is the union of everything inside it, matching
+ARIA's own established pattern precisely.
+
+| Workspace section | Assigned role | Why |
+|---|---|---|
+| VIGIL Approvals (embeds `ApprovalDetail`) | **PLATFORM_ADMIN, SYSTEM_ADMIN** | Identical to VIGIL's own module-level gate — the Workspace doesn't loosen or tighten it |
+| ARIA Certifications (embeds `ClearCertificationQueue`) | **COMPLIANCE_OFFICER** + admin | Identical to CLEAR's own assignment, above |
+| SCRIBE T&T Reviews (embeds `TTManagerReview`) | **PROGRAM_MANAGER, ANALYST** + admin | Identical to SCRIBE's own module-level gate |
+
+**This produces the same kind of coherent story ARIA's breakdown did:** a
+Compliance Officer opens the Workspace and sees only their real
+certification queue, ready to act on, with no VIGIL or SCRIBE content
+visible to them at all — not because the Workspace built a new access
+decision, but because it faithfully carries forward three decisions that
+were already made, each in its own home module, months apart.
 
 ---
 
-## Final Role → Module Access Matrix (all ten top-level modules)
+## Final Role → Module Access Matrix (all eleven top-level modules)
 
 | Module | Roles with access |
 |---|---|
@@ -48,21 +76,23 @@ ARIA is SOVEREIGN's deterministic governance layer — the one part of the platf
 | VIGIL | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged — confirmed intentional)* |
 | CPMI | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
 | AgentOS | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
-| **ARIA Suite** | *(see per-tab breakdown above — no longer a single module-level answer)* |
+| ARIA Suite | *(see per-tab breakdown above — no single module-level answer)* |
+| **Reviewer's Workspace** *(new)* | PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST *(union of the three sections above — see per-section breakdown)* |
 
 ---
 
-## Architecture requirement this creates — for Session 41's scope
+## Architecture requirement this originally created — status
 
-Two changes to the access-control layer, not just data entry:
-
-1. **`minimumRole` needs to become a role list, not a single exact-match role.** The current check (`auth.hasRole("SYSTEM_ADMIN") || auth.hasRole(minimumRole)`) can only ever admit one specific role plus the superuser clause. Every row above needs a list.
-2. **ARIA specifically needs per-tab gating, not one module-level gate.** Every other module's access decision is uniform across the whole module; ARIA's is not — CLEAR, TRACER, and ARC each need a different role, and CPMI-VRS needs to stay more restricted than any of them. This is a real, distinct piece of scope beyond the role-list change.
-
-The DEV persona toggle also needs to expand from two roles (SYSTEM_ADMIN, PROGRAM_MANAGER) to all eight, so every row in this matrix is actually demoable, not just the two tested so far.
+The two architectural changes this document originally called for (a role
+list instead of single-role matching; ARIA's per-tab gating) were both built
+in GD-22, Session 41, and have been the platform's standard access-control
+pattern ever since — reused, not reinvented, for `module-workspace`'s own
+per-section gating above. Nothing new required by this update; the pattern
+this document asked for in July has been the working default for over a
+month.
 
 ---
 
-*SOVEREIGN Platform · Role Access Matrix · July 18, 2026*
-*Addendum to SOVEREIGN_Design_Recommendations_20260718.md*
+*SOVEREIGN Platform · Role Access Matrix · Updated July 21, 2026*
+*Originally July 18, 2026 — Addendum to the now-retired Design Recommendations*
 *Pre-Decisional · Internal Working Document*

@@ -4,25 +4,25 @@
 
 **Document Type:** Build Specification (Phase I Deliverable, per `SOVEREIGN_PPBE_
 Integration_Architecture_Draft1.md` §11)
-**Version:** 1.1 — July 13, 2026 (corrected against actual build results;
-supersedes v1.0)
+**Version:** 1.2 — July 21, 2026 (currency update: fixed stale Integration Brief
+cross-references, added the GD-23/§6 addendum documenting Tier C's real
+cross-module enhancement; PPBE's own entities, agents, and build sequence
+below are unchanged — nothing in Sessions 44-53 touched PPBE's core
+architecture directly)
 **Authority:** Project Principal · SOVEREIGN Platform Governance Authority
-**Author:** Claude Chat (Governance Agent)
+**Author:** Governance Agent
 **Status:** BUILD COMPLETE — both PPBE Build Sessions (Core Integration,
-Session 31; Full Cycle, Session 32) closed clean, zero Hard Stops. This
-version corrects §5 (agent prompt-requirement analysis — five of six
-determinations were wrong when checked against actual build reality), §7.2
-(event-type count error), §3.2/§3.3 (placeholder shapes now filled in with
-what was actually built), and §4 (the Python-only decision, contrary to this
-document's own stated default expectation). Nothing else changed — see the
-inline notes marking each correction.
+Session 31; Full Cycle, Session 32) closed clean, zero Hard Stops. v1.1
+corrected several build-reality mismatches (see prior version note below);
+v1.2 is a currency pass only, not a content correction.
 **Classification:** Pre-Decisional · Internal Working Document
 **Governing documents:** `SOVEREIGN_PPBE_Integration_Architecture_Draft1.md` (source
 architecture — not superseded, this document operationalizes it) ·
 `Governance_Decision_Record_PPBE_DP1_DP6_RECONSTRUCTED.md` ·
 `Governance_Decision_Record_PPBE_DP7.md` · `Agent_Identity_Standard.md` (PPBE
-Workflow Layer Additions) · SOVEREIGN Platform Integration Brief v1.41 · System
-Prompt v19 · `SOVEREIGN_Strategic_Plan_CTO_Demo_v1.md` Track 1B
+Workflow Layer Additions) · SOVEREIGN Platform Integration Brief (current version) ·
+System Prompt (current version) ·
+`SOVEREIGN_Strategic_Plan_CTO_Demo_v3.6.md`
 
 ---
 
@@ -82,7 +82,7 @@ The architecture document's own three-phase model is the correct one:
 | Phase III — Full Cycle | **PPBE Build Session 2 — Full Cycle** | Second Claude Code build session |
 
 **Naming correction, carried from `SOVEREIGN_Strategic_Plan_CTO_Demo_v1.md` Track
-1B:** other tracking documents (Integration Brief v1.41 §20, the prior Work Plan)
+1B:** other tracking documents (the current Integration Brief's build roadmap section, the prior Work Plan)
 label the next PPBE session **"Session 29 — PPBE Phase I."** Read against the
 architecture document's own phase definitions, that label is a mismatch — the work
 scoped for that session (FLOWPATH/Logger/NEXUS/VIGIL integration) is Phase II, not
@@ -269,6 +269,22 @@ session needs:
   `vigil-approval-agent`'s `decision_type` requirement is already enforced
   (`useApprovalDecision.ts` pattern) — the action stays inactive until both are
   present.
+
+**Addendum, July 21, 2026 (GD-23, Session 44) — Tier C's approval brief now
+carries real cross-module context, not just local request fields.** The
+original walkthrough finding behind this addendum (WF-20) asked that a
+`ppbe_obligation` approval show the target program's actual financial health
+from APEX, not just the obligation request's own local fields — the concern
+being that a reviewer approving a dollar amount needs to know whether it
+pushes a program over its ceiling. This is now built: `ProgramStatusSurface`
+(a shell-owned, cross-module data surface — see `docs/20`) lets APEX publish
+each program's real obligation percentage and status, and VIGIL's
+`describeWhatChanges()` reads it directly, appending a real, current program
+summary to the brief. This does not change Tier C's authorization
+requirements above — the VIGIL decision and linked Decision Record ID are
+still both required — it changes what information is available to the human
+making that decision. No action needed here; recorded so a future reader of
+this architecture document knows the enhancement exists and where it lives.
 
 ---
 
