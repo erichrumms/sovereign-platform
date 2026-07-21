@@ -44,14 +44,29 @@ import {
   SCRIBE_WORKSPACE_MODULE_ID,
 } from "./scribe-workspace-publisher";
 
+/**
+ * GD-27 (shell-contract v1.22, docs/25 §3) — SCRIBE's narrowed initialState shape.
+ * An externally-supplied STARTING VALUE for TTManagerReview's existing selection
+ * state (keyed by ttReviewItemKey), not a new selection mechanism.
+ */
+export interface ScribeInitialState {
+  selectedItemKey?: string;
+}
+
 export interface ScribeAppProps {
   ctx: SovereignShellContext;
+  /** GD-27 — navigation intent from ctx.navigateToModule, already narrowed by index.ts. */
+  initialState?: ScribeInitialState;
 }
 
 type ScribeSurface = "drafting" | "tt-review" | "ppbe-exhibits";
 
-export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
-  const [surface, setSurface] = useState<ScribeSurface>("drafting");
+export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
+  // GD-27: a navigation intent naming a T&T review item opens directly on the
+  // Time & Travel Review surface; otherwise the module opens at its default.
+  const [surface, setSurface] = useState<ScribeSurface>(
+    initialState?.selectedItemKey ? "tt-review" : "drafting"
+  );
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
 
   // GD-24 — publish SCRIBE's WorkQueueSurface summary on mount.
@@ -126,6 +141,8 @@ export function ScribeApp({ ctx }: ScribeAppProps): JSX.Element {
         <TTManagerReview
           ctx={ctx}
           items={DEMO_TT_REVIEW_ITEMS}
+          // GD-27 — seed the review's existing selection with the navigation intent.
+          initialSelectedKey={initialState?.selectedItemKey}
           // GD-25 — the decision-commit path: a sent communication leaves the
           // Reviewer's Workspace rather than lingering.
           onSent={(item) =>

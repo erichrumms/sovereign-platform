@@ -48,6 +48,12 @@ export interface ClearCertificationQueueProps {
   ctx: SovereignShellContext;
   /** Documents awaiting clearance. Defaults to the synthetic demo set (Governance Clock OFF). */
   items?: ClearEvaluationInput[];
+  /**
+   * GD-27 (docs/25 §3) — starting value for the queue's existing per-document
+   * disclosure state: the named document opens with its preview expanded (a
+   * navigation intent from ctx.navigateToModule). An unknown id expands nothing.
+   */
+  initialSelectedDocumentId?: string;
 }
 
 // ── Synthetic demo queue (Governance Clock OFF — all data is synthetic) ─────────────────
@@ -95,7 +101,11 @@ export const CLEAR_DEMO_ITEMS: ClearEvaluationInput[] = [
 /** The number of items in the default CLEAR certification demo queue (GD-24 — read by AriaApp). */
 export const CLEAR_DEMO_ITEM_COUNT = CLEAR_DEMO_ITEMS.length;
 
-export function ClearCertificationQueue({ ctx, items = CLEAR_DEMO_ITEMS }: ClearCertificationQueueProps): JSX.Element {
+export function ClearCertificationQueue({
+  ctx,
+  items = CLEAR_DEMO_ITEMS,
+  initialSelectedDocumentId,
+}: ClearCertificationQueueProps): JSX.Element {
   const { statusOf } = useAriaCertifications(ctx);
   // Capture one evaluation timestamp for this panel session so evaluations are stable.
   const [evaluatedAt] = useState(() => new Date().toISOString());
@@ -105,8 +115,11 @@ export function ClearCertificationQueue({ ctx, items = CLEAR_DEMO_ITEMS }: Clear
   // (NOT enforced by the SCRIBE export gate; open item for a future GD).
   const [destinations, setDestinations] = useState<Record<string, string>>({});
   const [recipients, setRecipients] = useState<Record<string, string>>({});
-  // D-3 — which documents have their preview expanded.
-  const [previews, setPreviews] = useState<Record<string, boolean>>({});
+  // D-3 — which documents have their preview expanded. GD-27: a navigation intent
+  // naming a document seeds this existing state so that document opens expanded.
+  const [previews, setPreviews] = useState<Record<string, boolean>>(() =>
+    initialSelectedDocumentId ? { [initialSelectedDocumentId]: true } : {}
+  );
 
   // Deterministic CLEAR evaluations for every queued document (same input → same findings).
   const evaluations = useMemo(

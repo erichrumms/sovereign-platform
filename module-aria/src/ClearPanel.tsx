@@ -19,8 +19,15 @@ import { ClearCertificationQueue } from "./ClearCertificationQueue";
 
 type ClearView = "dashboard" | "queue";
 
-export function ClearPanel({ ctx }: { ctx: SovereignShellContext }): JSX.Element {
-  const [view, setView] = useState<ClearView>("dashboard");
+export function ClearPanel({
+  ctx,
+  initialDocumentId,
+}: {
+  ctx: SovereignShellContext;
+  /** GD-27 — a navigation intent naming a document starts on the Certification Queue. */
+  initialDocumentId?: string;
+}): JSX.Element {
+  const [view, setView] = useState<ClearView>(initialDocumentId ? "queue" : "dashboard");
 
   return (
     <div data-testid="clear-panel">
@@ -32,7 +39,7 @@ export function ClearPanel({ ctx }: { ctx: SovereignShellContext }): JSX.Element
       {view === "dashboard" ? (
         <ClearDashboard ctx={ctx} onOpenQueue={() => setView("queue")} />
       ) : (
-        <ClearCertificationQueue ctx={ctx} />
+        <ClearCertificationQueue ctx={ctx} initialSelectedDocumentId={initialDocumentId} />
       )}
     </div>
   );

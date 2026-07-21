@@ -61,7 +61,7 @@ import type {
 // this type), not forked. The loader file has only type-only imports, so this is a
 // cheap, cycle-free runtime reference (the loader imports no modules).
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
-import { VigilApp } from "./VigilApp";
+import { VigilApp, type VigilInitialState } from "./VigilApp";
 
 // GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: VIGIL is unchanged — restricted to
 // platform and system admins only (security/oversight surface, intentional narrow gate).
@@ -133,6 +133,21 @@ const ttEscalationMonitorCard: AgentCard = {
   security_observable: true,
 };
 
+/**
+ * GD-27 (shell-contract v1.22) — narrow the contract-level `unknown` navigation
+ * intent to VIGIL's real shape (docs/25 §3). Permissive on extra fields, strict
+ * on the one field used: anything that is not an object carrying a string
+ * `selectedRequestId` narrows to undefined and the module opens at its default
+ * screen, exactly as a cold mount.
+ */
+function narrowVigilInitialState(initialState: unknown): VigilInitialState | undefined {
+  if (typeof initialState !== "object" || initialState === null) return undefined;
+  const candidate = initialState as { selectedRequestId?: unknown };
+  return typeof candidate.selectedRequestId === "string"
+    ? { selectedRequestId: candidate.selectedRequestId }
+    : undefined;
+}
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -147,13 +162,17 @@ export const vigilModule: SovereignModuleContract = {
   // Time & Travel workflow layer, hosted on VIGIL infrastructure) are registered.
   agentCards: [vigilTriageAnalystCard, vigilApprovalAgentCard, ttEscalationMonitorCard],
 
-  mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
+  mount: (ctx: SovereignShellContext, el: HTMLElement, initialState?: unknown): void => {
     // --- Structural role gate (spec §7 / GD-22): throw before building the tree. ---
     if (!VIGIL_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
       throw new ModuleAccessDeniedError("module-vigil", ctx.auth.user.role, VIGIL_MINIMUM_ROLES);
     }
     root = createRoot(el);
-    root.render(createElement(VigilApp, { ctx }));
+    // GD-27: narrow the opaque navigation intent to VIGIL's real shape here, at
+    // the module boundary — the contract stays `unknown` (docs/25 §3).
+    root.render(
+      createElement(VigilApp, { ctx, initialState: narrowVigilInitialState(initialState) })
+    );
   },
 
   unmount: (): void => {

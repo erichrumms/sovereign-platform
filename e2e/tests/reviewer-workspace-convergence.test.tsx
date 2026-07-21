@@ -53,7 +53,9 @@ describe("Reviewer's Workspace convergence — GD-25 (Session 50)", () => {
     fireEvent.click(row);
 
     // The REAL ApprovalDetail: full request fields + the (static, key-less) brief.
-    expect(screen.getByText(/req-dev-001/)).toBeInTheDocument();
+    // GD-27 (Session 53): the section's "Open in VIGIL" action also names the
+    // request id, so the id legitimately appears more than once.
+    expect(screen.getAllByText(/req-dev-001/).length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByText("STATIC")).toBeInTheDocument());
 
     // Record the decision in the Workspace — the same governed decision path.

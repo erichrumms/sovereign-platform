@@ -35,10 +35,22 @@
  * SovereignRoles so every role in the approved access matrix can be exercised
  * without touching source. SYSTEM_ADMIN remains the default (admits all modules).
  *
- * Version: 1.2 · Session 41 (GD-22 D4 — all-8-roles persona toggle) · July 19, 2026
+ * Session 53 (GD-27): the mount/unmount sequence formerly inlined in
+ * onSelectModule is generalized into openModule(moduleId, initialState?), and
+ * registered with the shell as the ctx.navigateToModule handler
+ * (SovereignShell.setNavigateToModuleHandler — the composition root holds the
+ * context member; only this host owns the ModuleLoader and outlet element, so
+ * the real sequence lives here). The sidebar click path and the ctx-level
+ * primitive now run the SAME sequence. The generalized sequence also unmounts
+ * whatever module currently owns the outlet before mounting the target —
+ * previously nothing unmounted the prior module, which left the registry
+ * claiming it was still mounted (and a return to it no-op'd); see the Session
+ * 53 handoff findings.
+ *
+ * Version: 1.3 · Session 53 (GD-27 — navigateToModule host wiring) · July 21, 2026
  */
 
-import { StrictMode, useCallback, useReducer, useRef, useState } from "react";
+import { StrictMode, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { CSSProperties } from "react";
 
@@ -123,27 +135,59 @@ function App(): JSX.Element {
     [ctx]
   );
 
+  // GD-27 — THE generalized mount/unmount sequence (formerly inlined in
+  // onSelectModule). Both entry points run it: the sidebar click path (no
+  // initialState) and ctx.navigateToModule (optionally carrying one).
+  const openModule = useCallback((moduleId: string, initialState?: unknown) => {
+    setShowDashboard(false);
+    setMountError(null);
+    setHasSelectedModule(true);
+    // The outlet div is rendered by ShellNavChrome; mount after this tick so
+    // outletRef.current is present.
+    requestAnimationFrame(() => {
+      const el = outletRef.current;
+      if (!el) return;
+      // Preserve the original sidebar semantics: re-selecting the mounted
+      // module with no navigation intent is a no-op (its live state survives).
+      // With an initialState, a fresh mount is required — that is the only
+      // point at which the contract delivers it (mount()'s third parameter).
+      if (initialState === undefined && loader.isMounted(moduleId)) return;
+      // The generalized unmount step: exactly one module owns the outlet at a
+      // time, so whatever is mounted — including the target itself, when a new
+      // initialState requires a fresh mount — unmounts first.
+      for (const m of loader.list()) {
+        if (m.mounted) loader.unmount(m.moduleId);
+      }
+      loader
+        .mount(moduleId, el, initialState)
+        .then(() => forceRender())
+        .catch((err: unknown) =>
+          setMountError(err instanceof Error ? err.message : String(err))
+        );
+    });
+  }, []);
+
   const onSelectModule = useCallback(
-    (m: RegisteredModuleView) => {
-      setShowDashboard(false);
-      setMountError(null);
-      setHasSelectedModule(true);
-      // The outlet div is rendered by ShellNavChrome; mount after this tick so
-      // outletRef.current is present.
-      requestAnimationFrame(() => {
-        const el = outletRef.current;
-        if (!el) return;
-        if (loader.isMounted(m.moduleId)) return;
-        loader
-          .mount(m.moduleId, el)
-          .then(() => forceRender())
-          .catch((err: unknown) =>
-            setMountError(err instanceof Error ? err.message : String(err))
-          );
-      });
-    },
-    []
+    (m: RegisteredModuleView) => openModule(m.moduleId),
+    [openModule]
   );
+
+  // GD-27 — register the host handler for ctx.navigateToModule. The ctx-level
+  // primitive runs the SAME generalized sequence as the sidebar; unlike the
+  // sidebar path (where the chrome navigates), it must also keep
+  // ctx.navigation.currentPath honest itself. Last-write-wins registration, so
+  // StrictMode's double-invoked effect re-registers harmlessly.
+  useEffect(() => {
+    shell.setNavigateToModuleHandler((moduleId, initialState) => {
+      const target = loader.list().find((m) => m.moduleId === moduleId);
+      if (!target) {
+        setMountError(`navigateToModule: module "${moduleId}" is not registered`);
+        return;
+      }
+      shell.getNavigationProvider().navigateTo(target.mountPath);
+      openModule(moduleId, initialState);
+    });
+  }, [openModule]);
 
   return (
     <>

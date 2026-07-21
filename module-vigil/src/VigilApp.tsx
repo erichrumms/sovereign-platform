@@ -36,15 +36,30 @@ import {
   VIGIL_WORKSPACE_MODULE_ID,
 } from "./vigil-workspace-publisher";
 
+/**
+ * GD-27 (shell-contract v1.22, docs/25 §3) — VIGIL's narrowed initialState shape.
+ * An externally-supplied STARTING VALUE for the approval queue's existing
+ * selection state (useApprovalQueue.selectedId), not a new selection mechanism.
+ */
+export interface VigilInitialState {
+  selectedRequestId?: string;
+}
+
 export interface VigilAppProps {
   ctx: SovereignShellContext;
+  /** GD-27 — navigation intent from ctx.navigateToModule, already narrowed by index.ts. */
+  initialState?: VigilInitialState;
 }
 
 type Tab = "alerts" | "approvals";
 
-export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
+export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
   const operatorRole = "BOTH"; // reaching here means the gate passed (spec §3)
-  const [tab, setTab] = useState<Tab>("alerts");
+  // GD-27: a navigation intent naming a request opens directly on the Approvals
+  // tab; otherwise the module opens at its own default screen exactly as before.
+  const [tab, setTab] = useState<Tab>(
+    initialState?.selectedRequestId ? "approvals" : "alerts"
+  );
   const [lastDecision, setLastDecision] = useState<{ action: string; agentId: string; actionType: string } | null>(null);
   const [expiredRequestCount, setExpiredRequestCount] = useState(0);
 
@@ -79,7 +94,11 @@ export function VigilApp({ ctx }: VigilAppProps): JSX.Element {
     ? [...baseRequests, demoPPBEObligationCase.approval_request]
     : baseRequests;
 
-  const approvals = useApprovalQueue(ctx, { initialRequests });
+  const approvals = useApprovalQueue(ctx, {
+    initialRequests,
+    // GD-27 — seed the queue's existing selection state with the navigation intent.
+    initialSelectedId: initialState?.selectedRequestId,
+  });
 
   // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
   useEffect(() => {

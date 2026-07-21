@@ -77,6 +77,12 @@ export interface TTManagerReviewProps {
   onTravelDecision?: (item: TravelReviewItem, outcome: "APPROVED" | "DENIED" | "ESCALATED") => void;
   /** Called after a time communication send is recorded (queue removal etc.). */
   onSent?: (item: TimeReviewItem) => void;
+  /**
+   * GD-27 (docs/25 §3) — starting value for this component's existing selection
+   * state (a navigation intent from ctx.navigateToModule), keyed by
+   * ttReviewItemKey. An unknown key falls back to the default first-item selection.
+   */
+  initialSelectedKey?: string;
 }
 
 /**
@@ -102,10 +108,15 @@ function buildDraftText(draft: TTDraft): string {
   return draft.subject ? `${draft.subject}\n\n${draft.body}` : draft.body;
 }
 
-export function TTManagerReview({ ctx, items, onTravelDecision, onSent }: TTManagerReviewProps) {
-  const [selectedKey, setSelectedKey] = useState<string | null>(
-    items.length > 0 ? ttReviewItemKey(items[0]) : null
-  );
+export function TTManagerReview({ ctx, items, onTravelDecision, onSent, initialSelectedKey }: TTManagerReviewProps) {
+  const [selectedKey, setSelectedKey] = useState<string | null>(() => {
+    // GD-27: an externally-supplied starting value for the existing selection —
+    // honored only when it names a real item; otherwise the default stands.
+    if (initialSelectedKey && items.some((i) => ttReviewItemKey(i) === initialSelectedKey)) {
+      return initialSelectedKey;
+    }
+    return items.length > 0 ? ttReviewItemKey(items[0]) : null;
+  });
   const [error, setError] = useState<string | null>(null);
   const [sentKeys, setSentKeys] = useState<readonly string[]>([]);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);

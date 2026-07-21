@@ -46,8 +46,20 @@ import { TracerExplorer } from "./TracerExplorer";
 import { ArcImpactModeler } from "./ArcImpactModeler";
 import { AriaVrsGates } from "./AriaVrsGates";
 
+/**
+ * GD-27 (shell-contract v1.22, docs/25 §3) — ARIA's narrowed initialState shape.
+ * An externally-supplied STARTING VALUE for CLEAR's existing per-document
+ * disclosure state (ClearPanel's view + the queue's preview expansion), not a
+ * new selection mechanism.
+ */
+export interface AriaInitialState {
+  selectedDocumentId?: string;
+}
+
 export interface AriaAppProps {
   ctx: SovereignShellContext;
+  /** GD-27 — navigation intent from ctx.navigateToModule, already narrowed by index.ts. */
+  initialState?: AriaInitialState;
 }
 
 type Tab = "clear" | "tracer" | "arc" | "vrs";
@@ -80,13 +92,19 @@ const TABS: Array<{ id: Tab; label: string }> = [
 // Tabs in order — used to pick the default active tab.
 const TAB_ORDER: readonly Tab[] = ["clear", "tracer", "arc", "vrs"];
 
-export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
+export function AriaApp({ ctx, initialState }: AriaAppProps): JSX.Element {
   const canAccessTab = (id: Tab) =>
     TAB_ROLES[id].some((r) => ctx.auth.hasRole(r));
 
   // Default to the first tab this role can access. If (somehow) none are accessible,
   // fall back to "clear" — the module gate should have blocked entry before this point.
-  const defaultTab = TAB_ORDER.find(canAccessTab) ?? "clear";
+  // GD-27: a navigation intent naming a document opens directly on CLEAR (the tab that
+  // shows the Certification Queue) — but only if this role can access it; the per-tab
+  // role gate is not bypassed by a navigation intent.
+  const defaultTab =
+    initialState?.selectedDocumentId && canAccessTab("clear")
+      ? "clear"
+      : (TAB_ORDER.find(canAccessTab) ?? "clear");
   const [tab, setTab] = useState<Tab>(defaultTab);
 
   // GD-24 / GD-25 — the still-pending CLEAR demo items, derived from the certification
@@ -158,7 +176,7 @@ export function AriaApp({ ctx }: AriaAppProps): JSX.Element {
           mean an inaccessible panel should never be reached in normal use. */}
       {tab === "clear" && (
         canAccessTab("clear")
-          ? <ClearPanel ctx={ctx} />
+          ? <ClearPanel ctx={ctx} initialDocumentId={initialState?.selectedDocumentId} />
           : <LockedTabNotice tabLabel="CLEAR" requiredRole={TAB_PRIMARY_ROLE.clear} />
       )}
       {tab === "tracer" && (

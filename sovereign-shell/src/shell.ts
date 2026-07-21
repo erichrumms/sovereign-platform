@@ -756,6 +756,43 @@ class ShellReviewerWorkspaceSurface implements ReviewerWorkspaceSurface {
 }
 
 // ============================================================
+// MODULE NAVIGATOR — the fourteenth export (GD-27, shell-contract v1.22)
+// The ctx-level cross-module navigation primitive ("Door 1", docs/25 §3).
+// The COMPOSITION-ROOT half lives here: the context member and its late-bound
+// delegate. The actual mount/unmount sequence CANNOT live in this file — it
+// needs the ModuleLoader and the DOM outlet element, both of which exist only
+// in the shell host (main.tsx). The host registers its generalized sequence
+// via SovereignShell.setNavigateToModuleHandler() — the same late-binding
+// pattern navigation already uses (ShellNavigation.setLabelResolver /
+// ShellConfig.onNavigate). Fail-loud: calling navigateToModule before a host
+// registers a handler throws (fail-closed posture — a silent no-op would
+// swallow a real navigation intent).
+// ============================================================
+
+class ShellModuleNavigator {
+  private handler:
+    | ((moduleId: string, initialState?: unknown) => void)
+    | null = null;
+
+  setHandler = (
+    handler: (moduleId: string, initialState?: unknown) => void
+  ): void => {
+    this.handler = handler;
+  };
+
+  navigateToModule = (moduleId: string, initialState?: unknown): void => {
+    if (!this.handler) {
+      throw new Error(
+        `navigateToModule("${moduleId}") called before the shell host registered a ` +
+          `module-navigation handler (SovereignShell.setNavigateToModuleHandler). ` +
+          `The context primitive is host-wired — a headless shell cannot mount modules.`
+      );
+    }
+    this.handler(moduleId, initialState);
+  };
+}
+
+// ============================================================
 // SHELL CONFIG
 // ============================================================
 
@@ -804,12 +841,14 @@ export class SovereignShell implements SovereignShellContext {
   readonly programStatusSurface: ProgramStatusSurface;
   readonly workQueueSurface: WorkQueueSurface;
   readonly reviewerWorkspaceSurface: ReviewerWorkspaceSurface;
+  readonly navigateToModule: SovereignShellContext["navigateToModule"];
 
   /** Concrete sub-providers, retained for the shell host and module loader. */
   private readonly authProvider: ShellAuth;
   private readonly loggerProvider: ShellLogger;
   private readonly governanceProvider: ShellGovernance;
   private readonly navigationProvider: ShellNavigation;
+  private readonly moduleNavigatorProvider: ShellModuleNavigator;
 
   constructor(config: ShellConfig) {
     const snapshot = config.governanceSnapshot ?? defaultGovernanceSnapshot();
@@ -861,6 +900,11 @@ export class SovereignShell implements SovereignShellContext {
     this.workQueueSurface = new ShellWorkQueueSurface();
     // Thirteenth export (GD-25, v1.20) — the Reviewer's Workspace item surface.
     this.reviewerWorkspaceSurface = new ShellReviewerWorkspaceSurface();
+    // Fourteenth export (GD-27, v1.22) — the cross-module navigation primitive.
+    // Host-wired: the shell host registers the real mount/unmount sequence via
+    // setNavigateToModuleHandler() (it owns the ModuleLoader and outlet element).
+    this.moduleNavigatorProvider = new ShellModuleNavigator();
+    this.navigateToModule = this.moduleNavigatorProvider.navigateToModule;
   }
 
   /**
@@ -881,6 +925,19 @@ export class SovereignShell implements SovereignShellContext {
   }
   getGovernanceProvider(): ShellGovernance {
     return this.governanceProvider;
+  }
+
+  /**
+   * GD-27 (shell-contract v1.22) — the shell host registers the real
+   * navigateToModule sequence here (its generalized mount/unmount path).
+   * Internal host wiring, NOT on the contract: modules see only the
+   * ctx.navigateToModule member. Last-write-wins, so React StrictMode's
+   * double-invoked effects re-register harmlessly.
+   */
+  setNavigateToModuleHandler(
+    handler: (moduleId: string, initialState?: unknown) => void
+  ): void {
+    this.moduleNavigatorProvider.setHandler(handler);
   }
 }
 

@@ -36,7 +36,7 @@ import type {
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
-import { AriaApp } from "./AriaApp";
+import { AriaApp, type AriaInitialState } from "./AriaApp";
 
 // GD-22 / D3: ARIA module-level gate widens to admit the union of all per-tab roles.
 // The module must admit anyone who needs access to ANY tab — per-tab gating inside
@@ -81,6 +81,19 @@ const ariaRulesEngineCard: AgentCard = {
 
 const ARIA_AGENT_CARDS: AgentCard[] = [ariaRulesEngineCard];
 
+/**
+ * GD-27 (shell-contract v1.22) — narrow the contract-level `unknown` navigation
+ * intent to ARIA's real shape (docs/25 §3). Permissive on extra fields, strict on
+ * the one field used; anything else narrows to undefined (cold-mount default).
+ */
+function narrowAriaInitialState(initialState: unknown): AriaInitialState | undefined {
+  if (typeof initialState !== "object" || initialState === null) return undefined;
+  const candidate = initialState as { selectedDocumentId?: unknown };
+  return typeof candidate.selectedDocumentId === "string"
+    ? { selectedDocumentId: candidate.selectedDocumentId }
+    : undefined;
+}
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -91,14 +104,18 @@ export const ariaModule: SovereignModuleContract = {
   minimumRole: ARIA_MINIMUM_ROLES,
   agentCards: ARIA_AGENT_CARDS,
 
-  mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
+  mount: (ctx: SovereignShellContext, el: HTMLElement, initialState?: unknown): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
     // Admits anyone who needs at least one ARIA tab; per-tab gating is in AriaApp.tsx.
     if (!ARIA_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
       throw new ModuleAccessDeniedError("module-aria", ctx.auth.user.role, ARIA_MINIMUM_ROLES);
     }
     root = createRoot(el);
-    root.render(createElement(AriaApp, { ctx }));
+    // GD-27: narrow the opaque navigation intent to ARIA's real shape here, at
+    // the module boundary — the contract stays `unknown` (docs/25 §3).
+    root.render(
+      createElement(AriaApp, { ctx, initialState: narrowAriaInitialState(initialState) })
+    );
   },
 
   unmount: (): void => {

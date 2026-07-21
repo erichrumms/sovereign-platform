@@ -46,7 +46,7 @@ import type {
   SovereignShellContext,
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
-import { ScribeApp } from "./ScribeApp";
+import { ScribeApp, type ScribeInitialState } from "./ScribeApp";
 
 // scribe-drafter — Agent Identity Standard (Companion Suite additions). Operational
 // drafting agent; obtains LLM access via createSovereignClient() (never the
@@ -171,6 +171,19 @@ const ppbeExhibitDrafterCard: AgentCard = {
   security_observable: true,
 };
 
+/**
+ * GD-27 (shell-contract v1.22) — narrow the contract-level `unknown` navigation
+ * intent to SCRIBE's real shape (docs/25 §3). Permissive on extra fields, strict
+ * on the one field used; anything else narrows to undefined (cold-mount default).
+ */
+function narrowScribeInitialState(initialState: unknown): ScribeInitialState | undefined {
+  if (typeof initialState !== "object" || initialState === null) return undefined;
+  const candidate = initialState as { selectedItemKey?: unknown };
+  return typeof candidate.selectedItemKey === "string"
+    ? { selectedItemKey: candidate.selectedItemKey }
+    : undefined;
+}
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -198,9 +211,13 @@ export const scribeModule: SovereignModuleContract = {
     ppbeExhibitDrafterCard,
   ],
 
-  mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
+  mount: (ctx: SovereignShellContext, el: HTMLElement, initialState?: unknown): void => {
     root = createRoot(el);
-    root.render(createElement(ScribeApp, { ctx }));
+    // GD-27: narrow the opaque navigation intent to SCRIBE's real shape here, at
+    // the module boundary — the contract stays `unknown` (docs/25 §3).
+    root.render(
+      createElement(ScribeApp, { ctx, initialState: narrowScribeInitialState(initialState) })
+    );
   },
 
   unmount: (): void => {

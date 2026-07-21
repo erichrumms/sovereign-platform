@@ -28,10 +28,15 @@
  * from the surface (VIGIL onDecided here; ARIA's decide() removes internally;
  * SCRIBE onSent here) — a decided item leaves the Workspace in place.
  *
- * Deliberately NOT built: state-preserving "go back to the source module" navigation —
- * deferred to v1.1 (docs/23 §1 item 4); loader.mount() takes no initial-state parameter.
+ * Session 53 (GD-27, docs/25 §4 D4): the v1.1 deferral above is now RESOLVED —
+ * each section offers real "Open in [module]" actions calling
+ * ctx.navigateToModule(moduleId, { ...item id... }), the first real consumer of
+ * the cross-module navigation primitive. The actions sit ALONGSIDE the embedded
+ * decision experience (docs/23's embed pattern is unchanged): deciding inline
+ * still works exactly as before; opening the source module with the item
+ * pre-selected is now also one click.
  *
- * Version: 1.0 · Session 50 (GD-25) · July 20, 2026
+ * Version: 1.1 · Session 53 (GD-27 — open-in-source-module actions) · July 21, 2026
  */
 
 import { useMemo, useState } from "react";
@@ -236,6 +241,13 @@ function VigilWorkspaceSection({
 
   return (
     <div style={stackStyle} data-testid="workspace-vigil-section">
+      {/* GD-27 (docs/25 §4 D4) — real open-in-source-module actions; item_id is the request_id. */}
+      <OpenInSourceModuleActions
+        moduleLabel="VIGIL"
+        items={items}
+        describe={(i) => (i.payload as VigilWorkspacePayload).request.request_id}
+        onOpen={(i) => ctx.navigateToModule("module-vigil", { selectedRequestId: i.item_id })}
+      />
       <ApprovalQueue
         requests={payloads.map((p) => p.request)}
         selectedId={selectedId}
@@ -282,6 +294,13 @@ function AriaWorkspaceSection({
 
   return (
     <div data-testid="workspace-aria-section">
+      {/* GD-27 (docs/25 §4 D4) — real open-in-source-module actions; item_id is the document_id. */}
+      <OpenInSourceModuleActions
+        moduleLabel="ARIA"
+        items={items}
+        describe={(i) => (i.payload as ClearEvaluationInput).document_name}
+        onOpen={(i) => ctx.navigateToModule("module-aria", { selectedDocumentId: i.item_id })}
+      />
       <ClearCertificationQueue ctx={ctx} items={narrowed} />
     </div>
   );
@@ -309,6 +328,13 @@ function ScribeWorkspaceSection({
 
   return (
     <div data-testid="workspace-scribe-section">
+      {/* GD-27 (docs/25 §4 D4) — real open-in-source-module actions; item_id is ttReviewItemKey. */}
+      <OpenInSourceModuleActions
+        moduleLabel="SCRIBE"
+        items={items}
+        describe={(i) => i.item_id}
+        onOpen={(i) => ctx.navigateToModule("module-scribe", { selectedItemKey: i.item_id })}
+      />
       <TTManagerReview
         ctx={ctx}
         items={narrowed}
@@ -324,6 +350,42 @@ function ScribeWorkspaceSection({
 // ============================================================
 // SHARED PRESENTATION
 // ============================================================
+
+/**
+ * GD-27 (docs/25 §4 D4) — the first real consumer of ctx.navigateToModule: one
+ * "open in the source module" action per pending item, alongside (never replacing)
+ * the embedded decision experience. The target module mounts with the item
+ * pre-selected via its own narrowed initialState.
+ */
+function OpenInSourceModuleActions({
+  moduleLabel,
+  items,
+  describe,
+  onOpen,
+}: {
+  moduleLabel: string;
+  items: readonly WorkspaceReviewItem[];
+  describe: (item: WorkspaceReviewItem) => string;
+  onOpen: (item: WorkspaceReviewItem) => void;
+}): JSX.Element | null {
+  if (items.length === 0) return null;
+  return (
+    <div style={openActionsStyle} data-testid={`open-in-${moduleLabel.toLowerCase()}-actions`}>
+      <span style={openActionsLabelStyle}>Open in {moduleLabel}:</span>
+      {items.map((item) => (
+        <button
+          key={item.item_id}
+          type="button"
+          style={openActionButtonStyle}
+          title={`Open ${moduleLabel} with ${describe(item)} selected`}
+          onClick={() => onOpen(item)}
+        >
+          {describe(item)} ↗
+        </button>
+      ))}
+    </div>
+  );
+}
 
 /** Honest empty state — items appear only after their source module publishes them. */
 function EmptySection({ sourceLabel }: { sourceLabel: string }): JSX.Element {
@@ -393,6 +455,16 @@ const emptyStyle: CSSProperties = {
 const lockedNoticeStyle: CSSProperties = {
   padding: "16px 20px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8,
   color: "#475569", fontFamily: "system-ui, sans-serif", fontSize: 14, lineHeight: 1.6,
+};
+const openActionsStyle: CSSProperties = {
+  display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6,
+  padding: "8px 12px", background: "#f8fafc", border: "1px solid #e2e8f0",
+  borderRadius: 8, marginBottom: 12, maxWidth: 720,
+};
+const openActionsLabelStyle: CSSProperties = { fontSize: 12, fontWeight: 700, color: "#475569" };
+const openActionButtonStyle: CSSProperties = {
+  padding: "3px 10px", fontSize: 12, borderRadius: 999, border: "1px solid #cbd5e1",
+  background: "#ffffff", color: "#0c4a6e", cursor: "pointer",
 };
 
 export default WorkspaceApp;

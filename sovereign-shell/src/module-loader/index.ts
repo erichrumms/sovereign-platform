@@ -355,7 +355,14 @@ export class ModuleLoader {
 
   // ---- Mount / Unmount ----------------------------------------------------
 
-  async mount(moduleId: string, el: HTMLElement): Promise<MountResult> {
+  // GD-27 (shell-contract v1.22): optional third parameter passes the navigation
+  // intent through to the module's widened mount(ctx, el, initialState?). The
+  // loader treats it as opaque — narrowing is the target module's job.
+  async mount(
+    moduleId: string,
+    el: HTMLElement,
+    initialState?: unknown
+  ): Promise<MountResult> {
     const entry = this.requireEntry(moduleId);
     if (entry.mounted) {
       throw new ModuleLifecycleError(
@@ -389,8 +396,8 @@ export class ModuleLoader {
       registryVersion = res.registry_version;
     }
 
-    // Hand the module its context and DOM host.
-    entry.module.mount(ctx, el);
+    // Hand the module its context, DOM host, and (GD-27) any navigation intent.
+    entry.module.mount(ctx, el, initialState);
     entry.mounted = true;
     entry.element = el;
 

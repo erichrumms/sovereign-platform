@@ -35,9 +35,12 @@
       "<rootDir>/tests/setup-dom.ts"
     ],
     "moduleNameMapper": {
-      "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts"
+      "^(.+\\.md)\\?raw$": "$1",
+      "(.*)/anthropic-key$": "<rootDir>/tests/__mocks__/anthropic-key.ts",
+      "(.*)/vigil-endpoint$": "<rootDir>/../module-vigil/tests/__mocks__/vigil-endpoint.ts"
     },
     "transform": {
+      "^.+\\.md$": "<rootDir>/../module-scribe/tests/raw-transformer.cjs",
       "^.+\\.tsx?$": [
         "ts-jest",
         {

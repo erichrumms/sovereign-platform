@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.21
+ * Version: 1.22
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,38 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.22 (July 21, 2026) — GD-27 (Cross-Module Navigation Primitive, "Door 1", approved by
+ *                       the Project Principal July 21, 2026, Session 53, per docs/25 §3 and
+ *                       its design authorities docs/22 §5 and docs/23 §1 item 4). TWO
+ *                       changes, exactly as authorized: (1) widened
+ *                       SovereignModuleContract.mount() with an OPTIONAL third parameter
+ *                       `initialState?: unknown` — the navigation intent a module receives
+ *                       at mount (e.g. "open with request X selected"). Optional and
+ *                       `unknown` so every existing two-parameter mount implementation and
+ *                       call site remains valid (non-breaking widening), and so the
+ *                       contract never imports a module's own state shape (the same
+ *                       dependency-direction reasoning as WorkspaceReviewItem.payload,
+ *                       v1.20) — each module narrows its own initialState at mount.
+ *                       (2) Added `navigateToModule` as the FOURTEENTH member of
+ *                       SovereignShellContext (Standing Constraint #7 relaxed from
+ *                       thirteen to fourteen for this GD): the shell-owned primitive any
+ *                       module may call to open ANOTHER module with an initial state —
+ *                       the platform's first cross-module navigation capability (until
+ *                       now the mount/unmount sequence was shell-internal, reachable only
+ *                       from sidebar clicks; docs/22 §5 confirmed the gap by direct source
+ *                       read). Impact assessment: NO HumanDecisionType change. NO
+ *                       SovereignEventType change. NO AgentClass change. NO SovereignRole /
+ *                       SovereignProduct change. sovereign-api-client/src/types.ts verified
+ *                       NOT affected (it copies only SovereignProduct / SovereignTier /
+ *                       ClearanceLevel — none changed; its governance obligation has
+ *                       nothing to propagate for this GD). CONSUMERS: VIGIL, ARIA, and
+ *                       SCRIBE narrow initialState to their real selection shapes
+ *                       ({ selectedRequestId } / { selectedDocumentId } /
+ *                       { selectedItemKey }); the Reviewer's Workspace's three sections
+ *                       are the first real callers ("Open in VIGIL / ARIA / SCRIBE" —
+ *                       docs/25 §4 D4). The other seven modules are NOT wired (docs/25 §5
+ *                       — no confirmed need). Both shell-contract copies SHA-256
+ *                       re-verified identical at v1.22.
  *   v1.21 (July 20, 2026) — GD-26 (WORKSPACE SovereignProduct member, approved by the
  *                       Project Principal July 20, 2026, Session 52, per docs/24).
  *                       Added `WORKSPACE` as the eleventh member of the SovereignProduct
@@ -1287,9 +1319,10 @@ export interface ReviewerWorkspaceSurface {
 
 // ============================================================
 // SECTION 7 — SHELL CONTEXT (THE COMPLETE CONTRACT)
-// As of shell-contract v1.20 (GD-25) the context provides THIRTEEN exports
-// (Standing Constraint #7 relaxed from twelve to thirteen for
-// reviewerWorkspaceSurface; workQueueSurface was the twelfth at v1.19 / GD-24;
+// As of shell-contract v1.22 (GD-27) the context provides FOURTEEN exports
+// (Standing Constraint #7 relaxed from thirteen to fourteen for
+// navigateToModule; reviewerWorkspaceSurface was the thirteenth at v1.20 /
+// GD-25; workQueueSurface was the twelfth at v1.19 / GD-24;
 // programStatusSurface was the eleventh at v1.18 / GD-23; aria was the tenth
 // at v1.15 / GD-20; taskSurface was the ninth at v1.14 / GD-19). No further
 // export without a new GD.
@@ -1334,6 +1367,15 @@ export interface SovereignShellContext {
   // Thirteenth export — GD-25 (shell-contract v1.20). Cross-module reviewable items for the
   // Reviewer's Workspace module (docs/23).
   reviewerWorkspaceSurface: ReviewerWorkspaceSurface;
+  // Fourteenth export — GD-27 (shell-contract v1.22). The cross-module navigation
+  // primitive ("Door 1" — docs/25 §3, design authority docs/22 §5): open another
+  // module with an optional initial state (e.g. { selectedRequestId } for VIGIL).
+  // The shell host owns the real mount/unmount sequence; initialState passes
+  // through to the target module's mount() third parameter, which narrows it to
+  // its own real shape. Deliberately `unknown` for the same dependency-direction
+  // reason as WorkspaceReviewItem.payload: the contract never imports a module's
+  // own types.
+  navigateToModule: (moduleId: string, initialState?: unknown) => void;
 }
 
 
@@ -1350,7 +1392,11 @@ export interface SovereignModuleContract {
   // list membership; SYSTEM_ADMIN superuser clause is preserved in the policy, not here.
   minimumRole: SovereignRole[];
   agentCards: AgentCard[];
-  mount: (ctx: SovereignShellContext, el: HTMLElement) => void;
+  // GD-27 (v1.22): widened with an OPTIONAL third parameter — the navigation intent
+  // supplied when another module opens this one via ctx.navigateToModule(). `unknown`
+  // on the contract; each module narrows it to its own real shape at mount. Every
+  // existing two-parameter implementation and call site remains valid.
+  mount: (ctx: SovereignShellContext, el: HTMLElement, initialState?: unknown) => void;
   unmount: () => void;
   healthCheck: () => Promise<{
     status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE";

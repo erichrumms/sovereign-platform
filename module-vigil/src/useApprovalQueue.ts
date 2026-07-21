@@ -37,6 +37,12 @@ export interface UseApprovalQueueOptions {
   anchorIso?: string;
   /** Pre-seed the active queue directly (tests) — bypasses the port. */
   initialRequests?: AgentApprovalRequest[];
+  /**
+   * GD-27 (docs/25 §3) — starting value for the queue's existing selection state
+   * (a navigation intent from ctx.navigateToModule). An id not in the queue
+   * simply selects nothing, exactly as select() with an unknown id would.
+   */
+  initialSelectedId?: string;
 }
 
 export interface UseApprovalQueue {
@@ -69,7 +75,7 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
     const port = opts.port ?? createDevApprovalPort(opts.anchorIso ?? new Date().toISOString());
     return port.listPending();
   });
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(opts.initialSelectedId ?? null);
   const [expireError, setExpireError] = useState<string | null>(null);
 
   const expireOverdue = useCallback(
