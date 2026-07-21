@@ -16,15 +16,15 @@
 # EXPECTED_HEAD and EXPECTED_CONTRACT_HASH must be updated each session.
 # Both will produce false WARNs the moment new commits land — that's
 # expected and not a bug. Update them at session close when you commit.
-# Shell contract version as of v4: v1.20 (GD-25, Session 50/51).
+# Shell contract version as of Session 53 close: v1.22 (GD-27).
 #
 # Run:
 #   chmod +x sovereign_session_verify.sh
 #   ./sovereign_session_verify.sh [path-to-repo-root]
 # ============================================================
 
-EXPECTED_HEAD="e99447e"                                   # update each session — see note above
-EXPECTED_CONTRACT_HASH="22ee233525ac2c636153cb604ec6a7c1822889a02f9d38bfbc0dda3d921f63d3"
+EXPECTED_HEAD="a9b22ab"                                   # update each session — see note above
+EXPECTED_CONTRACT_HASH="28ca61d1b761e1805dac200f15e73489dbf3d995e2e7d1063d9ee09646e94443"
 KNOWN_CONTRACT_PATHS="./sovereign-shell/shell-contract.ts ./shell-contract.ts"
 PY_TEST_DIR="./sovereign-security"                        # confirmed real location
 DEFAULT_REPO_ROOT="$HOME/Developer/sovereign-platform"
