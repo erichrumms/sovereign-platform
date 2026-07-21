@@ -18,6 +18,8 @@
  * governance obligation, not an optional sync.
  *
  * Source of truth: sovereign-shell/shell-contract.ts (Section 1)
+ * Version: 1.3 — synced to shell-contract v1.21 (GD-26), Session 52, July 20, 2026
+ *   (added WORKSPACE to SovereignProduct)
  * Version: 1.2 — synced to shell-contract v1.6 (GD-8), Session 13, June 24, 2026
  *   (added ClearanceLevel for the Local LLM data-classification routing field;
  *    ClearanceLevel is the canonical classification taxonomy — Standing Constraint #2,
@@ -26,9 +28,9 @@
 
 /**
  * The SOVEREIGN products: six primary products plus the four companion suite
- * modules (GD-5, June 13, 2026). Companion suite agents (e.g. counsel-analyst,
- * scribe-drafter) are LLM-backed and call this client, so their product
- * identifiers must be representable here.
+ * modules (GD-5, June 13, 2026) plus the Reviewer's Workspace (GD-26, July 20, 2026).
+ * Companion suite agents (e.g. counsel-analyst, scribe-drafter) are LLM-backed and
+ * call this client, so their product identifiers must be representable here.
  * Canonical source: shell-contract.ts, Section 1 — kept byte-for-meaning
  * identical per the governance obligation in this file's header.
  */
@@ -44,7 +46,9 @@ export type SovereignProduct =
   | "COUNSEL"
   | "SCRIBE"
   | "LENS"
-  | "VIGIL";
+  | "VIGIL"
+  // Reviewer's Workspace — GD-26, July 20, 2026 (shell-contract v1.21)
+  | "WORKSPACE";
 
 /**
  * Infrastructure deployment tier.

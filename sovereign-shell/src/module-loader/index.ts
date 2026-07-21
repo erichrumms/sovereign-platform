@@ -75,16 +75,10 @@ const MODULE_PRODUCT: Record<string, SovereignProduct> = {
   "module-scribe": "SCRIBE",
   "module-lens": "LENS",
   "module-vigil": "VIGIL",
-  // Reviewer's Workspace — GD-25 (Session 50, docs/23). RECONCILIATION (surfaced, not
-  // hidden): the frozen SovereignProduct union has no WORKSPACE member, and adding one
-  // is a shell-contract change GD-25 does NOT authorize. The Workspace maps to the
-  // NEAREST EXISTING product, VIGIL — the module whose entire domain is "actions
-  // awaiting a human decision" — a loader bookkeeping entry only (it sets the tier and
-  // the product field on shell health-fallback events; the embedded components emit
-  // their own governed events under their own real products). Same posture as NEXUS's
-  // "nearest existing role" gate (Session 15). A dedicated WORKSPACE product member is
-  // flagged for a future GD.
-  "module-workspace": "VIGIL",
+  // Reviewer's Workspace — GD-25 (Session 50, docs/23); product member added GD-26
+  // (Session 52, docs/24). Loader bookkeeping only (tier + product on shell
+  // health-fallback events; embedded components emit under their own real products).
+  "module-workspace": "WORKSPACE",
 };
 
 function tierForProduct(product: SovereignProduct): SovereignTier {

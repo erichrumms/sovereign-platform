@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.20
+ * Version: 1.21
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,17 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.21 (July 20, 2026) — GD-26 (WORKSPACE SovereignProduct member, approved by the
+ *                       Project Principal July 20, 2026, Session 52, per docs/24).
+ *                       Added `WORKSPACE` as the eleventh member of the SovereignProduct
+ *                       union. Impact assessment: NO HumanDecisionType change. NO
+ *                       SovereignEventType change. NO AgentClass change. NO SovereignRole
+ *                       change. module-workspace's MODULE_PRODUCT entry updated from
+ *                       VIGIL to WORKSPACE (loader bookkeeping only — health-fallback
+ *                       events now carry the correct product; embedded components
+ *                       continue to emit under their own real products). sovereign-
+ *                       api-client/src/types.ts synced per its governance obligation.
+ *                       Both shell-contract copies SHA-256 re-verified identical at v1.21.
  *   v1.20 (July 20, 2026) — GD-25 (Reviewer's Workspace, approved by the Project Principal
  *                       July 20, 2026, Session 50, per docs/23 §2). Added two new types:
  *                       WorkspaceReviewItem (one reviewable item carrying module_id,
@@ -476,7 +487,9 @@ export type SovereignProduct =
   | "COUNSEL"
   | "SCRIBE"
   | "LENS"
-  | "VIGIL";
+  | "VIGIL"
+  // Reviewer's Workspace — GD-26, July 20, 2026 (shell-contract v1.21)
+  | "WORKSPACE";
 
 export type SovereignTier = "standard" | "enhanced";
 

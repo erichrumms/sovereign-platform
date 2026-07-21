@@ -89,7 +89,7 @@ export function registerPlatformModules(loader: ModuleLoader): void {
   // GD-22 pattern) — PLATFORM_ADMIN/SYSTEM_ADMIN/COMPLIANCE_OFFICER/PROGRAM_MANAGER/
   // ANALYST; per-section gating inside WorkspaceApp. Registers no agents (it embeds
   // VIGIL/ARIA/SCRIBE's real decision components; those modules own the agents).
-  // module-workspace maps to product VIGIL in MODULE_PRODUCT (nearest existing
-  // product — see the reconciliation note there; a WORKSPACE member needs a future GD).
+  // module-workspace maps to product WORKSPACE in MODULE_PRODUCT (GD-26, Session 52,
+  // docs/24 — the dedicated product member authorized this session).
   loader.register(workspaceModule);
 }
