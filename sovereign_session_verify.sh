@@ -23,7 +23,7 @@
 #   ./sovereign_session_verify.sh [path-to-repo-root]
 # ============================================================
 
-EXPECTED_HEAD="PLACEHOLDER_UPDATED_AT_CLOSE"             # update each session — see note above
+EXPECTED_HEAD="e99447e"                                   # update each session — see note above
 EXPECTED_CONTRACT_HASH="22ee233525ac2c636153cb604ec6a7c1822889a02f9d38bfbc0dda3d921f63d3"
 KNOWN_CONTRACT_PATHS="./sovereign-shell/shell-contract.ts ./shell-contract.ts"
 PY_TEST_DIR="./sovereign-security"                        # confirmed real location
