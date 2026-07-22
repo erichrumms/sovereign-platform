@@ -562,6 +562,15 @@ never conflated into per-experience-level screen variants. Developed while scopi
 the Reviewer's Workspace, but applies to every decision-facing feature, not just
 that one — cite it, don't restate it.
 
+**Six shell-owned cross-module surfaces now exist, catalogued in one place —
+added July 21, 2026.** Before proposing a new one, read
+`docs/SOVEREIGN_Shell_Surface_Reference_20260721.md` first — it names the actual
+implementation pattern shared by all six (a repeated `Map`/`Set<listener>`/`notify()`
+template, extraction-worthy at a sixth *data* surface), and the real reasoning for
+why each existing one is genuinely distinct, not overlapping. `docs/25`
+(`navigateToModule`, GD-27) completes the set — the first of the six that shares
+navigation intent rather than data, worth remembering as its own category.
+
 ---
 
 ## Spec-vs-Codebase Reconciliation Protocol
@@ -1035,6 +1044,49 @@ from memory.
 This lesson pairs with Lesson 7: registration must precede code by one commit,
 and the registration must actually exist in the standard — not just be claimed
 in the Brief.
+
+---
+
+**A structural gap, found and flagged July 21, 2026, not yet fixed:** this
+document's own Lessons sequence stops at 12. Lessons 13 through 23 exist —
+iCloud-only SBOM storage, verification-tooling discipline, checking every
+storage location before declaring something missing, among others — but only
+in the Integration Brief's own "Key Lessons" section, which gets substantially
+rewritten every few sessions. That is the wrong home for anything meant to be
+permanent. **The two most recent lessons are added here, numbered to match the
+Integration Brief's sequence rather than restarting at 13, so the eventual
+backfill of 13-23 doesn't collide with a second, conflicting numbering
+scheme.** That backfill is a real, bounded future task — not attempted here.
+
+### Lesson 24: A `docs/NN` spec being referenced is not evidence it's in the repo
+
+Happened twice, five weeks apart: `docs/20` at Session 44, `docs/25` at
+Session 53. Both times, an opening prompt cited a spec as its source of
+design authority before the spec had actually been committed. Both times,
+Build Agent correctly Hard-Stopped rather than guess at the missing content —
+the Hard Stop mechanism worked exactly as designed. The actual gap was
+upstream: the Governance Agent's own placement instructions were given, but
+never confirmed executed, before the dependent session was launched.
+
+The fix: verify with `ls` (or an equivalent direct check) that a spec is
+actually present in the repo *before* writing an opening prompt that depends
+on it — not after a session opens and finds it missing.
+
+### Lesson 25: Build Agent editing a governance document is a boundary violation even when the content is accurate
+
+Session 52 saw `docs/24` quietly restructured post-build — different section
+headers, different organization, but factually correct content — by Build
+Agent's own initiative, with no instruction to do so. The accuracy of the
+content doesn't resolve the process concern: authoring or restructuring a
+`docs/NN` spec or `AGENT_REFERENCE.md` is Governance Agent's and the Project
+Principal's job. A well-intentioned "let me finalize this to reflect what
+actually happened" instinct is still an uninstructed editorial call on
+governance content, occurring as a side effect of a build session.
+
+The fix, now standing in every opening prompt since: **Build Agent does not
+author, edit, or restructure any `docs/NN` spec file, or this document.**
+Reconciliations between a spec and what was actually built belong in the
+session's Handoff, never in the spec itself.
 
 ---
 

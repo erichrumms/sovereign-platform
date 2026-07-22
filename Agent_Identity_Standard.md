@@ -1591,6 +1591,14 @@ project, not just this one.
 **44 registered agents** — re-confirmed by direct file count during the post-Session-43
 assessment, independent of any carried-forward claim. No change since June 29.
 
+**Still 44 as of July 21, 2026, confirmed across GD-22 through GD-27.** The
+Reviewer's Workspace (`module-workspace`, GD-25, Session 50) registers zero
+agents by design — it embeds VIGIL's, ARIA's, and SCRIBE's already-registered
+decision components directly rather than owning new ones. Noted here
+explicitly so a future reader doesn't wonder why the platform's newest
+module isn't represented in this standard — its absence is correct, not an
+oversight.
+
 ---
 
 *Agent Identity Standard — Correction Note*
