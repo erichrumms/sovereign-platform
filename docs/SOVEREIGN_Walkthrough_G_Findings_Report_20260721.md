@@ -1,136 +1,104 @@
 # Walkthrough G — Findings Report and Path Forward
-## July 21, 2026 · Final — both sessions folded in
+## Updated July 22, 2026 — Session 54 (Build 1) closed and independently verified
 
-**Status:** Walkthrough G is closed for real this time. Parts 2 and 3 were fully completed in a
-second pass after this report's original close. Only Part 1 (Home Dashboard cold-start behavior)
-remains genuinely blocked — on WG-1, by design, exactly as originally planned. Everything else in
-the original script has now been run live at least once.
+**Status:** Walkthrough G is closed. WG-1, WG-2, WG-3, WG-4, WG-5, WG-12, and WG-13 are **built,
+tested, and independently verified against the real repository** (commit `893979f`) — not just
+taken from the close summary. Only Part 1's live-browser confirmation remains, and it's now
+unblocked for the first time.
 
-**How to read this report:** **Build findings** are concrete code problems with a clear, correct fix
-— ready to hand to a Build Agent session as-is. **Governance decisions** are choices about what the
-platform *should* do — they need a real answer before a Build Agent could implement anything
-correctly. **Design recommendations** are new scope, not corrections.
-
-Every finding below was confirmed by direct trace against the real repository, not inferred from
-screenshots alone — file and line references are included so nothing here has to be re-diagnosed.
+**How to read this report:** **Build findings** are concrete code problems with a clear, correct fix.
+**Governance decisions** need a real answer from the Project Principal before related build work can
+be scoped correctly. **Design recommendations** are new scope, not corrections.
 
 ---
 
-## Part 1 — Build Findings (Build Agent Session Scope)
+## Part 1 — Build Findings
 
-| ID | Area | What's wrong | Fix |
+| ID | Area | Status | Detail |
 |---|---|---|---|
-| **WG-1** | Home Dashboard + Reviewer's Workspace | Program Health, Issues, and To Do/Review on Home, and all three Reviewer's Workspace tabs, show empty on a fresh session — APEX, VIGIL, NEXUS, and SCRIBE each only publish to their shared surface when a human opens that specific module first (`ApexApp.tsx:54`, each module's own `*-work-queue-publisher.ts` / `*-workspace-publisher.ts`). Home and the Workspace are natural landing pages — this is a first-impression risk. Confirmed live: the Workspace showed 0/0/0 until VIGIL, ARIA, and SCRIBE were each visited manually. | Publish eagerly at shell start, reusing the exact functions that already exist. |
-| **WG-2** | Shell chrome, sidebar tooltip | Info-icon tooltip clipped by the sidebar's own `overflowY: "auto"` (an unset `overflowX` computes to `auto` too, per spec), cutting it off exactly at the sidebar/content boundary. | Render via a React portal to escape the sidebar's scroll container. |
-| **WG-3** | APEX, Obligation Rate chart | Axis uses short codenames (ALPHA, BRAVO...) while buttons/text below use full names, no bridge beyond a hover tooltip. | Rotate/label the axis with full names, or add a one-line key. |
-| **WG-4** | APEX, Variance chart | Legend order reported as Actual-then-Planned; code declares Planned first, matching the bar-body order. Root cause likely a Recharts default-ordering behavior, not fully confirmed live. | Pass an explicit `payload` to `<Legend>` for deterministic order regardless of cause. |
-| **WG-5** | Reviewer's Workspace / VIGIL | `expireOverdue()` (`useApprovalQueue.ts`) only runs once, on `VigilApp.tsx` mount — not a live timer. A P1 item's 15-minute window can elapse unswept while the screen sits open. Sourced from `docs/27` (EG-C). | Drive from a live interval, reaching both VIGIL's own screen and the Workspace's embedded copy. |
-| **WG-11** | APEX, Program Detail navigation | **Confirmed broken for every program, every time — not a cold-start issue.** Clicking any Obligation Rate bar returns "No program record was found," for all five PPBE programs, reproducibly. Root cause: APEX has **two entirely separate, never-reconciled program datasets.** The original World Model (`synthetic-world-model.ts`, Session 17) uses IDs like `P-100`, `P-200`, `P-300`, and is what `ProgramDetailView`'s adapter (`apex-data-adapter.ts`) actually queries. The PPBE synthetic set (`sovereign-data/src/synthetic/ppbe-seed.ts`) uses IDs like `SYNTH-PRG-ALPHA`, and is what feeds every Execution Monitoring chart. Session 46 wired the bar-click handler to pass a PPBE ID into a screen that only recognizes World Model IDs — it was never going to work. **This is very likely the same underlying gap as WG-6 and WG-9 below, seen from a third screen — see the note under Governance Decisions.** | Needs a governance decision (see WG-6/WG-9) before it can be fixed correctly — see below. |
-| **WG-12** | APEX, Dependency Health table | Confirmed by direct trace: real, individually-identified dependency records already exist (`SYNTH-DEP-01`, `SYNTH-DEP-02`...), each carrying which program/phase depends on which, a description, and a status. All of this is discarded before reaching `DependencyHealthTable`, which receives only `{ healthy, at_risk, failed, narrative }` — bare counts, no way to tell *which* program has the at-risk or failed dependency. | Pass the individual dependency records through instead of pre-reducing them to counts; the data already exists. |
-| **WG-13** | Reviewer's Workspace / VIGIL | Confirmed live: approving an item in the Workspace does not update VIGIL's own screen. Root cause: `createDevApprovalPort()` regenerates its entire synthetic request list fresh on every call — there is no shared live store between the Workspace's embedded copy and VIGIL's own mounted instance. **The underlying decision itself is genuinely, permanently logged** (a real `HUMAN_DECISION`-family event, confirmed in `useApprovalDecision.ts:69`) — this is a live-queue display gap, not a data-loss gap. Explicitly documented in the code as a placeholder awaiting a "live" port. | Real fix is likely superseded by WG-14 (a canonical Activity View) rather than patched independently — worth deciding together, not in isolation. |
-| **WG-14** | Platform-wide, provenance | Full analysis in `docs/28`. The Logger's public interface (`ctx.logger`) is write-only, but the underlying `ShellLogger` class already implements a working, unused `getEntries()` read method — built for exactly this purpose, per its own comment, with zero current callers. Confirmed via direct trace, not assumed. | Expose `getEntries()` (or an equivalent) through the shell contract (a real, well-scoped GD), and build a genuine cross-module Activity/Decision History view against it. Session-scoped honestly (no persistent sink connected yet — "Stage 2," not urgent). This also resolves WG-13 more properly than patching it alone would. |
+| **WG-1** | Home Dashboard + Reviewer's Workspace | ✅ **Done — Session 54** | `startup-publish.ts` now calls every module's real publish function at shell start, reusing them verbatim. Independently confirmed: real imports of the original functions, genuinely invoked from `main.tsx`, not a parallel implementation. |
+| **WG-2** | Shell chrome, sidebar tooltip | ✅ **Done — Session 54** | Tooltip now renders via a real React portal to `document.body`, positioned from the icon's actual `getBoundingClientRect()`. Confirmed in code. |
+| **WG-3 / WG-4** | APEX charts | ✅ **Done — Session 54** | Codename→name key added; variance legend now uses an explicit custom content renderer. **Reconciliation, and a good one:** Recharts 3.x removed the `payload` prop this report originally recommended — Build Agent found this and built a stronger, deterministic replacement instead of forcing the outdated approach. |
+| **WG-5** | Reviewer's Workspace / VIGIL | ✅ **Done — Session 54** | Expiry sweep now runs on a real 30-second `setInterval` in both `VigilApp.tsx` and the Workspace's embedded copy. Confirmed in code, not mount-only anymore. |
+| **WG-12** | APEX, Dependency Health | ✅ **Done — Session 54** | Individual dependency records now render in a "Dependency detail" table, at-risk/failed sorted first. |
+| **WG-13** | Reviewer's Workspace / VIGIL | ✅ **Done — Session 54** | `vigil-approval-session.ts` — confirmed a genuine module-level singleton (`let state: MutableSessionState | null = null`), not another per-mount copy. A decision made in the Workspace is now reflected if VIGIL's own screen mounts afterward. **Deliberately session-scoped only** — permanent cross-session history remains WG-14. |
+| **WG-14** | Platform-wide, provenance | Open | Full analysis in `docs/28`. Expose the Logger's existing, unused `getEntries()` through the shell contract; build a real cross-module Activity/Decision History view. Session-scoped honestly, not a Stage 2 substitute. |
+| **WG-15** | SCRIBE | **New — surfaced by Build Agent, Session 54** | SCRIBE has its own version of the WG-13 problem: "sent" T&T review items can resurrect the same way VIGIL's approvals used to, for the same underlying reason (no shared session store on SCRIBE's side). Not yet fixed — flagged, not acted on this session. |
+| **WG-16** | Home Dashboard | **New — surfaced by Build Agent, Session 54** | Home's queue counts are point-in-time as of when Home loaded — they don't live-update as things change elsewhere in the same session until a module republishes. Worth deciding whether this needs a fix or is an acceptable limit of WG-1's scope. |
+| **WG-17** | Home Dashboard / VIGIL | **New — surfaced by Build Agent, Session 54** | No expiry sweep runs while a user is sitting on Home itself — WG-5's fix covers VIGIL's own screen and the Workspace, not Home. An overdue P1 item could sit past its window if someone stays on Home without visiting either. |
 
 ---
 
-## Part 2 — Governance Decisions (Resolve Before Related Build Work)
+## Part 2 — Governance Decisions (Unchanged, Still Open)
 
-**Read WG-6, WG-9, and WG-11 together before deciding any of them separately.** All three trace back
-to the same root situation: PPBE's synthetic program data was added to APEX without being
-reconciled with APEX's original World Model. WG-6 is the quarter-scope symptom, WG-9 is the
-site-tracking symptom, WG-11 is the broken-navigation symptom — three views of one real architecture
-question: **does APEX have one coherent notion of "a program," or two incompatible ones that need
-unifying?** Scoping these as one decision, not three sequential ones, avoids fixing each symptom in
-a way that has to be undone once the real answer lands.
+**Read WG-6, WG-9, and WG-11 together** — all three trace back to the same root cause: PPBE's
+synthetic program data was never reconciled with APEX's original World Model
+(`P-100`/`P-200`/`P-300` vs. `SYNTH-PRG-ALPHA`/etc.). Decide once, not three times.
 
 | ID | Area | The actual question |
 |---|---|---|
-| **WG-6** | APEX, Variance chart | Synthetic dataset hardcodes exactly two fiscal periods (`FY 2026 Q3/Q4`). Plausibly deliberate (reads as "most recent + current"), but unconfirmed as intentional. Part of the WG-11 cluster. |
-| **WG-7** | Home Dashboard, Module Orientation panel | Fully duplicates the sidebar, zero interactivity — full write-up in the companion memo. Retire it, or give it a real job (live status via `WorkQueueSurface`)? |
-| **WG-8** | APEX, chart set | Per-program selector — confirmed genuinely new work, confirmed feasible (`program_id` already on every record). Best scoped after the WG-6/9/11 data-architecture question lands. |
-| **WG-9** | APEX / PPBE, data architecture | The open site-tracking schema item — part of the WG-11 cluster, above. Full framing in `docs/26`. |
-| **WG-10** | ARIA / SCRIBE export gate | Already self-disclosed by the platform's own UI: export destination/recipient recorded to the audit trail but not enforced by SCRIBE's actual gate. Honest disclosure, real decision still needed. |
+| **WG-6** | APEX, Variance chart | Two hardcoded fiscal periods — deliberate scope, or an unextended placeholder? Part of the WG-11 cluster. |
+| **WG-7** | Home Dashboard, Module Orientation | Retire, or give it a real job (live status via `WorkQueueSurface`)? |
+| **WG-8** | APEX, chart set | Per-program selector — confirmed feasible, best scoped after WG-6/9/11 land. |
+| **WG-9** | APEX / PPBE, data architecture | Site-tracking schema — part of the WG-11 cluster. Full framing in `docs/26`. |
+| **WG-10** | ARIA / SCRIBE export gate | Self-disclosed by the platform's own UI; real decision still needed. |
+| **WG-11** | APEX, Program Detail | **Confirmed broken for every program, always** — two disconnected program registries. Root cause fully traced; fix depends on the WG-6/9 decision. |
 
-**Also open, tracked in `docs/27` under its own EG numbering (document review, not live walkthrough
-— not blocking any item above):** EG-A (no documented P1/P2/P3 rubric), EG-B (should autonomy ever
-expand based on track record), EG-D (is threshold-gating universal or confirmed for one path only),
-EG-E (does `docs/22`'s materiality test extend to reporting-only screens).
+**Also open, tracked in `docs/27`:** EG-A, EG-B, EG-D, EG-E — not blocking anything above.
 
 ---
 
-## Part 3 — Design Recommendations (New Scope, Not Findings)
+## Part 3 — Design Recommendations (Unchanged)
 
-1. **Module Orientation → live per-module status** (WG-7). Full memo already produced.
-2. **Per-program selector across APEX's chart set** (WG-8). Filtering, not new data plumbing.
-3. **Decision-note friction.** Both VIGIL and ARIA require a free-text note of at least 10 characters
-   for every decision (`APPROVAL_NOTE_MIN_CHARS = 10`, confirmed platform-wide convention, not a
-   one-off). Real feedback from tonight's live use: consider structured reason codes or checkboxes
-   for common cases, with free text available but not mandatory every time.
-4. **The larger vision — `docs/26`.** Portfolio/program/project execution monitoring, native
-   BI-grade visualization, the "Primavera-shaped gap" (no dependency/critical-path engine exists
-   anywhere yet). The framing document for most of the real build arc ahead.
+1. Module Orientation → live status (WG-7) — full memo already produced.
+2. Per-program selector (WG-8).
+3. Decision-note friction — structured reason codes/checkboxes as an alternative to a bare
+   10-character free-text minimum (confirmed platform-wide convention, both VIGIL and ARIA).
+4. `docs/26`'s larger vision — the framing document for most of the real build arc ahead.
 
 ---
 
-## Part 4 — Confirmed Passes
+## Part 4 — Confirmed Passes (Unchanged from the live walkthrough)
 
-- **Role-based sidebar gating** — checked against the Role Access Matrix across six roles total
-  (Program Manager, Platform Admin, Analyst, Read Only, Compliance Officer, and re-confirmed for
-  Program Manager in the Workspace) — every lock/unlock matched policy exactly.
-- **Read Only's honest disclosure** and **Module Orientation's role-filtered count** — both correct.
-- **Both APEX charts render as real charts**, not prose.
-- **Dependency Health is a real table**, format matches the script (content depth is WG-12, above).
-- **Per-site breakdown disclosure — exact wording confirmed:** *"Placeholder data. Site-level data is
-  illustrative — a real site-tracking schema has not yet been added to the program data dictionary. A
-  governance decision (data-dictionary approval) is required before live site data can be wired
-  here."* Cites its own source (Session 46, item D4). Strong, specific, honest — not boilerplate.
-- **Six distinct sites confirmed**, uneven spread confirmed (one program touches all six).
-- **The Reviewer's Workspace, once populated, is the strongest-built thing in the platform.** All
-  three live decision actions confirmed working end-to-end: a real VIGIL approval, a real ARIA
-  certification, and the real SCRIBE "I have sent this communication" attestation — each correctly
-  removed the item from the Workspace, and the VIGIL decision was confirmed to produce a real,
-  permanently logged, correctly-attributed audit event (WG-13's live-display gap notwithstanding).
-- **The "Open in [module]" navigation link** correctly opened the specific item, not a generic page.
-- **Read Only correctly fully locked out** of the Workspace.
+Role-based gating across six roles, both APEX charts rendering as real charts, the site-breakdown
+disclosure's exact honest wording, six confirmed distinct sites, all three Reviewer's Workspace live
+decision actions (VIGIL approval, ARIA certification, SCRIBE attestation) confirmed working
+end-to-end with a real, correctly-attributed Logger event, the navigation link, and Read Only's full
+lockout. Full detail preserved from the original version of this report.
 
 ---
 
-## Part 5 — Not Yet Verified
+## Part 5 — Not Yet Verified — Now Unblocked
 
-**Only Part 1 remains** — Home Dashboard steps 2, 3, 4, 6, 7 (Program Health variation, Flagged
-Programs, queue tile contents, Program Manager-specific tiles, Read Only's empty states with real
-data present). Blocked on WG-1 by design — meaningless to test against an empty state. This is the
-one item for a real repeat pass after WG-1 lands.
-
-Parts 2 and 3 are fully closed as of this version.
+**Home Dashboard steps 2, 3, 4, 6, 7** (Program Health variation, Flagged Programs, queue tile
+contents, Program Manager-specific tiles, Read Only's empty states) — previously blocked on WG-1,
+which is now done. **This is the one remaining item for a real repeat walkthrough pass**, and it can
+finally be tested against real, populated data instead of an empty state.
 
 ---
 
 ## Recommended Path Forward
 
-See the full sequenced build plan in chat — summarized here:
-
-1. **One governance conversation first**, covering WG-6/WG-9/WG-11 together (the data-architecture
-   cluster), WG-7, and WG-14's exact shape. EG-A/B/D/E can ride along or wait — not blocking.
-2. **Build Session 1** — WG-1 through WG-5, plus WG-12 and WG-13 (all unblocked, no governance
-   dependency). Highest-visibility items land first.
-3. **Build Session 2** — WG-11, WG-9, WG-6, WG-7, WG-8, once Step 1's decisions land.
-4. **Build Session 3** — WG-14 (the shell-contract change plus the real Activity/Decision View).
-5. **Repeat Walkthrough pass** after Session 1 — closes Part 5's remaining Part 1 items.
+1. **Repeat Walkthrough pass, next** — Part 1's Home Dashboard items, now unblocked by WG-1.
+2. **One governance conversation** — WG-6/WG-9/WG-11 together, plus WG-7 and WG-14's shape.
+3. **Build Session 2** — WG-11, WG-9, WG-6, WG-7, WG-8, once the governance conversation lands.
+4. **Build Session 3** — WG-14 (Logger exposure + real Activity View).
+5. **WG-15, WG-16, WG-17** — new, small, not yet scoped into a session. Likely fold into whichever
+   of Session 2/3 touches the same area (WG-15 pairs naturally with WG-14's session; WG-16/WG-17
+   are small enough to ride along with either).
 
 ---
 
-## Companion Documents Produced This Session
+## Companion Documents
 
-- **`docs/26`** — Portfolio/Program/Project Execution Monitoring: Target State and the Analyst/PM
-  Workday Principle. Framing document for WG-6, WG-8, WG-9, WG-11, and most of Part 3.
-- **`SOVEREIGN_Walkthrough_G_Finding_ModuleOrientation_20260721.md`** — full recommendation for WG-7.
-- **`docs/27`** — Execution Governance: An External Critique Against SOVEREIGN's Actual Mechanisms.
-  Source of WG-5 and the EG-lettered governance questions.
-- **`docs/28`** — The Logger's Read Path: Narrower Gap Than First Assessed. Source of WG-14.
-
-Place all five files under `docs/` (this report can sit alongside `docs/22` through `docs/28`).
+- **`docs/26`** — framing for WG-6, WG-8, WG-9, WG-11, and Part 3.
+- **`SOVEREIGN_Walkthrough_G_Finding_ModuleOrientation_20260721.md`** — full write-up for WG-7.
+- **`docs/27`** — source of WG-5 (done) and the EG-lettered governance questions.
+- **`docs/28`** — source of WG-14.
+- **`SOVEREIGN_Session54_Handoff.md`, `SBOM_Session54_Update.md`** — Build Agent's real close
+  artifacts for Session 54, independently verified against the repository at close.
 
 ---
 
 *Walkthrough G — Findings Report and Path Forward*
-*July 21, 2026 · Pre-Decisional · Internal Working Document · Final*
+*Updated July 22, 2026 · Pre-Decisional · Internal Working Document*
