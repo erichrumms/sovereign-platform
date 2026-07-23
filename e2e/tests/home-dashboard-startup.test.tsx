@@ -9,12 +9,19 @@
  * G recorded (everything empty until each module was opened manually).
  */
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 
+import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import type { RegisteredModuleView } from "../../sovereign-shell/src/module-loader";
 import { PlatformHome } from "../../sovereign-shell/src/PlatformHome";
 import { publishModuleSurfacesAtStartup } from "../../sovereign-shell/src/startup-publish";
-import { resetVigilApprovalSessionForTests } from "../../module-vigil/src/vigil-approval-session";
+import {
+  resetVigilApprovalSessionForTests,
+} from "../../module-vigil/src/vigil-approval-session";
+import {
+  SOF_APPROVAL_SYSTEM,
+  EXPIRY_SWEEP_INTERVAL_MS,
+} from "../../module-vigil/src/approval-contract";
 import { makeCtx } from "./harness";
 
 function moduleStub(id: string, name: string): RegisteredModuleView {
@@ -100,5 +107,49 @@ describe("PlatformHome on a fresh session after startup publication — WG-1 (Se
     // READ side filters, unchanged from GD-24).
     expect(screen.queryByText("Pending Approvals")).not.toBeInTheDocument();
     expect(screen.getByText(/No pending reviews/)).toBeInTheDocument();
+  });
+});
+
+describe("PlatformHome expiry sweep — WG-17 (Session 55)", () => {
+  afterEach(() => {
+    resetVigilApprovalSessionForTests();
+    jest.useRealTimers();
+  });
+
+  it("expires a P1 approval request on interval, emits AGENT_ACTION_EXPIRED, and republishes the VIGIL Pending Approvals count", () => {
+    jest.useFakeTimers();
+    const logged: SovereignLogEvent[] = [];
+    const ctx = makeCtx(logged);
+
+    // Initialize the shared session (5 requests including P1 req-dev-001 with 15-min window)
+    // and seed all surfaces — exactly what the shell does at startup.
+    publishModuleSurfacesAtStartup(ctx);
+
+    // Render PlatformHome — the immediate sweep fires at T=0 (nothing expired yet).
+    act(() => {
+      render(<PlatformHome ctx={ctx} modules={MODULES} isAccessible={() => true} />);
+    });
+
+    const pendingBefore = ctx.workQueueSurface
+      .listForModule("vigil")
+      .find((q) => q.queue_label === "Pending Approvals")!;
+    expect(pendingBefore.count).toBe(5);
+
+    // Advance 20 minutes — the P1's 15-minute window elapses; the interval fires.
+    act(() => { jest.advanceTimersByTime(20 * 60_000); });
+
+    // The sweep emitted AGENT_ACTION_EXPIRED for at least the P1 (req-dev-001).
+    const expiredEvents = logged.filter((e) => e.event_type === "AGENT_ACTION_EXPIRED");
+    expect(expiredEvents.length).toBeGreaterThan(0);
+    expect(expiredEvents[0]).toMatchObject({
+      event_type: "AGENT_ACTION_EXPIRED",
+      actor_id: SOF_APPROVAL_SYSTEM,
+    });
+
+    // The sweep republished VIGIL's Pending Approvals with the reduced count.
+    const pendingAfter = ctx.workQueueSurface
+      .listForModule("vigil")
+      .find((q) => q.queue_label === "Pending Approvals")!;
+    expect(pendingAfter.count).toBeLessThan(5);
   });
 });

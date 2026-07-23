@@ -20,6 +20,11 @@ import { resetVigilApprovalSessionForTests } from "../../module-vigil/src/vigil-
 import { CLEAR_DEMO_ITEM_COUNT } from "../../module-aria/src/ClearCertificationQueue";
 import { DEMO_TT_REVIEW_ITEMS } from "../../module-scribe/src/tt-synthetic-review";
 import { SYNTH_PPBE_PROGRAMS } from "@sovereign/data";
+import {
+  markScribeItemSent,
+  resetScribeSessionForTests,
+} from "../../module-scribe/src/scribe-sent-session";
+import { ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 
 describe("Startup surface publication — WG-1 (Session 54)", () => {
   beforeEach(() => resetVigilApprovalSessionForTests());
@@ -80,5 +85,31 @@ describe("Startup surface publication — WG-1 (Session 54)", () => {
     // Publishing again (as a module mount would) replaces rather than duplicates.
     publishModuleSurfacesAtStartup(ctx);
     expect(ctx.workQueueSurface.list().length).toBe(before);
+  });
+});
+
+describe("Startup SCRIBE sent-session filter — WG-15 (Session 55)", () => {
+  beforeEach(() => {
+    resetVigilApprovalSessionForTests();
+    resetScribeSessionForTests();
+  });
+
+  it("fresh session — startup publishes the full DEMO_TT_REVIEW_ITEMS count to both SCRIBE surfaces", () => {
+    const ctx = makeCtx([]);
+    publishModuleSurfacesAtStartup(ctx);
+
+    expect(ctx.workQueueSurface.listForModule("scribe")[0].count).toBe(DEMO_TT_REVIEW_ITEMS.length);
+    expect(ctx.reviewerWorkspaceSurface.listForModule("scribe")).toHaveLength(DEMO_TT_REVIEW_ITEMS.length);
+  });
+
+  it("after markScribeItemSent, startup excludes that item from SCRIBE work-queue count and workspace items", () => {
+    const sentItem = DEMO_TT_REVIEW_ITEMS[0];
+    markScribeItemSent(ttReviewItemKey(sentItem));
+
+    const ctx = makeCtx([]);
+    publishModuleSurfacesAtStartup(ctx);
+
+    expect(ctx.workQueueSurface.listForModule("scribe")[0].count).toBe(DEMO_TT_REVIEW_ITEMS.length - 1);
+    expect(ctx.reviewerWorkspaceSurface.listForModule("scribe")).toHaveLength(DEMO_TT_REVIEW_ITEMS.length - 1);
   });
 });

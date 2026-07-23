@@ -9,6 +9,13 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 import { ScribeApp } from "../src/ScribeApp";
 import { makeCtx } from "./test-helpers";
+import {
+  markScribeItemSent,
+  resetScribeSessionForTests,
+} from "../src/scribe-sent-session";
+import { DEMO_TT_REVIEW_ITEMS } from "../src/tt-synthetic-review";
+import { ttReviewItemKey } from "../src/TTManagerReview";
+import { SCRIBE_WORKSPACE_MODULE_ID } from "../src/scribe-workspace-publisher";
 
 describe("ScribeApp", () => {
   it("renders the SCRIBE chrome and the eight drafting modes", () => {
@@ -57,5 +64,41 @@ describe("ScribeApp", () => {
     // Open a drafting mode — the workspace reflects the active Style DNA.
     fireEvent.click(screen.getByText("Correspondence Draft"));
     expect(screen.getByText(/Style DNA active/i)).toBeInTheDocument();
+  });
+});
+
+describe("ScribeApp WG-15 — sent-session filtering on mount effects", () => {
+  beforeEach(() => resetScribeSessionForTests());
+
+  it("fresh session — mount effects publish the full DEMO_TT_REVIEW_ITEMS count to both surfaces", () => {
+    const ctx = makeCtx();
+    render(<ScribeApp ctx={ctx} />);
+
+    // workQueueSurface receives the full pending count.
+    const queue = ctx.workQueueSurface.listForModule("scribe");
+    expect(queue).toHaveLength(1);
+    expect(queue[0].count).toBe(DEMO_TT_REVIEW_ITEMS.length);
+
+    // reviewerWorkspaceSurface receives all items.
+    expect(ctx.reviewerWorkspaceSurface.listForModule(SCRIBE_WORKSPACE_MODULE_ID)).toHaveLength(
+      DEMO_TT_REVIEW_ITEMS.length
+    );
+  });
+
+  it("after markScribeItemSent, mount effects exclude that item from both published surfaces", () => {
+    const sentItem = DEMO_TT_REVIEW_ITEMS[0];
+    markScribeItemSent(ttReviewItemKey(sentItem));
+
+    const ctx = makeCtx();
+    render(<ScribeApp ctx={ctx} />);
+
+    // workQueueSurface count is one fewer.
+    const queue = ctx.workQueueSurface.listForModule("scribe");
+    expect(queue[0].count).toBe(DEMO_TT_REVIEW_ITEMS.length - 1);
+
+    // reviewerWorkspaceSurface is also missing that item.
+    expect(ctx.reviewerWorkspaceSurface.listForModule(SCRIBE_WORKSPACE_MODULE_ID)).toHaveLength(
+      DEMO_TT_REVIEW_ITEMS.length - 1
+    );
   });
 });

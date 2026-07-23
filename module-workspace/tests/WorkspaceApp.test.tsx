@@ -21,9 +21,14 @@ import { WorkspaceApp } from "../src/WorkspaceApp";
 import { CLEAR_DEMO_ITEMS } from "../../module-aria/src/ClearCertificationQueue";
 import { createDevApprovalPort } from "../../module-vigil/src/approval-port";
 import { VIGIL_WORKSPACE_MODULE_ID } from "../../module-vigil/src/vigil-workspace-publisher";
+import {
+  ensureVigilApprovalSession,
+  resetVigilApprovalSessionForTests,
+} from "../../module-vigil/src/vigil-approval-session";
 import { DEMO_TT_REVIEW_ITEMS } from "../../module-scribe/src/tt-synthetic-review";
 import { SCRIBE_WORKSPACE_MODULE_ID } from "../../module-scribe/src/scribe-workspace-publisher";
 import { ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
+import { resetScribeSessionForTests } from "../../module-scribe/src/scribe-sent-session";
 import { makeCtx, createInMemoryReviewerWorkspaceSurface } from "./test-helpers";
 
 function tab(name: RegExp): HTMLElement {
@@ -195,5 +200,126 @@ describe("WorkspaceApp ARIA embed — real component, published payload, decisio
     expect(ctx.aria.isCertified(item.document_id)).toBe(true);
     // The Workspace reflects the removal in place: back to the honest empty state.
     expect(screen.getByTestId("workspace-empty-section")).toBeInTheDocument();
+  });
+});
+
+describe("WorkspaceApp WG-16 — VIGIL section republishes Pending Approvals count after decision", () => {
+  beforeEach(() => resetVigilApprovalSessionForTests());
+
+  it("workQueueSurface Pending Approvals count decrements when an approval decision is made", async () => {
+    const surface = createInMemoryReviewerWorkspaceSurface();
+    const logged: SovereignLogEvent[] = [];
+    const ctx = makeCtx({ role: "SYSTEM_ADMIN", reviewerWorkspaceSurface: surface, logSink: logged });
+
+    // Seed the shared session with 5 requests, including req-dev-001 (P1, model_deployment).
+    ensureVigilApprovalSession(ctx.logger);
+
+    const anchor = "2026-07-22T00:00:00.000Z";
+    const [request] = createDevApprovalPort(anchor).listPending();
+    surface.publish({
+      module_id: VIGIL_WORKSPACE_MODULE_ID,
+      item_id: request.request_id,
+      payload: { request },
+      published_at: anchor,
+    });
+
+    render(<WorkspaceApp ctx={ctx} />);
+
+    // WG-16 effect fires on mount: getVigilApprovalSession() has 5 requests → count = 5.
+    const initialApprovals = ctx.workQueueSurface
+      .listForModule("vigil")
+      .find((q) => q.queue_label === "Pending Approvals")!;
+    expect(initialApprovals.count).toBe(5);
+
+    // Approve the request — mirrors the existing VIGIL embed test interaction.
+    fireEvent.click(screen.getByRole("button", { name: /model_deployment/ }));
+    await waitFor(() => expect(screen.getByText("STATIC")).toBeInTheDocument());
+    fireEvent.change(screen.getByLabelText("Decision note"), {
+      target: { value: "Approved for WG-16 republish test." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Approve" }));
+
+    // After decision: removeVigilSessionRequest reduced the session to 4 requests.
+    // The WG-16 effect re-ran and republished the updated count.
+    const updatedApprovals = ctx.workQueueSurface
+      .listForModule("vigil")
+      .find((q) => q.queue_label === "Pending Approvals")!;
+    expect(updatedApprovals.count).toBe(4);
+  });
+});
+
+describe("WorkspaceApp WG-16 — ARIA section republishes Certifications count after decision", () => {
+  it("workQueueSurface Certifications Awaiting You count decrements when an ARIA item is certified", () => {
+    const surface = createInMemoryReviewerWorkspaceSurface();
+    const item = CLEAR_DEMO_ITEMS[0];
+    surface.publish({
+      module_id: "aria",
+      item_id: item.document_id,
+      payload: item,
+      published_at: "2026-07-22T00:00:00.000Z",
+    });
+    const ctx = makeCtx({ role: "COMPLIANCE_OFFICER", reviewerWorkspaceSurface: surface });
+
+    render(<WorkspaceApp ctx={ctx} />);
+
+    // WG-16 effect fires on mount: 1 ARIA item in section → count = 1.
+    const initialCerts = ctx.workQueueSurface
+      .listForModule("aria")
+      .find((q) => q.queue_label === "Certifications Awaiting You")!;
+    expect(initialCerts.count).toBe(1);
+
+    // Certify the item — mirrors the existing ARIA embed test interaction.
+    fireEvent.change(screen.getByTestId(`note-${item.document_id}`), {
+      target: { value: "Reviewed all findings; compliant for export." },
+    });
+    fireEvent.change(screen.getByTestId(`dest-${item.document_id}`), {
+      target: { value: "OMB MAX portal" },
+    });
+    fireEvent.change(screen.getByTestId(`recip-${item.document_id}`), {
+      target: { value: "Budget Examiner" },
+    });
+    fireEvent.click(screen.getByTestId(`certify-${item.document_id}`));
+
+    // After certification: section is empty → WG-16 effect republishes count = 0.
+    const updatedCerts = ctx.workQueueSurface
+      .listForModule("aria")
+      .find((q) => q.queue_label === "Certifications Awaiting You")!;
+    expect(updatedCerts.count).toBe(0);
+  });
+});
+
+describe("WorkspaceApp WG-16 — SCRIBE section republishes T&T Review count after send decision", () => {
+  beforeEach(() => resetScribeSessionForTests());
+
+  it("workQueueSurface T&T Reviews Awaiting You count decrements when a review item is sent", () => {
+    const surface = createInMemoryReviewerWorkspaceSurface();
+    const item = DEMO_TT_REVIEW_ITEMS.find((i) => !i.requiresVigilAuthorization)!;
+    const key = ttReviewItemKey(item);
+    surface.publish({
+      module_id: SCRIBE_WORKSPACE_MODULE_ID,
+      item_id: key,
+      payload: item,
+      published_at: "2026-07-22T00:00:00.000Z",
+    });
+    const ctx = makeCtx({ role: "PROGRAM_MANAGER", reviewerWorkspaceSurface: surface });
+
+    render(<WorkspaceApp ctx={ctx} />);
+    fireEvent.click(screen.getByRole("tab", { name: /SCRIBE T&T Reviews/ }));
+
+    // WG-16 effect fires: 1 SCRIBE item in section → count = 1.
+    const initialReviews = ctx.workQueueSurface
+      .listForModule("scribe")
+      .find((q) => q.queue_label === "T&T Reviews Awaiting You")!;
+    expect(initialReviews.count).toBe(1);
+
+    // Send the item — mirrors the existing SCRIBE embed test interaction.
+    fireEvent.click(screen.getByTestId(`tt-queue-item-${key}`));
+    fireEvent.click(screen.getByTestId("tt-send-communication"));
+
+    // After send: section is empty → WG-16 effect republishes count = 0.
+    const updatedReviews = ctx.workQueueSurface
+      .listForModule("scribe")
+      .find((q) => q.queue_label === "T&T Reviews Awaiting You")!;
+    expect(updatedReviews.count).toBe(0);
   });
 });
