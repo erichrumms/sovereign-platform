@@ -35,7 +35,7 @@ v1.22 — unchanged. SHA-256: `28ca61d1b761e1805dac200f15e73489dbf3d995e2e7d1063
 
 ## Governance Decisions Applied
 
-- **GD-29** (docs/29): WG-11 root cause — separate PPBE detail view, no force-merge of synthetic IDs
+- **docs/29** (WG-11 decision record): separate PPBE detail view, no force-merge of synthetic IDs — WG-11 required no shell-contract change and was not assigned a GD number
 - **GD-24** (shell-contract v1.19): WorkQueueSurface.listForModule — live counts for D2/WG-7
 - **GD-27** (shell-contract v1.22): navigateToModule — D3 clickable module rows
 

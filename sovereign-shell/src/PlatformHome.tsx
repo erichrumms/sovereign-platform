@@ -6,23 +6,26 @@
  * and the Session 47 opening prompt. Replaces the Session 30 CPMI/Platform-Facts/
  * Things-to-Do layout.
  *
- * Phase 1 scope (this session):
- *   Work Scope  — Program Health (ProgramStatusSurface) + Module Orientation (MODULE_INFO)
+ * Phase 1 scope (Session 47):
+ *   Work Scope  — Program Health (ProgramStatusSurface) + Module Orientation (module registry)
  *   Issues      — Flagged Programs (at_risk / off_track from ProgramStatusSurface)
- *   To Do/Review — honest placeholder; WorkQueueSurface wired in a future session
+ *   To Do/Review — WorkQueueSurface (GD-24, wired Session 49)
  *
- * Phase 2 (future): populate To Do / Review with Pending Approvals, T&T Reviews,
- * Certifications, Coordination Items via WorkQueueSurface.
+ * Session 57 (D2/WG-7 + D3/GD-27):
+ *   Module Orientation now shows live per-module queue counts from WorkQueueSurface
+ *   (replacing the static MODULE_INFO tagline removed in this session). Each module row
+ *   is a clickable button calling ctx.navigateToModule() (GD-27).
  *
  * Data sources:
  *   ctx.programStatusSurface.list() — program obligation snapshots published by APEX
- *   MODULE_INFO (navigation/ModuleNav) — module labels; imported directly, not duplicated
+ *   ctx.workQueueSurface (subscribed) — live per-module queue counts for Module Orientation
+ *     and the To Do / Review section
  *
  * Role visibility:
  *   Program Health / Flagged Programs: PROGRAM_MANAGER, ANALYST, PLATFORM_ADMIN, SYSTEM_ADMIN
  *   Module Orientation: all roles (filtered to the user's accessible modules via isAccessible)
  *
- * Version: 2.0 · Session 47 · July 20, 2026
+ * Version: 2.1 · Session 57 · July 23, 2026
  */
 
 import { useEffect, useState, type CSSProperties } from "react";
