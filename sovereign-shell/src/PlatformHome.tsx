@@ -33,7 +33,6 @@ import type {
   WorkQueueSummary,
 } from "../shell-contract";
 import type { RegisteredModuleView } from "./module-loader";
-import { MODULE_INFO } from "./navigation/ModuleNav";
 import {
   expireVigilSessionRequests,
   getVigilApprovalSession,
@@ -226,8 +225,14 @@ function WorkQueueModuleGroup({
 
 function ModuleOrientationPanel({
   modules,
+  workQueues,
+  onNavigate,
 }: {
   modules: RegisteredModuleView[];
+  /** Live queue summaries from WorkQueueSurface (D2/WG-7). */
+  workQueues: readonly WorkQueueSummary[];
+  /** GD-27 navigation callback (D3). When provided, each row is clickable. */
+  onNavigate?: (moduleId: string) => void;
 }): JSX.Element {
   return (
     <div style={subPanelStyle}>
@@ -237,11 +242,50 @@ function ModuleOrientationPanel({
       ) : (
         <ul style={moduleListStyle}>
           {modules.map((m) => {
-            const info = MODULE_INFO[m.moduleId];
-            return (
-              <li key={m.moduleId} style={moduleItemStyle}>
+            const shortId = m.moduleId.replace("module-", "");
+            const moduleQueues = workQueues.filter((q) => q.module_id === shortId);
+            const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
+            const highestSeverity = moduleQueues.find((q) => q.highest_severity)?.highest_severity ?? null;
+            const countColor =
+              highestSeverity === "P1" ? "#7f1d1d"
+              : highestSeverity === "P2" ? "#92400e"
+              : "#0c4a6e";
+
+            const rowContent = (
+              <>
                 <span style={moduleNameStyle}>{m.displayName}</span>
-                {info && <span style={moduleLabelStyle}>{info.label}</span>}
+                {totalCount > 0 ? (
+                  <span
+                    style={{
+                      ...moduleLabelStyle,
+                      fontWeight: 700,
+                      color: countColor,
+                    }}
+                    aria-label={`${totalCount} queue item${totalCount !== 1 ? "s" : ""} pending`}
+                  >
+                    {totalCount} pending
+                    {highestSeverity ? ` · ${highestSeverity}` : ""}
+                  </span>
+                ) : (
+                  <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
+                )}
+              </>
+            );
+
+            return onNavigate ? (
+              <li key={m.moduleId} style={{ ...moduleItemStyle, padding: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => onNavigate(m.moduleId)}
+                  aria-label={`Navigate to ${m.displayName}`}
+                  style={moduleNavButtonStyle}
+                >
+                  {rowContent}
+                </button>
+              </li>
+            ) : (
+              <li key={m.moduleId} style={moduleItemStyle}>
+                {rowContent}
               </li>
             );
           })}
@@ -337,7 +381,11 @@ export function PlatformHome({
           }}
         >
           {canSeeProgramData && <ProgramHealthPanel programs={programs} />}
-          <ModuleOrientationPanel modules={accessibleModules} />
+          <ModuleOrientationPanel
+            modules={accessibleModules}
+            workQueues={workQueues}
+            onNavigate={(moduleId) => ctx.navigateToModule(moduleId)}
+          />
         </div>
       </section>
 
@@ -553,6 +601,20 @@ const moduleNameStyle: CSSProperties = {
 const moduleLabelStyle: CSSProperties = {
   fontSize: 11,
   color: "#64748b",
+};
+
+const moduleNavButtonStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 8,
+  padding: "4px 0",
+  width: "100%",
+  background: "none",
+  border: "none",
+  borderBottom: "1px solid #f1f5f9",
+  cursor: "pointer",
+  fontFamily: "system-ui, sans-serif",
+  textAlign: "left",
 };
 
 const workQueueSectionStyle: CSSProperties = {

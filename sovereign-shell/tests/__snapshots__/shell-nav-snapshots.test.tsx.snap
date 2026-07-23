@@ -2574,97 +2574,144 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to SCRIBE"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Ghostwrites Your Memos
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  SCRIBE
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to APEX"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Reads The Gauges
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  APEX
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to FLOWPATH"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Maps Your Workflow
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  FLOWPATH
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to ARIA Suite"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Runs The Checklist
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  ARIA Suite
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to Reviewer's Workspace"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                Reviewer's Workspace
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  Reviewer's Workspace
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>
@@ -2839,69 +2886,104 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to NEXUS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Sorts The Mail
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  NEXUS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to ARIA Suite"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Runs The Checklist
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  ARIA Suite
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to Reviewer's Workspace"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                Reviewer's Workspace
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  Reviewer's Workspace
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>
@@ -3007,32 +3089,44 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>
@@ -3247,111 +3341,164 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to SCRIBE"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Ghostwrites Your Memos
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  SCRIBE
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to NEXUS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Sorts The Mail
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  NEXUS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to APEX"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Reads The Gauges
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  APEX
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to FLOWPATH"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Maps Your Workflow
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  FLOWPATH
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to ARIA Suite"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Runs The Checklist
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  ARIA Suite
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to Reviewer's Workspace"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                Reviewer's Workspace
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  Reviewer's Workspace
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>
@@ -3635,153 +3782,224 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to SCRIBE"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Ghostwrites Your Memos
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  SCRIBE
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to VIGIL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                VIGIL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Approves Agent Actions
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  VIGIL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to CPMI"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Signs The Certificate
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  CPMI
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to AgentOS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Manages AI Models
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  AgentOS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to NEXUS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Sorts The Mail
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  NEXUS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to APEX"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Reads The Gauges
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  APEX
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to FLOWPATH"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Maps Your Workflow
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  FLOWPATH
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to ARIA Suite"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Runs The Checklist
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  ARIA Suite
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to Reviewer's Workspace"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                Reviewer's Workspace
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  Reviewer's Workspace
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>
@@ -4317,153 +4535,224 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
           >
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to COUNSEL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                COUNSEL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Argues Both Sides
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  COUNSEL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to SCRIBE"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Ghostwrites Your Memos
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  SCRIBE
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to VIGIL"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                VIGIL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Approves Agent Actions
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  VIGIL
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to LENS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                LENS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Explains The Rules
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  LENS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to CPMI"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Signs The Certificate
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  CPMI
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to AgentOS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Manages AI Models
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  AgentOS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to NEXUS"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Sorts The Mail
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  NEXUS
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to APEX"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Reads The Gauges
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  APEX
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to FLOWPATH"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Maps Your Workflow
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  FLOWPATH
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to ARIA Suite"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139);"
-              >
-                Runs The Checklist
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  ARIA Suite
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
             <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9;"
+              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+              <button
+                aria-label="Navigate to Reviewer's Workspace"
+                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+                type="button"
               >
-                Reviewer's Workspace
-              </span>
+                <span
+                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                >
+                  Reviewer's Workspace
+                </span>
+                <span
+                  style="font-size: 11px; color: rgb(22, 163, 74);"
+                >
+                  Clear
+                </span>
+              </button>
             </li>
           </ul>
         </div>

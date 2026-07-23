@@ -24,6 +24,7 @@ import { ReportGenerationPanel } from "./ReportGenerationPanel";
 import { GateRunnerPanel } from "./GateRunnerPanel";
 import { PPBEDashboard } from "./PPBEDashboard";
 import { PPBEAgentsPanel } from "./PPBEAgentsPanel";
+import { PPBEProgramDetail } from "./PPBEProgramDetail";
 import { createSyntheticPPBEDashboardInputs } from "./ppbe-data-adapter";
 import { publishProgramStatuses } from "./ppbe-dashboard";
 
@@ -54,6 +55,7 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
     publishProgramStatuses(ppbeInputs, ctx.programStatusSurface, new Date().toISOString());
   }, [ppbeInputs, ctx.programStatusSurface]);
   const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
+  const [ppbeDetailProgram, setPpbeDetailProgram] = useState<string | null>(null);
 
   const openProgram = (programId: string): void => {
     setSelectedProgram(programId);
@@ -100,13 +102,22 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
           Session 33 (goal item 8) wired the host data adapter over the canonical
           seeded portfolio — the dashboard now renders real metrics. A production
           deployment swaps the adapter, not the component.
-          Session 46 (D2): onSelectProgram wired to openProgram — the existing
-          mechanism (setSelectedProgram + setTab("detail")), not a new one. */}
+          Session 57 (D1/WG-11+WG-8): PPBEDashboard bar-clicks now open PPBEProgramDetail
+          via separate ppbeDetailProgram state — not through openProgram/ProgramDetailView,
+          which cannot resolve PPBE synthetic IDs (GD-29). The World Model path is untouched. */}
       {tab === "execution" && (
-        <>
-          <PPBEDashboard inputs={ppbeInputs} onSelectProgram={openProgram} />
-          <PPBEAgentsPanel ctx={ctx} inputs={ppbeInputs} />
-        </>
+        ppbeDetailProgram ? (
+          <PPBEProgramDetail
+            programId={ppbeDetailProgram}
+            inputs={ppbeInputs}
+            onBack={() => setPpbeDetailProgram(null)}
+          />
+        ) : (
+          <>
+            <PPBEDashboard inputs={ppbeInputs} onSelectProgram={setPpbeDetailProgram} />
+            <PPBEAgentsPanel ctx={ctx} inputs={ppbeInputs} />
+          </>
+        )
       )}
     </section>
   );
