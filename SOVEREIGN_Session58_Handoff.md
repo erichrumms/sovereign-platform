@@ -1,6 +1,5 @@
 # SOVEREIGN Platform — Session 58 Handoff
 **Date:** 2026-07-23  
-**Agent:** Claude Sonnet 4.6 (Build Agent Session 58)  
 **HEAD at close:** `6c6b340`  
 **Shell-contract version at close:** v1.23  
 **Shell-contract SHA-256:** `6f52449c37b639029023b24055d504182ab2e3ac8edd44d8965799d90847d0d9`
@@ -125,6 +124,7 @@ found 0 vulnerabilities
 
 ## What's Next (Session 59 candidates)
 
-- Screenshots for App Store submission (outstanding from prior sessions)
-- Strava production API approval (pending)
-- Any follow-on governance decisions if needed
+- **WG-6** — APEX has two hardcoded fiscal periods that need their own governance decision. `docs/29` did not resolve this.
+- **WG-9** — Site-tracking schema deferred correctly; stays deferred until a real external data source exists.
+- **Walkthrough G Home Dashboard repeat pass** — unblocked since Session 54 (WG-1). The oldest genuinely unclosed Walkthrough G item; needs a human in the browser, not another build session.
+- **`docs/27` open governance questions** — EG-A, EG-B, EG-D, EG-E remain open. Not blocking current build work.
