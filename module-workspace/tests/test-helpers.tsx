@@ -16,6 +16,8 @@ import type {
   TaskSurface,
   ReviewerWorkspaceSurface,
   WorkspaceReviewItem,
+  WorkQueueSurface,
+  WorkQueueSummary,
 } from "../../sovereign-shell/shell-contract";
 
 /** A real in-memory ReviewerWorkspaceSurface (GD-25 thirteenth export — the surface under test). */
@@ -48,6 +50,21 @@ export function makeAriaSurface() {
   };
 }
 
+/** Real in-memory WorkQueueSurface — D3 (WG-16) effects publish updated counts to it. */
+export function createInMemoryWorkQueueSurface(): WorkQueueSurface {
+  const summaries = new Map<string, WorkQueueSummary>();
+  const listeners = new Set<(s: readonly WorkQueueSummary[]) => void>();
+  const key = (s: WorkQueueSummary): string => `${s.module_id}::${s.queue_label}`;
+  const snapshot = (): readonly WorkQueueSummary[] => Array.from(summaries.values());
+  const notify = (): void => { for (const l of listeners) l(snapshot()); };
+  return {
+    publish: (s) => { summaries.set(key(s), s); notify(); },
+    listForModule: (id) => snapshot().filter((s) => s.module_id === id),
+    list: () => snapshot(),
+    subscribe: (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+  };
+}
+
 /** Minimal in-memory shared task surface (GD-19) — TTManagerReview's authorization hook reads it. */
 export function createInMemoryTaskSurface(): TaskSurface {
   const tasks = new Map<string, SharedTask>();
@@ -75,6 +92,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
   const role: SovereignRole = over.role ?? "SYSTEM_ADMIN";
   return {
     reviewerWorkspaceSurface: over.reviewerWorkspaceSurface ?? createInMemoryReviewerWorkspaceSurface(),
+    workQueueSurface: createInMemoryWorkQueueSurface(),
     aria: makeAriaSurface(),
     taskSurface: createInMemoryTaskSurface(),
     auth: {

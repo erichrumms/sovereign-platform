@@ -34,6 +34,13 @@ import type {
 } from "../shell-contract";
 import type { RegisteredModuleView } from "./module-loader";
 import { MODULE_INFO } from "./navigation/ModuleNav";
+import {
+  expireVigilSessionRequests,
+  getVigilApprovalSession,
+} from "../../module-vigil/src/vigil-approval-session";
+import { EXPIRY_SWEEP_INTERVAL_MS } from "../../module-vigil/src/approval-contract";
+import { VIGIL_WORKSPACE_MODULE_ID } from "../../module-vigil/src/vigil-workspace-publisher";
+import { publishVigilWorkQueues } from "../../module-vigil/src/vigil-work-queue-publisher";
 
 /** Roles that may see program financial obligation data (D1/D2). */
 const PROGRAM_DATA_ROLES: ReadonlySet<SovereignRole> = new Set([
@@ -267,6 +274,36 @@ export function PlatformHome({
     const unsub = ctx.workQueueSurface.subscribe(setWorkQueues);
     return unsub;
   }, [ctx.workQueueSurface]);
+
+  // D1 (WG-17): expiry sweep — ensures VIGIL approval requests expire even when
+  // the user stays on Home without visiting VigilApp or WorkspaceApp.
+  // Reuses EXPIRY_SWEEP_INTERVAL_MS and expireVigilSessionRequests, the same
+  // primitives both VigilApp and WorkspaceApp use (Constraint #2).
+  useEffect(() => {
+    const sweep = (): void => {
+      const { expired } = expireVigilSessionRequests(Date.now(), ctx.logger);
+      if (expired.length === 0) return;
+      for (const req of expired) {
+        ctx.reviewerWorkspaceSurface.remove(VIGIL_WORKSPACE_MODULE_ID, req.request_id);
+      }
+      const session = getVigilApprovalSession();
+      const remaining = session?.requests ?? [];
+      const alertQueue = ctx.workQueueSurface.list().find(
+        (q) => q.module_id === "vigil" && q.queue_label === "Unacknowledged Alerts"
+      );
+      publishVigilWorkQueues(
+        remaining.length,
+        remaining.some((r) => r.risk_classification === "P1"),
+        alertQueue?.count ?? 0,
+        alertQueue?.highest_severity === "P1",
+        ctx.workQueueSurface,
+        new Date().toISOString()
+      );
+    };
+    sweep();
+    const timer = setInterval(sweep, EXPIRY_SWEEP_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [ctx]);
 
   // Filter to queues from modules this role can actually access — reuse the same
   // isAccessible / module minimumRole check wired for Module Orientation (Session 47).

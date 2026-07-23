@@ -51,6 +51,8 @@ import { publishAriaWorkspaceItems } from "../../module-aria/src/aria-workspace-
 import { DEMO_TT_REVIEW_ITEMS } from "../../module-scribe/src/tt-synthetic-review";
 import { publishScribeWorkQueues } from "../../module-scribe/src/scribe-work-queue-publisher";
 import { publishScribeWorkspaceItems } from "../../module-scribe/src/scribe-workspace-publisher";
+import { isScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
+import { ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 
 // NEXUS — open PPBE coordination items (the same count PPBECoordinationPanel derives).
 import { SYNTH_PPBE_COORDINATION_ITEMS } from "../../module-nexus/src/ppbe-synthetic-coordination";
@@ -95,9 +97,13 @@ export function publishModuleSurfacesAtStartup(ctx: SovereignShellContext): void
   publishAriaWorkQueues(pendingClearItems.length, ctx.workQueueSurface, now);
   publishAriaWorkspaceItems(pendingClearItems, ctx.reviewerWorkspaceSurface, now);
 
-  // ---- SCRIBE (GD-24/GD-25): the same seeded review items ScribeApp publishes.
-  publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, ctx.workQueueSurface, now);
-  publishScribeWorkspaceItems(DEMO_TT_REVIEW_ITEMS, ctx.reviewerWorkspaceSurface, now);
+  // ---- SCRIBE (GD-24/GD-25): the same seeded review items ScribeApp publishes,
+  // filtered to those not yet sent this session (WG-15 — scribe-sent-session.ts).
+  const scribePending = DEMO_TT_REVIEW_ITEMS.filter(
+    (item) => !isScribeItemSent(ttReviewItemKey(item))
+  );
+  publishScribeWorkQueues(scribePending.length, ctx.workQueueSurface, now);
+  publishScribeWorkspaceItems(scribePending, ctx.reviewerWorkspaceSurface, now);
 
   // ---- NEXUS (GD-24): open coordination items — the same filter
   // PPBECoordinationPanel applies at mount.

@@ -43,6 +43,7 @@ import {
   publishScribeWorkspaceItems,
   SCRIBE_WORKSPACE_MODULE_ID,
 } from "./scribe-workspace-publisher";
+import { isScribeItemSent, markScribeItemSent } from "./scribe-sent-session";
 
 /**
  * GD-27 (shell-contract v1.22, docs/25 §3) — SCRIBE's narrowed initialState shape.
@@ -70,18 +71,20 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
 
   // GD-24 — publish SCRIBE's WorkQueueSurface summary on mount.
-  // DEMO_TT_REVIEW_ITEMS.length is the same count TTManagerReview renders.
+  // WG-15 (Session 55): filter through the session store so items already sent
+  // this session are excluded rather than republished on every mount.
   const { workQueueSurface } = ctx;
   useEffect(() => {
-    publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, workQueueSurface, new Date().toISOString());
+    const pending = DEMO_TT_REVIEW_ITEMS.filter((i) => !isScribeItemSent(ttReviewItemKey(i)));
+    publishScribeWorkQueues(pending.length, workQueueSurface, new Date().toISOString());
   }, [workQueueSurface]);
 
-  // GD-25 — publish the FULL TTReviewItem objects to the Reviewer's Workspace
-  // surface on mount. DEMO_TT_REVIEW_ITEMS is the same list TTManagerReview
-  // renders below; removal happens on the decision-commit path (onSent).
+  // GD-25 — publish the TTReviewItem objects to the Reviewer's Workspace surface
+  // on mount. WG-15 (Session 55): filter to items not yet sent this session.
   const { reviewerWorkspaceSurface } = ctx;
   useEffect(() => {
-    publishScribeWorkspaceItems(DEMO_TT_REVIEW_ITEMS, reviewerWorkspaceSurface, new Date().toISOString());
+    const pending = DEMO_TT_REVIEW_ITEMS.filter((i) => !isScribeItemSent(ttReviewItemKey(i)));
+    publishScribeWorkspaceItems(pending, reviewerWorkspaceSurface, new Date().toISOString());
   }, [reviewerWorkspaceSurface]);
   const descriptor = selected ? describeMode(selected) : null;
 
@@ -144,10 +147,12 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
           // GD-27 — seed the review's existing selection with the navigation intent.
           initialSelectedKey={initialState?.selectedItemKey}
           // GD-25 — the decision-commit path: a sent communication leaves the
-          // Reviewer's Workspace rather than lingering.
-          onSent={(item) =>
-            reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item))
-          }
+          // Reviewer's Workspace rather than lingering. WG-15: also mark it
+          // sent in the session store so future mounts exclude it.
+          onSent={(item) => {
+            markScribeItemSent(ttReviewItemKey(item));
+            reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item));
+          }}
         />
       ) : surface === "ppbe-exhibits" ? (
         <PPBEExhibitPanel ctx={ctx} />

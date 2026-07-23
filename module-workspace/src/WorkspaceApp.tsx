@@ -54,8 +54,10 @@ import { ApprovalDetail } from "../../module-vigil/src/ApprovalDetail";
 import { EXPIRY_SWEEP_INTERVAL_MS } from "../../module-vigil/src/approval-contract";
 import {
   expireVigilSessionRequests,
+  getVigilApprovalSession,
   removeVigilSessionRequest,
 } from "../../module-vigil/src/vigil-approval-session";
+import { publishVigilWorkQueues } from "../../module-vigil/src/vigil-work-queue-publisher";
 import { ClearCertificationQueue } from "../../module-aria/src/ClearCertificationQueue";
 import { TTManagerReview, ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 
@@ -68,6 +70,9 @@ import type { TTReviewItem } from "../../module-scribe/src/TTManagerReview";
 import { VIGIL_WORKSPACE_MODULE_ID } from "../../module-vigil/src/vigil-workspace-publisher";
 import { ARIA_WORKSPACE_MODULE_ID } from "../../module-aria/src/aria-workspace-publisher";
 import { SCRIBE_WORKSPACE_MODULE_ID } from "../../module-scribe/src/scribe-workspace-publisher";
+import { markScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
+import { publishScribeWorkQueues } from "../../module-scribe/src/scribe-work-queue-publisher";
+import { publishAriaWorkQueues } from "../../module-aria/src/aria-work-queue-publisher";
 
 import { useReviewerWorkspaceItems } from "./useReviewerWorkspaceItems";
 
@@ -259,6 +264,27 @@ function VigilWorkspaceSection({
     return () => clearInterval(timer);
   }, [ctx]);
 
+  // D3 (WG-16): republish VIGIL's pending-approvals count whenever the set of
+  // displayed items changes (decision or expiry) so Home's To Do / Review tile
+  // updates without requiring a VIGIL visit. Alert counts do not change with
+  // approval decisions, so we read them from the live surface rather than
+  // importing the static alert seeds into this component.
+  useEffect(() => {
+    const session = getVigilApprovalSession();
+    const remaining = session?.requests ?? [];
+    const alertQueue = ctx.workQueueSurface.list().find(
+      (q) => q.module_id === "vigil" && q.queue_label === "Unacknowledged Alerts"
+    );
+    publishVigilWorkQueues(
+      remaining.length,
+      remaining.some((r) => r.risk_classification === "P1"),
+      alertQueue?.count ?? 0,
+      alertQueue?.highest_severity === "P1",
+      ctx.workQueueSurface,
+      new Date().toISOString()
+    );
+  }, [payloads, ctx]);
+
   if (payloads.length === 0) {
     return <EmptySection sourceLabel="VIGIL has published no pending approval requests this session." />;
   }
@@ -315,6 +341,12 @@ function AriaWorkspaceSection({
     [items]
   );
 
+  // D3 (WG-16): republish ARIA's pending-cert count after any certification
+  // decision so Home's tile updates without requiring an ARIA visit.
+  useEffect(() => {
+    publishAriaWorkQueues(narrowed.length, ctx.workQueueSurface, new Date().toISOString());
+  }, [narrowed, ctx]);
+
   if (narrowed.length === 0) {
     return <EmptySection sourceLabel="ARIA has published no pending CLEAR certification items this session." />;
   }
@@ -349,6 +381,12 @@ function ScribeWorkspaceSection({
     [items]
   );
 
+  // D3 (WG-16): republish SCRIBE's pending-review count after any send decision
+  // so Home's tile updates without requiring a SCRIBE visit.
+  useEffect(() => {
+    publishScribeWorkQueues(narrowed.length, ctx.workQueueSurface, new Date().toISOString());
+  }, [narrowed, ctx]);
+
   if (narrowed.length === 0) {
     return <EmptySection sourceLabel="SCRIBE has published no T&T review items this session." />;
   }
@@ -366,9 +404,12 @@ function ScribeWorkspaceSection({
         ctx={ctx}
         items={narrowed}
         // GD-25 — the decision-commit path: a sent communication leaves the Workspace.
-        onSent={(item) =>
-          ctx.reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item))
-        }
+        // D2 (WG-15): also mark it sent in the session store so future SCRIBE mounts
+        // and startup-publish exclude it from their counts.
+        onSent={(item) => {
+          markScribeItemSent(ttReviewItemKey(item));
+          ctx.reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item));
+        }}
       />
     </div>
   );
