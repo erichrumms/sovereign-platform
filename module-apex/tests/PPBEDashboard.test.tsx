@@ -192,3 +192,36 @@ describe("PPBEDashboard", () => {
     expect(between.length).toBeGreaterThan(0);
   });
 });
+
+// ── Session 54 — WG-3 / WG-4 / WG-12 ────────────────────────────────────────
+
+describe("PPBEDashboard — Session 54 (WG-3 codename key, WG-4 legend order, WG-12 dependency detail)", () => {
+  it("WG-3: renders an always-visible codename → full-name key above the obligation chart", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    const key = screen.getByLabelText("Program codename key");
+    // shortId("PRG-001") === "001"; the key bridges it to the full program name.
+    expect(key).toHaveTextContent("001 = Logistics Data Interchange");
+  });
+
+  it("WG-4: variance legend content renders with deterministic order — Planned before Actual", () => {
+    // Recharts renders no chart internals under jsdom (zero-size container), so the
+    // explicit content renderer is asserted directly — it IS the deterministic order.
+    const { VarianceLegendContent } = require("../src/PPBEDashboard");
+    render(<VarianceLegendContent />);
+    const legend = screen.getByLabelText("Variance chart legend");
+    const items = Array.from(legend.querySelectorAll("li")).map((li) => li.textContent);
+    expect(items).toEqual(["Planned", "Actual"]);
+  });
+
+  it("WG-12: dependency detail table identifies WHICH dependency is at risk, not just counts", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    const detail = screen.getByLabelText("Dependency detail");
+    expect(detail.tagName).toBe("TABLE");
+    expect(detail).toHaveTextContent("D-1");
+    expect(detail).toHaveTextContent("phase-2-planning");
+    expect(detail).toHaveTextContent("phase-3-programming");
+    expect(detail).toHaveTextContent("At risk");
+    // The counts table (Session 46) is unchanged alongside it.
+    expect(screen.getByLabelText("Dependency health counts")).toBeInTheDocument();
+  });
+});

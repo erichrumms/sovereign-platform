@@ -10,9 +10,14 @@ import { render, screen, fireEvent } from "@testing-library/react";
 
 import { VigilApp } from "../src/VigilApp";
 import { AgentApprovalQueue } from "../src/AgentApprovalQueue";
+import { resetVigilApprovalSessionForTests } from "../src/vigil-approval-session";
 import { makeCtx } from "./test-helpers";
 
 describe("VigilApp (scaffold)", () => {
+  // Session 54 (WG-13): the approval queue is a module-level session store —
+  // reset it so each test assembles a fresh queue.
+  beforeEach(() => resetVigilApprovalSessionForTests());
+
   it("renders the VIGIL chrome and the operator identity", () => {
     render(<VigilApp ctx={makeCtx()} />);
     expect(screen.getByRole("heading", { name: "VIGIL", level: 1 })).toBeInTheDocument();

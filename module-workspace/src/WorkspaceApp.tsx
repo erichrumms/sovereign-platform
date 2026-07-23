@@ -39,7 +39,7 @@
  * Version: 1.1 · Session 53 (GD-27 — open-in-source-module actions) · July 21, 2026
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
 import type {
@@ -51,6 +51,11 @@ import type {
 // Real embedded decision components (value imports — the Workspace renders the real thing).
 import { ApprovalQueue } from "../../module-vigil/src/ApprovalQueue";
 import { ApprovalDetail } from "../../module-vigil/src/ApprovalDetail";
+import { EXPIRY_SWEEP_INTERVAL_MS } from "../../module-vigil/src/approval-contract";
+import {
+  expireVigilSessionRequests,
+  removeVigilSessionRequest,
+} from "../../module-vigil/src/vigil-approval-session";
 import { ClearCertificationQueue } from "../../module-aria/src/ClearCertificationQueue";
 import { TTManagerReview, ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 
@@ -235,6 +240,25 @@ function VigilWorkspaceSection({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = payloads.find((p) => p.request.request_id === selectedId) ?? null;
 
+  // WG-5 (Session 54): the live expiry sweep, reaching the Workspace's embedded
+  // copy of VIGIL's queue. While this section is open, an overdue request is
+  // auto-rejected through the SHARED session store (single AGENT_ACTION_EXPIRED
+  // emit site — VigilApp's own screen sweeps the same store via
+  // useApprovalQueue.expireOverdue; the two screens are never mounted at once,
+  // so the sweeps cannot double-emit) and then leaves this surface. An expired
+  // selected item deselects itself because `selected` derives from the items.
+  useEffect(() => {
+    const sweep = (): void => {
+      const { expired } = expireVigilSessionRequests(Date.now(), ctx.logger);
+      for (const req of expired) {
+        ctx.reviewerWorkspaceSurface.remove(VIGIL_WORKSPACE_MODULE_ID, req.request_id);
+      }
+    };
+    sweep();
+    const timer = setInterval(sweep, EXPIRY_SWEEP_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [ctx]);
+
   if (payloads.length === 0) {
     return <EmptySection sourceLabel="VIGIL has published no pending approval requests this session." />;
   }
@@ -260,7 +284,10 @@ function VigilWorkspaceSection({
           obligationCase={selected.obligationCase}
           onDecided={(requestId) => {
             // GD-25 — the decision-commit path: a decided request leaves the Workspace.
+            // WG-13 (Session 54): it also leaves the shared session store, so VIGIL's
+            // own screen mounting later in this session shows the queue without it.
             ctx.reviewerWorkspaceSurface.remove(VIGIL_WORKSPACE_MODULE_ID, requestId);
+            removeVigilSessionRequest(requestId);
             setSelectedId(null);
           }}
         />

@@ -21,14 +21,13 @@ import { useCallback, useMemo, useState } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  approvalWorkflowStep,
+  agentActionExpiredEvent,
   isExpired,
   RISK_ORDER,
   type AgentApprovalRequest,
 } from "./approval-contract";
 import { createDevApprovalPort, type AgentApprovalPort } from "./approval-port";
-
-const SOF_APPROVAL_SYSTEM = "sof-approval-system";
+import { removeVigilSessionRequest } from "./vigil-approval-session";
 
 export interface UseApprovalQueueOptions {
   /** Injectable port. Defaults to the synthetic/dev backing anchored at `anchorIso`. */
@@ -85,21 +84,9 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
 
       for (const req of overdue) {
         try {
-          ctx.logger.log({
-            event_type: "AGENT_ACTION_EXPIRED",
-            workflow_step_id: approvalWorkflowStep(req.request_id),
-            sovereign_tier: "standard",
-            product: "VIGIL",
-            actor_id: SOF_APPROVAL_SYSTEM,
-            outcome: "agent_action_expired",
-            payload: {
-              request_id: req.request_id,
-              requesting_agent_id: req.requesting_agent_id,
-              action_type: req.action_type,
-              risk_classification: req.risk_classification,
-              expired_at: req.expires_at,
-            },
-          });
+          // WG-5 (Session 54): the event shape lives in approval-contract's shared
+          // builder so this sweep and the session store's sweep cannot drift.
+          ctx.logger.log(agentActionExpiredEvent(req));
         } catch (err) {
           setExpireError(
             `AGENT_ACTION_EXPIRED Logger emit failed for ${req.request_id} — the request expired and ` +
@@ -113,6 +100,10 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
       const expiredIds = overdue.map((r) => r.request_id);
       setRequests((prev) => prev.filter((r) => !expiredIds.includes(r.request_id)));
       setSelectedId((cur) => (cur !== null && expiredIds.includes(cur) ? null : cur));
+      // WG-13 (Session 54): mirror the expiry into the shared session store so the
+      // Reviewer's Workspace and any later VIGIL mount see the same queue. No-op
+      // for requests never in the session (e.g. test-seeded ones).
+      for (const id of expiredIds) removeVigilSessionRequest(id);
       return expiredIds;
     },
     [ctx, requests]
@@ -123,6 +114,9 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
   const remove = useCallback((requestId: string): void => {
     setRequests((prev) => prev.filter((r) => r.request_id !== requestId));
     setSelectedId((cur) => (cur === requestId ? null : cur));
+    // WG-13 (Session 54): a decided request also leaves the shared session store,
+    // so it does not reappear when another VIGIL surface mounts later.
+    removeVigilSessionRequest(requestId);
   }, []);
 
   const sorted = useMemo(() => sortRequests(requests), [requests]);

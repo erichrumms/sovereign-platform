@@ -18,7 +18,8 @@
  * Version: 1.1 · Session 42 · July 19, 2026
  */
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import type { RegisteredModuleView } from "../module-loader";
 import { SOVEREIGN_THEME as T } from "./theme";
@@ -199,26 +200,51 @@ export function ModuleNav({
   );
 }
 
-/** Hover ⓘ affordance — shows plain-English bullet content for the module. */
+/**
+ * Hover ⓘ affordance — shows plain-English bullet content for the module.
+ *
+ * WG-2 (Session 54): the popover renders through a React portal to
+ * document.body instead of inside the sidebar. The sidebar's `<aside>` sets
+ * `overflowY: "auto"`, and per the CSS overflow spec an unset `overflowX`
+ * then computes to `auto` too — so anything absolutely positioned inside it
+ * was clipped exactly at the sidebar/content boundary. The portal escapes the
+ * scroll container entirely; position is fixed, computed from the icon's
+ * viewport rect at hover time (fixed positioning is viewport-relative, so no
+ * scroll-offset math is needed). asideStyle's overflow is deliberately
+ * untouched — the sidebar must keep scrolling as the module list grows.
+ */
 function InfoBadge({ info }: { info: ModuleInfo }): JSX.Element {
-  const [open, setOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const wrapRef = useRef<HTMLSpanElement>(null);
   return (
     <span
+      ref={wrapRef}
       style={infoBadgeWrapStyle}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => setAnchorRect(wrapRef.current?.getBoundingClientRect() ?? null)}
+      onMouseLeave={() => setAnchorRect(null)}
       onClick={(e) => e.stopPropagation()}
     >
       <span style={infoIconStyle} aria-label="Module info">ⓘ</span>
-      {open && (
-        <div style={infoPopoverStyle} role="tooltip">
-          <ul style={infoBulletListStyle}>
-            {info.bullets.map((b, i) => (
-              <li key={i} style={infoBulletStyle}>{b}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {anchorRect &&
+        createPortal(
+          <div
+            role="tooltip"
+            style={{
+              ...infoPopoverStyle,
+              position: "fixed",
+              left: anchorRect.right + 6,
+              top: anchorRect.top + anchorRect.height / 2,
+              transform: "translateY(-50%)",
+            }}
+          >
+            <ul style={infoBulletListStyle}>
+              {info.bullets.map((b, i) => (
+                <li key={i} style={infoBulletStyle}>{b}</li>
+              ))}
+            </ul>
+          </div>,
+          document.body
+        )}
     </span>
   );
 }
@@ -292,11 +318,10 @@ const infoIconStyle: CSSProperties = {
   userSelect: "none",
 };
 
+// WG-2 (Session 54): position/left/top/transform are set inline at render time
+// from the hovered icon's viewport rect — the popover is portaled to
+// document.body, so it can no longer be positioned relative to the icon in CSS.
 const infoPopoverStyle: CSSProperties = {
-  position: "absolute",
-  left: "calc(100% + 6px)",
-  top: "50%",
-  transform: "translateY(-50%)",
   zIndex: 200,
   background: T.bg.elevated,
   border: "1px solid #3D4466",

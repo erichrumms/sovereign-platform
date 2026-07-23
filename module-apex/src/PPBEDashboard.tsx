@@ -28,7 +28,12 @@
  * the bottom of the dashboard. The disclosure notice is part of the rendered
  * UI — not a code comment — per the spec's honesty requirement.
  *
- * Version: 1.1 · Session 46 · July 20, 2026
+ * Session 54 (WG-3/WG-4/WG-12): obligation-rate codename key line; explicit
+ * Legend payload on the variance chart (deterministic order); dependency
+ * health now ALSO renders the individual records (which handoff, which
+ * status) below the counts — the counts table and its reasoning are unchanged.
+ *
+ * Version: 1.2 · Session 54 · July 22, 2026
  */
 
 import type { CSSProperties } from "react";
@@ -65,6 +70,7 @@ import {
   type PPBEDashboardInputs,
 } from "./ppbe-dashboard";
 import { SYNTH_SITE_BREAKDOWNS } from "./ppbe-site-breakdown";
+import type { DependencyMap } from "@sovereign/data";
 
 export interface PPBEDashboardProps {
   /** Host-assembled governed data. Omitted → honest empty state. */
@@ -145,6 +151,14 @@ function ObligationRateChart({
 
   return (
     <>
+      {/* WG-3 (Session 54): the axis uses short codenames (ALPHA, BRAVO...) while the
+          text below uses full names — this always-visible one-line key bridges the
+          two, rather than relying on a hover tooltip alone. */}
+      <p style={captionStyle} aria-label="Program codename key">
+        {chartData
+          .map((c) => `${c.label} = ${names[c.program_id] ?? c.program_id}`)
+          .join("  ·  ")}
+      </p>
       <div aria-label="Obligation rate bar chart" style={{ marginBottom: 8 }}>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={chartData}>
@@ -208,6 +222,38 @@ function ObligationRateChart({
 }
 
 // ─── Budget-to-actual variance chart ─────────────────────────────────────────
+
+// WG-4 (Session 54): fixed-order legend items — Planned then Actual, matching
+// the bar-body order below. Rendered by VarianceLegendContent.
+const VARIANCE_LEGEND_ITEMS = [
+  { label: "Planned", color: "#94a3b8" },
+  { label: "Actual", color: "#0c4a6e" },
+] as const;
+
+export function VarianceLegendContent(): JSX.Element {
+  return (
+    <ul
+      aria-label="Variance chart legend"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 16,
+        listStyle: "none",
+        margin: 0,
+        padding: 0,
+        fontSize: 12,
+      }}
+    >
+      {VARIANCE_LEGEND_ITEMS.map((item) => (
+        <li key={item.label} style={{ display: "flex", alignItems: "center", gap: 5, color: item.color }}>
+          <span aria-hidden="true" style={{ width: 10, height: 10, background: item.color, display: "inline-block" }} />
+          {item.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 interface VarianceChartItem {
   label: string;
   planned: number;
@@ -232,7 +278,15 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
             <XAxis dataKey="label" tick={{ fontSize: 10, angle: -30, textAnchor: "end" }} height={48} />
             <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
             <Tooltip content={NarrativeTooltip} />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
+            {/* WG-4 (Session 54): explicit legend content — the order is now
+                deterministic (Planned, then Actual — matching the bar-body order)
+                regardless of the library's default ordering behavior.
+                RECONCILIATION (see Session 54 handoff): the Findings Report
+                suggested `payload`; recharts 3.x removed that prop from Legend's
+                public props (it is context-driven in v3), so the equivalent —
+                and strictly more deterministic — fix is an explicit content
+                renderer with a hardcoded item order. */}
+            <Legend content={VarianceLegendContent} />
             <Bar dataKey="planned" name="Planned" fill="#94a3b8" />
             <Bar dataKey="actual" name="Actual" fill="#0c4a6e" />
           </BarChart>
@@ -248,7 +302,48 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
 }
 
 // ─── Dependency health table ──────────────────────────────────────────────────
-function DependencyHealthTable({ healthy, at_risk, failed, narrative }: { healthy: number; at_risk: number; failed: number; narrative: string }): JSX.Element {
+
+// WG-12 (Session 54): render order and colors for individual dependency records.
+// DependencyHealthStatus's literals are spec-frozen ('healthy' | 'at-risk' |
+// 'failed' — docs/18 §3.6); problem records sort first so they are impossible
+// to miss.
+const DEPENDENCY_STATUS_ORDER: Record<DependencyMap["health_status"], number> = {
+  failed: 0,
+  "at-risk": 1,
+  healthy: 2,
+};
+
+function dependencyStatusFill(status: DependencyMap["health_status"]): string {
+  if (status === "healthy") return "#059669";
+  if (status === "at-risk") return "#d97706";
+  return "#dc2626";
+}
+
+function dependencyStatusLabel(status: DependencyMap["health_status"]): string {
+  if (status === "healthy") return "Healthy";
+  if (status === "at-risk") return "At risk";
+  return "Failed";
+}
+
+function DependencyHealthTable({
+  healthy,
+  at_risk,
+  failed,
+  narrative,
+  dependencies,
+}: {
+  healthy: number;
+  at_risk: number;
+  failed: number;
+  narrative: string;
+  /** WG-12 (Session 54): the individual records behind the counts — the data
+      already existed (SYNTH_PPBE_DEPENDENCIES) and was being pre-reduced to
+      bare counts before reaching this table. */
+  dependencies: readonly DependencyMap[];
+}): JSX.Element {
+  const sortedDeps = [...dependencies].sort(
+    (a, b) => DEPENDENCY_STATUS_ORDER[a.health_status] - DEPENDENCY_STATUS_ORDER[b.health_status]
+  );
   return (
     <>
       <table style={tableStyle} aria-label="Dependency health counts">
@@ -274,6 +369,35 @@ function DependencyHealthTable({ healthy, at_risk, failed, narrative }: { health
         </tbody>
       </table>
       <p style={captionStyle}>{narrative}</p>
+
+      {/* WG-12 (Session 54): the individual dependency records — WHICH handoff is
+          at risk or failed, not just how many. Problem records sort first. */}
+      {sortedDeps.length > 0 && (
+        <table style={{ ...tableStyle, marginTop: 8 }} aria-label="Dependency detail">
+          <thead>
+            <tr>
+              <th style={thStyle}>Dependency</th>
+              <th style={thStyle}>Hands off from</th>
+              <th style={thStyle}>To</th>
+              <th style={thStyle}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedDeps.map((d) => (
+              <tr key={d.dependency_id} title={`${d.handoff_standard} (${d.timing_requirement})`}>
+                <td style={tdStyle}>{d.dependency_id}</td>
+                <td style={tdStyle}>{d.source_workflow}</td>
+                <td style={tdStyle}>{d.target_workflow}</td>
+                <td style={tdStyle}>
+                  <span style={{ color: dependencyStatusFill(d.health_status), fontWeight: 600 }}>
+                    {dependencyStatusLabel(d.health_status)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 }
@@ -380,6 +504,7 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
           at_risk={data.dependency_health.at_risk}
           failed={data.dependency_health.failed}
           narrative={data.dependency_health.narrative}
+          dependencies={effectiveInputs.dependencies}
         />
       </div>
 

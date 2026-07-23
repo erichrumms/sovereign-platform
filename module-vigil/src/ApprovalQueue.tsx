@@ -22,7 +22,6 @@
 import type { CSSProperties } from "react";
 
 import { minutesRemaining, type AgentApprovalRequest, type RiskClassification } from "./approval-contract";
-import { formatIso } from "./vigil-types";
 
 export interface ApprovalQueueProps {
   requests: AgentApprovalRequest[];

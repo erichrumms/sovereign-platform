@@ -62,6 +62,7 @@ import {
   type RegisteredModuleView,
 } from "./module-loader";
 import { registerPlatformModules } from "./register-modules";
+import { publishModuleSurfacesAtStartup } from "./startup-publish";
 import { ShellNavChrome } from "./navigation";
 import { GovernanceHeaderIndicator, CPMIVRSDashboard } from "./governance";
 import { PlatformHome } from "./PlatformHome";
@@ -115,6 +116,13 @@ const shell = createShell({
 const loader = new ModuleLoader(shell);
 // Register the product / companion modules that exist on disk this session.
 registerPlatformModules(loader);
+
+// WG-1 (Session 54): populate the cross-module surfaces at shell start, so Home
+// and the Reviewer's Workspace show real data on a fresh session without any
+// module being visited first. Reuses each module's existing publish functions —
+// see startup-publish.ts. Module scope: runs once per page load (StrictMode
+// double-render does not re-run module scope).
+publishModuleSurfacesAtStartup(shell.getContext());
 
 // ============================================================
 // APP

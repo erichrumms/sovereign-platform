@@ -13,7 +13,7 @@
 
 import type { ValidationResult } from "@sovereign/data";
 
-import type { SovereignEventType } from "../../sovereign-shell/shell-contract";
+import type { SovereignEventType, SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 
 /** PR-VIGIL-002 registry binding — stamped onto Logger events as prompt provenance. */
 export const PR_VIGIL_002 = {
@@ -55,6 +55,41 @@ export const RISK_ORDER: Record<RiskClassification, number> = { P1: 0, P2: 1, P3
 /** Compute expires_at from submitted_at + the risk's window. */
 export function computeExpiresAt(submittedAtIso: string, risk: RiskClassification): string {
   return new Date(Date.parse(submittedAtIso) + EXPIRY_MINUTES[risk] * 60_000).toISOString();
+}
+
+/** System actor on automated expiry events (spec §4.3 / §6 — not a human decision). */
+export const SOF_APPROVAL_SYSTEM = "sof-approval-system";
+
+/**
+ * Live expiry-sweep cadence (WG-5, Session 54): how often an open screen re-checks
+ * the queue for overdue requests. 30 seconds keeps a P1's 15-minute window honest
+ * without meaningful cost; the check itself is a cheap timestamp comparison.
+ */
+export const EXPIRY_SWEEP_INTERVAL_MS = 30_000;
+
+/**
+ * The AGENT_ACTION_EXPIRED system event for one overdue request — the single
+ * source of this event's shape (WG-5, Session 54). Both sweep sites build the
+ * event here — useApprovalQueue.expireOverdue (VIGIL's own screen) and
+ * expireVigilSessionRequests (the shared session store, reached from the
+ * Reviewer's Workspace) — so the two cannot drift (Constraint #2).
+ */
+export function agentActionExpiredEvent(req: AgentApprovalRequest): SovereignLogEvent {
+  return {
+    event_type: "AGENT_ACTION_EXPIRED",
+    workflow_step_id: approvalWorkflowStep(req.request_id),
+    sovereign_tier: "standard",
+    product: "VIGIL",
+    actor_id: SOF_APPROVAL_SYSTEM,
+    outcome: "agent_action_expired",
+    payload: {
+      request_id: req.request_id,
+      requesting_agent_id: req.requesting_agent_id,
+      action_type: req.action_type,
+      risk_classification: req.risk_classification,
+      expired_at: req.expires_at,
+    },
+  };
 }
 
 /** Whether the request is past its expiry at the given instant. */

@@ -11,10 +11,11 @@
  *
  * Both surfaces run on injectable backings (Standing Constraint #3): the alert feed via
  * VIGIL_ALERT_ENDPOINT (null → configuration notice this session), the approval queue via
- * the synthetic/dev AgentApprovalPort. Expired approval requests are auto-rejected with an
- * AGENT_ACTION_EXPIRED system event on mount and may be re-checked as the operator works.
+ * the shared session store over the synthetic/dev AgentApprovalPort (WG-13, Session 54).
+ * Expired approval requests are auto-rejected with an AGENT_ACTION_EXPIRED system event by
+ * a live sweep — on mount and on an interval while the screen is open (WG-5, Session 54).
  *
- * Version: 2.0 (Agent Approval Flow) · Session 10 · June 23, 2026
+ * Version: 2.1 (session store + live expiry sweep) · Session 54 · July 22, 2026
  */
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -27,9 +28,9 @@ import { ApprovalDetail } from "./ApprovalDetail";
 import { useAlertQueue } from "./useAlertQueue";
 import { useApprovalQueue } from "./useApprovalQueue";
 import { DEMO_ARIA_ALERTS } from "./aria-alert-routing";
-import { DEMO_TT_ALERTS, makeDemoTTApprovalRequest } from "./tt-synthetic-alerts";
-import { createDevApprovalPort } from "./approval-port";
-import { openObligationGate, type PPBEObligationCase } from "./ppbe-authorization";
+import { DEMO_TT_ALERTS } from "./tt-synthetic-alerts";
+import { EXPIRY_SWEEP_INTERVAL_MS } from "./approval-contract";
+import { ensureVigilApprovalSession } from "./vigil-approval-session";
 import { publishVigilWorkQueues } from "./vigil-work-queue-publisher";
 import {
   publishVigilWorkspaceItems,
@@ -68,45 +69,43 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
   // wired (Stage 2), they are seeded on the synthetic/dev backing — the sanctioned dev path
   // (useAlertQueue.initialAlerts), the same pattern as the synthetic approval port.
   // Session 29 (WE-5): Time & Travel alerts + the TT formal-escalation approval
-  // item join the seeded queues — same sanctioned dev path. The TT approval is
-  // anchored to mount time so its P2 window is live (not instantly expired).
+  // item join the seeded queues — same sanctioned dev path. Session 54 (WG-1/13):
+  // the TT approval now anchors to the shared session's assembly time (shell
+  // start) rather than this component's mount, so its P2 window is live from
+  // the moment the platform opens.
   const alerts = useAlertQueue(ctx, { initialAlerts: [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS] });
-  const anchorIso = useMemo(() => new Date().toISOString(), []);
 
-  // Tier C seed — one pending obligation awaiting VIGIL authorization + COUNSEL Decision Record.
-  // The draft uses a synthetic obligation that has not yet been committed; it enters the queue
-  // at mount time so the walkthrough can demonstrate the Tier C panel. The null guard is belt-
-  // and-suspenders (openObligationGate only returns null for malformed drafts).
-  const demoPPBEObligationCase = useMemo<PPBEObligationCase | null>(() => {
-    const draft = {
-      obligation_id: "PPBE-OB-DEMO-001",
-      program_id: "SYNTH-PRG-ALPHA",
-      cost_code: "SYNTH-CC-110",
-      amount: 75000,
-      timestamp: anchorIso,
-      workflow_step_id: "ppbe-obligation-PPBE-OB-DEMO-001",
-    };
-    return openObligationGate(draft, "ppbe-coordination-assistant", anchorIso, ctx.logger);
-  }, [anchorIso, ctx.logger]);
-
-  const baseRequests = [...createDevApprovalPort(anchorIso).listPending(), makeDemoTTApprovalRequest(anchorIso)];
-  const initialRequests = demoPPBEObligationCase
-    ? [...baseRequests, demoPPBEObligationCase.approval_request]
-    : baseRequests;
+  // WG-1 / WG-13 (Session 54): the approval queue now comes from the shared,
+  // session-persistent store (vigil-approval-session.ts) — the same queue the
+  // shell's startup publisher and the Reviewer's Workspace read. The store
+  // assembles exactly what this component used to assemble inline at mount
+  // (dev port + TT escalation + the Tier C obligation case), once per browser
+  // session; a decision recorded in the Workspace is therefore reflected here.
+  const session = useMemo(() => ensureVigilApprovalSession(ctx.logger), [ctx.logger]);
+  const demoPPBEObligationCase = session.obligationCase;
 
   const approvals = useApprovalQueue(ctx, {
-    initialRequests,
+    initialRequests: [...session.requests],
     // GD-27 — seed the queue's existing selection state with the navigation intent.
     initialSelectedId: initialState?.selectedRequestId,
   });
 
-  // Auto-reject any already-overdue approval requests on mount (AGENT_ACTION_EXPIRED).
+  // WG-5 (Session 54): the expiry sweep is LIVE — on mount and every
+  // EXPIRY_SWEEP_INTERVAL_MS while this screen is open — so a P1's 15-minute
+  // window elapsing on an idle screen expires, logs (AGENT_ACTION_EXPIRED),
+  // and removes the request without a remount. (Previously ran once on mount.)
+  // expireOverdue also mirrors removals into the shared session store.
   useEffect(() => {
-    const expired = approvals.expireOverdue(Date.now());
-    if (expired.length > 0) setExpiredRequestCount(expired.length);
-    // run once on mount; expireOverdue is keyed on the initial request set.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const sweep = (): void => {
+      const expired = approvals.expireOverdue(Date.now());
+      if (expired.length > 0) setExpiredRequestCount((count) => count + expired.length);
+    };
+    sweep();
+    const timer = setInterval(sweep, EXPIRY_SWEEP_INTERVAL_MS);
+    return () => clearInterval(timer);
+    // expireOverdue changes identity when the queue changes; re-arming the
+    // interval then is correct (the sweep is idempotent on an unchanged queue).
+  }, [approvals.expireOverdue]);
 
   // GD-24 — publish VIGIL's two WorkQueueSurface summaries whenever the counts change.
   // Reuses the counts already computed by useApprovalQueue / useAlertQueue above.
@@ -203,7 +202,7 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
           )}
           {expiredRequestCount > 0 && (
             <p role="status" style={expiredNoticeStyle}>
-              {expiredRequestCount} request{expiredRequestCount !== 1 ? "s" : ""} expired on load and were auto-rejected (AGENT_ACTION_EXPIRED).
+              {expiredRequestCount} request{expiredRequestCount !== 1 ? "s" : ""} expired and {expiredRequestCount !== 1 ? "were" : "was"} auto-rejected (AGENT_ACTION_EXPIRED).
             </p>
           )}
           <ApprovalQueue requests={approvals.requests} selectedId={approvals.selectedId} onSelect={approvals.select} />
@@ -217,7 +216,7 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
                 reviewerWorkspaceSurface.remove(VIGIL_WORKSPACE_MODULE_ID, requestId);
                 approvals.remove(requestId);
               }}
-              onDecisionMade={(requestId, action, agentId, actionType) => {
+              onDecisionMade={(_requestId, action, agentId, actionType) => {
                 setLastDecision({ action, agentId, actionType });
               }}
               obligationCase={
