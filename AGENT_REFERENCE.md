@@ -1,10 +1,11 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.1 — July 19, 2026**
-**Supersedes:** v3.0 (July 18, 2026), which itself merged BOTH prior lineages — the
-repo copy (1014 lines, last committed June 26, 2026, containing Lessons 1-12 and
-the SOVEREIGN-specific sections) and the project-knowledge copy v2.0 (530 lines,
+**Version: 3.2 — July 22, 2026**
+**Supersedes:** v3.1 (July 19, 2026), which itself was one addition on top of
+v3.0 (July 18, 2026) — the merge of BOTH prior lineages: the repo copy (1014
+lines, last committed June 26, 2026, containing Lessons 1-12 and the
+SOVEREIGN-specific sections) and the project-knowledge copy v2.0 (530 lines,
 July 18, containing Rules 1-10 through the July 15 incidents).
 **Merge decision:** Project Principal, July 18, 2026 — one canonical
 document, placed identically in the repo, at the iCloud root, and in
@@ -12,8 +13,12 @@ project knowledge.
 **v3.1 change:** one addition — the sub-module (per-tab) role-gating pattern
 (new in GD-22, Session 41), added to Known Codebase Facts so a second
 implementation doesn't diverge from the first. Nothing else in v3.0 changed.
-The v3.0/v3.1 counter still continues from the stated v2.0 assumption noted
-below — the true pre-June-26 original counter value remains unrecovered.
+**v3.2 change:** one addition — VIGIL's approval queue now has a single
+session-scoped source of truth (Session 54, WG-13), added to Known Codebase
+Facts so a future VIGIL surface doesn't bypass it. Nothing else in v3.1
+changed. The v3.0/v3.1/v3.2 counter still continues from the stated v2.0
+assumption noted below — the true pre-June-26 original counter value
+remains unrecovered.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -570,6 +575,22 @@ template, extraction-worthy at a sixth *data* surface), and the real reasoning f
 why each existing one is genuinely distinct, not overlapping. `docs/25`
 (`navigateToModule`, GD-27) completes the set — the first of the six that shares
 navigation intent rather than data, worth remembering as its own category.
+
+**VIGIL's approval queue now has a single session-scoped source of truth —
+added July 22, 2026 (Session 54).** `module-vigil/src/vigil-approval-session.ts`
+is the canonical, module-level shared store for VIGIL's synthetic approval
+queue — `VigilApp`, the Reviewer's Workspace's embedded VIGIL section, and the
+shell's own startup publisher (`startup-publish.ts`) all read and remove
+through it, not through `createDevApprovalPort()` directly. Any future VIGIL
+surface must go through the store — calling the port directly would silently
+reintroduce the exact resurrection bug (a decision made at one entry point not
+reflected at another) Session 54 fixed as WG-13. Correspondingly,
+`agentActionExpiredEvent()` in `approval-contract.ts` is now the single source
+of the `AGENT_ACTION_EXPIRED` event shape — both the mount-time and
+interval-driven expiry sweeps emit through it, not two separate
+constructions. This updates, but doesn't replace, the existing VIGIL
+`AgentApprovalPort` fact above — that interface itself is unchanged; it's just
+no longer the layer new code should touch first.
 
 ---
 
