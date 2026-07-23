@@ -60,6 +60,9 @@ export function withSessionCapture(
         ctx.logger.log(event);
         log.record(event);
       },
+      // GD-28 (v1.23): pass through reads to the real buffer — this wrapper only
+      // intercepts writes for local capture; the underlying buffer is the source.
+      getEntries: () => ctx.logger.getEntries(),
     },
   };
 }

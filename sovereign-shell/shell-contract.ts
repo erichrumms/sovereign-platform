@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.22
+ * Version: 1.23
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,32 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.23 (July 23, 2026) — GD-28 (Logger read exposure, approved by the Project Principal
+ *                       July 22, 2026, per docs/29 §Decision 3). ONE change: added
+ *                       `getEntries: () => readonly SovereignLogEvent[]` to the `logger`
+ *                       object type on SovereignShellContext (Section 7). This is a
+ *                       type-level change only — `ShellLogger.getEntries()` already
+ *                       existed as a working, tested-adjacent method (built since Session 2B
+ *                       as a governance dashboard / test utility, per shell.ts comment);
+ *                       GD-28 exposes it through the public contract so modules can read
+ *                       the session audit trail. The new method surfaces the append-only
+ *                       in-memory buffer — SESSION-SCOPED ONLY (Stage 1; no persistent
+ *                       remote sink yet, per Decision 21 / docs/28 §3). This limit must
+ *                       be stated explicitly in any UI built on it. Impact assessment:
+ *                       NO HumanDecisionType change (not a new union member — not synced
+ *                       to sovereign-data/src/shared-types.ts or Python logger;
+ *                       Constraint #11 has nothing to propagate). NO SovereignEventType
+ *                       change. NO AgentClass change. NO SovereignRole / SovereignProduct
+ *                       change. sovereign-api-client/src/types.ts NOT affected (copies
+ *                       only SovereignProduct / SovereignTier / ClearanceLevel).
+ *                       MODULE-LOADER and VALID_AGENT_CLASSES: not touched (no AgentClass
+ *                       change). sovereign_logger.py APPROVED_* lists: not touched (no
+ *                       event type or decision type change). Standing Constraint #7 (export
+ *                       count): NOT incremented — this widens an existing export's type,
+ *                       not adds a new context member. CONSUMER: module-workspace's new
+ *                       Activity/Decision History tab (D3, Session 58). No other module
+ *                       currently consumes getEntries(). Both shell-contract copies
+ *                       SHA-256 re-verified identical at v1.23.
  *   v1.22 (July 21, 2026) — GD-27 (Cross-Module Navigation Primitive, "Door 1", approved by
  *                       the Project Principal July 21, 2026, Session 53, per docs/25 §3 and
  *                       its design authorities docs/22 §5 and docs/23 §1 item 4). TWO
@@ -1338,6 +1364,9 @@ export interface SovereignShellContext {
   };
   logger: {
     log: (event: SovereignLogEvent) => void;
+    // GD-28 (v1.23) — read access to the session-scoped audit buffer.
+    // SESSION-SCOPED ONLY: in-memory for this browser session (Stage 1 / Decision 21).
+    getEntries: () => readonly SovereignLogEvent[];
   };
   governance: {
     cpmiStatus: CPMIPortfolioStatus;

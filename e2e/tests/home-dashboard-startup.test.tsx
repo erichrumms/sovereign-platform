@@ -20,7 +20,6 @@ import {
 } from "../../module-vigil/src/vigil-approval-session";
 import {
   SOF_APPROVAL_SYSTEM,
-  EXPIRY_SWEEP_INTERVAL_MS,
 } from "../../module-vigil/src/approval-contract";
 import { makeCtx } from "./harness";
 

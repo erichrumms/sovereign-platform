@@ -124,7 +124,7 @@ export function makeCtx(logSink: SovereignLogEvent[]): SovereignShellContext {
       hasRole: (r: SovereignRole) => r === role,
       hasClearance: () => true,
     },
-    logger: { log: (event: SovereignLogEvent) => { logSink.push(event); } },
+    logger: { log: (event: SovereignLogEvent) => { logSink.push(event); }, getEntries: () => logSink },
     governance: {
       cpmiStatus: { overall: "GREEN", products: [], last_updated: "2026-06-24T00:00:00.000Z", pending_gate3_reviews: 0 },
       vrsGates: [],

@@ -113,6 +113,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       log: (event: SovereignLogEvent) => {
         over.logSink?.push(event);
       },
+      getEntries: (): readonly SovereignLogEvent[] => over.logSink ?? [],
     },
     navigation: { navigateTo: () => {}, currentPath: "/workspace", breadcrumb: [] },
   } as unknown as SovereignShellContext;

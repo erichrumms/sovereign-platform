@@ -90,32 +90,35 @@ export interface WorkspaceAppProps {
   ctx: SovereignShellContext;
 }
 
-type Section = WorkspaceModuleId;
+type Section = WorkspaceModuleId | "activity";
 
 // Per-section role definitions (GD-25 / docs/23 §3). Admin roles are included in every
 // list — the check is straightforward list membership, no separate superuser path —
 // the exact TAB_ROLES shape AriaApp.tsx established (GD-22).
 const SECTION_ROLES: Record<Section, SovereignRole[]> = {
-  vigil:  ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
-  aria:   ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER"],
-  scribe: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"],
+  vigil:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
+  aria:     ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER"],
+  scribe:   ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"],
+  activity: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST"],
 };
 
 // The primary (non-admin) role for each section — shown in disabled-tab tooltips.
 const SECTION_PRIMARY_ROLE: Record<Section, string> = {
-  vigil:  "PLATFORM_ADMIN / SYSTEM_ADMIN",
-  aria:   "COMPLIANCE_OFFICER",
-  scribe: "PROGRAM_MANAGER / ANALYST",
+  vigil:    "PLATFORM_ADMIN / SYSTEM_ADMIN",
+  aria:     "COMPLIANCE_OFFICER",
+  scribe:   "PROGRAM_MANAGER / ANALYST",
+  activity: "(all roles)",
 };
 
 const SECTIONS: Array<{ id: Section; label: string }> = [
-  { id: "vigil",  label: "VIGIL Approvals" },
-  { id: "aria",   label: "ARIA Certifications" },
-  { id: "scribe", label: "SCRIBE T&T Reviews" },
+  { id: "vigil",    label: "VIGIL Approvals" },
+  { id: "aria",     label: "ARIA Certifications" },
+  { id: "scribe",   label: "SCRIBE T&T Reviews" },
+  { id: "activity", label: "Activity & Decisions" },
 ];
 
 // Sections in order — used to pick the default active section.
-const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe"];
+const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe", "activity"];
 
 // Never-return exhaustiveness guard. renderSection()'s switch default calls this so
 // TypeScript flags any new Section member without a corresponding render branch.
@@ -144,10 +147,14 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
   const vigilItems = useMemo(() => itemsFor(items, VIGIL_WORKSPACE_MODULE_ID), [items]);
   const ariaItems = useMemo(() => itemsFor(items, ARIA_WORKSPACE_MODULE_ID), [items]);
   const scribeItems = useMemo(() => itemsFor(items, SCRIBE_WORKSPACE_MODULE_ID), [items]);
+  const activityCount = ctx.logger.getEntries().filter(
+    (e) => e.actor_name === ctx.auth.user.name
+  ).length;
   const countFor: Record<Section, number> = {
     vigil: vigilItems.length,
     aria: ariaItems.length,
     scribe: scribeItems.length,
+    activity: activityCount,
   };
 
   // Exhaustiveness-checked section renderer. TypeScript reports an error at the
@@ -166,6 +173,10 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
         return canAccessSection("scribe")
           ? <ScribeWorkspaceSection ctx={ctx} items={scribeItems} />
           : <LockedSectionNotice sectionLabel="SCRIBE T&T Reviews" requiredRole={SECTION_PRIMARY_ROLE.scribe} />;
+      case "activity":
+        return canAccessSection("activity")
+          ? <ActivitySection ctx={ctx} />
+          : <LockedSectionNotice sectionLabel="Activity & Decisions" requiredRole={SECTION_PRIMARY_ROLE.activity} />;
       default:
         return assertHandled(s);
     }
@@ -416,6 +427,66 @@ function ScribeWorkspaceSection({
 }
 
 // ============================================================
+// ACTIVITY SECTION — GD-28 (v1.23) — per-user decision history
+// read from ctx.logger.getEntries() (the session-scoped audit buffer).
+// Default view: entries where actor_name === the signed-in user.
+// Admin toggle (PLATFORM_ADMIN / SYSTEM_ADMIN): show all entries.
+// ============================================================
+
+function ActivitySection({ ctx }: { ctx: SovereignShellContext }): JSX.Element {
+  const isAdmin = ctx.auth.hasRole("PLATFORM_ADMIN") || ctx.auth.hasRole("SYSTEM_ADMIN");
+  const [showAll, setShowAll] = useState(false);
+
+  const allEntries = ctx.logger.getEntries();
+  const userEntries = allEntries.filter((e) => e.actor_name === ctx.auth.user.name);
+  const displayed = isAdmin && showAll ? allEntries : userEntries;
+
+  return (
+    <div data-testid="workspace-activity-section">
+      <div style={activityDisclosureStyle} data-testid="activity-scope-disclosure">
+        Session-scoped only: this buffer is in-memory and does not persist across page reloads
+        (Stage 1 / Decision 21). It is not a permanent audit record — consult the platform
+        audit log for historical decisions.
+      </div>
+      {isAdmin && (
+        <label style={activityToggleLabelStyle} data-testid="activity-admin-toggle-label">
+          <input
+            type="checkbox"
+            data-testid="activity-admin-toggle"
+            checked={showAll}
+            onChange={(e) => setShowAll(e.target.checked)}
+          />
+          {" "}Show all platform entries (admin view — {allEntries.length} total this session)
+        </label>
+      )}
+      {displayed.length === 0 ? (
+        <div style={emptyStyle} data-testid="activity-empty">
+          {isAdmin && showAll
+            ? "No events have been logged to the session buffer yet."
+            : `No decisions recorded for ${ctx.auth.user.name} this session.`}
+        </div>
+      ) : (
+        <ul style={activityListStyle} data-testid="activity-log-list">
+          {displayed.map((e, i) => (
+            <li key={i} style={activityEntryItemStyle} data-testid={`activity-entry-${i}`}>
+              <span style={activityEventTypeStyle}>{e.event_type.replace(/_/g, " ")}</span>
+              {e.decision_type && (
+                <span style={activityDecisionTypeStyle}>{e.decision_type.replace(/_/g, " ")}</span>
+              )}
+              <span style={activityProductBadgeStyle}>{e.product}</span>
+              {e.actor_name && (
+                <span style={activityActorStyle}>{e.actor_name}</span>
+              )}
+              <span style={activityOutcomeStyle}>{e.outcome}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
 // SHARED PRESENTATION
 // ============================================================
 
@@ -534,5 +605,34 @@ const openActionButtonStyle: CSSProperties = {
   padding: "3px 10px", fontSize: 12, borderRadius: 999, border: "1px solid #cbd5e1",
   background: "#ffffff", color: "#0c4a6e", cursor: "pointer",
 };
+
+const activityDisclosureStyle: CSSProperties = {
+  padding: "10px 14px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8,
+  color: "#9a3412", fontSize: 13, marginBottom: 12, maxWidth: 720,
+};
+const activityToggleLabelStyle: CSSProperties = {
+  display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#475569",
+  marginBottom: 12, cursor: "pointer",
+};
+const activityListStyle: CSSProperties = {
+  listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 6,
+  maxWidth: 720,
+};
+const activityEntryItemStyle: CSSProperties = {
+  display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap",
+  padding: "8px 12px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8,
+  fontSize: 13,
+};
+const activityEventTypeStyle: CSSProperties = { fontWeight: 700, color: "#0f172a" };
+const activityDecisionTypeStyle: CSSProperties = {
+  padding: "1px 8px", borderRadius: 999, background: "#dbeafe", color: "#1e3a8a",
+  fontSize: 11, fontWeight: 600,
+};
+const activityProductBadgeStyle: CSSProperties = {
+  padding: "1px 8px", borderRadius: 999, background: "#f0fdf4", color: "#166534",
+  fontSize: 11, fontWeight: 600,
+};
+const activityActorStyle: CSSProperties = { color: "#64748b", fontSize: 12 };
+const activityOutcomeStyle: CSSProperties = { marginLeft: "auto", color: "#475569", fontSize: 12 };
 
 export default WorkspaceApp;

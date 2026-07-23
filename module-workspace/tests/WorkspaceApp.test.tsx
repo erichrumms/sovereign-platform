@@ -288,6 +288,130 @@ describe("WorkspaceApp WG-16 — ARIA section republishes Certifications count a
   });
 });
 
+describe("WorkspaceApp Activity & Decisions tab (GD-28 / Session 58)", () => {
+  it("Activity & Decisions tab is accessible to all roles (no gate)", () => {
+    const roles = ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST"] as const;
+    for (const role of roles) {
+      const { unmount } = render(<WorkspaceApp ctx={makeCtx({ role })} />);
+      expect(tab(/Activity & Decisions/)).toBeEnabled();
+      unmount();
+    }
+  });
+
+  it("shows per-user decisions by default (actor_name filter)", () => {
+    const logged: SovereignLogEvent[] = [
+      {
+        event_type: "HUMAN_DECISION",
+        workflow_step_id: "act-test-1",
+        sovereign_tier: "standard",
+        product: "VIGIL",
+        actor_id: "E-950",
+        actor_name: "Riley Reviewer",
+        decision_type: "AGENT_APPROVAL",
+        outcome: "APPROVED",
+        actor: "human",
+        payload: {},
+      },
+      {
+        event_type: "HUMAN_DECISION",
+        workflow_step_id: "act-test-2",
+        sovereign_tier: "standard",
+        product: "ARIA",
+        actor_id: "E-999",
+        actor_name: "Other User",
+        decision_type: "HUMAN_DENIAL",
+        outcome: "DENIED",
+        actor: "human",
+        payload: {},
+      },
+    ];
+    const ctx = makeCtx({ role: "SYSTEM_ADMIN", logSink: logged });
+    render(<WorkspaceApp ctx={ctx} />);
+    fireEvent.click(tab(/Activity & Decisions/));
+
+    expect(screen.getByTestId("workspace-activity-section")).toBeInTheDocument();
+    // Riley Reviewer's entry is shown; Other User's entry is hidden.
+    expect(screen.getByText(/AGENT APPROVAL/)).toBeInTheDocument();
+    expect(screen.queryByText(/Other User/)).not.toBeInTheDocument();
+  });
+
+  it("states the session-scope limit plainly in the Activity tab", () => {
+    render(<WorkspaceApp ctx={makeCtx({ role: "COMPLIANCE_OFFICER" })} />);
+    fireEvent.click(tab(/Activity & Decisions/));
+    const disclosure = screen.getByTestId("activity-scope-disclosure");
+    expect(disclosure).toBeInTheDocument();
+    expect(disclosure).toHaveTextContent(/session/i);
+    expect(disclosure).toHaveTextContent(/in-memory/i);
+  });
+
+  it("admin toggle is visible to PLATFORM_ADMIN and switches to all-entries view", () => {
+    const logged: SovereignLogEvent[] = [
+      {
+        event_type: "HUMAN_DECISION",
+        workflow_step_id: "act-test-3",
+        sovereign_tier: "standard",
+        product: "ARIA",
+        actor_id: "E-999",
+        actor_name: "Other Person",
+        decision_type: "HUMAN_DENIAL",
+        outcome: "DENIED",
+        actor: "human",
+        payload: {},
+      },
+    ];
+    const ctx = makeCtx({ role: "PLATFORM_ADMIN", logSink: logged });
+    render(<WorkspaceApp ctx={ctx} />);
+    fireEvent.click(tab(/Activity & Decisions/));
+
+    // Default: no entries for Riley Reviewer — Other Person's entry is hidden.
+    expect(screen.queryByText(/Other Person/)).not.toBeInTheDocument();
+
+    // Toggle to show all entries.
+    fireEvent.click(screen.getByTestId("activity-admin-toggle"));
+    expect(screen.getByText(/Other Person/)).toBeInTheDocument();
+  });
+
+  it("admin toggle is not visible to non-admin roles", () => {
+    render(<WorkspaceApp ctx={makeCtx({ role: "COMPLIANCE_OFFICER" })} />);
+    fireEvent.click(tab(/Activity & Decisions/));
+    expect(screen.queryByTestId("activity-admin-toggle")).not.toBeInTheDocument();
+  });
+
+  it("activity badge reflects the current user's decision count (actor_name filter)", () => {
+    const logged: SovereignLogEvent[] = [
+      {
+        event_type: "HUMAN_DECISION",
+        workflow_step_id: "act-badge-1",
+        sovereign_tier: "standard",
+        product: "VIGIL",
+        actor_id: "E-950",
+        actor_name: "Riley Reviewer",
+        decision_type: "AGENT_APPROVAL",
+        outcome: "APPROVED",
+        actor: "human",
+        payload: {},
+      },
+      {
+        // Non-human event without actor_name — should not count toward the badge.
+        event_type: "AGENT_STEP_START",
+        workflow_step_id: "act-badge-2",
+        sovereign_tier: "standard",
+        product: "VIGIL",
+        actor_id: "agent-1",
+        outcome: "STARTED",
+        payload: {},
+      },
+    ];
+    const ctx = makeCtx({ role: "SYSTEM_ADMIN", logSink: logged });
+    render(<WorkspaceApp ctx={ctx} />);
+
+    const tabs = screen.getAllByRole("tab");
+    const activityTab = tabs.find((t) => /Activity & Decisions/.test(t.textContent ?? ""))!;
+    // Badge = 1: only the HUMAN_DECISION where actor_name === "Riley Reviewer".
+    expect(activityTab.querySelector("span")?.textContent).toBe("1");
+  });
+});
+
 describe("WorkspaceApp WG-16 — SCRIBE section republishes T&T Review count after send decision", () => {
   beforeEach(() => resetScribeSessionForTests());
 
