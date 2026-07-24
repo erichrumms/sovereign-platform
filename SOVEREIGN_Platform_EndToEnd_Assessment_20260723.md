@@ -312,9 +312,12 @@ declaration never revisited; no runtime effect observed.
 
 ### 4.5 Process observations (not code)
 
-- `docs/Session55_Handoff.md` and `docs/Session55_SBOM_Update.md` sit **untracked** in the working
-  tree — close artifacts that never got committed, and in `docs/` rather than the repo root the
-  protocol specifies. Surfaced for the Governance Agent; not touched this session.
+- **Correction, added at Governance Agent review (July 23):** this bullet originally claimed
+  `docs/Session55_Handoff.md` and `docs/Session55_SBOM_Update.md` sit untracked in `docs/`. That
+  claim was checked directly and is wrong — both files are committed at the **repo root**
+  (`./Session55_Handoff.md`, `./Session55_SBOM_Update.md`), placed there several sessions ago
+  specifically so Session 56's gather script could reach them; `git status` shows a clean working
+  tree. No action needed on this item.
 - The stale `SOVEREIGN_Role_Access_Matrix_20260718.md` still sits at the repo root beside the
   corrected `_20260721` version — a "current version only" folder-rule candidate for disposal.
 

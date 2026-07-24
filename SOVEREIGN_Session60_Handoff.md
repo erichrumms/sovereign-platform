@@ -91,10 +91,12 @@ the close, coverage was re-prioritized per the opening prompt's explicit fallbac
 lost ground re-covered directly at targeted depth. The report documents exactly which module got
 which treatment — no module is presented as fully audited that wasn't.
 
-**F-2 — Untracked Session 55 close artifacts.** `docs/Session55_Handoff.md` and
-`docs/Session55_SBOM_Update.md` sit untracked in the working tree, in `docs/` rather than the repo
-root the protocol specifies. Not touched this session (assessment-only discipline); flagged for
-the Governance Agent to decide placement.
+**F-2 — Untracked Session 55 close artifacts. CORRECTED at Governance Agent review (July 23):**
+this finding was checked directly and is wrong. `docs/Session55_Handoff.md` and
+`docs/Session55_SBOM_Update.md` do not exist in that form — `Session55_Handoff.md` and
+`Session55_SBOM_Update.md` are committed at the **repo root**, placed there several sessions ago
+specifically so Session 56's gather script could reach them. `git status` shows a clean working
+tree. No action needed.
 
 **F-3 — Transient tool-availability note:** one Bash invocation was rejected by the environment's
 safety classifier being temporarily unavailable; retried successfully. No impact on results.
