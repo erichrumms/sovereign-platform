@@ -47,7 +47,16 @@
  * claiming it was still mounted (and a return to it no-op'd); see the Session
  * 53 handoff findings.
  *
- * Version: 1.3 · Session 53 (GD-27 — navigateToModule host wiring) · July 21, 2026
+ * Session 61 (D6/D7): (1) the Home breadcrumb genuinely returns to the Home
+ * Dashboard — every navigation to "/" runs goHome(), which unmounts the
+ * current module with openModule's own unmount discipline and re-shows the
+ * landing (PlatformHome remounts; its WG-17 expiry sweep resumes). Safe only
+ * after D1's live session-store subscription (docs/30 §1, D3-9). (2) the
+ * navigateToModule handler refuses an inaccessible target BEFORE unmounting
+ * anything (no more blank-screen path), and useNavigationState self-heals its
+ * mirror so the sidebar highlight survives ctx-level navigation.
+ *
+ * Version: 1.4 · Session 61 (D6 Home-return + D7 navigation consistency) · July 24, 2026
  */
 
 import { StrictMode, useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -103,6 +112,13 @@ const DEV_USER: SovereignUser = {
 // HOST CONSTRUCTION (once, at module scope)
 // ============================================================
 
+// D6 (Session 61, finding D3-5): the App-level Home-return handler, registered
+// after App mounts. Module-scope slot because the shell (and its onNavigate
+// config below) is constructed before App exists — the same late-binding
+// posture as setNavigateToModuleHandler. Last-write-wins; StrictMode's
+// double-registration is harmless.
+let hostGoHome: (() => void) | null = null;
+
 const shell = createShell({
   user: DEV_USER,
   token: "dev-token-synthetic",
@@ -110,6 +126,13 @@ const shell = createShell({
   onSignOut: () => {
     // eslint-disable-next-line no-alert
     window.alert("signOut() invoked — EAMS SSO logout is wired in a later stage.");
+  },
+  // D6 (D3-5): every navigation to "/" — the breadcrumb's "Home" crumb flows
+  // through useNavigationState.navigate → provider.navigateTo → here — now
+  // genuinely returns to the Home Dashboard instead of being a no-op that
+  // left the mounted module on screen.
+  onNavigate: (path) => {
+    if (path === "/") hostGoHome?.();
   },
 });
 
@@ -180,6 +203,32 @@ function App(): JSX.Element {
     [openModule]
   );
 
+  // D6 (Session 61, D3-5) — the genuine Home return: unmount whatever owns the
+  // outlet (the SAME unmount discipline openModule uses — Constraint #3, no
+  // second mechanism) and show the landing again. PlatformHome then mounts
+  // fresh, so its WG-17 expiry sweep resumes. Safe only because D1 converted
+  // VIGIL's approval-state consumption to a live store subscription first —
+  // before D1, this exact change would have reopened the WG-13 family of bugs
+  // (docs/30 §1, finding D3-9).
+  const goHome = useCallback(() => {
+    setShowDashboard(false);
+    setMountError(null);
+    for (const m of loader.list()) {
+      if (m.mounted) loader.unmount(m.moduleId);
+    }
+    setHasSelectedModule(false);
+    forceRender();
+  }, []);
+
+  // D6 — register the Home-return handler with the module-scope slot the
+  // shell's onNavigate config reads. Cleanup on unmount keeps the slot honest.
+  useEffect(() => {
+    hostGoHome = goHome;
+    return () => {
+      hostGoHome = null;
+    };
+  }, [goHome]);
+
   // GD-27 — register the host handler for ctx.navigateToModule. The ctx-level
   // primitive runs the SAME generalized sequence as the sidebar; unlike the
   // sidebar path (where the chrome navigates), it must also keep
@@ -192,10 +241,23 @@ function App(): JSX.Element {
         setMountError(`navigateToModule: module "${moduleId}" is not registered`);
         return;
       }
+      // D7 (Session 61, D3-7ii) — refuse an inaccessible target BEFORE any
+      // unmount happens, so the current screen stays intact instead of the
+      // previous unmount-everything-then-fail-the-mount blank screen. Uses the
+      // loader's own access policy — the same check the sidebar and the mount
+      // gate apply (Constraint #2). Currently unreachable by construction
+      // (every real caller is role-consistent), but no longer unguarded.
+      if (!defaultRoleAccessPolicy(ctx.auth, target.minimumRole)) {
+        setMountError(
+          `navigateToModule: access to ${target.displayName} requires one of: ` +
+            `${target.minimumRole.join(", ")} — navigation refused; the current screen is unchanged.`
+        );
+        return;
+      }
       shell.getNavigationProvider().navigateTo(target.mountPath);
       openModule(moduleId, initialState);
     });
-  }, [openModule]);
+  }, [ctx, openModule]);
 
   return (
     <>

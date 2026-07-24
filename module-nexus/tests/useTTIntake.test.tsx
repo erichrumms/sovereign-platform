@@ -13,13 +13,14 @@
  */
 import { renderHook, act, waitFor } from "@testing-library/react";
 
-import { SYNTH_TT_TRAVEL_POLICY } from "@sovereign/data";
+import { SYNTH_TT_TRAVEL_POLICY, SYNTH_TT_TRAVEL_REQUESTS } from "@sovereign/data";
 import type { ComplianceFlag } from "@sovereign/data";
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 
 import { useTTIntake, type TTIntakePorts, type TravelDraftResult, type TravelDrafterPort } from "../src/useTTIntake";
 import { EMPTY_TRAVEL_FORM, type TravelIntakeForm, type TimeIntakeForm } from "../src/tt-intake";
 import { makeCtx } from "./test-helpers";
+import { resetTTSessionForTests } from "../src/tt-session";
 
 function travelForm(over: Partial<TravelIntakeForm> = {}): TravelIntakeForm {
   return {
@@ -294,5 +295,69 @@ describe("useTTIntake — D1 regression (WE-10: travelDrafter port)", () => {
     // itemA got the correct draft.
     expect(result.current.travelItems[0].draft?.body).toContain(itemAId);
     expect(result.current.travelItems[1].request.request_id).toBe(itemBId);
+  });
+});
+
+// D4 (Session 61, finding D3-3) — the hook-level resurrection proof: with
+// sessionStore, a decided travel item does NOT revert to its seeded (undecided)
+// state when NEXUS remounts, and the already-decided item cannot be decided a
+// second time (recordTravelDecision refuses a non-ROUTED request — no duplicate
+// TRAVEL_APPROVAL emission).
+describe("useTTIntake — sessionStore (D4, no resurrection on remount)", () => {
+  beforeEach(() => resetTTSessionForTests());
+
+  const storePorts = (): TTIntakePorts => ({
+    travelPolicy: SYNTH_TT_TRAVEL_POLICY,
+    seedTravel: SYNTH_TT_TRAVEL_REQUESTS,
+    sessionStore: true,
+  });
+
+  it("a decided travel item keeps its decision across unmount/remount", () => {
+    const logSink: SovereignLogEvent[] = [];
+    const first = renderHook(() => useTTIntake(makeCtx({ logSink }), storePorts()));
+
+    const routed = first.result.current.travelItems.find(
+      (t) => t.request.request_id === "SYNTH-TR-102"
+    )!;
+    expect(routed.request.status).toBe("ROUTED");
+
+    act(() =>
+      first.result.current.decideTravel("SYNTH-TR-102", "APPROVED", "SIMULATED TEST DECISION note")
+    );
+    expect(
+      first.result.current.travelItems.find((t) => t.request.request_id === "SYNTH-TR-102")!
+        .request.status
+    ).toBe("APPROVED");
+    const decisionEvents = logSink.filter((e) => e.event_type === "HUMAN_DECISION");
+    expect(decisionEvents).toHaveLength(1);
+    first.unmount(); // navigate away
+
+    // Navigate back: a fresh mount offering the SAME static seeds.
+    const second = renderHook(() => useTTIntake(makeCtx({ logSink }), storePorts()));
+    const afterRemount = second.result.current.travelItems.find(
+      (t) => t.request.request_id === "SYNTH-TR-102"
+    )!;
+    expect(afterRemount.request.status).toBe("APPROVED"); // did NOT revert to ROUTED
+
+    // A duplicate decision on the already-decided item is refused (surfaced
+    // as an error, no second HUMAN_DECISION emitted).
+    act(() =>
+      second.result.current.decideTravel("SYNTH-TR-102", "APPROVED", "SIMULATED duplicate attempt")
+    );
+    expect(second.result.current.error).toMatch(/is APPROVED, not ROUTED/);
+    expect(logSink.filter((e) => e.event_type === "HUMAN_DECISION")).toHaveLength(1);
+    second.unmount();
+  });
+
+  it("a submitted time record persists across unmount/remount", () => {
+    const first = renderHook(() => useTTIntake(makeCtx(), storePorts()));
+    const before = first.result.current.timeItems.length;
+    act(() => first.result.current.submitTime(timeForm()));
+    expect(first.result.current.timeItems).toHaveLength(before + 1);
+    first.unmount();
+
+    const second = renderHook(() => useTTIntake(makeCtx(), storePorts()));
+    expect(second.result.current.timeItems).toHaveLength(before + 1); // not re-seeded away
+    second.unmount();
   });
 });

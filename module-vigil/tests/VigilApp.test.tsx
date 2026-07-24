@@ -6,17 +6,24 @@
  * synthetic/dev requests). The legacy A2A-stage AgentApprovalQueue component is tested
  * standalone below (it is no longer rendered by VigilApp).
  */
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 
 import { VigilApp } from "../src/VigilApp";
 import { AgentApprovalQueue } from "../src/AgentApprovalQueue";
-import { resetVigilApprovalSessionForTests } from "../src/vigil-approval-session";
+import {
+  removeVigilSessionRequest,
+  resetVigilApprovalSessionForTests,
+} from "../src/vigil-approval-session";
+import { resetVigilAlertSessionForTests } from "../src/vigil-alert-session";
 import { makeCtx } from "./test-helpers";
 
 describe("VigilApp (scaffold)", () => {
   // Session 54 (WG-13): the approval queue is a module-level session store —
   // reset it so each test assembles a fresh queue.
-  beforeEach(() => resetVigilApprovalSessionForTests());
+  beforeEach(() => {
+    resetVigilApprovalSessionForTests();
+    resetVigilAlertSessionForTests(); // D2 (Session 61) — VigilApp now uses the alert session store
+  });
 
   it("renders the VIGIL chrome and the operator identity", () => {
     render(<VigilApp ctx={makeCtx()} />);
@@ -51,6 +58,28 @@ describe("VigilApp (scaffold)", () => {
     expect(
       screen.getAllByText(/model_deployment|data_export|configuration_change/).length
     ).toBeGreaterThan(0);
+  });
+
+  // D1 (Session 61, docs/30 §2 step 1) — THE done-condition proof: a decision made at
+  // another entry point (the Reviewer's Workspace's embedded copy ends its decision-commit
+  // path in exactly this store removal) is reflected in an ALREADY-MOUNTED VigilApp,
+  // with no remount. Before D1 this only worked by re-seeding at mount (finding D3-9).
+  it("reflects a session-store removal in the already-mounted queue without a remount (D1)", () => {
+    render(<VigilApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Actions Awaiting Your Approval" }));
+
+    const summary = screen.getByLabelText("Command Center summary");
+    expect(summary).toHaveTextContent(/5/); // full seeded queue
+
+    // The Workspace's decision-commit path: remove from the shared session store.
+    act(() => {
+      removeVigilSessionRequest("req-dev-002");
+    });
+
+    // Same mounted component — the live subscription reflects the removal.
+    expect(summary).toHaveTextContent(/4/);
+    const queue = screen.getByLabelText("Actions Awaiting Your Approval");
+    expect(queue).not.toHaveTextContent("req-dev-002");
   });
 });
 

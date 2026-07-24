@@ -25,10 +25,17 @@
  * Gate 2 (fail-closed): a failed Logger emit during submission surfaces an error
  * and commits nothing — the same posture as useRequestRegistry.
  *
- * Version: 1.0 · Session 29 · July 12, 2026
+ * D4 (Session 61, finding D3-3): when ports.sessionStore is set, the travel and
+ * time queues live in the module-level session store (tt-session.ts) — seeded
+ * once per browser session, every mutation committed through the store, and
+ * consumed via the same live-subscription pattern as the VIGIL/ARIA session
+ * stores. A decided travel or time item therefore no longer reappears when
+ * NEXUS remounts. Off by default so store-less tests keep isolated state.
+ *
+ * Version: 1.1 · Session 61 (D4) · July 23, 2026
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ComplianceFlag, TimeRecord, TravelPolicy, TravelRequest } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -51,6 +58,12 @@ import {
   travelWorkflowStep,
   type TravelDecisionOutcome,
 } from "./tt-travel-queue";
+import {
+  ensureTTSession,
+  setTTSessionTime,
+  setTTSessionTravel,
+  subscribeTTSession,
+} from "./tt-session";
 
 /** The time-compliance engine as an injected port (composition-root wiring — Item 57 pattern). */
 export interface TimeCompliancePort {
@@ -108,6 +121,14 @@ export interface TTIntakePorts {
    */
   seedTravel?: TravelRequest[];
   seedTime?: Array<{ record: TimeRecord; flags: ComplianceFlag[] }>;
+  /**
+   * D4 (Session 61) — hold the travel/time queues in the session-persistent
+   * store (tt-session.ts) instead of per-mount state, so decided items do not
+   * reappear on remount (D3-3). The seeds then feed the store's ONE
+   * per-session assembly. Read once at mount. Off by default so store-less
+   * tests keep isolated state.
+   */
+  sessionStore?: boolean;
 }
 
 /** One submitted travel request with its engine finding, held in the authority queue. */
@@ -173,11 +194,54 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
     []
   );
 
-  const travelRef = useRef<SubmittedTravelItem[]>(seededTravel);
-  const timeRef = useRef<SubmittedTimeItem[]>(seededTime);
-  const [travelItems, setTravelItems] = useState<SubmittedTravelItem[]>(seededTravel);
-  const [timeItems, setTimeItems] = useState<SubmittedTimeItem[]>(seededTime);
+  // D4 — read once at mount (documented on the option). With the store, the
+  // seeds feed ONE per-session assembly; a remount receives the live queues.
+  const sessionStore = ports.sessionStore ?? false;
+  const ensured = useMemo(
+    () => (sessionStore ? ensureTTSession({ travel: seededTravel, time: seededTime }) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const travelRef = useRef<SubmittedTravelItem[]>(ensured ? [...ensured.travel] : seededTravel);
+  const timeRef = useRef<SubmittedTimeItem[]>(ensured ? [...ensured.time] : seededTime);
+  const [travelItems, setTravelItems] = useState<SubmittedTravelItem[]>(travelRef.current);
+  const [timeItems, setTimeItems] = useState<SubmittedTimeItem[]>(timeRef.current);
   const [error, setError] = useState<string | null>(null);
+
+  // D4 — the single commit choke points: every mutation writes ref + state and,
+  // on the store path, mirrors into the session store (which notifies only on
+  // actual change — no echo loop).
+  const commitTravel = useCallback(
+    (next: SubmittedTravelItem[]): void => {
+      travelRef.current = next;
+      setTravelItems([...next]);
+      if (sessionStore) setTTSessionTravel(next);
+    },
+    [sessionStore]
+  );
+  const commitTime = useCallback(
+    (next: SubmittedTimeItem[]): void => {
+      timeRef.current = next;
+      setTimeItems([...next]);
+      if (sessionStore) setTTSessionTime(next);
+    },
+    [sessionStore]
+  );
+
+  // D4 — the live session-store subscription (same external-store pattern as
+  // the VIGIL/ARIA session stores): a store change from any writer refreshes
+  // this hook's ref + rendered state.
+  useEffect(() => {
+    if (!sessionStore) return;
+    return subscribeTTSession((snapshot) => {
+      travelRef.current = [...snapshot.travel];
+      timeRef.current = [...snapshot.time];
+      setTravelItems(travelRef.current);
+      setTimeItems(timeRef.current);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Ref-backed monotonic id sources (the Gap 1 lesson — never derive ids from lagging state).
   const travelIdRef = useRef(0);
@@ -208,8 +272,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           finding: processed.finding,
           workflow_step_id: processed.workflow_step_id,
         };
-        travelRef.current = [...travelRef.current, item];
-        setTravelItems(travelRef.current);
+        commitTravel([...travelRef.current, item]);
       } catch (err) {
         // Gate 2 fail-closed: an emit failure mid-pipeline commits nothing.
         setError(
@@ -219,7 +282,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
         );
       }
     },
-    [actorId, ctx, ports]
+    [actorId, ctx, ports, commitTravel]
   );
 
   const previewTravel = useCallback(
@@ -248,35 +311,38 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           ctx.logger
         );
         const hasDrafter = Boolean(ports.travelDrafter);
-        travelRef.current = travelRef.current.map((t) =>
-          t.request.request_id === requestId
-            ? { ...t, request: decided.request, draftStatus: hasDrafter ? "loading" : "idle" }
-            : t
+        commitTravel(
+          travelRef.current.map((t) =>
+            t.request.request_id === requestId
+              ? { ...t, request: decided.request, draftStatus: hasDrafter ? "loading" : "idle" }
+              : t
+          )
         );
-        setTravelItems([...travelRef.current]);
 
         if (ports.travelDrafter) {
           const drafter = ports.travelDrafter;
           drafter.draft(decided.request, item.finding).then(
             ({ draft, tier }) => {
-              travelRef.current = travelRef.current.map((t) =>
-                t.request.request_id === requestId
-                  ? { ...t, draft, draftTier: tier, draftStatus: "done" as const }
-                  : t
+              commitTravel(
+                travelRef.current.map((t) =>
+                  t.request.request_id === requestId
+                    ? { ...t, draft, draftTier: tier, draftStatus: "done" as const }
+                    : t
+                )
               );
-              setTravelItems([...travelRef.current]);
             },
             (err: unknown) => {
-              travelRef.current = travelRef.current.map((t) =>
-                t.request.request_id === requestId
-                  ? {
-                      ...t,
-                      draftStatus: "error" as const,
-                      draftError: err instanceof Error ? err.message : String(err),
-                    }
-                  : t
+              commitTravel(
+                travelRef.current.map((t) =>
+                  t.request.request_id === requestId
+                    ? {
+                        ...t,
+                        draftStatus: "error" as const,
+                        draftError: err instanceof Error ? err.message : String(err),
+                      }
+                    : t
+                )
               );
-              setTravelItems([...travelRef.current]);
             }
           );
         }
@@ -284,7 +350,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
         setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [ctx, ports]
+    [ctx, ports, commitTravel]
   );
 
   const submitTime = useCallback(
@@ -303,11 +369,10 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
       const engine = ports.timeEngine;
       if (!engine) {
         // Honest unevaluated state — no engine port wired (configuration, Constraint #3).
-        timeRef.current = [
+        commitTime([
           ...timeRef.current,
           { record, flags: [], evaluated: false, workflow_step_id: wsid },
-        ];
-        setTimeItems(timeRef.current);
+        ]);
         return;
       }
 
@@ -343,11 +408,10 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           },
         });
 
-        timeRef.current = [
+        commitTime([
           ...timeRef.current,
           { record, flags, evaluated: true, workflow_step_id: wsid },
-        ];
-        setTimeItems(timeRef.current);
+        ]);
       } catch (err) {
         setError(
           `Time record submission halted — Logger emission failed (CPMI-VRS Gate 2): ${
@@ -356,7 +420,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
         );
       }
     },
-    [actorId, ctx, ports]
+    [actorId, ctx, ports, commitTime]
   );
 
   const clearError = useCallback((): void => setError(null), []);

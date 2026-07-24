@@ -36,6 +36,10 @@ import {
   evaluateFiveQuestionGate,
   type FlowpathMapperOutput,
 } from "./flowpath-contract";
+import {
+  isFlowpathSessionApproved,
+  markFlowpathSessionApproved,
+} from "./flowpath-approval-session";
 import { SYNTHETIC_MAPPER_OUTPUT } from "./synthetic-elicitation";
 
 export interface WorkflowArtifactReviewProps {
@@ -58,7 +62,12 @@ export function WorkflowArtifactReview({ ctx, bundle, onApproved, onReturnForRev
 
   const [revising, setRevising] = useState(false);
   const [note, setNote] = useState("");
-  const [decision, setDecision] = useState<"approved" | "returned" | null>(null);
+  // D5 (Session 61, finding D3-4): an artifact approved earlier in this browser
+  // session renders as approved on a fresh mount — the approve control never
+  // reappears, so a duplicate WORKFLOW_APPROVAL is structurally impossible.
+  const [decision, setDecision] = useState<"approved" | "returned" | null>(() =>
+    isFlowpathSessionApproved(sessionId) ? "approved" : null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const approve = (): void => {
@@ -66,6 +75,12 @@ export function WorkflowArtifactReview({ ctx, bundle, onApproved, onReturnForRev
     // Defensive: a non-gate-passing artifact must never be committed (spec §4).
     if (!evaluateFiveQuestionGate(artifact).gate_passed) {
       setError("This artifact has not passed the Five-Question Gate and cannot be approved. Return it for revision.");
+      return;
+    }
+    // D5 — duplicate-approval guard against the STORE, checked before emitting
+    // (the check→emit→mark sequence is synchronous — nothing interleaves).
+    if (isFlowpathSessionApproved(sessionId)) {
+      setError("This artifact was already approved and committed this session — it cannot be approved twice.");
       return;
     }
     try {
@@ -99,6 +114,9 @@ export function WorkflowArtifactReview({ ctx, bundle, onApproved, onReturnForRev
       setError(`Approval could not be recorded — the artifact was not committed (fail-closed): ${err instanceof Error ? err.message : String(err)}`);
       return;
     }
+    // D5 — record the approval in the session store at the emit site, so every
+    // FLOWPATH surface (and any future mount) sees it.
+    markFlowpathSessionApproved(sessionId);
     setDecision("approved");
     onApproved?.(sessionId);
   };

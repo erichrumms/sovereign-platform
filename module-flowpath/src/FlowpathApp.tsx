@@ -16,10 +16,15 @@
  * Version: 1.1 (Screens 3/5) · Session 21 · June 26, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { rootStyle, titleStyle, subtitleStyle } from "./banners";
+import {
+  getApprovedFlowpathSessionIds,
+  markFlowpathSessionApproved,
+  subscribeFlowpathApprovalSession,
+} from "./flowpath-approval-session";
 import { SessionManager } from "./SessionManager";
 import { ElicitationDialogue } from "./ElicitationDialogue";
 import { WorkflowArtifactReview } from "./WorkflowArtifactReview";
@@ -42,10 +47,18 @@ const TABS: Array<{ id: Tab; label: string }> = [
 
 export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
   const [tab, setTab] = useState<Tab>("sessions");
-  const [approvedSessionIds, setApprovedSessionIds] = useState<string[]>([]);
+  // D5 (Session 61, finding D3-4): approvals live in the session-persistent
+  // store (flowpath-approval-session.ts), not per-mount state — an approved
+  // artifact no longer reverts to pending when FLOWPATH remounts.
+  const [approvedSessionIds, setApprovedSessionIds] = useState<readonly string[]>(
+    () => getApprovedFlowpathSessionIds()
+  );
+  useEffect(() => subscribeFlowpathApprovalSession(setApprovedSessionIds), []);
 
   const onApproved = (sessionId: string): void => {
-    setApprovedSessionIds((prev) => (prev.includes(sessionId) ? prev : [...prev, sessionId]));
+    // WorkflowArtifactReview already marked the store at the emit site; this
+    // repeat mark is an idempotent no-op kept for callers outside that screen.
+    markFlowpathSessionApproved(sessionId);
     setTab("sessions");
   };
   const onReturnForRevision = (): void => {

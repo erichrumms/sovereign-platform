@@ -25,12 +25,25 @@
  * they are not duplicated on this tab (D-7). Reuses the clear-ui SeverityBadge — no parallel components
  * (docs/16 §8). NO new SovereignEventType and NO new HumanDecisionType — no shell-contract change.
  *
- * Version: 1.0 · Session 25 (D4) · June 29, 2026
+ * D3 (Session 61, finding D3-2): Gate 3/4 state moved from per-mount useState
+ * to the session-persistent store (aria-vrs-session.ts) — the UI's "recorded
+ * permanently … cannot be undone" claim is now true across remounts within a
+ * session, and a duplicate GATE_3_ATTESTATION emission is structurally
+ * prevented (store-level guard checked before the emit).
+ *
+ * Version: 1.1 · Session 61 (D3) · July 23, 2026
  */
 
-import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import {
+  getAriaVrsGateSession,
+  recordAriaGate3Attestation,
+  recordAriaGate4Completion,
+  subscribeAriaVrsGateSession,
+  type AriaGateState,
+} from "./aria-vrs-session";
 import {
   titleStyle,
   subtitleStyle,
@@ -44,7 +57,9 @@ export interface AriaVrsGatesProps {
   ctx: SovereignShellContext;
 }
 
-type GateState = "PASSED" | "PENDING" | "LOCKED";
+// D3 (Session 61): the gate-state type is canonical in aria-vrs-session.ts —
+// this alias keeps the component's existing prop/helper signatures unchanged.
+type GateState = AriaGateState;
 
 // Product-level workflow step ids for the certification flow (Constraint #6).
 const GATE3_WORKFLOW_STEP = "aria-cpmi-vrs-gate3-attestation";
@@ -74,9 +89,27 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const [remarks, setRemarks] = useState("");
   const [confirmed, setConfirmed] = useState(false);
-  const [gate3, setGate3] = useState<{ state: GateState; attestedAt: string | null }>({ state: "PENDING", attestedAt: null });
-  const [gate4, setGate4] = useState<{ state: GateState; completedAt: string | null }>({ state: "LOCKED", completedAt: null });
+  // D3 (Session 61, finding D3-2): gate state lives in the session-persistent
+  // store, not per-mount React state — so a Gate 3 attestation the UI calls
+  // "recorded permanently" genuinely survives a remount, and a second
+  // attestation is structurally impossible (the attested screen renders no
+  // attest control, and the store's record function refuses a duplicate).
+  const [gate3, setGate3] = useState<{ state: GateState; attestedAt: string | null }>(
+    () => getAriaVrsGateSession().gate3
+  );
+  const [gate4, setGate4] = useState<{ state: GateState; completedAt: string | null }>(
+    () => getAriaVrsGateSession().gate4
+  );
   const [error, setError] = useState<string | null>(null);
+
+  // D3 — the live session-store subscription (same external-store pattern as
+  // the VIGIL stores' D1/D2 changes).
+  useEffect(() => {
+    return subscribeAriaVrsGateSession((session) => {
+      setGate3(session.gate3);
+      setGate4(session.gate4);
+    });
+  }, []);
 
   const determinismState: GateState = determinismPassed ? "PASSED" : "PENDING";
   const passedCount =
@@ -93,6 +126,14 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
     }
     if (!confirmed) {
       setError("Please read and confirm the attestation statement before attesting Gate 3.");
+      return;
+    }
+    // D3 — duplicate-attestation guard against the STORE (not this component's
+    // copy of the state): if Gate 3 was already attested this session, refuse
+    // BEFORE emitting, so a duplicate GATE_3_ATTESTATION event cannot exist.
+    // The check→emit→record sequence below is synchronous — nothing interleaves.
+    if (getAriaVrsGateSession().gate3.state === "PASSED") {
+      setError("Gate 3 has already been attested this session — the attestation is permanent and cannot be recorded twice.");
       return;
     }
     const attestedAt = new Date().toISOString();
@@ -117,13 +158,19 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
       setError(`Logger emission failed — Gate 3 attestation not recorded (fail-closed): ${err instanceof Error ? err.message : String(err)}`);
       return;
     }
-    setGate3({ state: "PASSED", attestedAt });
-    setGate4((g) => (g.state === "LOCKED" ? { ...g, state: "PENDING" } : g));
+    // D3 — record in the session store (it also unlocks Gate 4); the
+    // subscription above updates this component's rendered state.
+    recordAriaGate3Attestation(attestedAt);
   };
 
   const completeGate4 = (): void => {
     setError(null);
     if (gate3.state !== "PASSED") return;
+    // D3 — same store-level duplicate guard as Gate 3: refuse before emitting.
+    if (getAriaVrsGateSession().gate4.state !== "PENDING") {
+      setError("Gate 4 has already been completed this session — the monitoring baseline cannot be recorded twice.");
+      return;
+    }
     const completedAt = new Date().toISOString();
     try {
       ctx.logger.log({
@@ -144,7 +191,8 @@ export function AriaVrsGates({ ctx }: AriaVrsGatesProps): JSX.Element {
       setError(`Logger emission failed — Gate 4 not recorded (fail-closed): ${err instanceof Error ? err.message : String(err)}`);
       return;
     }
-    setGate4({ state: "PASSED", completedAt });
+    // D3 — record in the session store; the subscription updates local state.
+    recordAriaGate4Completion(completedAt);
   };
 
   return (

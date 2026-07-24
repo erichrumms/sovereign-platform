@@ -14,10 +14,19 @@
  * does not hide the expiry (the request IS expired): it still leaves the queue and the
  * emit failure is surfaced (expireError), never swallowed (Gate 2 — never silently continue).
  *
- * Version: 1.0 · Session 10 · June 23, 2026
+ * D1 (Session 61, docs/30 §2 step 1): when opts.subscribeToSession is set, the hook
+ * additionally holds a LIVE subscription on the shared session store
+ * (subscribeVigilApprovalSession) — the standard external-store React pattern
+ * (useEffect subscribing, setState on notify). A decision recorded at any other entry
+ * point (the Reviewer's Workspace's embedded copy, another sweep) is then reflected in
+ * this ALREADY-MOUNTED queue, with no remount required. Before this, reflection
+ * happened only at mount-time seeding — an accident of the one-module-at-a-time
+ * navigation model (finding D3-9), which D6's Home-return fix removes.
+ *
+ * Version: 1.1 · Session 61 (D1) · July 23, 2026
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
@@ -27,7 +36,10 @@ import {
   type AgentApprovalRequest,
 } from "./approval-contract";
 import { createDevApprovalPort, type AgentApprovalPort } from "./approval-port";
-import { removeVigilSessionRequest } from "./vigil-approval-session";
+import {
+  removeVigilSessionRequest,
+  subscribeVigilApprovalSession,
+} from "./vigil-approval-session";
 
 export interface UseApprovalQueueOptions {
   /** Injectable port. Defaults to the synthetic/dev backing anchored at `anchorIso`. */
@@ -42,6 +54,14 @@ export interface UseApprovalQueueOptions {
    * simply selects nothing, exactly as select() with an unknown id would.
    */
   initialSelectedId?: string;
+  /**
+   * D1 (Session 61) — hold a live subscription on the shared session store, so a
+   * decision recorded at any other entry point (Reviewer's Workspace, another
+   * sweep) is reflected here without a remount. Read once at mount. Off by
+   * default so test-seeded queues (initialRequests with ids not in the session)
+   * are not overwritten by the store's unrelated contents.
+   */
+  subscribeToSession?: boolean;
 }
 
 export interface UseApprovalQueue {
@@ -76,6 +96,25 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
   });
   const [selectedId, setSelectedId] = useState<string | null>(opts.initialSelectedId ?? null);
   const [expireError, setExpireError] = useState<string | null>(null);
+
+  // D1 (Session 61): the live session-store subscription — the standard
+  // external-store pattern. On every real store mutation the local copy is
+  // replaced with the store's snapshot, and a selection pointing at a request
+  // that just left the queue is cleared (same posture as remove/expire).
+  // opts.subscribeToSession is deliberately read once at mount (documented on
+  // the option); the store guarantees notify() only fires on actual change, so
+  // this cannot loop with the mirror-back calls below.
+  const subscribeToSession = opts.subscribeToSession ?? false;
+  useEffect(() => {
+    if (!subscribeToSession) return;
+    return subscribeVigilApprovalSession((session) => {
+      setRequests([...session.requests]);
+      setSelectedId((cur) =>
+        cur !== null && !session.requests.some((r) => r.request_id === cur) ? null : cur
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const expireOverdue = useCallback(
     (nowMs: number): string[] => {

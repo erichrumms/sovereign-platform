@@ -9,6 +9,7 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import { NexusApp } from "../src/NexusApp";
+import { resetTTSessionForTests } from "../src/tt-session";
 import { makeCtx } from "./test-helpers";
 
 function submitViaUI(title: string, type: string, classification = "UNCLASSIFIED"): void {
@@ -19,6 +20,9 @@ function submitViaUI(title: string, type: string, classification = "UNCLASSIFIED
 }
 
 describe("NexusApp", () => {
+  // D4 (Session 61): the TT queues are a module-level session store — reset per test.
+  beforeEach(() => resetTTSessionForTests());
+
   it("renders the Gate-1 AI disclosure and the GD-10 classification boundary", () => {
     render(<NexusApp ctx={makeCtx()} />);
     expect(screen.getByRole("heading", { name: "NEXUS" })).toBeInTheDocument();

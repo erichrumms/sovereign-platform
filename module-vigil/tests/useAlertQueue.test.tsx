@@ -10,6 +10,10 @@ import { renderHook, act } from "@testing-library/react";
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import { useAlertQueue } from "../src/useAlertQueue";
 import { makeCtx, makeAlert } from "./test-helpers";
+import {
+  applyVigilAlertSessionResponse,
+  resetVigilAlertSessionForTests,
+} from "../src/vigil-alert-session";
 
 describe("useAlertQueue — ingestion and null handling", () => {
   it("defaults to the unconfigured endpoint with an empty queue", () => {
@@ -81,5 +85,53 @@ describe("useAlertQueue — ingestion and null handling", () => {
       result.current.applyResponse("A1", "ESCALATED");
     });
     expect(result.current.selected).toBeNull();
+  });
+});
+
+// D2 (Session 61, finding D3-1 HIGH) — the hook-level resurrection proof: with
+// sessionStore, a responded alert does NOT come back when the hook remounts
+// (the exact navigate-away-and-back sequence the Session 60 assessment flagged).
+describe("useAlertQueue — sessionStore (D2, no resurrection on remount)", () => {
+  beforeEach(() => resetVigilAlertSessionForTests());
+
+  const seeds = () => [
+    makeAlert({ alertId: "S1", alertLevel: "P1" }),
+    makeAlert({ alertId: "S2", alertLevel: "P2" }),
+  ];
+
+  it("a RESOLVED alert stays gone across unmount/remount; ACKNOWLEDGED status persists", () => {
+    const first = renderHook(() =>
+      useAlertQueue(makeCtx(), { initialAlerts: seeds(), sessionStore: true })
+    );
+    expect(first.result.current.alerts).toHaveLength(2);
+
+    act(() => {
+      first.result.current.applyResponse("S1", "RESOLVED");
+      first.result.current.applyResponse("S2", "ACKNOWLEDGED");
+    });
+    expect(first.result.current.alerts).toHaveLength(1);
+    first.unmount(); // navigate away
+
+    // Navigate back: a fresh mount with the SAME static seeds.
+    const second = renderHook(() =>
+      useAlertQueue(makeCtx(), { initialAlerts: seeds(), sessionStore: true })
+    );
+    expect(second.result.current.alerts).toHaveLength(1); // S1 did not resurrect
+    expect(second.result.current.alerts[0].alertId).toBe("S2");
+    expect(second.result.current.alerts[0].status).toBe("ACKNOWLEDGED"); // not reset
+    second.unmount();
+  });
+
+  it("a store mutation from another consumer reaches an already-mounted hook (live subscription)", () => {
+    const hook = renderHook(() =>
+      useAlertQueue(makeCtx(), { initialAlerts: seeds(), sessionStore: true })
+    );
+    expect(hook.result.current.alerts).toHaveLength(2);
+
+    act(() => {
+      applyVigilAlertSessionResponse("S1", "FALSE_POSITIVE");
+    });
+    expect(hook.result.current.alerts).toHaveLength(1);
+    hook.unmount();
   });
 });

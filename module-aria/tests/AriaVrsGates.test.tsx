@@ -11,10 +11,20 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import { AriaVrsGates } from "../src/AriaVrsGates";
+import {
+  getAriaVrsGateSession,
+  recordAriaGate3Attestation,
+  recordAriaGate4Completion,
+  resetAriaVrsGateSessionForTests,
+  subscribeAriaVrsGateSession,
+} from "../src/aria-vrs-session";
 import { makeCtx } from "./test-helpers";
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 
 describe("AriaVrsGates (D4)", () => {
+  // D3 (Session 61): gate state is a module-level session store — reset per test.
+  beforeEach(() => resetAriaVrsGateSessionForTests());
+
   it("renders the determinism verification gate, passed, with scenario results", () => {
     render(<AriaVrsGates ctx={makeCtx()} />);
     expect(screen.getByTestId("aria-vrs-gates")).toBeInTheDocument();
@@ -144,5 +154,97 @@ describe("AriaVrsGates (D4)", () => {
     const gate4Event = logSink[1] as any;
     expect(gate4Event.workflow_step_id).toBe("aria-cpmi-vrs-gate4-monitoring-baseline");
     expect(gate4Event.payload.gate).toBe(4);
+  });
+});
+
+// D3 (Session 61, finding D3-2) — the resurrection/duplication proofs: a Gate 3
+// attestation survives unmount/remount (the UI's "permanent" claim made true),
+// and a second GATE_3_ATTESTATION cannot be emitted in the same session.
+describe("AriaVrsGates — session-persistent gates (D3, Session 61)", () => {
+  beforeEach(() => resetAriaVrsGateSessionForTests());
+
+  it("a Gate 3 attestation persists across unmount/remount — no PENDING reset, no attest control", () => {
+    const logSink: SovereignLogEvent[] = [];
+    const first = render(<AriaVrsGates ctx={makeCtx({ logSink })} />);
+    fireEvent.click(screen.getByTestId("aria-gate3-confirm"));
+    fireEvent.click(screen.getByTestId("aria-gate3-attest"));
+    expect(logSink).toHaveLength(1);
+    first.unmount(); // navigate away
+
+    render(<AriaVrsGates ctx={makeCtx({ logSink })} />); // navigate back
+    const gate3 = screen.getByLabelText(/Gate 3 — Human Attestation/);
+    expect(gate3.textContent).toMatch(/was attested on/);
+    expect(screen.queryByTestId("aria-gate3-attest")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("aria-gate3-confirm")).not.toBeInTheDocument();
+    // Gate 4 remains unlocked after the remount too.
+    expect(screen.getByTestId("aria-gate4-complete")).toBeInTheDocument();
+  });
+
+  it("a completed Gate 4 persists across remount", () => {
+    const logSink: SovereignLogEvent[] = [];
+    const first = render(<AriaVrsGates ctx={makeCtx({ logSink })} />);
+    fireEvent.click(screen.getByTestId("aria-gate3-confirm"));
+    fireEvent.click(screen.getByTestId("aria-gate3-attest"));
+    fireEvent.click(screen.getByTestId("aria-gate4-complete"));
+    expect(logSink).toHaveLength(2);
+    first.unmount();
+
+    render(<AriaVrsGates ctx={makeCtx({ logSink })} />);
+    const gate4 = screen.getByLabelText(/Gate 4 — Monitoring Baseline/);
+    expect(gate4.textContent).toMatch(/was established on/);
+    expect(screen.queryByTestId("aria-gate4-complete")).not.toBeInTheDocument();
+  });
+
+  it("a second attestation attempt emits NOTHING — the duplicate is prevented, not just discouraged", () => {
+    const logSink: SovereignLogEvent[] = [];
+    const first = render(<AriaVrsGates ctx={makeCtx({ logSink })} />);
+    fireEvent.click(screen.getByTestId("aria-gate3-confirm"));
+    fireEvent.click(screen.getByTestId("aria-gate3-attest"));
+    expect(logSink).toHaveLength(1);
+    first.unmount();
+
+    // After remount there is no attest control at all — the UI path is gone.
+    render(<AriaVrsGates ctx={makeCtx({ logSink })} />);
+    expect(screen.queryByTestId("aria-gate3-attest")).not.toBeInTheDocument();
+    // And the store itself refuses a duplicate even if some future code path tried.
+    expect(recordAriaGate3Attestation(new Date().toISOString())).toBe(false);
+    expect(logSink).toHaveLength(1); // still exactly one GATE_3_ATTESTATION
+  });
+});
+
+// D3 — store-level unit tests (the same shape as the VIGIL session-store suites).
+describe("aria-vrs-session store (D3, Session 61)", () => {
+  beforeEach(() => resetAriaVrsGateSessionForTests());
+
+  it("initializes PENDING/LOCKED; Gate 3 attestation unlocks Gate 4; duplicates refused", () => {
+    expect(getAriaVrsGateSession().gate3.state).toBe("PENDING");
+    expect(getAriaVrsGateSession().gate4.state).toBe("LOCKED");
+
+    expect(recordAriaGate3Attestation("2026-07-23T00:00:00Z")).toBe(true);
+    expect(getAriaVrsGateSession().gate3).toEqual({ state: "PASSED", attestedAt: "2026-07-23T00:00:00Z" });
+    expect(getAriaVrsGateSession().gate4.state).toBe("PENDING");
+
+    expect(recordAriaGate3Attestation("2026-07-23T01:00:00Z")).toBe(false); // duplicate refused
+    expect(getAriaVrsGateSession().gate3.attestedAt).toBe("2026-07-23T00:00:00Z"); // unchanged
+
+    expect(recordAriaGate4Completion("2026-07-23T02:00:00Z")).toBe(true);
+    expect(recordAriaGate4Completion("2026-07-23T03:00:00Z")).toBe(false); // duplicate refused
+  });
+
+  it("Gate 4 cannot be completed while locked (Gate 3 not attested)", () => {
+    expect(recordAriaGate4Completion("2026-07-23T00:00:00Z")).toBe(false);
+    expect(getAriaVrsGateSession().gate4.state).toBe("LOCKED");
+  });
+
+  it("subscription fires on record; unsubscribe stops it", () => {
+    let calls = 0;
+    const unsubscribe = subscribeAriaVrsGateSession(() => { calls += 1; });
+    recordAriaGate3Attestation("2026-07-23T00:00:00Z");
+    expect(calls).toBe(1);
+    recordAriaGate3Attestation("2026-07-23T01:00:00Z"); // refused duplicate — no notify
+    expect(calls).toBe(1);
+    unsubscribe();
+    recordAriaGate4Completion("2026-07-23T02:00:00Z");
+    expect(calls).toBe(1);
   });
 });

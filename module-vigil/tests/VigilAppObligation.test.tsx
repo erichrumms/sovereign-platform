@@ -9,12 +9,16 @@ import { render, screen, fireEvent } from "@testing-library/react";
 
 import { VigilApp } from "../src/VigilApp";
 import { resetVigilApprovalSessionForTests } from "../src/vigil-approval-session";
+import { resetVigilAlertSessionForTests } from "../src/vigil-alert-session";
 import { makeCtx } from "./test-helpers";
 
 describe("VigilApp — Tier C obligation seeding (Part 3)", () => {
   // Session 54 (WG-13): the approval queue is a module-level session store —
   // reset it so each test assembles a fresh queue.
-  beforeEach(() => resetVigilApprovalSessionForTests());
+  beforeEach(() => {
+    resetVigilApprovalSessionForTests();
+    resetVigilAlertSessionForTests(); // D2 (Session 61) — VigilApp now uses the alert session store
+  });
 
   it("includes the seeded PPBE obligation request in the Approval Queue", () => {
     render(<VigilApp ctx={makeCtx()} />);

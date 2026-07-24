@@ -200,6 +200,10 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
         record,
         flags: SYNTH_TT_COMPLIANCE_FLAGS.filter((f) => f.record_ref === record.record_id),
       })),
+      // D4 (Session 61, D3-3): the queues live in the session-persistent store
+      // (tt-session.ts) — a decided travel/time item no longer reappears when
+      // NEXUS remounts. The seeds above feed the store's ONE per-session assembly.
+      sessionStore: true,
     }),
     [travelDrafter]
   );

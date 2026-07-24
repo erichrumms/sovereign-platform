@@ -15,7 +15,7 @@
  * Expired approval requests are auto-rejected with an AGENT_ACTION_EXPIRED system event by
  * a live sweep — on mount and on an interval while the screen is open (WG-5, Session 54).
  *
- * Version: 2.1 (session store + live expiry sweep) · Session 54 · July 22, 2026
+ * Version: 2.2 (live session-store subscription — D1, docs/30 §2) · Session 61 · July 23, 2026
  */
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -73,14 +73,24 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
   // the TT approval now anchors to the shared session's assembly time (shell
   // start) rather than this component's mount, so its P2 window is live from
   // the moment the platform opens.
-  const alerts = useAlertQueue(ctx, { initialAlerts: [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS] });
+  // D2 (Session 61, D3-1 HIGH): sessionStore — alert state lives in the
+  // session-persistent store (vigil-alert-session.ts), so an acknowledged or
+  // resolved alert no longer resurrects when this component remounts. The
+  // seeds below feed the store's ONE per-session assembly.
+  const alerts = useAlertQueue(ctx, {
+    initialAlerts: [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS],
+    sessionStore: true,
+  });
 
-  // WG-1 / WG-13 (Session 54): the approval queue now comes from the shared,
+  // WG-1 / WG-13 (Session 54): the approval queue comes from the shared,
   // session-persistent store (vigil-approval-session.ts) — the same queue the
-  // shell's startup publisher and the Reviewer's Workspace read. The store
-  // assembles exactly what this component used to assemble inline at mount
-  // (dev port + TT escalation + the Tier C obligation case), once per browser
-  // session; a decision recorded in the Workspace is therefore reflected here.
+  // shell's startup publisher and the Reviewer's Workspace read.
+  // D1 (Session 61): consumption is now a LIVE SUBSCRIPTION, not mount-time
+  // seeding — subscribeToSession below holds the hook on the store, so a
+  // decision recorded in the Workspace is reflected in this already-mounted
+  // screen (the D3-9 root fix; previously reflection only worked because this
+  // component happened to re-seed fresh on every mount). session.obligationCase
+  // is read per render — the store-triggered re-render keeps it fresh too.
   const session = useMemo(() => ensureVigilApprovalSession(ctx.logger), [ctx.logger]);
   const demoPPBEObligationCase = session.obligationCase;
 
@@ -88,6 +98,8 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
     initialRequests: [...session.requests],
     // GD-27 — seed the queue's existing selection state with the navigation intent.
     initialSelectedId: initialState?.selectedRequestId,
+    // D1 (Session 61) — live subscription on the shared session store.
+    subscribeToSession: true,
   });
 
   // WG-5 (Session 54): the expiry sweep is LIVE — on mount and every

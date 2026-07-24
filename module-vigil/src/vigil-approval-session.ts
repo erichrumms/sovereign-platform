@@ -32,7 +32,17 @@
  * approves nothing by itself. Decision and expiry events are emitted by the
  * paths that act on the queue, exactly as before.
  *
- * Version: 1.0 · Session 54 (WG-1 / WG-5 / WG-13) · July 22, 2026
+ * D1 (Session 61, docs/30 §2 step 1 — the D3-9 root fix): the store is now
+ * SUBSCRIBABLE. Before this, a mounted VigilApp only reflected a decision made
+ * in the Reviewer's Workspace because it re-seeded fresh on every mount — an
+ * accident of the one-module-at-a-time navigation model, not a guarantee.
+ * subscribe/notify mirrors the proven shell-surface shape (TaskSurface /
+ * AriaCertificationSurface: a Set of listeners, notify() after every real
+ * mutation, unsubscribe returned — Constraint #2, no divergent duplicate).
+ * notify() fires only on ACTUAL change, so removing an id not in the queue
+ * cannot ping subscribers or feed the hook's mirror-back path into a loop.
+ *
+ * Version: 1.1 · Session 61 (D1 — live subscription) · July 23, 2026
  */
 
 import {
@@ -65,6 +75,31 @@ interface MutableSessionState {
 }
 
 let state: MutableSessionState | null = null;
+
+// D1 (Session 61) — live subscription, mirroring the shell surfaces' shape.
+const listeners = new Set<(session: VigilApprovalSession) => void>();
+
+function notify(): void {
+  if (state === null) return;
+  for (const listener of listeners) listener(state);
+}
+
+/**
+ * Subscribe to session-queue changes (D1, Session 61). The listener receives
+ * the live session snapshot after every real mutation — assembly, a decision
+ * removal (from ANY entry point: VIGIL's own screen or the Reviewer's
+ * Workspace), or an expiry. Returns an unsubscribe function, exactly like
+ * TaskSurface.subscribe. Safe to call before the session is assembled — the
+ * listener simply fires first at assembly.
+ */
+export function subscribeVigilApprovalSession(
+  listener: (session: VigilApprovalSession) => void
+): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
 
 /**
  * Assemble the session queue if it does not exist yet, and return it.
@@ -100,6 +135,7 @@ export function ensureVigilApprovalSession(logger: PPBEGateLogger): VigilApprova
     ];
 
     state = { anchorIso, requests, obligationCase };
+    notify(); // D1 — a subscriber attached before assembly learns the queue exists
   }
   return state;
 }
@@ -118,10 +154,15 @@ export function getVigilApprovalSession(): VigilApprovalSession | null {
  */
 export function removeVigilSessionRequest(requestId: string): void {
   if (state === null) return;
-  state.requests = state.requests.filter((r) => r.request_id !== requestId);
+  const next = state.requests.filter((r) => r.request_id !== requestId);
+  // D1 — notify only on ACTUAL change: a no-op remove (id not in the queue)
+  // must not ping subscribers, or the hook's mirror-back path would loop.
+  if (next.length === state.requests.length) return;
+  state.requests = next;
   if (state.obligationCase?.approval_request.request_id === requestId) {
     state.obligationCase = null;
   }
+  notify();
 }
 
 /**
@@ -160,4 +201,5 @@ export function expireVigilSessionRequests(
 /** Test-only: discard the session so each test assembles a fresh queue. */
 export function resetVigilApprovalSessionForTests(): void {
   state = null;
+  listeners.clear(); // D1 — a leaked test listener must not observe later tests
 }

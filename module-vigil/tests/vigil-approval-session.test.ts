@@ -14,6 +14,8 @@ import {
   removeVigilSessionRequest,
   expireVigilSessionRequests,
   resetVigilApprovalSessionForTests,
+  subscribeVigilApprovalSession,
+  type VigilApprovalSession,
 } from "../src/vigil-approval-session";
 import { SOF_APPROVAL_SYSTEM } from "../src/approval-contract";
 
@@ -95,5 +97,74 @@ describe("vigil-approval-session (WG-13 shared store)", () => {
     const { expired, emitErrors } = expireVigilSessionRequests(Date.now(), makeLogger([]));
     expect(expired).toHaveLength(0);
     expect(emitErrors).toHaveLength(0);
+  });
+});
+
+describe("vigil-approval-session — live subscription (D1, Session 61)", () => {
+  beforeEach(() => resetVigilApprovalSessionForTests());
+
+  it("notifies a subscriber when a request is removed, with the removed item gone from the snapshot", () => {
+    ensureVigilApprovalSession(makeLogger([]));
+    const seen: VigilApprovalSession[] = [];
+    subscribeVigilApprovalSession((s) => seen.push(s));
+
+    removeVigilSessionRequest("req-dev-002");
+
+    expect(seen).toHaveLength(1);
+    expect(seen[0].requests).toHaveLength(4);
+    expect(seen[0].requests.some((r) => r.request_id === "req-dev-002")).toBe(false);
+  });
+
+  it("does NOT notify on a no-op removal (id not in the queue) — the loop guard", () => {
+    ensureVigilApprovalSession(makeLogger([]));
+    let calls = 0;
+    subscribeVigilApprovalSession(() => { calls += 1; });
+
+    removeVigilSessionRequest("not-a-real-request");
+    expect(calls).toBe(0);
+  });
+
+  it("unsubscribe stops notifications", () => {
+    ensureVigilApprovalSession(makeLogger([]));
+    let calls = 0;
+    const unsubscribe = subscribeVigilApprovalSession(() => { calls += 1; });
+
+    removeVigilSessionRequest("req-dev-001");
+    expect(calls).toBe(1);
+
+    unsubscribe();
+    removeVigilSessionRequest("req-dev-002");
+    expect(calls).toBe(1);
+  });
+
+  it("notifies on each expiry-sweep removal", () => {
+    const session = ensureVigilApprovalSession(makeLogger([]));
+    const anchorMs = Date.parse(session.anchorIso);
+    let calls = 0;
+    subscribeVigilApprovalSession(() => { calls += 1; });
+
+    const { expired } = expireVigilSessionRequests(anchorMs + 20 * 60_000, makeLogger([]));
+    expect(expired.length).toBeGreaterThan(0);
+    expect(calls).toBe(expired.length);
+  });
+
+  it("a subscriber attached before assembly fires at assembly with the full queue", () => {
+    const seen: VigilApprovalSession[] = [];
+    subscribeVigilApprovalSession((s) => seen.push(s));
+
+    ensureVigilApprovalSession(makeLogger([]));
+    expect(seen).toHaveLength(1);
+    expect(seen[0].requests).toHaveLength(5);
+  });
+
+  it("resetVigilApprovalSessionForTests clears listeners (no cross-test leakage)", () => {
+    ensureVigilApprovalSession(makeLogger([]));
+    let calls = 0;
+    subscribeVigilApprovalSession(() => { calls += 1; });
+
+    resetVigilApprovalSessionForTests();
+    ensureVigilApprovalSession(makeLogger([]));
+    removeVigilSessionRequest("req-dev-001");
+    expect(calls).toBe(0);
   });
 });

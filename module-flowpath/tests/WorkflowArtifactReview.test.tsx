@@ -13,6 +13,7 @@ import { WorkflowArtifactReview } from "../src/WorkflowArtifactReview";
 import { artifactWorkflowStep } from "../src/flowpath-contract";
 import { SYNTHETIC_MAPPER_OUTPUT, SYNTHETIC_SESSION_ID } from "../src/synthetic-elicitation";
 import { makeCtx } from "./test-helpers";
+import { resetFlowpathApprovalSessionForTests } from "../src/flowpath-approval-session";
 
 function makeCtxLocal(sink?: SovereignLogEvent[]) {
   return makeCtx(sink ? { logSink: sink } : {});
@@ -21,6 +22,9 @@ function makeCtxLocal(sink?: SovereignLogEvent[]) {
 const startRevision = (): void => fireEvent.click(screen.getByRole("button", { name: /^return for revision$/i }));
 
 describe("WorkflowArtifactReview (Screen 3)", () => {
+  // D5 (Session 61): approvals are a module-level session store — reset per test.
+  beforeEach(() => resetFlowpathApprovalSessionForTests());
+
   it("renders the artifact title and summary in plain prose", () => {
     render(<WorkflowArtifactReview ctx={makeCtxLocal()} />);
     expect(screen.getByText(SYNTHETIC_MAPPER_OUTPUT.artifact.title)).toBeInTheDocument();
@@ -128,5 +132,33 @@ describe("WorkflowArtifactReview (Screen 3)", () => {
     fireEvent.click(screen.getByRole("button", { name: /approve and commit/i }));
     expect(sink.length).toBeGreaterThanOrEqual(2);
     expect(sink.every((e) => typeof e.workflow_step_id === "string" && e.workflow_step_id.length > 0)).toBe(true);
+  });
+});
+
+// D5 (Session 61, finding D3-4) — the resurrection/duplication proofs: an
+// approved artifact stays approved across unmount/remount, and a duplicate
+// WORKFLOW_APPROVAL cannot be emitted for it in the same session.
+describe("WorkflowArtifactReview — session-persistent approval (D5, Session 61)", () => {
+  beforeEach(() => resetFlowpathApprovalSessionForTests());
+
+  it("an approved artifact renders as approved after remount — no approve control, no duplicate emit path", () => {
+    const logSink: SovereignLogEvent[] = [];
+    const first = render(<WorkflowArtifactReview ctx={makeCtx({ logSink })} />);
+    fireEvent.click(screen.getByRole("button", { name: /Approve and commit to registry/ }));
+    expect(screen.getByTestId("approved-confirmation")).toBeInTheDocument();
+    const approvalEvents = logSink.filter(
+      (e) => e.event_type === "HUMAN_DECISION" && e.decision_type === "WORKFLOW_APPROVAL"
+    );
+    expect(approvalEvents).toHaveLength(1);
+    first.unmount(); // navigate away
+
+    render(<WorkflowArtifactReview ctx={makeCtx({ logSink })} />); // navigate back
+    // Renders as already approved — the approve button never reappears.
+    expect(screen.getByTestId("approved-confirmation")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Approve and commit to registry/ })).not.toBeInTheDocument();
+    // Still exactly one WORKFLOW_APPROVAL in the audit sink.
+    expect(
+      logSink.filter((e) => e.event_type === "HUMAN_DECISION" && e.decision_type === "WORKFLOW_APPROVAL")
+    ).toHaveLength(1);
   });
 });

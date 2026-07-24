@@ -24,13 +24,29 @@
  * worse failure, so the alert is still shown and the emit failure is surfaced
  * (ingestError) rather than swallowed (Gate 2 — never silently continue).
  *
- * Version: 1.0 · Session 7 · June 18, 2026
+ * D2 (Session 61, finding D3-1 HIGH): when opts.sessionStore is set, alert state
+ * lives in the module-level session store (vigil-alert-session.ts) instead of
+ * this hook's own per-mount React state — assembled once per browser session,
+ * mutated through the store, consumed via the same live-subscription pattern
+ * as useApprovalQueue's D1 change. A responded alert therefore no longer
+ * resurrects when VigilApp remounts. Off by default so store-less tests keep
+ * their isolated per-render state.
+ *
+ * Version: 1.1 · Session 61 (D2) · July 23, 2026
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { VIGIL_ALERT_ENDPOINT } from "./config";
+import {
+  applyResponseToAlerts,
+  applyVigilAlertSessionResponse,
+  CLOSING_ACTIONS,
+  ensureVigilAlertSession,
+  ingestVigilAlertSessionAlert,
+  subscribeVigilAlertSession,
+} from "./vigil-alert-session";
 import {
   alertWorkflowStep,
   sortAlerts,
@@ -40,11 +56,24 @@ import {
 
 const SOF_ALERT_DISPATCHER = "sof-alert-dispatcher";
 
+/** D2 — CLOSING_ACTIONS is canonical in vigil-alert-session.ts (Constraint #2). */
+function isClosing(action: AlertResponseAction): boolean {
+  return CLOSING_ACTIONS.includes(action);
+}
+
 export interface UseAlertQueueOptions {
   /** Defaults to the platform config binding (null until Stage 2 wiring). */
   endpoint?: string | null;
   /** Pre-seed the active queue (dev/demo/test) without emitting ALERT_RECEIVED. */
   initialAlerts?: SecurityAlert[];
+  /**
+   * D2 (Session 61) — hold alert state in the session-persistent store
+   * (vigil-alert-session.ts) instead of per-mount React state, so responded
+   * alerts do not resurrect on remount (D3-1 HIGH). initialAlerts then seeds
+   * the store's ONE per-session assembly. Read once at mount. Off by default
+   * so store-less tests keep isolated state.
+   */
+  sessionStore?: boolean;
 }
 
 export interface UseAlertQueue {
@@ -68,21 +97,43 @@ export interface UseAlertQueue {
   applyResponse: (alertId: string, action: AlertResponseAction) => void;
 }
 
-const CLOSING_ACTIONS: readonly AlertResponseAction[] = ["RESOLVED", "ESCALATED", "FALSE_POSITIVE"];
-
 export function useAlertQueue(ctx: SovereignShellContext, opts: UseAlertQueueOptions = {}): UseAlertQueue {
   const endpoint = opts.endpoint !== undefined ? opts.endpoint : VIGIL_ALERT_ENDPOINT;
   const configured = endpoint !== null;
+  // D2 — read once at mount (documented on the option).
+  const sessionStore = opts.sessionStore ?? false;
 
-  const [alerts, setAlerts] = useState<SecurityAlert[]>(() => opts.initialAlerts ?? []);
+  const [alerts, setAlerts] = useState<SecurityAlert[]>(() =>
+    sessionStore
+      ? [...ensureVigilAlertSession(opts.initialAlerts ?? [])]
+      : opts.initialAlerts ?? []
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [ingestError, setIngestError] = useState<string | null>(null);
+
+  // D2 — the live session-store subscription (same external-store pattern as
+  // useApprovalQueue's D1 change). The store notifies only on actual change,
+  // and clears a selection whose alert just left the queue.
+  useEffect(() => {
+    if (!sessionStore) return;
+    return subscribeVigilAlertSession((next) => {
+      setAlerts([...next]);
+      setSelectedId((cur) =>
+        cur !== null && !next.some((a) => a.alertId === cur) ? null : cur
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const ingest = useCallback(
     (alert: SecurityAlert): void => {
       // Append first (dedupe by id) so the operator sees the alert even if the
       // ALERT_RECEIVED emit then fails — an unseen alert is the worse outcome.
-      setAlerts((prev) => (prev.some((a) => a.alertId === alert.alertId) ? prev : [...prev, alert]));
+      if (sessionStore) {
+        ingestVigilAlertSessionAlert(alert); // dedupes; notify updates local state
+      } else {
+        setAlerts((prev) => (prev.some((a) => a.alertId === alert.alertId) ? prev : [...prev, alert]));
+      }
 
       try {
         ctx.logger.log({
@@ -109,22 +160,26 @@ export function useAlertQueue(ctx: SovereignShellContext, opts: UseAlertQueueOpt
         );
       }
     },
-    [ctx]
+    [ctx, sessionStore]
   );
 
   const select = useCallback((alertId: string | null): void => setSelectedId(alertId), []);
 
-  const applyResponse = useCallback((alertId: string, action: AlertResponseAction): void => {
-    if (CLOSING_ACTIONS.includes(action)) {
-      // Closed: leaves the active queue (Logger keeps the permanent record).
-      setAlerts((prev) => prev.filter((a) => a.alertId !== alertId));
-      setSelectedId((cur) => (cur === alertId ? null : cur));
-      return;
-    }
-    // ACKNOWLEDGED / INVESTIGATING: in-place status transition.
-    const nextStatus = action === "ACKNOWLEDGED" ? "ACKNOWLEDGED" : "INVESTIGATING";
-    setAlerts((prev) => prev.map((a) => (a.alertId === alertId ? { ...a, status: nextStatus } : a)));
-  }, []);
+  const applyResponse = useCallback(
+    (alertId: string, action: AlertResponseAction): void => {
+      if (sessionStore) {
+        // D2 — route the mutation through the session store; the subscription
+        // above updates local state (and clears a closed alert's selection).
+        applyVigilAlertSessionResponse(alertId, action);
+        return;
+      }
+      // Store-less path: the single shared response semantics (Constraint #2 —
+      // applyResponseToAlerts is the one implementation, used by both paths).
+      setAlerts((prev) => applyResponseToAlerts(prev, alertId, action));
+      setSelectedId((cur) => (cur === alertId && isClosing(action) ? null : cur));
+    },
+    [sessionStore]
+  );
 
   const sorted = useMemo(() => sortAlerts(alerts), [alerts]);
   const selected = useMemo(

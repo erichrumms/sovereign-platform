@@ -35,7 +35,8 @@ export interface SessionManagerProps {
   /** Injectable initial sessions (tests). Defaults to the synthetic set. */
   initialSessions?: ElicitationSession[];
   /** Session ids whose artifact has been approved on Screen 3 (committed to the registry). */
-  approvedSessionIds?: string[];
+  /** D5 (Session 61): widened to readonly — FlowpathApp now passes the session store's snapshot. */
+  approvedSessionIds?: readonly string[];
   /**
    * WC-1: invoked when a gate-passed session card is opened (click or keyboard) — the shell
    * navigates to the Artifact Review screen for that session. In-progress sessions are not
