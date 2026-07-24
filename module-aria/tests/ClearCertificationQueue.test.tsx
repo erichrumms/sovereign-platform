@@ -193,3 +193,52 @@ describe("ClearCertificationQueue (D3)", () => {
     );
   });
 });
+
+describe("ClearCertificationQueue — reason-code chips (Session 59 D3)", () => {
+  const CHIP_CERT = "All checks passed, certifying as submitted";
+  const CHIP_FLAG = "Flagging for further review";
+
+  it("renders the three ARIA reason-code chips once per pending document", () => {
+    setup([CLEAN, FLAGGED]);
+    const rows = screen.getAllByLabelText("Reason-code quick-insert");
+    expect(rows).toHaveLength(2);
+    for (const row of rows) {
+      expect(within(row).getAllByRole("button")).toHaveLength(3);
+    }
+  });
+
+  it("clicking a chip fills that document's note without recording any decision", () => {
+    const { events, ctx } = setup([CLEAN]);
+    fireEvent.click(screen.getByRole("button", { name: CHIP_CERT }));
+    expect(screen.getByTestId("note-DOC-CLEAN")).toHaveValue(CHIP_CERT);
+    expect(ctx.aria.list()).toHaveLength(0);
+    expect(events.some((e) => e.event_type === "ARIA_CERTIFICATION_ISSUED")).toBe(false);
+    expect(events.some((e) => e.event_type === "ARIA_VIOLATION_FLAGGED")).toBe(false);
+  });
+
+  it("a chip-inserted note enables Flag, but Certify still requires destination + recipient", () => {
+    setup([CLEAN]);
+    fireEvent.click(screen.getByRole("button", { name: CHIP_CERT }));
+    expect(screen.getByTestId("flag-DOC-CLEAN")).not.toBeDisabled();
+    expect(screen.getByTestId("certify-DOC-CLEAN")).toBeDisabled();
+  });
+
+  it("clicking a chip appends to existing note text with a single separating space", () => {
+    setup([CLEAN]);
+    fireEvent.change(screen.getByTestId("note-DOC-CLEAN"), {
+      target: { value: "Reviewed the findings. " },
+    });
+    fireEvent.click(screen.getByRole("button", { name: CHIP_FLAG }));
+    expect(screen.getByTestId("note-DOC-CLEAN")).toHaveValue(
+      `Reviewed the findings. ${CHIP_FLAG}`
+    );
+  });
+
+  it("chips are scoped per document — one document's chip leaves the other's note untouched", () => {
+    setup([CLEAN, FLAGGED]);
+    const cleanCard = screen.getByTestId("queue-item-DOC-CLEAN");
+    fireEvent.click(within(cleanCard).getByRole("button", { name: CHIP_FLAG }));
+    expect(screen.getByTestId("note-DOC-CLEAN")).toHaveValue(CHIP_FLAG);
+    expect(screen.getByTestId("note-DOC-ADA")).toHaveValue("");
+  });
+});
