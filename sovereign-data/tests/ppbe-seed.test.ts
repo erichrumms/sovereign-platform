@@ -100,7 +100,7 @@ describe('the deliberate anomaly examples (goal items 2-4) — exact, never acci
       (p) => totalObligated(p.program_id) > p.lifecycle_cost_estimate
     );
     expect(exceeded.map((p) => p.program_id)).toEqual(['SYNTH-PRG-ECHO']);
-    expect(totalObligated('SYNTH-PRG-ECHO')).toBe(318000); // 106 percent of 300000
+    expect(totalObligated('SYNTH-PRG-ECHO')).toBe(458000); // 153 percent of 300000 (Q1–Q4 total)
   });
 
   it('EXACTLY one program sits in the ceiling-proximity band (DELTA, 90-100 percent)', () => {
@@ -109,7 +109,7 @@ describe('the deliberate anomaly examples (goal items 2-4) — exact, never acci
       return pct >= 90 && pct <= 100;
     });
     expect(proximate.map((p) => p.program_id)).toEqual(['SYNTH-PRG-DELTA']);
-    expect(totalObligated('SYNTH-PRG-DELTA')).toBe(475000); // 95 percent of 500000
+    expect(totalObligated('SYNTH-PRG-DELTA')).toBe(485000); // 97 percent of 500000 (Q1–Q4 total)
   });
 
   it('BRAVO under-executes and CHARLIE over-executes Q3 beyond the ten percent threshold; ALPHA and DELTA stay inside it', () => {

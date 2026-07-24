@@ -21,9 +21,9 @@ import {
 describe("actualsForProgram", () => {
   it("derives per-period actuals from the obligation records — no restated numbers", () => {
     const alpha = actualsForProgram(SYNTH_PPBE_OBLIGATIONS, "SYNTH-PRG-ALPHA");
-    expect(alpha).toEqual({ "FY 2026 Q3": 200000, "FY 2026 Q4": 285000 });
+    expect(alpha).toEqual({ "FY 2026 Q1": 145000, "FY 2026 Q2": 172000, "FY 2026 Q3": 200000, "FY 2026 Q4": 285000 });
     const bravo = actualsForProgram(SYNTH_PPBE_OBLIGATIONS, "SYNTH-PRG-BRAVO");
-    expect(bravo).toEqual({ "FY 2026 Q3": 60000, "FY 2026 Q4": 90000 });
+    expect(bravo).toEqual({ "FY 2026 Q1": 45000, "FY 2026 Q2": 72000, "FY 2026 Q3": 60000, "FY 2026 Q4": 90000 });
   });
 });
 
@@ -35,8 +35,8 @@ describe("createSyntheticPPBEDashboardInputs → buildPPBEDashboard", () => {
     expect(data.obligation_rates).toHaveLength(5);
     const byProgram = Object.fromEntries(data.obligation_rates.map((m) => [m.program_id, m]));
     expect(byProgram["SYNTH-PRG-ALPHA"].rate_percent).toBe(97);
-    expect(byProgram["SYNTH-PRG-BRAVO"].rate_percent).toBe(38); // 150000 of 400000
-    expect(byProgram["SYNTH-PRG-ECHO"].rate_percent).toBe(106); // the ADA example
+    expect(byProgram["SYNTH-PRG-BRAVO"].rate_percent).toBe(46); // 267000 of 580000 (Q1–Q4)
+    expect(byProgram["SYNTH-PRG-ECHO"].rate_percent).toBe(104); // 458000 of 440000 — the ADA example (Q1–Q4)
     expect(data.dependency_health.index_percent).toBe(75); // 6 of 8 healthy
     expect(data.learning_velocity.velocity_percent).toBe(65); // 13 of 20
     expect(data.event_counts).toEqual(SYNTH_PPBE_EVENT_COUNTS);

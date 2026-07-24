@@ -9,12 +9,19 @@
  * the note. No ESCALATE action — obligation rejections loop back to the requesting
  * agent, not to the Project Principal.
  *
- * Version: 1.0 · Session 38 · July 16, 2026
+ * Version: 1.1 · Session 59 · July 23, 2026 (reason-code chips)
  */
 
 import { useState, type CSSProperties } from "react";
 
 import { APPROVAL_NOTE_MIN_CHARS } from "./approval-contract";
+
+const VIGIL_REASON_CODES = [
+  "Routine — matches expected pattern",
+  "Reviewed evidence, approving as submitted",
+  "Escalating due to elevated risk",
+  "Rejecting — insufficient justification",
+];
 import { canSubmitObligationDecision, type PPBEGateAction } from "./ppbe-authorization";
 
 export interface ObligationDecisionPanelProps {
@@ -63,6 +70,18 @@ export function ObligationDecisionPanel({ onDecide, error }: ObligationDecisionP
       <label style={labelStyle} htmlFor="obligation-notes">
         Decision note <span style={reqStyle}>(required, ≥{APPROVAL_NOTE_MIN_CHARS} characters)</span>
       </label>
+      <div style={chipRowStyle} aria-label="Reason-code quick-insert">
+        {VIGIL_REASON_CODES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            style={chipStyle}
+            onClick={() => setNote((prev) => (prev.trim() ? prev.trim() + " " + code : code))}
+          >
+            {code}
+          </button>
+        ))}
+      </div>
       <textarea
         id="obligation-notes"
         style={textareaStyle}
@@ -135,5 +154,10 @@ const buttonDisabledStyle: CSSProperties = {
 };
 const gateNoteStyle: CSSProperties = { margin: 0, fontSize: 12, color: "#64748b" };
 const errorStyle: CSSProperties = { margin: 0, color: "#b91c1c", fontSize: 13 };
+const chipRowStyle: CSSProperties = { display: "flex", flexWrap: "wrap", gap: 6 };
+const chipStyle: CSSProperties = {
+  padding: "3px 10px", borderRadius: 12, border: "1px solid #cbd5e1",
+  background: "#f1f5f9", color: "#475569", fontSize: 12, cursor: "pointer", fontWeight: 500,
+};
 
 export default ObligationDecisionPanel;

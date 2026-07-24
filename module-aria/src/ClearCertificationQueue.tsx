@@ -28,7 +28,7 @@
  *   - D-1: the data-quality finding surfaces the P1-vs-At-Risk severity logic keyed to document type
  *     (congressional submission below threshold = P1; otherwise At Risk) at the row level.
  *
- * Version: 1.1 · Session 26 (Walkthrough D · D-3/D-1) · June 30, 2026
+ * Version: 1.2 · Session 59 · July 23, 2026 (reason-code chips)
  */
 
 import { useMemo, useState, type CSSProperties } from "react";
@@ -43,6 +43,12 @@ import { ARIA_WORKSPACE_MODULE_ID } from "./aria-workspace-publisher";
 
 /** Minimum length of a certification decision note (matches the VIGIL decision-note minimum). */
 export const DECISION_NOTE_MIN = 10;
+
+const ARIA_REASON_CODES = [
+  "All checks passed, certifying as submitted",
+  "Reviewed findings, certifying with note",
+  "Flagging for further review",
+];
 
 export interface ClearCertificationQueueProps {
   ctx: SovereignShellContext;
@@ -316,6 +322,20 @@ export function ClearCertificationQueue({
                 <label style={labelStyle} htmlFor={`note-${item.document_id}`}>
                   Decision note (required, at least {DECISION_NOTE_MIN} characters)
                 </label>
+                <div style={chipRowStyle} aria-label="Reason-code quick-insert">
+                  {ARIA_REASON_CODES.map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      style={chipStyle}
+                      onClick={() =>
+                        setNote(item.document_id, note.trim() ? note.trim() + " " + code : code)
+                      }
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
                 <textarea
                   id={`note-${item.document_id}`}
                   data-testid={`note-${item.document_id}`}
@@ -459,5 +479,10 @@ const buttonBase: CSSProperties = { padding: "8px 16px", borderRadius: 8, fontSi
 const certifyStyle: CSSProperties = { ...buttonBase, background: "#166534", color: "#ffffff" };
 const flagStyle: CSSProperties = { ...buttonBase, background: "#ffffff", color: "#991b1b", border: "1px solid #fca5a5" };
 const disabledStyle: CSSProperties = { ...buttonBase, background: "#f1f5f9", color: "#94a3b8", cursor: "not-allowed", border: "1px solid #e2e8f0" };
+const chipRowStyle: CSSProperties = { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 };
+const chipStyle: CSSProperties = {
+  padding: "3px 10px", borderRadius: 12, border: "1px solid #cbd5e1",
+  background: "#f1f5f9", color: "#475569", fontSize: 12, cursor: "pointer", fontWeight: 500,
+};
 
 export default ClearCertificationQueue;

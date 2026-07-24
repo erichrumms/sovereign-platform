@@ -7,7 +7,7 @@
  * hook (useApprovalDecision, owned by the parent) emits the Logger event and enforces
  * Gate 2; this component is presentation + the note field only.
  *
- * Version: 1.0 · Session 10 · June 23, 2026
+ * Version: 1.1 · Session 59 · July 23, 2026 (reason-code chips)
  */
 
 import { useState, type CSSProperties } from "react";
@@ -19,6 +19,13 @@ export interface ApprovalDecisionPanelProps {
   onDecide: (action: ApprovalDecisionAction, notes: string) => boolean;
   error: string | null;
 }
+
+const VIGIL_REASON_CODES = [
+  "Routine — matches expected pattern",
+  "Reviewed evidence, approving as submitted",
+  "Escalating due to elevated risk",
+  "Rejecting — insufficient justification",
+];
 
 const ACTIONS: Array<{ action: ApprovalDecisionAction; label: string; style: CSSProperties }> = [
   { action: "APPROVE", label: "Approve", style: { background: "#15803d", borderColor: "#15803d", color: "#fff" } },
@@ -41,6 +48,18 @@ export function ApprovalDecisionPanel({ onDecide, error }: ApprovalDecisionPanel
       <label style={labelStyle} htmlFor="approval-notes">
         Decision note <span style={reqStyle}>(required, ≥{APPROVAL_NOTE_MIN_CHARS} characters)</span>
       </label>
+      <div style={chipRowStyle} aria-label="Reason-code quick-insert">
+        {VIGIL_REASON_CODES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            style={chipStyle}
+            onClick={() => setNotes((prev) => (prev.trim() ? prev.trim() + " " + code : code))}
+          >
+            {code}
+          </button>
+        ))}
+      </div>
       <textarea
         id="approval-notes"
         style={textareaStyle}
@@ -95,5 +114,10 @@ const buttonDisabledStyle: CSSProperties = {
 };
 const gateNoteStyle: CSSProperties = { margin: 0, fontSize: 12, color: "#64748b" };
 const errorStyle: CSSProperties = { margin: 0, color: "#b91c1c", fontSize: 13 };
+const chipRowStyle: CSSProperties = { display: "flex", flexWrap: "wrap", gap: 6 };
+const chipStyle: CSSProperties = {
+  padding: "3px 10px", borderRadius: 12, border: "1px solid #cbd5e1",
+  background: "#f1f5f9", color: "#475569", fontSize: 12, cursor: "pointer", fontWeight: 500,
+};
 
 export default ApprovalDecisionPanel;

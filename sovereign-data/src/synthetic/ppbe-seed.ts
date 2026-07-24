@@ -17,10 +17,11 @@
  * changed — these are validated INSTANCES of the six D-P3 entities.
  *
  * INTERNAL CONSISTENCY CONTRACT (asserted by tests/ppbe-seed.test.ts):
- *   - The clock of record is SYNTH_PPBE_AS_OF (July 13, 2026). All periods are
- *     federal FY 2026 quarters that exist at that clock: Q3 = April–June 2026,
- *     Q4 = July–September 2026. Every obligation timestamp falls inside its
- *     period; nothing is dated in a quarter that hasn't started.
+ *   - The clock of record is SYNTH_PPBE_AS_OF (July 13, 2026). All four federal
+ *     FY 2026 quarters exist at that clock: Q1 = October–December 2025,
+ *     Q2 = January–March 2026, Q3 = April–June 2026, Q4 = July–September 2026.
+ *     Every obligation timestamp falls inside its period; Q1/Q2 are in the past
+ *     relative to the clock and are treated as historical actuals.
  *   - Every obligation's program exists; every finding's program AND objective
  *     exist and agree with the program's own objective_id; every exhibit
  *     lineage reference is a real seeded workflow step.
@@ -41,7 +42,7 @@
  *             AND a stalled learning loop (3 of 4 findings not feeding
  *             planning) → FEEDBACK_LOOP_STALL.
  *
- * Version: 1.0 · Session 33 · July 13, 2026
+ * Version: 1.1 · Session 33 · July 13, 2026 · extended Q1/Q2 Session 59
  */
 
 import type { StrategicObjective } from '../entities/strategic-objective';
@@ -54,13 +55,20 @@ import type { BudgetExhibit } from '../entities/budget-exhibit';
 /** The seed's clock of record — module seeds and adapters evaluate "overdue" against this. */
 export const SYNTH_PPBE_AS_OF = '2026-07-13T12:00:00Z';
 
-/** The two FY 2026 periods that exist at the clock of record (federal FY quarters). */
-export const SYNTH_PPBE_PERIODS = ['FY 2026 Q3', 'FY 2026 Q4'] as const;
+/** All four FY 2026 quarters in chronological order (federal fiscal year). */
+export const SYNTH_PPBE_PERIODS = ['FY 2026 Q1', 'FY 2026 Q2', 'FY 2026 Q3', 'FY 2026 Q4'] as const;
 
-/** Map a seeded obligation timestamp to its plan period (Apr–Jun → Q3, Jul–Sep → Q4). */
+/**
+ * Map a seeded obligation timestamp to its federal FY 2026 quarter.
+ * Q1 = Oct–Dec 2025 (month 10-12), Q2 = Jan–Mar 2026 (month 1-3),
+ * Q3 = Apr–Jun 2026 (month 4-6), Q4 = Jul–Sep 2026 (month 7-9).
+ */
 export function synthPeriodForTimestamp(isoTimestamp: string): string {
   const month = Number(isoTimestamp.slice(5, 7));
-  return month >= 4 && month <= 6 ? 'FY 2026 Q3' : 'FY 2026 Q4';
+  if (month >= 10) return 'FY 2026 Q1';
+  if (month <= 3) return 'FY 2026 Q2';
+  if (month <= 6) return 'FY 2026 Q3';
+  return 'FY 2026 Q4';
 }
 
 // ============================================================
@@ -123,6 +131,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     fiscal_year: 'FY 2026',
     lifecycle_cost_estimate: 2000000,
     obligation_plan: [
+      { period: 'FY 2026 Q1', planned_amount: 150000 },
+      { period: 'FY 2026 Q2', planned_amount: 175000 },
       { period: 'FY 2026 Q3', planned_amount: 200000 },
       { period: 'FY 2026 Q4', planned_amount: 300000 },
     ],
@@ -142,6 +152,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     fiscal_year: 'FY 2026',
     lifecycle_cost_estimate: 1500000,
     obligation_plan: [
+      { period: 'FY 2026 Q1', planned_amount: 80000 },
+      { period: 'FY 2026 Q2', planned_amount: 100000 },
       { period: 'FY 2026 Q3', planned_amount: 150000 },
       { period: 'FY 2026 Q4', planned_amount: 250000 },
     ],
@@ -161,6 +173,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     fiscal_year: 'FY 2026',
     lifecycle_cost_estimate: 800000,
     obligation_plan: [
+      { period: 'FY 2026 Q1', planned_amount: 50000 },
+      { period: 'FY 2026 Q2', planned_amount: 60000 },
       { period: 'FY 2026 Q3', planned_amount: 100000 },
       { period: 'FY 2026 Q4', planned_amount: 100000 },
     ],
@@ -180,6 +194,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     fiscal_year: 'FY 2026',
     lifecycle_cost_estimate: 500000,
     obligation_plan: [
+      { period: 'FY 2026 Q1', planned_amount: 3000 },
+      { period: 'FY 2026 Q2', planned_amount: 7000 },
       { period: 'FY 2026 Q3', planned_amount: 250000 },
       { period: 'FY 2026 Q4', planned_amount: 250000 },
     ],
@@ -200,6 +216,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     fiscal_year: 'FY 2026',
     lifecycle_cost_estimate: 300000,
     obligation_plan: [
+      { period: 'FY 2026 Q1', planned_amount: 70000 },
+      { period: 'FY 2026 Q2', planned_amount: 70000 },
       { period: 'FY 2026 Q3', planned_amount: 150000 },
       { period: 'FY 2026 Q4', planned_amount: 150000 },
     ],
@@ -211,9 +229,9 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
 ];
 
 // ============================================================
-// OBLIGATION RECORDS — seventeen, per the portfolio story. Timestamps
-// fall inside their plan periods (Q3 = Apr–Jun, Q4 = Jul–Sep 2026);
-// nothing is dated later than the clock of record.
+// OBLIGATION RECORDS — thirty total (17 Q3/Q4 originals + 13 Q1/Q2
+// backdated, Session 59 cosmetic padding). Q1 timestamps: Oct–Dec 2025;
+// Q2 timestamps: Jan–Mar 2026. All predate the clock of record.
 // ============================================================
 
 function ob(
@@ -236,28 +254,49 @@ function ob(
 }
 
 export const SYNTH_PPBE_OBLIGATIONS: ObligationRecord[] = [
-  // ALPHA — on plan: Q3 exactly 200000; Q4 285000 so far (five percent under, inside threshold).
+  // ALPHA — on plan all four quarters.
+  // Q1: 145000 of 150000 plan (-3%); Q2: 172000 of 175000 plan (-2%).
+  ob('SYNTH-OB-A5', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-110', 75000, '2025-10-14T14:00:00Z', 'SYNTH A. Vance'),
+  ob('SYNTH-OB-A6', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-110', 70000, '2025-12-09T14:00:00Z', 'SYNTH A. Vance'),
+  ob('SYNTH-OB-A7', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-111', 90000, '2026-01-21T14:00:00Z', 'SYNTH A. Vance'),
+  ob('SYNTH-OB-A8', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-111', 82000, '2026-03-17T14:00:00Z', 'SYNTH A. Vance'),
+  // Q3 exactly 200000; Q4 285000 so far (five percent under, inside threshold).
   ob('SYNTH-OB-A1', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-110', 120000, '2026-04-20T14:00:00Z', 'SYNTH A. Vance'),
   ob('SYNTH-OB-A2', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-110', 80000, '2026-06-05T14:00:00Z', 'SYNTH A. Vance'),
   ob('SYNTH-OB-A3', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-111', 150000, '2026-07-02T14:00:00Z', 'SYNTH A. Vance'),
   ob('SYNTH-OB-A4', 'SYNTH-PRG-ALPHA', 'SYNTH-CC-111', 135000, '2026-07-10T14:00:00Z', 'SYNTH A. Vance'),
-  // BRAVO — under-executing: Q3 60000 of 150000 planned (sixty percent below).
+  // BRAVO — under-executing all four quarters.
+  // Q1: 45000 of 80000 plan (44% below); Q2: 72000 of 100000 plan (28% below).
+  ob('SYNTH-OB-B3', 'SYNTH-PRG-BRAVO', 'SYNTH-CC-120', 45000, '2025-11-06T14:00:00Z', 'SYNTH R. Okafor'),
+  ob('SYNTH-OB-B4', 'SYNTH-PRG-BRAVO', 'SYNTH-CC-120', 40000, '2026-02-11T14:00:00Z', 'SYNTH R. Okafor'),
+  ob('SYNTH-OB-B5', 'SYNTH-PRG-BRAVO', 'SYNTH-CC-121', 32000, '2026-03-24T14:00:00Z', 'SYNTH R. Okafor'),
+  // Q3: 60000 of 150000 planned (sixty percent below).
   ob('SYNTH-OB-B1', 'SYNTH-PRG-BRAVO', 'SYNTH-CC-120', 60000, '2026-05-18T14:00:00Z', 'SYNTH R. Okafor'),
   ob('SYNTH-OB-B2', 'SYNTH-PRG-BRAVO', 'SYNTH-CC-120', 90000, '2026-07-08T14:00:00Z', 'SYNTH R. Okafor'),
-  // CHARLIE — over-executing: Q3 160000 against 100000 planned (sixty percent above).
+  // CHARLIE — on plan in Q1/Q2; over-executing from Q3.
+  // Q1: 48000 of 50000 plan (-4%); Q2: 58000 of 60000 plan (-3%).
+  ob('SYNTH-OB-C4', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 48000, '2025-10-22T14:00:00Z', 'SYNTH R. Okafor'),
+  ob('SYNTH-OB-C5', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 58000, '2026-02-28T14:00:00Z', 'SYNTH R. Okafor'),
+  // Q3: 160000 against 100000 planned (sixty percent above).
   ob('SYNTH-OB-C1', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 100000, '2026-04-28T14:00:00Z', 'SYNTH R. Okafor'),
   ob('SYNTH-OB-C2', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 60000, '2026-06-12T14:00:00Z', 'SYNTH R. Okafor'),
   ob('SYNTH-OB-C3', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-131', 30000, '2026-07-06T14:00:00Z', 'SYNTH R. Okafor'),
-  // DELTA — ceiling-proximate: 475000 of a 500000 lifecycle estimate (95 percent).
-  // Per-quarter actuals stay INSIDE the deviation threshold (4 and 6 percent) so
-  // DELTA's signal is cleanly CEILING_PROXIMITY, not a mixed rate-deviation case.
+  // DELTA — ceiling-proximate: 485000 of a 500000 lifecycle estimate (97 percent) across all four quarters.
+  // Q1/Q2 are minimal ramp-up; main obligations front-loaded into Q3/Q4.
+  // Per-quarter actuals stay INSIDE the deviation threshold so DELTA's signal is
+  // cleanly CEILING_PROXIMITY, not a mixed rate-deviation case.
+  ob('SYNTH-OB-D5', 'SYNTH-PRG-DELTA', 'SYNTH-CC-140', 3000, '2025-11-03T14:00:00Z', 'SYNTH M. Hale'),
+  ob('SYNTH-OB-D6', 'SYNTH-PRG-DELTA', 'SYNTH-CC-140', 7000, '2026-02-14T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-D1', 'SYNTH-PRG-DELTA', 'SYNTH-CC-140', 150000, '2026-04-10T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-D2', 'SYNTH-PRG-DELTA', 'SYNTH-CC-140', 90000, '2026-05-22T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-D3', 'SYNTH-PRG-DELTA', 'SYNTH-CC-141', 120000, '2026-07-03T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-D4', 'SYNTH-PRG-DELTA', 'SYNTH-CC-141', 115000, '2026-07-09T14:00:00Z', 'SYNTH M. Hale'),
-  // ECHO — THE DELIBERATE CEILING-EXCEEDED EXAMPLE: 318000 of a 300000 lifecycle
-  // estimate (106 percent). This is seeded ADA exposure for the walkthrough —
-  // the ledger monitor must flag it P1; nothing here "fixes" it.
+  // ECHO — THE DELIBERATE CEILING-EXCEEDED EXAMPLE.
+  // Q1/Q2 on plan (70000 each); ceiling reached by end of Q3; Q4 extends the violation.
+  // Total across all four quarters: 458000 of a 300000 lifecycle estimate (153 percent).
+  // Seeded ADA exposure for the walkthrough — the ledger monitor must flag it P1.
+  ob('SYNTH-OB-E5', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 70000, '2025-10-30T14:00:00Z', 'SYNTH M. Hale'),
+  ob('SYNTH-OB-E6', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 70000, '2026-01-19T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E1', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 100000, '2026-04-15T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E2', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 60000, '2026-06-20T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E3', 'SYNTH-PRG-ECHO', 'SYNTH-CC-151', 90000, '2026-07-04T14:00:00Z', 'SYNTH M. Hale'),
