@@ -7,6 +7,8 @@ work, not a build spec.** Read this before building or redesigning any decision-
 **Origin:** developed while scoping the Reviewer's Workspace concept, but recognized mid-conversation
 as applying more broadly than that one feature — recorded here rather than buried inside a single
 feature's spec.
+**Updated July 24, 2026:** one addition to §10 — the EG-E cross-reference from `docs/27`, never
+actually placed here despite being recommended at the time. Nothing else in this document changed.
 
 ---
 
@@ -192,16 +194,24 @@ Before building or redesigning any screen where a human makes a real decision:
 
 - **The narrow-vs-general question (§4)** — real, unresolved, deliberately deferred until the
   Workspace's actual scope is known.
-- **The cross-module navigation primitive (§5, Door 1)** — confirmed not to exist; a real
-  infrastructure gap, not yet spec'd.
+- **The cross-module navigation primitive (§5, Door 1)** — this shipped since this document was
+  written (`navigateToModule`, GD-27, Session 53) — no longer an open gap. Recorded here as
+  history, not left as a stale claim.
 - **Whether/how to extend `HUMAN_DECISION` events with a "context depth" field (§6)** — a real,
   concrete proposal, not yet a governance decision.
-- **This document's relationship to the eventual Reviewer's Workspace spec:** this is the design
-  authority the Workspace spec should cite and build from — the philosophy lives here; the Workspace
-  spec, when written, should reference this document rather than restate it.
+- **Whether the materiality test (§3) extends to pure reporting/dashboard screens, not just
+  decision-facing ones with an explicit approve/reject action** — raised by `docs/27`'s external
+  review (EG-E), which argues that highlighting itself is a form of intervention (allocating
+  attention is not neutral). Not resolved here — this document's original scope was decision
+  screens specifically. Added to this list July 24, 2026 — the propagation this needed was
+  recommended when `docs/27` was written but never actually carried out until now.
+- **This document's relationship to the eventual Reviewer's Workspace spec:** the Workspace shipped
+  (GD-25 through GD-27) and now has a real Activity/Decision History tab too (GD-28, Session 58) —
+  this remains the design authority both should be read against, not restated by either.
 
 ---
 
 *docs/22 — Informed Decision-Making in an AI-Enabled Organization · July 20, 2026*
+*Updated July 24, 2026 — §10 EG-E cross-reference added*
 *Pre-Decisional · Internal Working Document*
 *Read before building or redesigning any decision-facing feature*

@@ -4,11 +4,10 @@
 
 **Document Type:** Build Specification (Phase I Deliverable, per `SOVEREIGN_PPBE_
 Integration_Architecture_Draft1.md` §11)
-**Version:** 1.2 — July 21, 2026 (currency update: fixed stale Integration Brief
-cross-references, added the GD-23/§6 addendum documenting Tier C's real
-cross-module enhancement; PPBE's own entities, agents, and build sequence
-below are unchanged — nothing in Sessions 44-53 touched PPBE's core
-architecture directly)
+**Version:** 1.3 — July 24, 2026 (currency update only: records a new, related capability
+built in a later session under different governance, and cross-references the one open
+question that touches this document's own data — no content in §1 through §12 below
+changed; v1.2's build-complete status and elaborated schemas remain accurate and final)
 **Authority:** Project Principal · SOVEREIGN Platform Governance Authority
 **Author:** Governance Agent
 **Status:** BUILD COMPLETE — both PPBE Build Sessions (Core Integration,
@@ -425,6 +424,35 @@ Integration Brief revision should (a) adopt this document's session naming (§2)
 (b) add "PPBE Build Session 2 — Full Cycle" to the session table, which does not
 currently appear anywhere, and (c) update `PPBE-SPEC`'s status from "not yet
 started" to complete.
+
+---
+
+## 14. Update — July 24, 2026: A Related Capability Built Later, Under Separate Governance
+
+**Not a correction to anything above — a cross-reference this document should carry,
+since it concerns the same data this document's own §3.2 schema governs.**
+
+**A native PPBE Program Detail view was built in Session 57 (July 23, 2026)**, closing
+two findings (WG-11, WG-8) from a walkthrough exercise that ran well after this
+document's original build sessions closed. It is *not* the APEX PPBE performance
+dashboard §7.2 already specifies (that shipped separately, on schedule, per this
+document's own build sequence) — it's a new, single-program filtered detail screen,
+reached by clicking into one program from that dashboard. **It governs no new entity
+and required no shell-contract change** — it reuses `obligation_plan`, the existing
+per-program variance and site-breakdown data, and adds exactly one genuinely new
+piece: per-program dependency filtering. Full detail and evidence: `docs/29`.
+
+**One real, still-open question that touches this document's own §3.2 field
+directly, not resolved here:** `obligation_plan`'s `period` values were extended in
+Session 59 from two entries (`FY 2026 Q3`, `FY 2026 Q4`) to a full four-quarter
+FY2026 — **explicitly as demo-cosmetic padding, at direct Project Principal
+instruction, not as a real data-architecture decision.** Whether the *real* period
+scope this field should carry — once actual external obligation data exists — needs
+its own decision remains genuinely open. Tracked as `WG-6` in
+`docs/SOVEREIGN_Walkthrough_G_Findings_Report_20260721.md` and `docs/30`, not in
+this document, since it's a demo-data question, not a schema question — this
+document's own field type (`{ period: string; planned_amount: number }[]`) already
+accommodates any real period scope without amendment.
 
 ---
 

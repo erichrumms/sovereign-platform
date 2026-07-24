@@ -1,12 +1,14 @@
 # SOVEREIGN Platform — Role Access Matrix
 ## ARIA Suite Definition + Final Cross-Platform Access Decisions
-## Updated to include the Reviewer's Workspace (GD-25)
+## Updated to include the Reviewer's Workspace (GD-25) and its Activity tab (GD-28)
 
-**Original date:** July 18, 2026 · **Updated:** July 21, 2026
+**Original date:** July 18, 2026 · **Updated:** July 21, 2026 · **Updated again:** July 24, 2026
 **Prepared by:** Governance Agent, with the Project Principal
 **Document type:** The finalized access-control specification — GD-22 was built
-directly from this document's original content; this update adds the one
-module built since (`module-workspace`, GD-25) that needs the same treatment.
+directly from this document's original content; the July 21 update added the module built since
+(`module-workspace`, GD-25); this update ratifies the Activity tab (GD-28, Session 58) — a real
+retroactive addition, per `docs/30` finding D4-2, which flagged that the tab's role list postdated
+this document and was never formally added.
 **Status:** Pre-Decisional · Internal Working Document
 
 ---
@@ -39,7 +41,7 @@ ARIA is SOVEREIGN's deterministic governance layer — the one part of the platf
 
 ---
 
-## New — the Reviewer's Workspace (GD-25, `module-workspace`), same treatment ARIA got
+## The Reviewer's Workspace (GD-25, `module-workspace`), same treatment ARIA got
 
 Built July 20, this module embeds real, working decision components from
 three other modules directly — not summaries, not links out. Its
@@ -63,6 +65,24 @@ were already made, each in its own home module, months apart.
 
 ---
 
+## New — the Activity & Decisions tab (GD-28, Session 58), ratified here
+
+Built July 23, 2026 as a fourth section inside the Reviewer's Workspace — not a new module, a new
+tab in the existing one, since the Workspace already carries a real `SovereignProduct` identity
+(GD-26) and a second one wasn't warranted for a session-scoped decision-history view.
+
+**Access decision, made at build time, formally recorded here per `docs/30` finding D4-2:**
+
+| Workspace section | Assigned role | Why |
+|---|---|---|
+| Activity & Decisions (reads `ctx.logger.getEntries()`, GD-28) | **All five roles the Workspace's module-level gate already covers** — PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST | No further gate: every reviewer sees their own decisions by default (`actor_name` filter). The **admin toggle** (unfiltered, all entries) is restricted to PLATFORM_ADMIN/SYSTEM_ADMIN specifically — the one place within this tab where the Workspace's existing per-section pattern doesn't apply directly, since the distinction here is "own decisions vs. everyone's," not "which decisions this role may see at all." |
+
+This is a genuinely different shape from the other three sections — they gate access to the
+section itself; the Activity tab gates a *view mode within* an already-open section. Worth
+recording as its own pattern rather than force-fitting it into the three-section table above.
+
+---
+
 ## Final Role → Module Access Matrix (all eleven top-level modules)
 
 | Module | Roles with access |
@@ -77,7 +97,7 @@ were already made, each in its own home module, months apart.
 | CPMI | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
 | AgentOS | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
 | ARIA Suite | *(see per-tab breakdown above — no single module-level answer)* |
-| **Reviewer's Workspace** *(new)* | PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST *(union of the three sections above — see per-section breakdown)* |
+| **Reviewer's Workspace** | PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST *(union of all four sections above — see per-section breakdown, including the Activity tab's own admin-toggle nuance)* |
 
 ---
 
@@ -87,12 +107,12 @@ The two architectural changes this document originally called for (a role
 list instead of single-role matching; ARIA's per-tab gating) were both built
 in GD-22, Session 41, and have been the platform's standard access-control
 pattern ever since — reused, not reinvented, for `module-workspace`'s own
-per-section gating above. Nothing new required by this update; the pattern
-this document asked for in July has been the working default for over a
-month.
+per-section gating, and now for the Activity tab's admin-toggle variant of
+the same underlying `hasRole()` primitive. Nothing new required by this
+update beyond formally recording a decision already made in code.
 
 ---
 
-*SOVEREIGN Platform · Role Access Matrix · Updated July 21, 2026*
-*Originally July 18, 2026 — Addendum to the now-retired Design Recommendations*
+*SOVEREIGN Platform · Role Access Matrix · Updated July 24, 2026*
+*Originally July 18, 2026 · Workspace addendum July 21, 2026 · Activity tab ratified July 24, 2026*
 *Pre-Decisional · Internal Working Document*

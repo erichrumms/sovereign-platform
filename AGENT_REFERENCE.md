@@ -1,12 +1,13 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.2 — July 22, 2026**
-**Supersedes:** v3.1 (July 19, 2026), which itself was one addition on top of
-v3.0 (July 18, 2026) — the merge of BOTH prior lineages: the repo copy (1014
-lines, last committed June 26, 2026, containing Lessons 1-12 and the
-SOVEREIGN-specific sections) and the project-knowledge copy v2.0 (530 lines,
-July 18, containing Rules 1-10 through the July 15 incidents).
+**Version: 3.3 — July 24, 2026**
+**Supersedes:** v3.2 (July 22, 2026), which itself was one addition on top of
+v3.1 (July 19, 2026) — itself one addition on top of v3.0 (July 18, 2026) —
+the merge of BOTH prior lineages: the repo copy (1014 lines, last committed
+June 26, 2026, containing Lessons 1-12 and the SOVEREIGN-specific sections)
+and the project-knowledge copy v2.0 (530 lines, July 18, containing Rules
+1-10 through the July 15 incidents).
 **Merge decision:** Project Principal, July 18, 2026 — one canonical
 document, placed identically in the repo, at the iCloud root, and in
 project knowledge.
@@ -16,7 +17,12 @@ implementation doesn't diverge from the first. Nothing else in v3.0 changed.
 **v3.2 change:** one addition — VIGIL's approval queue now has a single
 session-scoped source of truth (Session 54, WG-13), added to Known Codebase
 Facts so a future VIGIL surface doesn't bypass it. Nothing else in v3.1
-changed. The v3.0/v3.1/v3.2 counter still continues from the stated v2.0
+changed.
+**v3.3 change:** one addition — the session-store pattern generalized from
+one instance to six (Session 61: four new applications, plus the two that
+already existed), added to Known Codebase Facts as a named, recognized
+platform pattern rather than five/six independent hand-rolled copies.
+Nothing else in v3.2 changed. The v3.0/v3.1/v3.2/v3.3 counter still continues from the stated v2.0
 assumption noted below — the true pre-June-26 original counter value
 remains unrecovered.
 
@@ -590,7 +596,25 @@ of the `AGENT_ACTION_EXPIRED` event shape — both the mount-time and
 interval-driven expiry sweeps emit through it, not two separate
 constructions. This updates, but doesn't replace, the existing VIGIL
 `AgentApprovalPort` fact above — that interface itself is unchanged; it's just
-no longer the layer new code should touch first.
+no longer the layer new code should touch first. **Updated July 24, 2026
+(Session 61): this store gained real subscribe/notify** (`subscribeVigilApprovalSession`,
+mirroring `TaskSurface`'s `Set`-of-listeners shape) — `VigilApp` now consumes
+it as a live subscription rather than seeding once at mount, closing the
+last real gap this fact's own "resurrection bug" language warned about.
+
+**The session-store pattern is now a named, recognized platform pattern, not
+one instance — added July 24, 2026 (Session 61).** Six module-local files
+now share the identical shape (a module-scope `Set`/`Map` singleton +
+subscribe/notify + a mutation function that checks-then-emits, never
+emit-then-record): `vigil-approval-session.ts`, `vigil-alert-session.ts`,
+`aria-vrs-session.ts`, `tt-session.ts`, `flowpath-approval-session.ts`, and
+the earlier `scribe-sent-session.ts`. **Any future "does this reset when the
+component remounts" question should default to "build a sixth-shape sibling
+of these," not a new pattern.** Per the same reasoning `docs/SOVEREIGN_Shell_Surface_Reference_20260721.md`
+already applies to *shell-owned* surfaces (extraction-worthy once a sixth
+hand-written copy appears) — this module-local family has now reached that
+same count. Worth a real governance conversation about extracting a shared
+helper the next time a seventh instance is needed, not before.
 
 ---
 
