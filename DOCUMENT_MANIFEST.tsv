@@ -39,22 +39,24 @@
 # ---------------------------------------------------------------------------
 
 # --- Repo root: NEW this cycle (Sessions 54-61) ---
-SOVEREIGN_Platform_Integration_Brief_v1.49.md|repo|4cd2afe9633ee000a2793c7c484e9343f9cde1fe1fe7f58b2d1c8972cbc2f39d|210|v1.49 — supersedes v1.48; Rule 1 currency restored|2026-07-24
-SOVEREIGN_Strategic_Plan_CTO_Demo_v3.7.md|repo|7701f01d8bee486489bea53967045c310037ccb2505e8b8dd44a948d274195fa|680|v3.7 — root placement; supersedes v3.6 (docs/) and v3.3 (root)|2026-07-24
+SOVEREIGN_Platform_Integration_Brief_v1.49.md|repo|5b090347fe442309ae0390a176d9de91d2156208ae5ddb9e7426bbd916fb4272|210|v1.49 — supersedes v1.48; Rule 1 currency restored; D4-5 scope corrected in place 2026-07-24|2026-07-24
+SOVEREIGN_Strategic_Plan_CTO_Demo_v3.7.md|repo|3a8e48f507811099b36d500fffb10d053203595603e1885d98f2f7157fb32444|680|v3.7 — root placement; supersedes v3.6 (docs/) and v3.3 (root); D4-5 scope corrected in place 2026-07-24|2026-07-24
 SOVEREIGN_Agent_to_Agent_Briefing.md|repo|63fa08c22e94b65693826422386dee542ac0637ce3897f56552645051ccd69aa|196|July 24 2026 — canonical undated filename per AGENT_REFERENCE layout|2026-07-24
 SOVEREIGN_New_Conversation_Handoff_v7_20260724.md|repo|d9c1048feb13d3e773e45677f06057c510db5c82b9f6eb720a508e0aef0a9515|162|v7 — supersedes v6|2026-07-24
+
+CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|56|Build Agent conventions — primary control for the naming convention; see also .githooks/commit-msg|2026-07-24
 
 # --- Repo root: already current; checksums CORRECTED to the real files ---
 AGENT_REFERENCE.md|repo|d7c1755bc7e2e934b5a0594e37226626f6721893511a52664a0d9e676c0819e8|1684|v3.3 — also needs manual copy to iCloud root + project knowledge|2026-07-24
 Agent_Identity_Standard.md|repo|483731f2e34bacfcc9b05d9db4cf8dda701fb889a2340c81867d6224447a2648|1608|current — 44 agents, PPBE deferral note|2026-07-24
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
-SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|de8ad4e59422999ca557c5ac59c03292a6f5b247cc8bf859ec39886f1acf109c|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
+SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
 SOVEREIGN_Walkthrough_F_Complete.md|repo|39031d017f1ff0f2522ebd61cc340f963d4cbcf14c7b01d065653218c19e00bd|990|current — Findings Report + Repeat Pass Script|2026-07-24
 
 # --- docs/ : place by hand until the script supports repo_docs ---
 SOVEREIGN_Walkthrough_H.md|repo_docs|954e26c1d50b469ded39e5400942859caad401fd5a66c7a0c42125f6dd15fc89|201|current — covers Sessions 54-61; never placed before this cycle|2026-07-24
-SOVEREIGN_Walkthrough_G_Findings_Report_20260721.md|repo_docs|e5d09c25d87e69e3258537bdbaacc50b1ca20abe3690fd01019863a125545eb0|138|updated July 24 — build scope fully closed|2026-07-24
-30_Session60_Assessment_Action_Plan.md|repo_docs|6c1d09be5d204b9331103f2fdc593cfbce1d5371acd8d0e85d8d9fbf49c4bd41|114|S2 closed Session 61; S3 governance items open|2026-07-24
+SOVEREIGN_Walkthrough_G_Findings_Report_20260721.md|repo_docs|f96fe697871b0edee4dfdb4b06a25ec15f1fbd2daaf11a350acf5eaeb06b8f11|138|updated July 24 — build scope fully closed; D4-5 scope corrected in place 2026-07-24|2026-07-24
+30_Session60_Assessment_Action_Plan.md|repo_docs|1ff6d6bc84ff73f8ed094f157fc3d2b89936993092e12df929a4bcb78a18fe64|133|S2 closed Session 61; S3 governance items open; D4-5 scope corrected in place 2026-07-24|2026-07-24
 29_Governance_Decisions_WG11_WG7_WG14.md|repo_docs|31690f225121ddf64d70ddaa5baed4ce4fcda92250e41159a2bf23557a33707f|99|all three decided and built|2026-07-24
 28_Logger_Write_Only_Provenance_Gap.md|repo_docs|765dc759195130decc55251f0db91ccf3eef5bac0baaba6522898de4c41632d6|109|RESOLVED — GD-28 executed Session 58|2026-07-24
 22_Informed_Decision_Making.md|repo_docs|3f270f3dd0a87682ef615a32906ffd52b48d2c65cffe0fec5ea6d31f0911bbd7|217|updated July 24 — EG-E addressed|2026-07-24

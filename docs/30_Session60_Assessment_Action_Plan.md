@@ -56,14 +56,33 @@ order:**
 Session 55's history of shipping equivalent fixes with zero tests, this was treated as
 non-negotiable going in, and it held.
 
-**One accuracy correction to Session 61's own Handoff, found at Governance Agent review:** Finding
-F2 claims byte-identical untracked duplicates of the Session 55 close artifacts exist in `docs/`,
-separate from the tracked repo-root copies. Checked directly — this is not observably true: `git
-status` shows a clean tree, and nothing matching that name exists anywhere under `docs/`. This is
-the second consecutive session to make an inaccurate claim about this same pair of files (Session
-60's said they were untracked and in the wrong place; Session 61's says duplicates exist that
-don't). Treated as genuinely closed now, based on two independent direct checks, not open for
-further relitigation.
+**CORRECTION, July 24, 2026 — this section previously overruled a correct Build Agent finding.
+It was wrong.** An earlier version of this document stated that Session 61's Handoff Finding F2
+— which claimed untracked duplicates of the Session 55 close artifacts exist in `docs/` — was
+"not observably true," that `git status` showed a clean tree, and that the matter was "not open
+for further relitigation."
+
+**Session 61 was right.** `docs/Session55_Handoff.md` and `docs/Session55_SBOM_Update.md` both
+exist, untracked, alongside the tracked repo-root copies. They were found on July 24 when a
+`git add -A` swept them into a staging set. The prior "two independent direct checks" cited here
+did not actually establish what they claimed to establish.
+
+**This is the third consecutive error about the same pair of files** (Session 60: wrong about
+where they were; Session 61's correction here: wrong that they didn't exist; and this document's
+own closing language: wrong to declare the question settled). The pattern worth carrying forward
+is not about these two files at all — it is that **a governance document asserting a build
+finding is wrong needs the same evidentiary standard as the finding itself**, and the phrase
+"not open for further relitigation" is precisely the language that prevented anyone from
+looking again.
+
+**Also found in the same sweep, and materially more serious:**
+`sovereign-shell/tests/host-navigation.test.tsx` — cited twice in Session 61's Handoff as the
+verification evidence for D6 (Home-return navigation) and D7 (`navigateToModule` consistency) —
+**was never committed.** The Handoff's own test table claims 2 suites in `sovereign-shell`;
+only 1 was ever tracked. Session 61's close protocol passed with a real `git push` and real
+output, while the push was incomplete. The protocol verifies *that* a push happened, not that
+it carried everything the session claims. Both the duplicates and the missing test file were
+resolved July 24, 2026.
 
 ---
 
@@ -73,7 +92,7 @@ further relitigation.
 |---|---|---|
 | **D4-6** | Seven modules share an identical `anthropic-key.ts` reading `VITE_ANTHROPIC_API_KEY`. Vite compiles any `VITE_`-prefixed variable into the client bundle by design. **No real key exists anywhere today.** Needs a real, deliberate decision (server-side proxy, or runtime injection instead of build-time) before any real key is ever configured — the finding from the whole assessment most directly relevant to handling real, sensitive data. |
 | **D4-2** | The Workspace Activity tab's role list postdated the Role Access Matrix — **ratified in this update; see `SOVEREIGN_Role_Access_Matrix_20260721.md`.** |
-| **D4-5** | The ARIA/VIGIL banner claims CUI+ processing "is blocked and logged," but real enforcement lives at the api-client/NEXUS-intake seam. Decide: soften the banner's wording, or extend real enforcement to match it. |
+| **D4-5** | **Scope corrected July 24, 2026 — the finding is real, its recorded scope was wrong in both directions.** Three modules carry the GD-10 banner claiming CUI+ processing "is blocked and logged": **ARIA, APEX, and FLOWPATH** (`module-{aria,apex,flowpath}/src/banners.tsx`). None of the three performs any classification screening itself — real enforcement lives at the api-client / NEXUS-intake / AgentOS-dispatcher seam. **VIGIL, named in every prior statement of this finding, has no `banners.tsx` at all** and carries the string nowhere in its source; it was compressed in from the Session 60 assessment's adjacent observation that neither ARIA nor VIGIL screens classifications. Decide: soften the wording, or extend real enforcement to match it — and note the decision now touches three modules, not one. |
 | **D3-6** | Module health dots are wired to nothing — `pollAll()`/`startHealthPolling()` exist, never called. Decide: finish wiring, or remove the dead code. |
 | **D4-9** | LENS's governance-explainer registry requires six source documents; two exist. A content-authoring task, not a code task. |
 

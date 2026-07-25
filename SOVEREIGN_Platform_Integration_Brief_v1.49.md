@@ -97,7 +97,7 @@ this platform ever touches real, sensitive information.
 | D4-6 — shared Anthropic API key architecture | Real pre-production gate, not urgent today | A real decision before any real key is configured |
 | WG-6's real resolution | Session 59's fix was explicitly cosmetic/demo-only, at direct Project Principal request | Still needs a real decision on the variance chart's actual period scope |
 | D3-6 — module health dots | Wired to nothing (`pollAll()`/`startHealthPolling()` exist, never called) | Decide: finish wiring, or remove the dead UI |
-| D4-5 — ARIA/VIGIL banner overclaim | The banner states enforcement that actually happens elsewhere in the platform | Decide: soften the banner, or extend real enforcement to match it |
+| D4-5 — ARIA / APEX / FLOWPATH banner overclaim *(scope corrected in place July 24, 2026)* | Three modules state enforcement that actually happens elsewhere in the platform; VIGIL was named in error and carries no such banner | Decide: soften the banner, or extend real enforcement to match it — across three modules, not one |
 | D4-9 — LENS's incomplete source-document set | A content-authoring task, not a code task | Needs someone to write the missing governance-explanation documents |
 | D3-8, D3-10 | Two small, genuinely optional fold-ins from the Session 60 assessment, never reached | Low priority; ride along with any session touching adjacent code |
 | A seventh module-local session-store instance | Not yet needed | Worth a real governance conversation about a shared helper extraction, the same threshold `docs/SOVEREIGN_Shell_Surface_Reference_20260721.md` already names for shell-owned surfaces |

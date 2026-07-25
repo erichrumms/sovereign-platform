@@ -1,0 +1,11 @@
+#!/bin/sh
+# SOVEREIGN Platform — commit-msg hook
+# Backstop for the known upstream defect where .claude/settings.json's attribution
+# setting is ignored (the built-in instruction takes precedence). See CLAUDE.md §2.
+# Enable once per clone:  git config core.hooksPath .githooks
+MSG="$1"
+[ -f "$MSG" ] || exit 0
+grep -v -E '^(Co-[Aa]uthored-[Bb]y:|Generated with |🤖 Generated with |https://claude\.ai/code/session_)' \
+  "$MSG" > "$MSG.sovereign.tmp" 2>/dev/null
+if [ -s "$MSG.sovereign.tmp" ]; then mv "$MSG.sovereign.tmp" "$MSG"; else rm -f "$MSG.sovereign.tmp"; fi
+exit 0

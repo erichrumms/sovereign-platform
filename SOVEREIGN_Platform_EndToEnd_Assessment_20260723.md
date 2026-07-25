@@ -71,7 +71,7 @@ the screen (currently unreachable, but unguarded).
 **Security posture: solid with three notes.** The Anthropic key pattern
 (`VITE_ANTHROPIC_API_KEY` via `import.meta.env`, identical in 7 modules) compiles any configured key
 into the browser bundle — dev-only today, but a platform-level fix note before any real key exists.
-The ARIA/VIGIL GD-10 banner claims CUI+ processing "is blocked and logged," but the actual blocking
+The ARIA / APEX / FLOWPATH GD-10 banner claims CUI+ processing "is blocked and logged," but the actual blocking
 lives at the api-client/NEXUS-intake seam, not in these modules — the banner overclaims relative to
 what the TS layer enforces. Audit-trail coverage of consequential human actions is complete in every
 audited module, with two already-documented taxonomy gaps (VIGIL `INVESTIGATING`, TRACER/ARC
@@ -275,7 +275,7 @@ anything above UNCLASSIFIED, called before provider selection. NEXUS intake reus
 in `main.tsx` is an auth attribute (what the *user* may see), distinct from `data_classification`
 (what a *request* carries) — not a boundary violation.
 
-**D4-5 · LOW — the ARIA/VIGIL banner overclaims blocking.** `module-aria/src/banners.tsx:86-89`
+**D4-5 · LOW — the ARIA / APEX / FLOWPATH banner overclaims blocking.** *(Heading scope corrected in place July 24, 2026: the original read "ARIA/VIGIL." VIGIL has no `banners.tsx`; APEX and FLOWPATH carry the identical banner and were not checked when this was first written. The body text below, and the finding itself, are otherwise unchanged and correct.)* `module-aria/src/banners.tsx:86-89`
 says CUI+/classified "attempts … are blocked and logged," but no classification screening exists in
 `module-aria` or `module-vigil` source; free-text inputs are unscreened and enforcement lives at
 the api-client/intake seam. The claim is true of the platform's LLM/intake paths, not of these

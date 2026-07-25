@@ -2,7 +2,6 @@
 ## The Session-State-Resurrection Family + Navigation Fix (docs/30 §2)
 
 **Session:** 61 · July 23–24, 2026
-**Build Agent:** Claude Code
 **HEAD at open:** `557bd9e` (Session 61 gather-script commit — newer than the opening prompt's
 last-known `8e98346`, as the prompt anticipated)
 **Content commit this session:** `b6fd8bc`

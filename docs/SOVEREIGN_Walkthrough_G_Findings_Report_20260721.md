@@ -50,7 +50,7 @@ behavior — not accepted from any session's own Handoff claim alone.**
 | **WG-10** | ARIA / SCRIBE export gate | Self-disclosed by the platform's own UI. Real decision still needed. |
 | **D4-6** | Platform-wide, security | Seven modules share an identical `VITE_ANTHROPIC_API_KEY` pattern, compiled into the client bundle by Vite's design. No real key exists anywhere today. A genuine pre-production gate — server-side proxy vs. runtime injection — needed before one ever does. The single finding from the whole Session 60 assessment most directly relevant to handling real, sensitive data. |
 | **D3-6** | Shell, module health dots | Wired to nothing — `pollAll()`/`startHealthPolling()` exist, never called. Decide: finish wiring, or remove the dead code. |
-| **D4-5** | ARIA / VIGIL banner | Claims CUI+ enforcement that actually happens elsewhere in the platform. Decide: soften the banner, or extend real enforcement to match it. |
+| **D4-5** | ARIA / APEX / FLOWPATH banner *(scope corrected July 24, 2026)* | Claims CUI+ enforcement that actually happens elsewhere in the platform. Three modules carry the banner, not one; VIGIL was named in error and has none. Decide: soften the banner, or extend real enforcement to match it. |
 | **D4-2** | Workspace, Role Access Matrix | **RESOLVED this version** — the Activity tab's role list formally ratified in `SOVEREIGN_Role_Access_Matrix_20260721.md`, July 24. |
 | **D4-9** | LENS | Governance-explanation source-document set — six required, two exist. A content-authoring task. |
 
