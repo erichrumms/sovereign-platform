@@ -35,11 +35,14 @@ import {
 } from "./clear-ui";
 import {
   severityForDataQuality,
+  DATA_QUALITY_THRESHOLD,
+  type ClearEvaluationInput,
   type DataQualityItem,
   type OutputComplianceItem,
   type ProcessComplianceItem,
 } from "./clear-types";
 import { useAriaCertifications } from "./useAriaCertifications";
+import { CLEAR_DEMO_ITEMS } from "./ClearCertificationQueue";
 
 export interface ClearDashboardProps {
   ctx: SovereignShellContext;
@@ -54,29 +57,28 @@ export interface ClearDashboardProps {
 }
 
 // ── Synthetic demo data (Governance Clock OFF — all data is synthetic) ──────────────────
-const DEMO_OUTPUTS: OutputComplianceItem[] = [
-  {
-    document_id: "DOC-A11-FY26-OM",
-    document_name: "FY 2026 O&M Budget Exhibit",
-    document_type: "OMB A-11 Exhibit",
-    applicable_check: "OMB Circular A-11 — justification narrative and exhibit type",
-    status: "pending",
-  },
-  {
-    document_id: "DOC-EVAL-PRG014",
-    document_name: "Program PRG-014 Evaluation Findings",
-    document_type: "Evaluation Report",
-    applicable_check: "Evidence Act — every reported conclusion cites an evidence basis",
-    status: "pending",
-  },
-  {
-    document_id: "DOC-OBL-Q3",
-    document_name: "Q3 Obligation Summary",
-    document_type: "Obligation Record",
-    applicable_check: "Anti-Deficiency Act — obligation covered by available budget authority",
-    status: "pending",
-  },
-];
+
+// WH-22: derive the output compliance row from each CLEAR_DEMO_ITEMS entry so the
+// dashboard and the Certification Queue always reflect the same document set.
+function primaryApplicableCheck(item: ClearEvaluationInput): string {
+  if (!item.obligation_covered)
+    return "Anti-Deficiency Act — obligation covered by available budget authority";
+  if (!item.has_evidence_basis && item.data_quality_index < DATA_QUALITY_THRESHOLD)
+    return "OMB Circular A-11 and Evidence Act — data quality and evidence basis";
+  if (!item.has_evidence_basis)
+    return "Evidence Act — every reported conclusion cites an evidence basis";
+  if (item.data_quality_index < DATA_QUALITY_THRESHOLD)
+    return `OMB Circular A-11 — data quality (${item.data_quality_index}%)`;
+  return "OMB Circular A-11 — justification narrative and exhibit type";
+}
+
+const DEMO_OUTPUTS: OutputComplianceItem[] = CLEAR_DEMO_ITEMS.map((item) => ({
+  document_id: item.document_id,
+  document_name: item.document_name,
+  document_type: item.document_type,
+  applicable_check: primaryApplicableCheck(item),
+  status: "pending" as const,
+}));
 
 const DEMO_PROCESS: ProcessComplianceItem[] = [
   {
