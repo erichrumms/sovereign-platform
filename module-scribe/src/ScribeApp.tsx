@@ -69,6 +69,8 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
     initialState?.selectedItemKey ? "tt-review" : "drafting"
   );
   const [selected, setSelected] = useState<SCRIBEMode | null>(null);
+  // WH-7: bump to trigger pendingItems recompute whenever an item is sent this session.
+  const [sentVersion, setSentVersion] = useState(0);
 
   // GD-24 — publish SCRIBE's WorkQueueSurface summary on mount.
   // WG-15 (Session 55): filter through the session store so items already sent
@@ -86,6 +88,12 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
     const pending = DEMO_TT_REVIEW_ITEMS.filter((i) => !isScribeItemSent(ttReviewItemKey(i)));
     publishScribeWorkspaceItems(pending, reviewerWorkspaceSurface, new Date().toISOString());
   }, [reviewerWorkspaceSurface]);
+  // WH-7: filter to items not yet sent so TTManagerReview's queue shrinks after each send.
+  const pendingItems = useMemo(
+    () => DEMO_TT_REVIEW_ITEMS.filter((i) => !isScribeItemSent(ttReviewItemKey(i))),
+    [sentVersion]
+  );
+
   const descriptor = selected ? describeMode(selected) : null;
 
   // Style DNA: one session-scoped store + hook shared across the module, so a saved
@@ -143,14 +151,16 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
       {surface === "tt-review" ? (
         <TTManagerReview
           ctx={ctx}
-          items={DEMO_TT_REVIEW_ITEMS}
+          items={pendingItems}
           // GD-27 — seed the review's existing selection with the navigation intent.
           initialSelectedKey={initialState?.selectedItemKey}
           // GD-25 — the decision-commit path: a sent communication leaves the
           // Reviewer's Workspace rather than lingering. WG-15: also mark it
           // sent in the session store so future mounts exclude it.
+          // WH-7: bump sentVersion so pendingItems recomputes and the queue shrinks.
           onSent={(item) => {
             markScribeItemSent(ttReviewItemKey(item));
+            setSentVersion((v) => v + 1);
             reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item));
           }}
         />
