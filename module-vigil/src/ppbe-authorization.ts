@@ -355,9 +355,9 @@ export function openObligationGate(
       cost_code: draft.cost_code,
       amount: draft.amount,
     },
-    risk_classification: "P1",
+    risk_classification: "P2",
     submitted_at: submittedAtIso,
-    expires_at: computeExpiresAt(submittedAtIso, "P1"),
+    expires_at: computeExpiresAt(submittedAtIso, "P2"),
     workflow_step_id: wsid,
   };
 
