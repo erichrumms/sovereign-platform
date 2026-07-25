@@ -147,9 +147,15 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
   const vigilItems = useMemo(() => itemsFor(items, VIGIL_WORKSPACE_MODULE_ID), [items]);
   const ariaItems = useMemo(() => itemsFor(items, ARIA_WORKSPACE_MODULE_ID), [items]);
   const scribeItems = useMemo(() => itemsFor(items, SCRIBE_WORKSPACE_MODULE_ID), [items]);
-  const activityCount = ctx.logger.getEntries().filter(
-    (e) => e.actor_name === ctx.auth.user.name
-  ).length;
+
+  // WH-18: lift showAll so the activity badge reflects the same filter the section renders.
+  const isAdmin = ctx.auth.hasRole("PLATFORM_ADMIN") || ctx.auth.hasRole("SYSTEM_ADMIN");
+  const [showAll, setShowAll] = useState(false);
+  const allEntries = ctx.logger.getEntries();
+  const activityCount = isAdmin && showAll
+    ? allEntries.length
+    : allEntries.filter((e) => e.actor_name === ctx.auth.user.name).length;
+
   const countFor: Record<Section, number> = {
     vigil: vigilItems.length,
     aria: ariaItems.length,
@@ -175,7 +181,7 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
           : <LockedSectionNotice sectionLabel="SCRIBE T&T Reviews" requiredRole={SECTION_PRIMARY_ROLE.scribe} />;
       case "activity":
         return canAccessSection("activity")
-          ? <ActivitySection ctx={ctx} />
+          ? <ActivitySection ctx={ctx} showAll={showAll} setShowAll={setShowAll} />
           : <LockedSectionNotice sectionLabel="Activity & Decisions" requiredRole={SECTION_PRIMARY_ROLE.activity} />;
       default:
         return assertHandled(s);
@@ -433,9 +439,16 @@ function ScribeWorkspaceSection({
 // Admin toggle (PLATFORM_ADMIN / SYSTEM_ADMIN): show all entries.
 // ============================================================
 
-function ActivitySection({ ctx }: { ctx: SovereignShellContext }): JSX.Element {
+function ActivitySection({
+  ctx,
+  showAll,
+  setShowAll,
+}: {
+  ctx: SovereignShellContext;
+  showAll: boolean;
+  setShowAll: (v: boolean) => void;
+}): JSX.Element {
   const isAdmin = ctx.auth.hasRole("PLATFORM_ADMIN") || ctx.auth.hasRole("SYSTEM_ADMIN");
-  const [showAll, setShowAll] = useState(false);
 
   const allEntries = ctx.logger.getEntries();
   const userEntries = allEntries.filter((e) => e.actor_name === ctx.auth.user.name);
