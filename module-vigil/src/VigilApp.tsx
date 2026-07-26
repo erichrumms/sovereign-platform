@@ -125,13 +125,13 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
   useEffect(() => {
     publishVigilWorkQueues(
       approvals.pendingCount,
-      approvals.hasPendingP1,
+      approvals.highestApprovalSeverity,
       alerts.unacknowledgedCount,
       alerts.hasUnacknowledgedP1,
       workQueueSurface,
       new Date().toISOString()
     );
-  }, [workQueueSurface, approvals.pendingCount, approvals.hasPendingP1, alerts.unacknowledgedCount, alerts.hasUnacknowledgedP1]);
+  }, [workQueueSurface, approvals.pendingCount, approvals.highestApprovalSeverity, alerts.unacknowledgedCount, alerts.hasUnacknowledgedP1]);
 
   // GD-25 — publish the FULL pending approval requests (with the Tier C obligation
   // case where applicable) to the Reviewer's Workspace surface whenever the queue

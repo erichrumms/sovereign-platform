@@ -46,7 +46,8 @@ describe("Startup surface publication — WG-1 (Session 54)", () => {
     const vigil = ctx.workQueueSurface.listForModule("vigil");
     expect(vigil).toHaveLength(2);
     expect(vigil.find((s) => s.queue_label === "Pending Approvals")!.count).toBe(5);
-    expect(vigil.find((s) => s.queue_label === "Pending Approvals")!.highest_severity).toBe("P1");
+    // req-dev-001 reclassified P1→P2 (WH-17 follow-on); highest severity across 5 requests is now P2.
+    expect(vigil.find((s) => s.queue_label === "Pending Approvals")!.highest_severity).toBe("P2");
 
     expect(ctx.workQueueSurface.listForModule("scribe")[0].count).toBe(DEMO_TT_REVIEW_ITEMS.length);
     expect(ctx.workQueueSurface.listForModule("aria")[0].count).toBe(CLEAR_DEMO_ITEM_COUNT);

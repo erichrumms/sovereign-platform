@@ -51,7 +51,11 @@ const SYNTHETIC_SEEDS: readonly SyntheticSeed[] = [
       target_product: "APEX",
       replaces_version: "2026.05",
     },
-    risk: "P1",
+    // WH-17 follow-on: model deployment is a planned deliberative action (routine model
+    // refresh), not a 15-minute emergency. P1 created the same expiry-sweep timing
+    // artifact as the PPBE obligation: VIGIL shows the request, but if Workspace mounts
+    // >15 min later its sweep removes it. P2 (60 min) matches the deliberative window.
+    risk: "P2",
     context: "Routine model refresh for APEX reporting; supersedes the May build.",
   },
   {

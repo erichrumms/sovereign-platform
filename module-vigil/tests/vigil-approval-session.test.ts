@@ -70,12 +70,13 @@ describe("vigil-approval-session (WG-13 shared store)", () => {
     const session = ensureVigilApprovalSession(makeLogger(sink));
     const anchorMs = Date.parse(session.anchorIso);
 
-    // 20 minutes past assembly: the P1 (15-minute window) is overdue; P2/P3 are not.
-    const { expired, emitErrors } = expireVigilSessionRequests(anchorMs + 20 * 60_000, makeLogger(sink));
+    // 65 minutes past assembly: both P2 requests (60-minute window) are overdue; P3 is not.
+    // req-dev-001 reclassified P1→P2 (WH-17 follow-on); both P2s now expire at 65 min.
+    const { expired, emitErrors } = expireVigilSessionRequests(anchorMs + 65 * 60_000, makeLogger(sink));
 
     expect(emitErrors).toHaveLength(0);
     expect(expired.length).toBeGreaterThan(0);
-    expect(expired.some((r) => r.request_id === "req-dev-001")).toBe(true); // the P1 dev request
+    expect(expired.some((r) => r.request_id === "req-dev-001")).toBe(true); // the P2 dev request (WH-17 follow-on)
     for (const req of expired) {
       const ev = sink.find(
         (e) => e.event_type === "AGENT_ACTION_EXPIRED" && e.payload.request_id === req.request_id
@@ -143,7 +144,8 @@ describe("vigil-approval-session — live subscription (D1, Session 61)", () => 
     let calls = 0;
     subscribeVigilApprovalSession(() => { calls += 1; });
 
-    const { expired } = expireVigilSessionRequests(anchorMs + 20 * 60_000, makeLogger([]));
+    // 65 minutes: both P2s (60-min window) expire; req-dev-001 reclassified P1→P2 (WH-17 follow-on).
+    const { expired } = expireVigilSessionRequests(anchorMs + 65 * 60_000, makeLogger([]));
     expect(expired.length).toBeGreaterThan(0);
     expect(calls).toBe(expired.length);
   });

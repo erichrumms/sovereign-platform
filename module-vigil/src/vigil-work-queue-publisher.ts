@@ -14,7 +14,7 @@ import type { WorkQueueSurface } from "../../sovereign-shell/shell-contract";
 
 export function publishVigilWorkQueues(
   pendingApprovals: number,
-  hasPendingP1: boolean,
+  highestApprovalSeverity: "P1" | "P2" | "P3" | null,
   unacknowledgedAlerts: number,
   hasAlertP1: boolean,
   surface: WorkQueueSurface,
@@ -24,7 +24,7 @@ export function publishVigilWorkQueues(
     module_id: "vigil",
     queue_label: "Pending Approvals",
     count: pendingApprovals,
-    highest_severity: hasPendingP1 ? "P1" : null,
+    highest_severity: highestApprovalSeverity,
     updated_at: timestamp,
   });
   surface.publish({

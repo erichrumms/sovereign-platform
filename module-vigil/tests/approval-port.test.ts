@@ -13,7 +13,8 @@ describe("synthetic approval port", () => {
   it("provides three requests covering P1/P2/P3", () => {
     const reqs = createDevApprovalPort(ANCHOR).listPending();
     expect(reqs).toHaveLength(3);
-    expect(reqs.map((r) => r.risk_classification).sort()).toEqual(["P1", "P2", "P3"]);
+    // req-dev-001 (model_deployment) reclassified P1→P2 (WH-17 follow-on); all three are now P2/P2/P3.
+    expect(reqs.map((r) => r.risk_classification).sort()).toEqual(["P2", "P2", "P3"]);
   });
 
   it("covers the three primary AgentOS action types", () => {

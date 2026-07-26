@@ -115,13 +115,14 @@ describe("PlatformHome expiry sweep — WG-17 (Session 55)", () => {
     jest.useRealTimers();
   });
 
-  it("expires a P1 approval request on interval, emits AGENT_ACTION_EXPIRED, and republishes the VIGIL Pending Approvals count", () => {
+  it("expires P2 approval requests on interval, emits AGENT_ACTION_EXPIRED, and republishes the VIGIL Pending Approvals count", () => {
     jest.useFakeTimers();
     const logged: SovereignLogEvent[] = [];
     const ctx = makeCtx(logged);
 
-    // Initialize the shared session (5 requests including P1 req-dev-001 with 15-min window)
-    // and seed all surfaces — exactly what the shell does at startup.
+    // Initialize the shared session (5 requests including two P2s with 60-min window;
+    // req-dev-001 reclassified P1→P2 per WH-17 follow-on) and seed all surfaces —
+    // exactly what the shell does at startup.
     publishModuleSurfacesAtStartup(ctx);
 
     // Render PlatformHome — the immediate sweep fires at T=0 (nothing expired yet).
@@ -134,10 +135,10 @@ describe("PlatformHome expiry sweep — WG-17 (Session 55)", () => {
       .find((q) => q.queue_label === "Pending Approvals")!;
     expect(pendingBefore.count).toBe(5);
 
-    // Advance 20 minutes — the P1's 15-minute window elapses; the interval fires.
-    act(() => { jest.advanceTimersByTime(20 * 60_000); });
+    // Advance 65 minutes — both P2 windows (60-min) elapse; the interval fires.
+    act(() => { jest.advanceTimersByTime(65 * 60_000); });
 
-    // The sweep emitted AGENT_ACTION_EXPIRED for at least the P1 (req-dev-001).
+    // The sweep emitted AGENT_ACTION_EXPIRED for at least one P2 request (req-dev-001, req-dev-002).
     const expiredEvents = logged.filter((e) => e.event_type === "AGENT_ACTION_EXPIRED");
     expect(expiredEvents.length).toBeGreaterThan(0);
     expect(expiredEvents[0]).toMatchObject({

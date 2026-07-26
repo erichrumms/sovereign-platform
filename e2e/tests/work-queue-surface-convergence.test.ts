@@ -32,7 +32,7 @@ describe("WorkQueueSurface convergence — GD-24 (Session 49)", () => {
     const logged: SovereignLogEvent[] = [];
     const ctx = makeCtx(logged); // ONE ctx — as the shell wires it
 
-    publishVigilWorkQueues(5, true, 3, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(5, "P1", 3, false, ctx.workQueueSurface, NOW_ISO);
 
     const vigil = ctx.workQueueSurface.listForModule("vigil");
     expect(vigil).toHaveLength(2);
@@ -94,7 +94,7 @@ describe("WorkQueueSurface convergence — GD-24 (Session 49)", () => {
     const ctx = makeCtx([]);
     const openCount = SYNTH_PPBE_COORDINATION_ITEMS.filter((i) => i.status === "OPEN").length;
 
-    publishVigilWorkQueues(5, true, 3, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(5, "P1", 3, false, ctx.workQueueSurface, NOW_ISO);
     publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, ctx.workQueueSurface, NOW_ISO);
     publishAriaWorkQueues(CLEAR_DEMO_ITEM_COUNT, ctx.workQueueSurface, NOW_ISO);
     publishNexusWorkQueues(openCount, ctx.workQueueSurface, NOW_ISO);
@@ -123,7 +123,7 @@ describe("WorkQueueSurface convergence — GD-24 (Session 49)", () => {
     ctx.workQueueSurface.subscribe((s) => received.push(s));
 
     const openCount = SYNTH_PPBE_COORDINATION_ITEMS.filter((i) => i.status === "OPEN").length;
-    publishVigilWorkQueues(5, true, 3, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(5, "P1", 3, false, ctx.workQueueSurface, NOW_ISO);
     publishScribeWorkQueues(DEMO_TT_REVIEW_ITEMS.length, ctx.workQueueSurface, NOW_ISO);
     publishAriaWorkQueues(CLEAR_DEMO_ITEM_COUNT, ctx.workQueueSurface, NOW_ISO);
     publishNexusWorkQueues(openCount, ctx.workQueueSurface, NOW_ISO);
@@ -142,8 +142,8 @@ describe("WorkQueueSurface convergence — GD-24 (Session 49)", () => {
   it("last-write-wins — republishing replaces the prior entry for that module_id + queue_label", () => {
     const ctx = makeCtx([]);
 
-    publishVigilWorkQueues(5, true, 3, false, ctx.workQueueSurface, NOW_ISO);
-    publishVigilWorkQueues(7, false, 0, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(5, "P1", 3, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(7, null, 0, false, ctx.workQueueSurface, NOW_ISO);
 
     // Still just 2 VIGIL entries (not 4) — each queue was replaced, not appended
     const vigil = ctx.workQueueSurface.listForModule("vigil");
@@ -162,7 +162,7 @@ describe("WorkQueueSurface convergence — GD-24 (Session 49)", () => {
     const received: number[] = [];
     const unsub = ctx.workQueueSurface.subscribe(() => received.push(1));
 
-    publishVigilWorkQueues(5, false, 0, false, ctx.workQueueSurface, NOW_ISO);
+    publishVigilWorkQueues(5, null, 0, false, ctx.workQueueSurface, NOW_ISO);
     expect(received).toHaveLength(2); // one publish per VIGIL queue
 
     unsub();

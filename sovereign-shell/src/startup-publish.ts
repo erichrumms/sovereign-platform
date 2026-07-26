@@ -74,9 +74,15 @@ export function publishModuleSurfacesAtStartup(ctx: SovereignShellContext): void
   const vigil = ensureVigilApprovalSession(ctx.logger);
   const seededAlerts = [...DEMO_ARIA_ALERTS, ...DEMO_TT_ALERTS];
   const unacknowledged = seededAlerts.filter((a) => a.status === "UNACKNOWLEDGED");
+  const RISK_ORDER_STARTUP: Record<string, number> = { P1: 0, P2: 1, P3: 2 };
+  const highestApproval = vigil.requests.length === 0 ? null :
+    vigil.requests.reduce<"P1" | "P2" | "P3">((best, r) =>
+      RISK_ORDER_STARTUP[r.risk_classification] < RISK_ORDER_STARTUP[best] ? r.risk_classification : best,
+      vigil.requests[0].risk_classification as "P1" | "P2" | "P3"
+    );
   publishVigilWorkQueues(
     vigil.requests.length,
-    vigil.requests.some((r) => r.risk_classification === "P1"),
+    highestApproval,
     unacknowledged.length,
     unacknowledged.some((a) => a.alertLevel === "P1"),
     ctx.workQueueSurface,

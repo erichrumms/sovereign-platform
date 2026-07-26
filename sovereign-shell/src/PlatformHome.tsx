@@ -338,9 +338,15 @@ export function PlatformHome({
       const alertQueue = ctx.workQueueSurface.list().find(
         (q) => q.module_id === "vigil" && q.queue_label === "Unacknowledged Alerts"
       );
+      const RISK_ORDER_PH: Record<string, number> = { P1: 0, P2: 1, P3: 2 };
+      const highestApproval: "P1" | "P2" | "P3" | null = remaining.length === 0 ? null :
+        remaining.reduce<"P1" | "P2" | "P3">((best, r) =>
+          RISK_ORDER_PH[r.risk_classification] < RISK_ORDER_PH[best] ? r.risk_classification : best,
+          remaining[0].risk_classification
+        );
       publishVigilWorkQueues(
         remaining.length,
-        remaining.some((r) => r.risk_classification === "P1"),
+        highestApproval,
         alertQueue?.count ?? 0,
         alertQueue?.highest_severity === "P1",
         ctx.workQueueSurface,

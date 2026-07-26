@@ -71,6 +71,7 @@ export interface UseApprovalQueue {
   selectedId: string | null;
   pendingCount: number;
   hasPendingP1: boolean;
+  highestApprovalSeverity: "P1" | "P2" | "P3" | null;
   /** A surfaced expiry-emit failure, if any (not swallowed — Gate 2). */
   expireError: string | null;
   /** Auto-reject any overdue requests at `nowMs`, emitting AGENT_ACTION_EXPIRED. */
@@ -161,6 +162,13 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
   const sorted = useMemo(() => sortRequests(requests), [requests]);
   const selected = useMemo(() => sorted.find((r) => r.request_id === selectedId) ?? null, [sorted, selectedId]);
   const hasPendingP1 = useMemo(() => requests.some((r) => r.risk_classification === "P1"), [requests]);
+  const highestApprovalSeverity = useMemo((): "P1" | "P2" | "P3" | null => {
+    if (requests.length === 0) return null;
+    return requests.reduce<"P1" | "P2" | "P3">((best, r) =>
+      RISK_ORDER[r.risk_classification] < RISK_ORDER[best] ? r.risk_classification : best,
+      requests[0].risk_classification
+    );
+  }, [requests]);
 
   return {
     requests: sorted,
@@ -168,6 +176,7 @@ export function useApprovalQueue(ctx: SovereignShellContext, opts: UseApprovalQu
     selectedId,
     pendingCount: requests.length,
     hasPendingP1,
+    highestApprovalSeverity,
     expireError,
     expireOverdue,
     select,
