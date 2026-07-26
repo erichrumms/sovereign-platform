@@ -201,13 +201,22 @@ const STATIC_SUBJECTS: Record<TravelCommunicationType | TimeCommunicationType, s
   FORMAL_ESCALATION: "Formal notice — recurring time record compliance issue",
 };
 
-/** A meaningful static fallback for the communication type — NOT an empty stub. */
+/**
+ * A meaningful static fallback for the communication type — NOT an empty stub.
+ * When referenceId is supplied, replaces [REQUEST_ID] (travel) or [PERIOD] (time)
+ * placeholders in the subject so the manager sees the real identifier immediately.
+ */
 export function staticTTDraftFallback(
-  communicationType: TravelCommunicationType | TimeCommunicationType
+  communicationType: TravelCommunicationType | TimeCommunicationType,
+  referenceId?: string
 ): TTDraft {
+  let subject = STATIC_SUBJECTS[communicationType];
+  if (referenceId) {
+    subject = subject.replace("[REQUEST_ID]", referenceId).replace("[PERIOD]", referenceId);
+  }
   return {
     communication_type: communicationType,
-    subject: STATIC_SUBJECTS[communicationType],
+    subject,
     body: TT_UNAVAILABLE,
   };
 }
@@ -253,5 +262,8 @@ export async function runTTDraft(
   }
 
   // ---- Tier 3: static ----
-  return { draft: staticTTDraftFallback(communicationType), tier: "static", detail };
+  const referenceId = input.tool === "travel"
+    ? input.request.request_id
+    : input.record.period_start;
+  return { draft: staticTTDraftFallback(communicationType, referenceId), tier: "static", detail };
 }
