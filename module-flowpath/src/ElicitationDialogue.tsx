@@ -9,18 +9,15 @@
  * WorkflowArtifact + calibration bundle (via createSovereignClient) and the four GD-18 artifact
  * events are logged. The artifact is previewed in plain prose, never a schema dump.
  *
- * Session 63 (Task 2 — WH-20 governance): a PRELIMINARY CONTEXT stage is shown BEFORE the five
- * questions. Four context-setting questions (goals, data source, governing policy, population)
- * must be answered and confirmed before the five-question stage unlocks. The preliminary context
- * is merged into the artifact for display in WorkflowArtifactReview.
- *
- * Question wording for the preliminary stage is PROPOSED in the Session 63 Handoff and is
- * pending Project Principal sign-off before being treated as final.
+ * Session 63 (Task 2 — WH-20): a PRELIMINARY CONTEXT stage is shown BEFORE the five questions.
+ * Four context-setting questions (goals, data source, governing policy, population) must be
+ * answered and confirmed before the five-question stage unlocks. Wording approved by Project
+ * Principal in Session 64 (WH-20 sign-off); draft-wording banner removed.
  *
  * Gap 6: Category 1 amber notice for remaining gaps; Category 2 blue AI-disclosure + GD-10;
  * Category 3 the dialogue and emerging artifact in white cards.
  *
- * Version: 1.1 · Session 63 (WH-20 — preliminary context stage + lifecycle navigation) · July 25, 2026
+ * Version: 1.2 · Session 64 (WH-20 sign-off — banner removal) · July 25, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -30,7 +27,6 @@ import {
   Gate1Banner,
   ClassificationBoundaryBanner,
   StatusNotice,
-  GovernanceBanner,
   contentCardStyle,
   sectionHeadingStyle,
   bodyTextStyle,
@@ -82,10 +78,7 @@ const QUESTION_PROMPTS: Record<FiveQuestionId, string> = {
   TERMINAL: "How do you know the work is complete and ready to hand off?",
 };
 
-/**
- * Proposed preliminary context question prompts — PENDING Project Principal sign-off
- * (Session 63 Handoff). These are DRAFT wording only; do not treat as final.
- */
+/** Preliminary context question prompts — approved by Project Principal (Session 64, WH-20). */
 const PRELIM_QUESTION_PROMPTS: Record<PrelimContextQuestionId, string> = {
   GOALS: "What are the primary goals or objectives this workflow is intended to accomplish?",
   DATA_SOURCE: "What data sources, systems, or information does this workflow rely on?",
@@ -157,16 +150,12 @@ export function ElicitationDialogue({
       <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
-      {/* ── PRELIMINARY CONTEXT STAGE (Task 2) ───────────────────────────────
+      {/* ── PRELIMINARY CONTEXT STAGE ────────────────────────────────────────
           Four context-setting questions answered BEFORE the five-question elicitation.
-          Question wording is PROPOSED — pending Project Principal sign-off (Session 63 Handoff).
+          Question wording approved by Project Principal (Session 64, WH-20).
       */}
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Preliminary context</h2>
-        <GovernanceBanner label="Proposed wording:">
-          The question wording below is a draft submitted to the Project Principal for sign-off
-          in the Session 63 Handoff. It should not be treated as final until approved.
-        </GovernanceBanner>
         <p style={bodyTextStyle}>
           Answer these four questions to set the context for the elicitation. All four are required
           before the five-question stage unlocks.
