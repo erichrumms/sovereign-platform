@@ -8,7 +8,13 @@
  * and Gate-2 logic live in useAlertResponse; this component only collects input and
  * calls onRespond.
  *
- * Version: 1.0 · Session 7 · June 18, 2026
+ * Session 64 (WH-11/WH-12):
+ *   WH-11: buttons are color-coded to match ApprovalDecisionPanel's visual hierarchy —
+ *          Acknowledge is a green CTA; post-acknowledge decisions are color-coded.
+ *   WH-12: reason-code chip row added above the note textarea (same pattern as
+ *          ApprovalDecisionPanel and ObligationDecisionPanel).
+ *
+ * Version: 1.1 · Session 64 (WH-11 — visual hierarchy; WH-12 — reason chips) · July 25, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -24,6 +30,13 @@ export interface AlertResponsePanelProps {
 
 const NOTE_REQUIRED: readonly AlertResponseAction[] = ["RESOLVED", "ESCALATED", "FALSE_POSITIVE"];
 
+const ALERT_REASON_CODES = [
+  "Routine — matches expected pattern",
+  "Investigated — no further action needed",
+  "Escalating — confirmed security risk",
+  "Marking false positive — not a genuine threat",
+];
+
 export function AlertResponsePanel({ alert, onRespond, error }: AlertResponsePanelProps): JSX.Element {
   const [note, setNote] = useState("");
   const acknowledged = alert.status !== "UNACKNOWLEDGED";
@@ -37,18 +50,38 @@ export function AlertResponsePanel({ alert, onRespond, error }: AlertResponsePan
     <section style={panelStyle} aria-label="Alert Response">
       <h4 style={titleStyle}>Response</h4>
 
+      {/* Primary action: Acknowledge (green CTA — required before any other action). */}
       <div style={rowStyle}>
         <button
           type="button"
-          style={btnStyle}
+          style={acknowledged ? buttonDisabledStyle : buttonAcknowledgeStyle}
           disabled={acknowledged}
           onClick={() => handle("ACKNOWLEDGED")}
         >
-          Acknowledge
+          {acknowledged ? "Acknowledged" : "Acknowledge"}
         </button>
-        <button type="button" style={btnStyle} disabled={!acknowledged} onClick={() => handle("INVESTIGATING")}>
+        <button
+          type="button"
+          style={acknowledged ? buttonInvestigateStyle : buttonDisabledStyle}
+          disabled={!acknowledged}
+          onClick={() => handle("INVESTIGATING")}
+        >
           Investigating
         </button>
+      </div>
+
+      {/* Reason-code chips — quick-insert for the note field. */}
+      <div style={chipRowStyle} aria-label="Reason-code quick-insert">
+        {ALERT_REASON_CODES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            style={chipStyle}
+            onClick={() => setNote((prev) => (prev.trim() ? prev.trim() + " " + code : code))}
+          >
+            {code}
+          </button>
+        ))}
       </div>
 
       <textarea
@@ -59,14 +92,30 @@ export function AlertResponsePanel({ alert, onRespond, error }: AlertResponsePan
         style={noteStyle}
       />
 
+      {/* Decision actions — color-coded: green Resolve, amber Escalate, slate False Positive. */}
       <div style={rowStyle}>
-        <button type="button" style={btnStyle} disabled={!acknowledged} onClick={() => handle("RESOLVED")}>
+        <button
+          type="button"
+          style={acknowledged ? buttonResolveStyle : buttonDisabledStyle}
+          disabled={!acknowledged}
+          onClick={() => handle("RESOLVED")}
+        >
           Resolve
         </button>
-        <button type="button" style={btnStyle} disabled={!acknowledged} onClick={() => handle("ESCALATED")}>
+        <button
+          type="button"
+          style={acknowledged ? buttonEscalateStyle : buttonDisabledStyle}
+          disabled={!acknowledged}
+          onClick={() => handle("ESCALATED")}
+        >
           Escalate
         </button>
-        <button type="button" style={btnStyle} disabled={!acknowledged} onClick={() => handle("FALSE_POSITIVE")}>
+        <button
+          type="button"
+          style={acknowledged ? buttonFalsePositiveStyle : buttonDisabledStyle}
+          disabled={!acknowledged}
+          onClick={() => handle("FALSE_POSITIVE")}
+        >
           False Positive
         </button>
       </div>
@@ -87,14 +136,40 @@ export function AlertResponsePanel({ alert, onRespond, error }: AlertResponsePan
   );
 }
 
+const baseButtonStyle: CSSProperties = {
+  padding: "7px 14px", borderRadius: 8, border: "1px solid", cursor: "pointer",
+  fontSize: 13, fontWeight: 600,
+};
+
 const panelStyle: CSSProperties = {
   padding: 14, border: "1px solid #e2e8f0", borderRadius: 10, background: "#ffffff", maxWidth: 720,
 };
 const titleStyle: CSSProperties = { margin: "0 0 8px", fontSize: 14 };
 const rowStyle: CSSProperties = { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 };
-const btnStyle: CSSProperties = {
-  padding: "6px 12px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#f8fafc",
-  fontSize: 13, cursor: "pointer",
+
+const buttonAcknowledgeStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#15803d", borderColor: "#15803d", color: "#fff",
+};
+const buttonInvestigateStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#1d4ed8", borderColor: "#1d4ed8", color: "#fff",
+};
+const buttonResolveStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#064e3b", borderColor: "#064e3b", color: "#fff",
+};
+const buttonEscalateStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#b45309", borderColor: "#b45309", color: "#fff",
+};
+const buttonFalsePositiveStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#475569", borderColor: "#475569", color: "#fff",
+};
+const buttonDisabledStyle: CSSProperties = {
+  ...baseButtonStyle, background: "#e2e8f0", borderColor: "#e2e8f0", color: "#94a3b8", cursor: "not-allowed",
+};
+
+const chipRowStyle: CSSProperties = { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 };
+const chipStyle: CSSProperties = {
+  padding: "3px 10px", borderRadius: 12, border: "1px solid #cbd5e1",
+  background: "#f1f5f9", color: "#475569", fontSize: 12, cursor: "pointer", fontWeight: 500,
 };
 const noteStyle: CSSProperties = {
   width: "100%", minHeight: 56, padding: 8, borderRadius: 8, border: "1px solid #cbd5e1",
