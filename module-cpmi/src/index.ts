@@ -14,13 +14,10 @@
  * VRS certification (cpmi.vrs-certification). The world model and live monitoring activate
  * by configuration in a later session — no CPMI rewrite (Standing Constraint #3).
  *
- * ROLE GATE (governance engine — conservative, fail-closed): minimumRole "PLATFORM_ADMIN".
- *   CPMI's outputs are the governance foundation for the whole platform and Gate 3
- *   attestation is a Project-Principal-level act, so access is restricted to
- *   PLATFORM_ADMIN / SYSTEM_ADMIN via the loader's fail-closed default policy, with a
- *   structural mount-gate as defense in depth (same pattern as VIGIL). The authoritative
- *   role->module matrix (Decision 24) remains open; this is the least-privilege default
- *   for the governance engine, relaxable by configuration if a broader policy is written.
+ * ROLE GATE (GD-22 / SOVEREIGN_Role_Access_Matrix_20260721.md): CPMI_MINIMUM_ROLES —
+ *   PLATFORM_ADMIN, SYSTEM_ADMIN. Gate 3 attestation is a Project-Principal-level act;
+ *   admin-only access is intentional and confirmed, not a placeholder.
+ *   Decision 24 (role→module matrix) is resolved — see the Role Access Matrix.
  *
  * GOVERNANCE: module-cpmi → CPMI is already in the ModuleLoader's MODULE_PRODUCT map and
  *   the SovereignProduct union. The three agents are registered in Agent_Identity_Standard.md

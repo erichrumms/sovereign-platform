@@ -9,12 +9,10 @@
  * approval port that closes the Session 10 loop). Real agent execution, A2A message passing,
  * and evaluate.py integration are future work (spec §7).
  *
- * ROLE GATE (orchestration backbone — conservative, fail-closed): minimumRole
- *   "PLATFORM_ADMIN". AgentOS orchestrates agents across products and routes human
- *   authorizations, so access is restricted to PLATFORM_ADMIN / SYSTEM_ADMIN via the
- *   loader's fail-closed default policy, with a structural mount-gate as defense in depth
- *   (same pattern as CPMI / VIGIL). The authoritative role→module matrix (Decision 24)
- *   remains open; this is the least-privilege default, relaxable by configuration.
+ * ROLE GATE (GD-22 / SOVEREIGN_Role_Access_Matrix_20260721.md): AGENTOS_MINIMUM_ROLES —
+ *   PLATFORM_ADMIN, SYSTEM_ADMIN. AgentOS orchestrates agents across products and routes
+ *   human authorizations; admin-only access is intentional (same pattern as CPMI / VIGIL).
+ *   Decision 24 (role→module matrix) is resolved — see the Role Access Matrix.
  *
  * AGENT CARDS (Constraint #10): the three AgentOS orchestrator agents
  *   (agentos.deployer / .exporter / .configurator), registered in

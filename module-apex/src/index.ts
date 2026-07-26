@@ -13,13 +13,10 @@
  * Report Generation), the PPBE performance dashboard (Session 32 — replaced the Session 17
  * Execution Monitoring stub), and the AgentCards.
  *
- * ROLE GATE (platform analytics — conservative, fail-closed): minimumRole "PLATFORM_ADMIN".
- *   APEX surfaces platform-level audit/analysis data "accessible to authorized platform
- *   administrators" (Agent Identity Standard, APEX entries), so access is restricted to
- *   PLATFORM_ADMIN / SYSTEM_ADMIN via the loader's fail-closed default policy, with a
- *   structural mount-gate as defense in depth (same pattern as CPMI / VIGIL). The
- *   authoritative role→module matrix (Decision 24) remains open; this is the least-privilege
- *   default, relaxable by configuration if a broader policy is written.
+ * ROLE GATE (GD-22 / SOVEREIGN_Role_Access_Matrix_20260721.md): APEX_MINIMUM_ROLES —
+ *   PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST. Program managers and analysts
+ *   review program data; admins have full access per the platform-wide superuser clause.
+ *   Decision 24 (role→module matrix) is resolved — see the Role Access Matrix.
  *
  * GOVERNANCE: module-apex → APEX is pre-wired in the ModuleLoader MODULE_PRODUCT map. Both
  * agents are registered in Agent_Identity_Standard.md (Constraint #10) and PR-APEX-001 is

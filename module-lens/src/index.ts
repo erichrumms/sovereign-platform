@@ -15,13 +15,13 @@
  *   Logger emission), Pipeline Navigator (static), and AI Transparency Panel
  *   (read-only). Built per the LENS architecture spec (03_LENS_Orientation_Module.md).
  *
- * ROLE GATE: minimumRole "READ_ONLY" — a fail-closed PLACEHOLDER, identical rationale
- *   to COUNSEL / SCRIBE. LENS's intended access is "all authenticated roles", but the
- *   platform has no role->module access matrix yet (Decision 24); under the loader's
- *   default exact-match-or-SYSTEM_ADMIN policy a single minimumRole cannot express
- *   "all roles", so READ_ONLY is the least-privilege placeholder. The authoritative
- *   RoleAccessPolicy is injected when written — no module change required. Unlike
- *   VIGIL, LENS has no real role gate, so mount() does no structural role check.
+ * ROLE GATE (GD-22 / SOVEREIGN_Role_Access_Matrix_20260721.md): LENS_MINIMUM_ROLES —
+ *   all eight authenticated roles (PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, ANALYST,
+ *   COMPLIANCE_OFFICER, AGENT_OPERATOR, INDEPENDENT_REVIEWER, READ_ONLY). LENS is the
+ *   orientation and explanation surface for every authenticated user; open access is
+ *   intentional and confirmed. Decision 24 (role→module matrix) is resolved — see the
+ *   Role Access Matrix. LENS performs no structural role check in mount() (no role is
+ *   excluded — the full union is admitted).
  *
  * GOVERNANCE (authorized by existing decisions — no contract change made here):
  *   - moduleId "module-lens" → product LENS is already in the ModuleLoader's
