@@ -31,6 +31,18 @@ import type { SubmittedTravelItem, SubmittedTimeItem, UseTTIntake } from "./useT
 import type { TravelComplianceFinding } from "./tt-travel-compliance-engine";
 import type { TravelDecisionOutcome } from "./tt-travel-queue";
 
+/**
+ * Narrowed interface — TravelQueueRow only calls decideTravel; the full UseTTIntake is
+ * not required. UseTTIntake satisfies TravelQueueDecider structurally, so existing callers
+ * that pass `tt` directly are unaffected. The Workspace section passes a workspace-scoped
+ * adapter that calls recordTravelDecision and updates the session store (Task 3 — WH-19).
+ * Named TravelQueueDecider to distinguish from tt-travel-queue.ts's TravelDecider (the
+ * human manager shape used by recordTravelDecision).
+ */
+export interface TravelQueueDecider {
+  decideTravel: (requestId: string, outcome: TravelDecisionOutcome, note: string) => void;
+}
+
 const NOTE_MIN_CHARS = 10;
 
 /**
@@ -79,7 +91,7 @@ export function TTQueuePanel({ tt }: { tt: UseTTIntake }): JSX.Element {
   );
 }
 
-function TravelQueueRow({ item, tt }: { item: SubmittedTravelItem; tt: UseTTIntake }): JSX.Element {
+export function TravelQueueRow({ item, tt }: { item: SubmittedTravelItem; tt: TravelQueueDecider }): JSX.Element {
   // D3 (WE-12): pre-populate from the finding the manager already sees on-screen.
   const [note, setNote] = useState(() => buildDefaultNote(item.finding));
   // D2 (WE-11): touched state — error only shows after the manager has interacted with the field.

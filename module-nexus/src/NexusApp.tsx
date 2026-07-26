@@ -34,7 +34,7 @@
  * Version: 1.3 · Session 30 · July 12, 2026
  */
 
-import { useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import { createSovereignClient } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
@@ -75,6 +75,7 @@ import { RequestQueuePanel } from "./RequestQueuePanel";
 import { TTQueuePanel } from "./TTQueuePanel";
 import { PPBECoordinationPanel } from "./PPBECoordinationPanel";
 import { useTTIntake, type TTIntakePorts, type TravelDrafterPort } from "./useTTIntake";
+import { publishNexusTravelItems } from "./nexus-workspace-publisher";
 
 export interface NexusAppProps {
   ctx: SovereignShellContext;
@@ -208,6 +209,15 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
     [travelDrafter]
   );
   const tt = useTTIntake(ctx, ttPorts);
+
+  // Task 3 (WH-19): publish routed travel items to the Reviewer's Workspace surface
+  // so they appear in the NEXUS panel. Reconciles on every change (decided items are
+  // removed). Bidirectional: a decision in the Workspace updates tt-session, which
+  // notifies useTTIntake, which triggers this effect and removes the item here too.
+  useEffect(() => {
+    publishNexusTravelItems(tt.travelItems, ctx.reviewerWorkspaceSurface, new Date().toISOString());
+  }, [tt.travelItems, ctx.reviewerWorkspaceSurface]);
+
   const [tab, setTab] = useState<Tab>("intake");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 

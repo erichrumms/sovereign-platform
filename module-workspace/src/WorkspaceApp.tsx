@@ -2,13 +2,18 @@
  * SOVEREIGN Platform — module-workspace
  * WorkspaceApp.tsx — Reviewer's Workspace composition root (React) — GD-25, docs/23.
  *
- * One place where a reviewer acts on decisions from three modules, INLINE, on the
+ * One place where a reviewer acts on decisions from five modules, INLINE, on the
  * REAL embedded decision components — not curated summaries with links elsewhere
- * (docs/23 §1). Three per-section-gated panels:
+ * (docs/23 §1). Five per-section-gated panels:
  *
  *   VIGIL Approvals      → ApprovalQueue + ApprovalDetail  (PLATFORM_ADMIN, SYSTEM_ADMIN)
  *   ARIA Certifications  → ClearCertificationQueue         (COMPLIANCE_OFFICER + admins)
  *   SCRIBE T&T Reviews   → TTManagerReview                 (PROGRAM_MANAGER, ANALYST + admins)
+ *   NEXUS Travel         → TravelQueueRow (travel half of TTQueuePanel, no TimeQueueRow)
+ *                          (PLATFORM_ADMIN, SYSTEM_ADMIN, AGENT_OPERATOR, PROGRAM_MANAGER,
+ *                           COMPLIANCE_OFFICER — matching NEXUS_MINIMUM_ROLES exactly)
+ *   FLOWPATH Review      → WorkflowArtifactReview
+ *                          (PLATFORM_ADMIN, SYSTEM_ADMIN, PROGRAM_MANAGER, AGENT_OPERATOR)
  *
  * Per-section gating reuses the exact SECTION_ROLES/canAccessSection shape AriaApp's
  * TAB_ROLES/canAccessTab established (GD-22, Session 41) — list membership with admin
@@ -19,14 +24,17 @@
  * (unknown on the shell contract — the contract never imports a module's types) back
  * to the source module's REAL item type via type-only imports — the established
  * cross-module pattern (module-agentos/src/approval-port.ts precedent):
- *   vigil  → VigilWorkspacePayload { request: AgentApprovalRequest, obligationCase? }
- *   aria   → ClearEvaluationInput
- *   scribe → TTReviewItem
+ *   vigil    → VigilWorkspacePayload { request: AgentApprovalRequest, obligationCase? }
+ *   aria     → ClearEvaluationInput
+ *   scribe   → TTReviewItem
+ *   nexus    → SubmittedTravelItem
+ *   flowpath → FlowpathMapperOutput
  * The narrowed payload passes straight through as props — no reshaping (docs/23 §6).
  *
  * REMOVAL: each embedded component's own decision-commit callback removes the item
  * from the surface (VIGIL onDecided here; ARIA's decide() removes internally;
- * SCRIBE onSent here) — a decided item leaves the Workspace in place.
+ * SCRIBE onSent here; NEXUS decideTravel here; FLOWPATH onApproved/onReturnForRevision here)
+ * — a decided item leaves the Workspace.
  *
  * Session 53 (GD-27, docs/25 §4 D4): the v1.1 deferral above is now RESOLVED —
  * each section offers real "Open in [module]" actions calling
@@ -36,7 +44,7 @@
  * still works exactly as before; opening the source module with the item
  * pre-selected is now also one click.
  *
- * Version: 1.1 · Session 53 (GD-27 — open-in-source-module actions) · July 21, 2026
+ * Version: 1.2 · Session 63 (WH-19 — NEXUS travel panel + FLOWPATH review panel) · July 25, 2026
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -60,31 +68,42 @@ import {
 import { publishVigilWorkQueues } from "../../module-vigil/src/vigil-work-queue-publisher";
 import { ClearCertificationQueue } from "../../module-aria/src/ClearCertificationQueue";
 import { TTManagerReview, ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
+import { TravelQueueRow } from "../../module-nexus/src/TTQueuePanel";
+import { recordTravelDecision, type TravelDecisionOutcome } from "../../module-nexus/src/tt-travel-queue";
+import { getTTSession, setTTSessionTravel } from "../../module-nexus/src/tt-session";
+import { WorkflowArtifactReview } from "../../module-flowpath/src/WorkflowArtifactReview";
+import { markFlowpathSessionApproved } from "../../module-flowpath/src/flowpath-approval-session";
 
 // Type-only imports for payload narrowing (the module-agentos/approval-port.ts precedent).
 import type { VigilWorkspacePayload } from "../../module-vigil/src/vigil-workspace-publisher";
 import type { ClearEvaluationInput } from "../../module-aria/src/clear-types";
 import type { TTReviewItem } from "../../module-scribe/src/TTManagerReview";
+import type { SubmittedTravelItem } from "../../module-nexus/src/useTTIntake";
+import type { FlowpathMapperOutput } from "../../module-flowpath/src/flowpath-contract";
 
 // Source-module id constants (value imports of frozen string constants only).
 import { VIGIL_WORKSPACE_MODULE_ID } from "../../module-vigil/src/vigil-workspace-publisher";
 import { ARIA_WORKSPACE_MODULE_ID } from "../../module-aria/src/aria-workspace-publisher";
 import { SCRIBE_WORKSPACE_MODULE_ID } from "../../module-scribe/src/scribe-workspace-publisher";
+import { NEXUS_WORKSPACE_MODULE_ID } from "../../module-nexus/src/nexus-workspace-publisher";
+import { FLOWPATH_WORKSPACE_MODULE_ID } from "../../module-flowpath/src/flowpath-workspace-publisher";
 import { markScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
 import { publishScribeWorkQueues } from "../../module-scribe/src/scribe-work-queue-publisher";
 import { publishAriaWorkQueues } from "../../module-aria/src/aria-work-queue-publisher";
 
 import { useReviewerWorkspaceItems } from "./useReviewerWorkspaceItems";
 
-// Local literal union for the three module IDs this Workspace handles (GD-25, v1 scope).
+// Local literal union for the five module IDs this Workspace handles.
 // Derived from the imported constants — stays in sync if a constant changes its string value.
 // Stays local: WorkspaceReviewItem.module_id remains `string` on the shell contract so the
-// contract never imports module-level types. Adding a fourth ID here without a matching
+// contract never imports module-level types. Adding a new ID here without a matching
 // case in renderSection()'s switch causes a TypeScript error via assertHandled().
 type WorkspaceModuleId =
   | typeof VIGIL_WORKSPACE_MODULE_ID
   | typeof ARIA_WORKSPACE_MODULE_ID
-  | typeof SCRIBE_WORKSPACE_MODULE_ID;
+  | typeof SCRIBE_WORKSPACE_MODULE_ID
+  | typeof NEXUS_WORKSPACE_MODULE_ID
+  | typeof FLOWPATH_WORKSPACE_MODULE_ID;
 
 export interface WorkspaceAppProps {
   ctx: SovereignShellContext;
@@ -99,6 +118,10 @@ const SECTION_ROLES: Record<Section, SovereignRole[]> = {
   vigil:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
   aria:     ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER"],
   scribe:   ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "ANALYST"],
+  // NEXUS: matches NEXUS_MINIMUM_ROLES from module-nexus/src/index.ts exactly (GD-22).
+  nexus:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "PROGRAM_MANAGER", "COMPLIANCE_OFFICER"],
+  // FLOWPATH: program managers and process owners review workflow artifacts.
+  flowpath: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "AGENT_OPERATOR"],
   activity: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST"],
 };
 
@@ -107,6 +130,8 @@ const SECTION_PRIMARY_ROLE: Record<Section, string> = {
   vigil:    "PLATFORM_ADMIN / SYSTEM_ADMIN",
   aria:     "COMPLIANCE_OFFICER",
   scribe:   "PROGRAM_MANAGER / ANALYST",
+  nexus:    "AGENT_OPERATOR / PROGRAM_MANAGER / COMPLIANCE_OFFICER",
+  flowpath: "PROGRAM_MANAGER / AGENT_OPERATOR",
   activity: "(all roles)",
 };
 
@@ -114,11 +139,13 @@ const SECTIONS: Array<{ id: Section; label: string }> = [
   { id: "vigil",    label: "VIGIL Approvals" },
   { id: "aria",     label: "ARIA Certifications" },
   { id: "scribe",   label: "SCRIBE T&T Reviews" },
+  { id: "nexus",    label: "NEXUS Travel" },
+  { id: "flowpath", label: "FLOWPATH Review" },
   { id: "activity", label: "Activity & Decisions" },
 ];
 
 // Sections in order — used to pick the default active section.
-const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe", "activity"];
+const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe", "nexus", "flowpath", "activity"];
 
 // Never-return exhaustiveness guard. renderSection()'s switch default calls this so
 // TypeScript flags any new Section member without a corresponding render branch.
@@ -147,6 +174,8 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
   const vigilItems = useMemo(() => itemsFor(items, VIGIL_WORKSPACE_MODULE_ID), [items]);
   const ariaItems = useMemo(() => itemsFor(items, ARIA_WORKSPACE_MODULE_ID), [items]);
   const scribeItems = useMemo(() => itemsFor(items, SCRIBE_WORKSPACE_MODULE_ID), [items]);
+  const nexusItems = useMemo(() => itemsFor(items, NEXUS_WORKSPACE_MODULE_ID), [items]);
+  const flowpathItems = useMemo(() => itemsFor(items, FLOWPATH_WORKSPACE_MODULE_ID), [items]);
 
   // WH-18: lift showAll so the activity badge reflects the same filter the section renders.
   const isAdmin = ctx.auth.hasRole("PLATFORM_ADMIN") || ctx.auth.hasRole("SYSTEM_ADMIN");
@@ -160,6 +189,8 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
     vigil: vigilItems.length,
     aria: ariaItems.length,
     scribe: scribeItems.length,
+    nexus: nexusItems.length,
+    flowpath: flowpathItems.length,
     activity: activityCount,
   };
 
@@ -179,6 +210,14 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
         return canAccessSection("scribe")
           ? <ScribeWorkspaceSection ctx={ctx} items={scribeItems} />
           : <LockedSectionNotice sectionLabel="SCRIBE T&T Reviews" requiredRole={SECTION_PRIMARY_ROLE.scribe} />;
+      case NEXUS_WORKSPACE_MODULE_ID:
+        return canAccessSection("nexus")
+          ? <NexusWorkspaceSection ctx={ctx} items={nexusItems} />
+          : <LockedSectionNotice sectionLabel="NEXUS Travel" requiredRole={SECTION_PRIMARY_ROLE.nexus} />;
+      case FLOWPATH_WORKSPACE_MODULE_ID:
+        return canAccessSection("flowpath")
+          ? <FlowpathWorkspaceSection ctx={ctx} items={flowpathItems} />
+          : <LockedSectionNotice sectionLabel="FLOWPATH Review" requiredRole={SECTION_PRIMARY_ROLE.flowpath} />;
       case "activity":
         return canAccessSection("activity")
           ? <ActivitySection ctx={ctx} showAll={showAll} setShowAll={setShowAll} />
@@ -193,16 +232,17 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
       <header style={{ marginBottom: 16 }}>
         <h1 style={titleStyle}>Reviewer&apos;s Workspace</h1>
         <p style={subtitleStyle}>
-          Decisions from VIGIL, ARIA, and SCRIBE, actionable inline — the real components,
+          Decisions from VIGIL, ARIA, SCRIBE, NEXUS, and FLOWPATH, actionable inline — the real components,
           published by their source modules. Signed in as <strong>{ctx.auth.user.name}</strong>.
         </p>
       </header>
 
       <div style={disclosureStyle}>
         Each panel embeds the source module&apos;s real decision component; a decision recorded
-        here is the same governed decision, with the same audit trail. Items appear as their
-        source module publishes them this session, and leave the Workspace when decided. Full
-        reference material stays in the source module, one click away (docs/22 §2).
+        here is the same governed decision, with the same audit trail, confirmed by deciding
+        in either surface. Items appear as their source module publishes them this session,
+        and leave the Workspace when decided. Full reference material stays in the source
+        module, one click away (docs/22 §2).
       </div>
 
       <nav style={tabBarStyle} aria-label="Reviewer's Workspace sections">
@@ -292,9 +332,15 @@ function VigilWorkspaceSection({
     const alertQueue = ctx.workQueueSurface.list().find(
       (q) => q.module_id === "vigil" && q.queue_label === "Unacknowledged Alerts"
     );
+    const RISK_ORDER_WS: Record<string, number> = { P1: 0, P2: 1, P3: 2 };
+    const highestApproval: "P1" | "P2" | "P3" | null = remaining.length === 0 ? null :
+      remaining.reduce<"P1" | "P2" | "P3">((best, r) =>
+        RISK_ORDER_WS[r.risk_classification] < RISK_ORDER_WS[best] ? r.risk_classification : best,
+        remaining[0].risk_classification
+      );
     publishVigilWorkQueues(
       remaining.length,
-      remaining.some((r) => r.risk_classification === "P1"),
+      highestApproval,
       alertQueue?.count ?? 0,
       alertQueue?.highest_severity === "P1",
       ctx.workQueueSurface,
@@ -428,6 +474,133 @@ function ScribeWorkspaceSection({
           ctx.reviewerWorkspaceSurface.remove(SCRIBE_WORKSPACE_MODULE_ID, ttReviewItemKey(item));
         }}
       />
+    </div>
+  );
+}
+
+// ============================================================
+// NEXUS SECTION — TravelQueueRow (travel-decision half of TTQueuePanel only;
+// TimeQueueRow is read-only display, not a decision surface — excluded).
+// Bidirectional: deciding here updates tt-session.ts → NexusApp's effect reconciles
+// the surface; deciding in NEXUS updates the surface via that same publish effect.
+// ============================================================
+
+function NexusWorkspaceSection({
+  ctx,
+  items,
+}: {
+  ctx: SovereignShellContext;
+  items: readonly WorkspaceReviewItem[];
+}): JSX.Element {
+  const travelItems = useMemo(
+    () => items.map((i) => i.payload as SubmittedTravelItem),
+    [items]
+  );
+
+  if (travelItems.length === 0) {
+    return <EmptySection sourceLabel="NEXUS has published no routed travel requests this session." />;
+  }
+
+  return (
+    <div style={stackStyle} data-testid="workspace-nexus-section">
+      <OpenInSourceModuleActions
+        moduleLabel="NEXUS"
+        items={items}
+        describe={(i) => i.item_id}
+        onOpen={(i) => ctx.navigateToModule("module-nexus", { selectedRequestId: i.item_id })}
+      />
+      {travelItems.map((item) => {
+        // Workspace-scoped TravelQueueDecider: calls recordTravelDecision (the SOLE
+        // path to APPROVED/DENIED/ESCALATED — docs/17 §5.3), updates tt-session so
+        // NEXUS's own queue reflects the decision, then removes from this surface.
+        const tt = {
+          decideTravel: (requestId: string, outcome: TravelDecisionOutcome, note: string): void => {
+            try {
+              const decided = recordTravelDecision(
+                item.request,
+                outcome,
+                { id: ctx.auth.user.employee_id, name: ctx.auth.user.name },
+                note,
+                ctx.logger
+              );
+              // Mirror into the session store so NEXUS's own panel sees the decided status.
+              const session = getTTSession();
+              if (session) {
+                setTTSessionTravel(
+                  session.travel.map((t) =>
+                    t.request.request_id === requestId ? { ...t, request: decided.request } : t
+                  )
+                );
+              }
+              // Remove the decided item from this surface.
+              ctx.reviewerWorkspaceSurface.remove(NEXUS_WORKSPACE_MODULE_ID, requestId);
+            } catch (err) {
+              // Surface the error without crashing — the user can try again.
+              console.error("NEXUS workspace decision error:", err);
+            }
+          },
+        };
+        return (
+          <TravelQueueRow
+            key={item.request.request_id}
+            item={item}
+            tt={tt}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// ============================================================
+// FLOWPATH SECTION — WorkflowArtifactReview.
+// Bidirectional: approving here calls markFlowpathSessionApproved → FlowpathApp's
+// subscription fires → publishFlowpathArtifact removes the approved artifact from
+// the surface; approving in FLOWPATH does the same via the same session store.
+// ============================================================
+
+function FlowpathWorkspaceSection({
+  ctx,
+  items,
+}: {
+  ctx: SovereignShellContext;
+  items: readonly WorkspaceReviewItem[];
+}): JSX.Element {
+  const bundles = useMemo(
+    () => items.map((i) => i.payload as FlowpathMapperOutput),
+    [items]
+  );
+
+  if (bundles.length === 0) {
+    return <EmptySection sourceLabel="FLOWPATH has published no workflow artifacts awaiting review this session." />;
+  }
+
+  return (
+    <div data-testid="workspace-flowpath-section">
+      <OpenInSourceModuleActions
+        moduleLabel="FLOWPATH"
+        items={items}
+        describe={(i) => i.item_id}
+        onOpen={(i) => ctx.navigateToModule("module-flowpath", { selectedSessionId: i.item_id })}
+      />
+      {bundles.map((bundle) => (
+        <WorkflowArtifactReview
+          key={bundle.artifact.session_id}
+          ctx={ctx}
+          bundle={bundle}
+          onApproved={(sessionId) => {
+            // markFlowpathSessionApproved is already called inside WorkflowArtifactReview
+            // before this callback fires — this is the idempotent removal from the surface.
+            markFlowpathSessionApproved(sessionId);
+            ctx.reviewerWorkspaceSurface.remove(FLOWPATH_WORKSPACE_MODULE_ID, sessionId);
+          }}
+          onReturnForRevision={(sessionId) => {
+            // Return for revision: navigate to FLOWPATH so the elicitation can be corrected.
+            ctx.navigateToModule("module-flowpath", { selectedSessionId: sessionId });
+            ctx.reviewerWorkspaceSurface.remove(FLOWPATH_WORKSPACE_MODULE_ID, sessionId);
+          }}
+        />
+      ))}
     </div>
   );
 }

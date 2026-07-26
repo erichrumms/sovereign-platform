@@ -64,5 +64,13 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       isOnHold: () => false,
     },
     navigation: { navigateTo: () => {}, currentPath: "/nexus", breadcrumb: [] },
+    // Task 3 (WH-19): no-op surface so NexusApp's workspace-publish useEffect doesn't throw.
+    reviewerWorkspaceSurface: {
+      publish: () => {},
+      remove: () => {},
+      listForModule: (_moduleId: string) => [],
+      list: () => [],
+      subscribe: (_listener: unknown) => () => {},
+    },
   } as unknown as SovereignShellContext;
 }
