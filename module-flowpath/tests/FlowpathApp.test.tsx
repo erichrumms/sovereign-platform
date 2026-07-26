@@ -7,6 +7,8 @@
  * Session 63 (WH-20): FlowpathApp owns sessions state and routes navigation through lifecycle
  * callbacks. makeCtx() now provides a no-op reviewerWorkspaceSurface so workspace-publish effects
  * don't throw in tests.
+ * Session 65 (F1): makeCtx supports flowpathWorkspaceItems so the lazy tab/bundle initializers
+ * can be exercised — tests verify the three mount-time routing branches.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -14,6 +16,7 @@ import { FlowpathApp } from "../src/FlowpathApp";
 import { makeCtx } from "./test-helpers";
 import { resetFlowpathApprovalSessionForTests } from "../src/flowpath-approval-session";
 import { resetFlowpathElicitationSessionForTests } from "../src/flowpath-elicitation-session";
+import { SYNTHETIC_SESSION_ID, SYNTHETIC_MAPPER_OUTPUT } from "../src/synthetic-elicitation";
 
 describe("FlowpathApp", () => {
   // Both session stores are module-level singletons — reset per test.
@@ -43,6 +46,66 @@ describe("FlowpathApp", () => {
     fireEvent.click(row);
     // Artifact Review (Screen 3) is now shown.
     expect(screen.getByTestId("artifact-review")).toBeInTheDocument();
+  });
+});
+
+// F1 (Session 65) — three mount-time routing branches for the initialState.selectedSessionId path.
+describe("FlowpathApp — F1 initialState routing (Session 65)", () => {
+  beforeEach(() => {
+    resetFlowpathApprovalSessionForTests();
+    resetFlowpathElicitationSessionForTests();
+  });
+
+  it("F1 main: COMPLETE + gate_passed + workspace item → Artifact Review tab with the real bundle", () => {
+    // Use a distinct title so we can prove the real bundle is used, not SYNTHETIC_MAPPER_OUTPUT fallback.
+    const testBundle = {
+      ...SYNTHETIC_MAPPER_OUTPUT,
+      artifact: {
+        ...SYNTHETIC_MAPPER_OUTPUT.artifact,
+        title: "F1 Reconstruction Test Workflow",
+      },
+    };
+    const ctx = makeCtx({
+      flowpathWorkspaceItems: [
+        {
+          module_id: "flowpath",
+          item_id: SYNTHETIC_SESSION_ID,
+          payload: testBundle,
+          published_at: "2026-07-26T00:00:00.000Z",
+        },
+      ],
+    });
+    render(<FlowpathApp ctx={ctx} initialState={{ selectedSessionId: SYNTHETIC_SESSION_ID }} />);
+    // Artifact Review tab should be open with the real bundle title visible.
+    expect(screen.getByTestId("artifact-review")).toBeInTheDocument();
+    expect(screen.getByText("F1 Reconstruction Test Workflow")).toBeInTheDocument();
+    // Sessions list must not be the primary surface.
+    expect(screen.queryByRole("list", { name: /elicitation sessions/i })).not.toBeInTheDocument();
+  });
+
+  it("F1 edge case: COMPLETE + gate_passed but no workspace item (already approved) → sessions tab", () => {
+    // Default makeCtx: listForModule returns [] — no workspace item for SYNTHETIC_SESSION_ID.
+    render(
+      <FlowpathApp
+        ctx={makeCtx()}
+        initialState={{ selectedSessionId: SYNTHETIC_SESSION_ID }}
+      />
+    );
+    // Falls back to sessions tab — does not open an empty review tab.
+    expect(screen.getByRole("list", { name: /elicitation sessions/i })).toBeInTheDocument();
+    expect(screen.queryByTestId("artifact-review")).not.toBeInTheDocument();
+  });
+
+  it("WH-24 regression: IN_PROGRESS session with initialState still routes to the Dialogue tab", () => {
+    // S-DSI-003 is IN_PROGRESS in the synthetic sessions — should open the dialogue, not review.
+    render(
+      <FlowpathApp
+        ctx={makeCtx()}
+        initialState={{ selectedSessionId: "S-DSI-003" }}
+      />
+    );
+    expect(screen.getByRole("heading", { name: /Preliminary context/i })).toBeInTheDocument();
+    expect(screen.queryByTestId("artifact-review")).not.toBeInTheDocument();
   });
 });
 

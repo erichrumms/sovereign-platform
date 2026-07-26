@@ -24,7 +24,11 @@
  * to the synthetic seed. A navigation intent (GD-27) supplying selectedSessionId opens the
  * Elicitation Dialogue pre-focused on that session, supporting Workspace return-for-revision.
  *
- * Version: 1.3 · Session 64 (WH-25 — session store; WH-24 — return-for-revision) · July 25, 2026
+ * Session 65 (F1): on mount with selectedSessionId + COMPLETE + gate_passed, reconstruct
+ * activeBundle from the ReviewerWorkspaceSurface and route to the review tab instead of
+ * dialogue. Edge case (already approved — no workspace item): fall back to sessions tab.
+ *
+ * Version: 1.4 · Session 65 (F1 — activeBundle reconstruction from workspace surface) · July 26, 2026
  */
 
 import { useEffect, useState, type CSSProperties } from "react";
@@ -49,7 +53,7 @@ import { ElicitationDialogue } from "./ElicitationDialogue";
 import { WorkflowArtifactReview } from "./WorkflowArtifactReview";
 import { IndividualWorkstyle } from "./IndividualWorkstyle";
 import { GateRunnerPanel } from "./GateRunnerPanel";
-import { publishFlowpathArtifact } from "./flowpath-workspace-publisher";
+import { publishFlowpathArtifact, FLOWPATH_WORKSPACE_MODULE_ID } from "./flowpath-workspace-publisher";
 
 /** GD-27 (shell-contract v1.22) — FLOWPATH's narrowed initialState shape. */
 export interface FlowpathInitialState {
@@ -80,16 +84,39 @@ export function FlowpathApp({ ctx, initialState }: FlowpathAppProps): JSX.Elemen
   );
   useEffect(() => subscribeFlowpathElicitationSession(setSessions), []);
 
-  // WH-24: if arriving via "Return for revision", open on the dialogue tab for that session.
-  const [tab, setTab] = useState<Tab>(
-    initialState?.selectedSessionId ? "dialogue" : "sessions"
-  );
+  // F1 (Session 65): on mount with selectedSessionId, route depends on session status.
+  // COMPLETE + gate_passed + workspace item → "review" with bundle reconstructed from surface.
+  // WH-24 return-for-revision path (session is IN_PROGRESS after store reset) → "dialogue".
+  // Edge case (COMPLETE + no workspace item, already approved) → "sessions" fallback.
+  const [tab, setTab] = useState<Tab>(() => {
+    const sid = initialState?.selectedSessionId;
+    if (!sid) return "sessions";
+    const currentSessions = initFlowpathElicitationSessions(SYNTHETIC_SESSIONS);
+    const session = currentSessions.find((s) => s.session_id === sid);
+    if (!session || session.status !== "COMPLETE" || !session.gate_passed) return "dialogue";
+    const item = ctx.reviewerWorkspaceSurface
+      .listForModule(FLOWPATH_WORKSPACE_MODULE_ID)
+      .find((i) => i.item_id === sid);
+    return item ? "review" : "sessions";
+  });
   // The session ID currently being elicited in the dialogue (null = synthetic default).
   const [activeSessionId, setActiveSessionId] = useState<string | null>(
     initialState?.selectedSessionId ?? null
   );
-  // The artifact bundle produced by the dialogue, passed to WorkflowArtifactReview.
-  const [activeBundle, setActiveBundle] = useState<FlowpathMapperOutput | null>(null);
+  // F1 (Session 65): reconstruct from the workspace surface when COMPLETE + gate_passed at mount.
+  // The surface holds the full FlowpathMapperOutput the mapper produced (per workspace-publisher
+  // header: "The payload is the full FlowpathMapperOutput the mapper produced").
+  const [activeBundle, setActiveBundle] = useState<FlowpathMapperOutput | null>(() => {
+    const sid = initialState?.selectedSessionId;
+    if (!sid) return null;
+    const currentSessions = initFlowpathElicitationSessions(SYNTHETIC_SESSIONS);
+    const session = currentSessions.find((s) => s.session_id === sid);
+    if (!session || session.status !== "COMPLETE" || !session.gate_passed) return null;
+    const item = ctx.reviewerWorkspaceSurface
+      .listForModule(FLOWPATH_WORKSPACE_MODULE_ID)
+      .find((i) => i.item_id === sid);
+    return item ? (item.payload as FlowpathMapperOutput) : null;
+  });
 
   // D5 (Session 61, finding D3-4): approvals live in the session-persistent
   // store (flowpath-approval-session.ts), not per-mount state — an approved

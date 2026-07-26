@@ -10,6 +10,7 @@ import type {
   SovereignRole,
   SovereignLogEvent,
   SovereignProduct,
+  WorkspaceReviewItem,
 } from "../../sovereign-shell/shell-contract";
 
 export interface CtxOverrides {
@@ -22,6 +23,8 @@ export interface CtxOverrides {
   throwOnLog?: boolean;
   /** Products for which ctx.governance.isOnHold returns true. */
   onHold?: SovereignProduct[];
+  /** FLOWPATH workspace items returned by reviewerWorkspaceSurface.listForModule("flowpath"). */
+  flowpathWorkspaceItems?: WorkspaceReviewItem[];
 }
 
 export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
@@ -54,13 +57,15 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       isOnHold: (product: SovereignProduct) => held.has(product),
     },
     navigation: { navigateTo: () => {}, currentPath: "/flowpath", breadcrumb: [] },
-    // Task 3 (WH-19): provide a no-op surface so FlowpathApp's workspace-publish
-    // useEffect doesn't throw when reviewerWorkspaceSurface is accessed.
+    // Task 3 (WH-19): provide a surface so FlowpathApp's workspace-publish useEffect doesn't
+    // throw. F1 (Session 65): flowpathWorkspaceItems lets tests pre-populate FLOWPATH items so
+    // the F1 lazy initializer (listForModule("flowpath")) can find the test bundle.
     reviewerWorkspaceSurface: {
       publish: () => {},
       remove: () => {},
-      listForModule: (_moduleId: string) => [],
-      list: () => [],
+      listForModule: (moduleId: string) =>
+        moduleId === "flowpath" ? (over.flowpathWorkspaceItems ?? []) : [],
+      list: () => over.flowpathWorkspaceItems ?? [],
     },
   } as unknown as SovereignShellContext;
 }
