@@ -178,12 +178,14 @@ export function ModuleNav({
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {m.tier === "enhanced" && (
                 <span
+                  aria-label="Enhanced monitoring tier — 0.7× anomaly threshold"
                   title="Enhanced monitoring tier (0.7× anomaly threshold)"
                   // Session 29 (WE-2): identity purple is framing-only (2.2–2.9:1 as
                   // text); identityText is the AA-verified tint for identity-colored text.
-                  style={{ fontSize: 10, color: T.identityText }}
+                  style={{ fontSize: 10, color: T.identityText, display: "flex", alignItems: "center", gap: 2 }}
                 >
-                  ◆
+                  <span aria-hidden="true">◆</span>
+                  <span style={{ fontSize: 9 }}>Enh.</span>
                 </span>
               )}
               {info && <InfoBadge info={info} />}
