@@ -33,7 +33,7 @@ import {
 export interface SessionManagerProps {
   ctx: SovereignShellContext;
   /** The current session list — controlled by the parent (FlowpathApp owns state). */
-  sessions: ElicitationSession[];
+  sessions: readonly ElicitationSession[];
   /**
    * Called when a new session is created. The parent appends it to the list and
    * then calls onStartSession to navigate into the dialogue for that session.

@@ -36,7 +36,7 @@ import type {
   AgentCard,
 } from "../../sovereign-shell/shell-contract";
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
-import { FlowpathApp } from "./FlowpathApp";
+import { FlowpathApp, type FlowpathInitialState } from "./FlowpathApp";
 import {
   FLOWPATH_COORDINATOR,
   FLOWPATH_INTERVIEWER,
@@ -90,6 +90,14 @@ const agentCards: AgentCard[] = [
   flowpathCard(FLOWPATH_DOMAIN_TRANSLATOR, ["vocabulary_divergence_review", "terminology_flag_log"]),
 ];
 
+/** GD-27 (shell-contract v1.22): narrow the unknown initialState to FLOWPATH's real shape. */
+function narrowFlowpathInitialState(initialState: unknown): FlowpathInitialState | undefined {
+  if (typeof initialState !== "object" || initialState === null) return undefined;
+  const candidate = initialState as { selectedSessionId?: unknown };
+  if (typeof candidate.selectedSessionId !== "string") return undefined;
+  return { selectedSessionId: candidate.selectedSessionId };
+}
+
 /** The React root this module last mounted, so unmount() can dispose it. */
 let root: Root | null = null;
 
@@ -100,13 +108,13 @@ export const flowpathModule: SovereignModuleContract = {
   minimumRole: FLOWPATH_MINIMUM_ROLES,
   agentCards,
 
-  mount: (ctx: SovereignShellContext, el: HTMLElement): void => {
+  mount: (ctx: SovereignShellContext, el: HTMLElement, initialState?: unknown): void => {
     // --- Structural role gate: throw before building the tree (defense in depth). ---
     if (!FLOWPATH_MINIMUM_ROLES.some((r) => ctx.auth.hasRole(r))) {
       throw new ModuleAccessDeniedError("module-flowpath", ctx.auth.user.role, FLOWPATH_MINIMUM_ROLES);
     }
     root = createRoot(el);
-    root.render(createElement(FlowpathApp, { ctx }));
+    root.render(createElement(FlowpathApp, { ctx, initialState: narrowFlowpathInitialState(initialState) }));
   },
 
   unmount: (): void => {

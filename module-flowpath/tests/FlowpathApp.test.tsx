@@ -13,10 +13,14 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { FlowpathApp } from "../src/FlowpathApp";
 import { makeCtx } from "./test-helpers";
 import { resetFlowpathApprovalSessionForTests } from "../src/flowpath-approval-session";
+import { resetFlowpathElicitationSessionForTests } from "../src/flowpath-elicitation-session";
 
 describe("FlowpathApp", () => {
-  // D5 (Session 61): approvals are a module-level session store — reset per test.
-  beforeEach(() => resetFlowpathApprovalSessionForTests());
+  // Both session stores are module-level singletons — reset per test.
+  beforeEach(() => {
+    resetFlowpathApprovalSessionForTests();
+    resetFlowpathElicitationSessionForTests();
+  });
 
   it("renders the FLOWPATH header and defaults to the Session Manager", () => {
     render(<FlowpathApp ctx={makeCtx()} />);
@@ -45,7 +49,10 @@ describe("FlowpathApp", () => {
 // D5 (Session 61, finding D3-4) — the end-to-end resurrection proof: an approved
 // session shows as approved on Screen 1 after the whole module remounts.
 describe("FlowpathApp — approvals persist across remount (D5, Session 61)", () => {
-  beforeEach(() => resetFlowpathApprovalSessionForTests());
+  beforeEach(() => {
+    resetFlowpathApprovalSessionForTests();
+    resetFlowpathElicitationSessionForTests();
+  });
 
   it("an approved session's card still reads approved after unmounting and remounting the module", () => {
     const first = render(<FlowpathApp ctx={makeCtx()} />);

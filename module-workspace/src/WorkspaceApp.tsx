@@ -73,6 +73,7 @@ import { recordTravelDecision, type TravelDecisionOutcome } from "../../module-n
 import { getTTSession, setTTSessionTravel } from "../../module-nexus/src/tt-session";
 import { WorkflowArtifactReview } from "../../module-flowpath/src/WorkflowArtifactReview";
 import { markFlowpathSessionApproved } from "../../module-flowpath/src/flowpath-approval-session";
+import { returnFlowpathSessionForRevision } from "../../module-flowpath/src/flowpath-elicitation-session";
 
 // Type-only imports for payload narrowing (the module-agentos/approval-port.ts precedent).
 import type { VigilWorkspacePayload } from "../../module-vigil/src/vigil-workspace-publisher";
@@ -595,7 +596,9 @@ function FlowpathWorkspaceSection({
             ctx.reviewerWorkspaceSurface.remove(FLOWPATH_WORKSPACE_MODULE_ID, sessionId);
           }}
           onReturnForRevision={(sessionId) => {
-            // Return for revision: navigate to FLOWPATH so the elicitation can be corrected.
+            // Reset the session status before navigating — otherwise FLOWPATH sees
+            // COMPLETE + gate_passed: true from the prior submission.
+            returnFlowpathSessionForRevision(sessionId);
             ctx.navigateToModule("module-flowpath", { selectedSessionId: sessionId });
             ctx.reviewerWorkspaceSurface.remove(FLOWPATH_WORKSPACE_MODULE_ID, sessionId);
           }}

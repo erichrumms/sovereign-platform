@@ -13,13 +13,18 @@
  * Session Manager (Screen 1) and marks that session approved; returning it for revision returns to
  * the Elicitation Dialogue (Screen 2).
  *
- * Session 63 (WH-20): FlowpathApp now OWNS the sessions list and the active-dialogue session ID.
+ * Session 63 (WH-20): FlowpathApp owns the sessions list and the active-dialogue session ID.
  * startNewSession (via SessionManager.onNewSession + onStartSession) appends the new session and
  * navigates to ElicitationDialogue for it. Completing the five questions produces an artifact that
  * navigates to WorkflowArtifactReview. The session card on Screen 1 becomes actionable once the
  * artifact is produced. The preliminary context gate (Task 2) is tracked on ElicitationSession.
  *
- * Version: 1.2 · Session 63 (WH-20 — lifecycle wiring + preliminary gate) · July 25, 2026
+ * Session 64 (WH-25 / WH-24): sessions list migrated from bare useState to the module-level
+ * flowpath-elicitation-session.ts store — navigate away and back no longer resets live sessions
+ * to the synthetic seed. A navigation intent (GD-27) supplying selectedSessionId opens the
+ * Elicitation Dialogue pre-focused on that session, supporting Workspace return-for-revision.
+ *
+ * Version: 1.3 · Session 64 (WH-25 — session store; WH-24 — return-for-revision) · July 25, 2026
  */
 
 import { useEffect, useState, type CSSProperties } from "react";
@@ -31,6 +36,12 @@ import {
   markFlowpathSessionApproved,
   subscribeFlowpathApprovalSession,
 } from "./flowpath-approval-session";
+import {
+  initFlowpathElicitationSessions,
+  createFlowpathElicitationSession,
+  updateFlowpathElicitationSession,
+  subscribeFlowpathElicitationSession,
+} from "./flowpath-elicitation-session";
 import type { ElicitationSession, FlowpathMapperOutput } from "./flowpath-contract";
 import { SYNTHETIC_SESSIONS } from "./synthetic-elicitation";
 import { SessionManager } from "./SessionManager";
@@ -40,8 +51,15 @@ import { IndividualWorkstyle } from "./IndividualWorkstyle";
 import { GateRunnerPanel } from "./GateRunnerPanel";
 import { publishFlowpathArtifact } from "./flowpath-workspace-publisher";
 
+/** GD-27 (shell-contract v1.22) — FLOWPATH's narrowed initialState shape. */
+export interface FlowpathInitialState {
+  selectedSessionId?: string;
+}
+
 export interface FlowpathAppProps {
   ctx: SovereignShellContext;
+  /** GD-27 — navigation intent from ctx.navigateToModule, already narrowed by index.ts. */
+  initialState?: FlowpathInitialState;
 }
 
 type Tab = "sessions" | "dialogue" | "review" | "workstyle" | "certification";
@@ -54,13 +72,22 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: "certification", label: "CPMI-VRS Certification" },
 ];
 
-export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
-  const [tab, setTab] = useState<Tab>("sessions");
+export function FlowpathApp({ ctx, initialState }: FlowpathAppProps): JSX.Element {
+  // WH-25 (Session 64): sessions live in the module-level store — navigate away and
+  // back no longer resets to the synthetic seed.
+  const [sessions, setSessions] = useState<readonly ElicitationSession[]>(() =>
+    initFlowpathElicitationSessions(SYNTHETIC_SESSIONS)
+  );
+  useEffect(() => subscribeFlowpathElicitationSession(setSessions), []);
 
-  // WH-20 (Session 63): FlowpathApp owns the elicitation session list.
-  const [sessions, setSessions] = useState<ElicitationSession[]>(SYNTHETIC_SESSIONS);
+  // WH-24: if arriving via "Return for revision", open on the dialogue tab for that session.
+  const [tab, setTab] = useState<Tab>(
+    initialState?.selectedSessionId ? "dialogue" : "sessions"
+  );
   // The session ID currently being elicited in the dialogue (null = synthetic default).
-  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(
+    initialState?.selectedSessionId ?? null
+  );
   // The artifact bundle produced by the dialogue, passed to WorkflowArtifactReview.
   const [activeBundle, setActiveBundle] = useState<FlowpathMapperOutput | null>(null);
 
@@ -81,9 +108,9 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
 
   // ── Session lifecycle callbacks ────────────────────────────────────────────
 
-  // WH-20: a new session is created in SessionManager; we add it to the list.
+  // WH-20: a new session is created in SessionManager; store it (store notifies → setSessions).
   const handleNewSession = (session: ElicitationSession): void => {
-    setSessions((prev) => [session, ...prev]);
+    createFlowpathElicitationSession(session);
   };
 
   // WH-20: called by SessionManager right after handleNewSession — navigate into the dialogue.
@@ -94,23 +121,13 @@ export function FlowpathApp({ ctx }: FlowpathAppProps): JSX.Element {
 
   // WH-20 Task 2: preliminary context confirmed — mark the session.
   const handlePreliminaryComplete = (sessionId: string): void => {
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.session_id === sessionId ? { ...s, preliminary_complete: true } : s
-      )
-    );
+    updateFlowpathElicitationSession(sessionId, { preliminary_complete: true });
   };
 
   // WH-20: artifact produced from the dialogue — mark session COMPLETE + gate_passed,
   // store the bundle, and navigate to the review tab.
   const handleArtifactProduced = (sessionId: string, bundle: FlowpathMapperOutput): void => {
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.session_id === sessionId
-          ? { ...s, status: "COMPLETE", gate_passed: true }
-          : s
-      )
-    );
+    updateFlowpathElicitationSession(sessionId, { status: "COMPLETE", gate_passed: true });
     setActiveBundle(bundle);
     setTab("review");
   };
