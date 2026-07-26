@@ -18,7 +18,7 @@
  * Version: 1.0 · Session 38 · July 16, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { useState, useRef, type CSSProperties } from "react";
 
 import { createSovereignClient } from "@sovereign/api-client";
 import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
@@ -64,7 +64,7 @@ export function PPBEExhibitPanel({ ctx: _ctx }: PPBEExhibitPanelProps): JSX.Elem
   const [status, setStatus] = useState<AgentStatus>("idle");
   const [outcome, setOutcome] = useState<ExhibitDraftOutcome | null>(null);
 
-  const cacheRef = new Map<string, ExhibitDraftOutcome["draft"]>();
+  const cacheRef = useRef(new Map<string, ExhibitDraftOutcome["draft"]>());
 
   if (!DEMO_PROGRAM) {
     return <p style={mutedStyle}>No seeded PPBE programs available.</p>;
@@ -94,8 +94,8 @@ export function PPBEExhibitPanel({ ctx: _ctx }: PPBEExhibitPanelProps): JSX.Elem
 
     const result = await runExhibitDraft(input, EXHIBIT_SYSTEM_PROMPT, reqCtx, {
       complete,
-      cacheGet: (key) => cacheRef.get(key) ?? null,
-      cacheSet: (key, value) => { cacheRef.set(key, value); },
+      cacheGet: (key) => cacheRef.current.get(key) ?? null,
+      cacheSet: (key, value) => { cacheRef.current.set(key, value); },
     });
     setOutcome(result);
     setStatus("done");
