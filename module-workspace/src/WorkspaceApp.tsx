@@ -123,7 +123,8 @@ const SECTION_ROLES: Record<Section, SovereignRole[]> = {
   nexus:    ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "PROGRAM_MANAGER", "COMPLIANCE_OFFICER"],
   // FLOWPATH: program managers and process owners review workflow artifacts.
   flowpath: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "AGENT_OPERATOR"],
-  activity: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST"],
+  // Union of all five section roles — updated by WH-27 after WH-19 added NEXUS/FLOWPATH (both include AGENT_OPERATOR).
+  activity: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST", "AGENT_OPERATOR"],
 };
 
 // The primary (non-admin) role for each section — shown in disabled-tab tooltips.

@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 /**
- * module-workspace — module contract tests (GD-25, Session 50).
- * The structural mount gate: the union of the five section roles is admitted
- * (docs/23 §3); every other role throws ModuleAccessDeniedError before the tree
- * is built. Contract shape matches SovereignModuleContract.
+ * module-workspace — module contract tests (GD-25, Session 50; updated WH-27, Session 69).
+ * The structural mount gate: the union of all section roles is admitted (docs/23 §3,
+ * WH-27 adds AGENT_OPERATOR to match the NEXUS/FLOWPATH panels added by WH-19);
+ * every other role throws ModuleAccessDeniedError before the tree is built.
  */
 import { workspaceModule, WORKSPACE_MINIMUM_ROLES } from "../src/index";
 import type { SovereignRole } from "../../sovereign-shell/shell-contract";
@@ -15,9 +15,10 @@ const ADMITTED: SovereignRole[] = [
   "COMPLIANCE_OFFICER",
   "PROGRAM_MANAGER",
   "ANALYST",
+  "AGENT_OPERATOR", // WH-27: NEXUS/FLOWPATH panels both admit AGENT_OPERATOR (WH-19)
 ];
 
-const DENIED: SovereignRole[] = ["AGENT_OPERATOR", "INDEPENDENT_REVIEWER", "READ_ONLY"];
+const DENIED: SovereignRole[] = ["INDEPENDENT_REVIEWER", "READ_ONLY"];
 
 function host(): HTMLElement {
   const el = document.createElement("div");
@@ -31,7 +32,7 @@ describe("workspaceModule contract", () => {
     document.body.innerHTML = "";
   });
 
-  it("declares the GD-25 module identity and the five-role union gate (docs/23 §3)", () => {
+  it("declares the GD-25 module identity and the six-role union gate (docs/23 §3, updated WH-27)", () => {
     expect(workspaceModule.moduleId).toBe("module-workspace");
     expect(workspaceModule.mountPath).toBe("/workspace");
     expect(workspaceModule.displayName).toBe("Reviewer's Workspace");

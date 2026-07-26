@@ -1511,7 +1511,7 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 2 modules acce
     <button
       disabled=""
       style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-left: 3px solid transparent; border-radius: 4px; background: transparent; color: rgb(142, 148, 170); cursor: not-allowed; font-family: inherit; font-size: 14px; text-align: left; overflow: visible;"
-      title="Reviewer's Workspace — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST"
+      title="Reviewer's Workspace — requires one of: PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST, AGENT_OPERATOR"
       type="button"
     >
       <span
@@ -3617,7 +3617,7 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
                 </span>
                 <span>
                   Requires 
-                  PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST
+                  PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST or AGENT_OPERATOR
                 </span>
               </span>
             </li>

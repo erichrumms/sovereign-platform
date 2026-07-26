@@ -11,13 +11,15 @@
  * modules publish their real items to ctx.reviewerWorkspaceSurface (the thirteenth
  * shell export) and remove them on their decision-commit paths.
  *
- * ROLE GATE (GD-25 / docs/23 §3): the module-level gate is the union of every role
- * any of its three sections needs — mirroring exactly the pattern GD-22 established
- * for ARIA. Per-section gating inside WorkspaceApp.tsx (the AriaApp TAB_ROLES shape)
- * then restricts each panel to its roles:
+ * ROLE GATE (GD-25 / docs/23 §3, updated WH-27): the module-level gate is the union of
+ * every role any section needs — mirroring exactly the pattern GD-22 established for ARIA.
+ * Per-section gating inside WorkspaceApp.tsx (the AriaApp TAB_ROLES shape) restricts each panel:
  *   VIGIL Approvals     → PLATFORM_ADMIN, SYSTEM_ADMIN
  *   ARIA Certifications → COMPLIANCE_OFFICER (+ admins)
  *   SCRIBE T&T Reviews  → PROGRAM_MANAGER, ANALYST (+ admins)
+ *   NEXUS Travel        → AGENT_OPERATOR, PROGRAM_MANAGER, COMPLIANCE_OFFICER (+ admins) [WH-19]
+ *   FLOWPATH Review     → PROGRAM_MANAGER, AGENT_OPERATOR (+ admins) [WH-19]
+ *   Activity & Decisions → all six roles above (the union) [WH-27]
  *
  * AGENT CARDS (Constraint #10): none. The Workspace embeds other modules' components;
  * it runs no agent of its own, registers no prompt, and makes no LLM call itself
@@ -47,14 +49,16 @@ import type {
 import { ModuleAccessDeniedError } from "../../sovereign-shell/src/module-loader";
 import { WorkspaceApp } from "./WorkspaceApp";
 
-// GD-25 / docs/23 §3: the union of every role any section needs — the ARIA (GD-22)
-// module-gate pattern. Per-section gating inside WorkspaceApp then restricts each panel.
+// GD-25 / docs/23 §3, updated WH-27: the union of every role any section needs.
+// WH-19 (Session 63) added NEXUS and FLOWPATH panels (both admit AGENT_OPERATOR);
+// WH-27 (Session 69) adds AGENT_OPERATOR here to match that union.
 export const WORKSPACE_MINIMUM_ROLES: SovereignRole[] = [
   "PLATFORM_ADMIN",
   "SYSTEM_ADMIN",
   "COMPLIANCE_OFFICER",
   "PROGRAM_MANAGER",
   "ANALYST",
+  "AGENT_OPERATOR",
 ];
 
 // No agents (Constraint #10) — the Workspace embeds other modules' components only.

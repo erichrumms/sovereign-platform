@@ -2,7 +2,7 @@
 ## ARIA Suite Definition + Final Cross-Platform Access Decisions
 ## Updated to include the Reviewer's Workspace (GD-25) and its Activity tab (GD-28)
 
-**Original date:** July 18, 2026 · **Updated:** July 21, 2026 · **Updated again:** July 24, 2026
+**Original date:** July 18, 2026 · **Updated:** July 21, 2026 · **Updated again:** July 24, 2026 · **Updated:** July 26, 2026
 **Prepared by:** Governance Agent, with the Project Principal
 **Document type:** The finalized access-control specification — GD-22 was built
 directly from this document's original content; the July 21 update added the module built since
@@ -75,7 +75,7 @@ tab in the existing one, since the Workspace already carries a real `SovereignPr
 
 | Workspace section | Assigned role | Why |
 |---|---|---|
-| Activity & Decisions (reads `ctx.logger.getEntries()`, GD-28) | **All five roles the Workspace's module-level gate already covers** — PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST | No further gate: every reviewer sees their own decisions by default (`actor_name` filter). The **admin toggle** (unfiltered, all entries) is restricted to PLATFORM_ADMIN/SYSTEM_ADMIN specifically — the one place within this tab where the Workspace's existing per-section pattern doesn't apply directly, since the distinction here is "own decisions vs. everyone's," not "which decisions this role may see at all." |
+| Activity & Decisions (reads `ctx.logger.getEntries()`, GD-28) | **All six roles the Workspace's module-level gate covers** — PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST, AGENT_OPERATOR. *(Originally five — AGENT_OPERATOR added by WH-27, Session 69, after WH-19 added NEXUS and FLOWPATH panels which both admit AGENT_OPERATOR, making the Activity union six roles.)* | No further gate: every reviewer sees their own decisions by default (`actor_name` filter). The **admin toggle** (unfiltered, all entries) is restricted to PLATFORM_ADMIN/SYSTEM_ADMIN specifically — the one place within this tab where the Workspace's existing per-section pattern doesn't apply directly, since the distinction here is "own decisions vs. everyone's," not "which decisions this role may see at all." |
 
 This is a genuinely different shape from the other three sections — they gate access to the
 section itself; the Activity tab gates a *view mode within* an already-open section. Worth
@@ -97,7 +97,7 @@ recording as its own pattern rather than force-fitting it into the three-section
 | CPMI | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
 | AgentOS | PLATFORM_ADMIN, SYSTEM_ADMIN *(unchanged)* |
 | ARIA Suite | *(see per-tab breakdown above — no single module-level answer)* |
-| **Reviewer's Workspace** | PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST *(union of all four sections above — see per-section breakdown, including the Activity tab's own admin-toggle nuance)* |
+| **Reviewer's Workspace** | PLATFORM_ADMIN, SYSTEM_ADMIN, COMPLIANCE_OFFICER, PROGRAM_MANAGER, ANALYST, AGENT_OPERATOR *(union of all six sections — see per-section breakdown; AGENT_OPERATOR added WH-27/Session 69 after WH-19 added NEXUS+FLOWPATH panels)* |
 
 ---
 
@@ -113,6 +113,6 @@ update beyond formally recording a decision already made in code.
 
 ---
 
-*SOVEREIGN Platform · Role Access Matrix · Updated July 24, 2026*
-*Originally July 18, 2026 · Workspace addendum July 21, 2026 · Activity tab ratified July 24, 2026*
+*SOVEREIGN Platform · Role Access Matrix · Updated July 26, 2026*
+*Originally July 18, 2026 · Workspace addendum July 21, 2026 · Activity tab ratified July 24, 2026 · WH-27 AGENT_OPERATOR July 26, 2026*
 *Pre-Decisional · Internal Working Document*
