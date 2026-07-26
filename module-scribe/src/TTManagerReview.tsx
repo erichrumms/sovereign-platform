@@ -242,13 +242,28 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent, initialS
             </ul>
 
             <h3>Pre-populated draft — review before any action</h3>
-            <div data-testid="tt-draft">
-              {selected.draft.subject && (
-                <p>
-                  <strong>Subject:</strong> {selected.draft.subject}
+            <div data-testid="tt-draft" style={draftContainerStyle}>
+              <div style={draftHeaderStyle}>
+                <div style={draftHeaderRowStyle}>
+                  <span style={draftFieldLabelStyle}>From:</span>
+                  <span>{ctx.auth.user.name}</span>
+                </div>
+                <div style={draftHeaderRowStyle}>
+                  <span style={draftFieldLabelStyle}>To:</span>
+                  <span style={{ color: "#64748b" }}>[Recipient — supplied at send time]</span>
+                </div>
+                {selected.draft.subject && (
+                  <div style={draftHeaderRowStyle}>
+                    <span style={draftFieldLabelStyle}>Subject:</span>
+                    <span style={{ fontWeight: 600 }}>{selected.draft.subject}</span>
+                  </div>
+                )}
+              </div>
+              <div style={draftBodyStyle}>
+                <p style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: 13, lineHeight: 1.55 }}>
+                  {selected.draft.body}
                 </p>
-              )}
-              <p style={{ whiteSpace: "pre-wrap" }}>{selected.draft.body}</p>
+              </div>
             </div>
 
             {selected.kind === "travel" && (
@@ -340,4 +355,42 @@ const copyFeedbackStyle: CSSProperties = {
   fontSize: 12,
   color: "#0369a1",
   margin: "4px 0 0",
+};
+
+const draftContainerStyle: CSSProperties = {
+  border: "1px solid #cbd5e1",
+  borderRadius: 8,
+  overflow: "hidden",
+  fontFamily: "system-ui, sans-serif",
+  fontSize: 13,
+  marginBottom: 12,
+};
+
+const draftHeaderStyle: CSSProperties = {
+  background: "#f8fafc",
+  borderBottom: "1px solid #e2e8f0",
+  padding: "10px 14px",
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+};
+
+const draftHeaderRowStyle: CSSProperties = {
+  display: "flex",
+  gap: 8,
+  alignItems: "baseline",
+  fontSize: 13,
+  color: "#0f172a",
+};
+
+const draftFieldLabelStyle: CSSProperties = {
+  fontWeight: 700,
+  color: "#475569",
+  minWidth: 60,
+  flexShrink: 0,
+};
+
+const draftBodyStyle: CSSProperties = {
+  padding: "12px 14px",
+  background: "#ffffff",
 };
