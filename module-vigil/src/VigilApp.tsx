@@ -167,8 +167,8 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
       <div style={summaryRowStyle} aria-label="Command Center summary">
         <SummaryCard
           label="Unacknowledged alerts"
-          value={alerts.configured ? String(alerts.unacknowledgedCount) : "—"}
-          note={alerts.configured ? (alerts.hasUnacknowledgedP1 ? "includes an unacknowledged P1" : "live") : "endpoint not configured"}
+          value={String(alerts.unacknowledgedCount)}
+          note={alerts.configured ? (alerts.hasUnacknowledgedP1 ? "includes an unacknowledged P1" : "live") : "endpoint not configured — count from dev backing"}
         />
         <SummaryCard
           label="Pending approvals"
