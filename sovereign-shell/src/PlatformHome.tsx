@@ -25,7 +25,14 @@
  *   Program Health / Flagged Programs: PROGRAM_MANAGER, ANALYST, PLATFORM_ADMIN, SYSTEM_ADMIN
  *   Module Orientation: all roles (filtered to the user's accessible modules via isAccessible)
  *
- * Version: 2.1 · Session 57 · July 23, 2026
+ * Session 64 (WH-3/WH-2/WH-4/WH-6):
+ *   WH-4: ProgramTile now renders snapshot.narrative (was never shown).
+ *   WH-3/WH-2: Issues section uses a wider grid (issueGridStyle); narrative in tiles
+ *              adds substantive context the Program Health section doesn't provide alone.
+ *   WH-6: ModuleOrientationPanel receives all modules (not just accessible), shows locked
+ *          modules with a role-requirement explanation — matches the sidebar pattern.
+ *
+ * Version: 2.2 · Session 64 (WH-3, WH-2, WH-4, WH-6) · July 25, 2026
  */
 
 import { useEffect, useState, type CSSProperties } from "react";
@@ -125,6 +132,9 @@ function ProgramTile({
         />
       </div>
       <span style={pctLabelStyle}>{pct}% obligated</span>
+      {snapshot.narrative && (
+        <p style={tileNarrativeStyle}>{snapshot.narrative}</p>
+      )}
     </div>
   );
 }
@@ -177,7 +187,7 @@ function FlaggedProgramsPanel({
     );
   }
   return (
-    <div style={programGridStyle}>
+    <div style={issueGridStyle}>
       {flagged.map((p) => (
         <ProgramTile key={p.program_id} snapshot={p} />
       ))}
@@ -229,22 +239,26 @@ function WorkQueueModuleGroup({
 function ModuleOrientationPanel({
   modules,
   workQueues,
+  isAccessible = () => false,
   onNavigate,
 }: {
   modules: RegisteredModuleView[];
   /** Live queue summaries from WorkQueueSurface (D2/WG-7). */
   workQueues: readonly WorkQueueSummary[];
-  /** GD-27 navigation callback (D3). When provided, each row is clickable. */
+  /** WH-6: used to show locked modules with a role-requirement explanation. */
+  isAccessible?: (m: RegisteredModuleView) => boolean;
+  /** GD-27 navigation callback (D3). Accessible module rows are clickable when provided. */
   onNavigate?: (moduleId: string) => void;
 }): JSX.Element {
   return (
     <div style={subPanelStyle}>
       <h3 style={subPanelTitleStyle}>Module Orientation</h3>
       {modules.length === 0 ? (
-        <p style={emptyTextStyle}>No modules accessible with your current role.</p>
+        <p style={emptyTextStyle}>No modules registered on this platform.</p>
       ) : (
         <ul style={moduleListStyle}>
           {modules.map((m) => {
+            const accessible = isAccessible(m);
             const shortId = m.moduleId.replace("module-", "");
             const moduleQueues = workQueues.filter((q) => q.module_id === shortId);
             const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
@@ -253,6 +267,18 @@ function ModuleOrientationPanel({
               highestSeverity === "P1" ? "#7f1d1d"
               : highestSeverity === "P2" ? "#92400e"
               : "#0c4a6e";
+
+            if (!accessible) {
+              return (
+                <li key={m.moduleId} style={{ ...moduleItemStyle, opacity: 0.55 }}>
+                  <span style={moduleNameStyle}>{m.displayName}</span>
+                  <span style={{ ...moduleLabelStyle, display: "flex", alignItems: "center", gap: 4 }}>
+                    <span aria-hidden="true">🔒</span>
+                    <span>Requires {m.minimumRole.filter((r) => r !== "SYSTEM_ADMIN").join(" or ")}</span>
+                  </span>
+                </li>
+              );
+            }
 
             const rowContent = (
               <>
@@ -309,7 +335,6 @@ export function PlatformHome({
 }: PlatformHomeProps): JSX.Element {
   const programs = ctx.programStatusSurface.list();
   const flagged = programs.filter((p) => p.status !== "on_track");
-  const accessibleModules = modules.filter(isAccessible);
   const canSeeProgramData = PROGRAM_DATA_ROLES.has(ctx.auth.user.role);
 
   // GD-24 — subscribe to WorkQueueSurface so the "To Do / Review" section
@@ -391,8 +416,9 @@ export function PlatformHome({
         >
           {canSeeProgramData && <ProgramHealthPanel programs={programs} />}
           <ModuleOrientationPanel
-            modules={accessibleModules}
+            modules={modules}
             workQueues={workQueues}
+            isAccessible={isAccessible}
             onNavigate={(moduleId) => ctx.navigateToModule(moduleId)}
           />
         </div>
@@ -540,6 +566,12 @@ const programGridStyle: CSSProperties = {
   gap: 10,
 };
 
+const issueGridStyle: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+  gap: 12,
+};
+
 const programTileStyle: CSSProperties = {
   border: "1px solid #e2e8f0",
   borderRadius: 6,
@@ -571,6 +603,13 @@ const barTrackStyle: CSSProperties = {
 const pctLabelStyle: CSSProperties = {
   fontSize: 10,
   color: "#64748b",
+};
+
+const tileNarrativeStyle: CSSProperties = {
+  margin: "4px 0 0",
+  fontSize: 11,
+  color: "#475569",
+  lineHeight: 1.4,
 };
 
 const emptyStateBoxStyle: CSSProperties = {
