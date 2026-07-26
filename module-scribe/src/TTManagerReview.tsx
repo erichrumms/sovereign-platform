@@ -15,9 +15,9 @@
  *   - A FORMAL_ESCALATION draft's send action is STRUCTURALLY DISABLED until the
  *     VIGIL gate reports the case AUTHORIZED (docs/17 §7 Tier B) — the disabled
  *     state renders "Awaiting VIGIL authorization".
- *   - Travel decisions belong to NEXUS (recordTravelDecision emits the GD-21
- *     TRAVEL_APPROVAL event there) — this panel exposes them via the
- *     onTravelDecision callback rather than emitting cross-product events.
+ *   - Travel decisions belong to NEXUS exclusively (recordTravelDecision emits the
+ *     GD-21 TRAVEL_APPROVAL event there). Travel items render READ-ONLY in SCRIBE —
+ *     detail and flags visible, no Approve/Deny/Escalate controls. (WH-28, Session 69.)
  *
  * Session 40 (DR-2): added "Copy draft" button and "Send via Outlook — Coming Soon"
  * placeholder button (disabled) next to the send action. The Outlook integration is
@@ -73,8 +73,6 @@ export type TTReviewItem = TravelReviewItem | TimeReviewItem;
 export interface TTManagerReviewProps {
   ctx: SovereignShellContext;
   items: TTReviewItem[];
-  /** Travel decisions route to NEXUS's recordTravelDecision (GD-21 TRAVEL_APPROVAL). */
-  onTravelDecision?: (item: TravelReviewItem, outcome: "APPROVED" | "DENIED" | "ESCALATED") => void;
   /** Called after a time communication send is recorded (queue removal etc.). */
   onSent?: (item: TimeReviewItem) => void;
   /**
@@ -108,7 +106,7 @@ function buildDraftText(draft: TTDraft): string {
   return draft.subject ? `${draft.subject}\n\n${draft.body}` : draft.body;
 }
 
-export function TTManagerReview({ ctx, items, onTravelDecision, onSent, initialSelectedKey }: TTManagerReviewProps) {
+export function TTManagerReview({ ctx, items, onSent, initialSelectedKey }: TTManagerReviewProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(() => {
     // GD-27: an externally-supplied starting value for the existing selection —
     // honored only when it names a real item; otherwise the default stands.
@@ -265,21 +263,6 @@ export function TTManagerReview({ ctx, items, onTravelDecision, onSent, initialS
                 </p>
               </div>
             </div>
-
-            {selected.kind === "travel" && (
-              <div data-testid="tt-travel-actions">
-                {(["APPROVED", "DENIED", "ESCALATED"] as const).map((outcome) => (
-                  <button
-                    key={outcome}
-                    type="button"
-                    data-testid={`tt-travel-${outcome.toLowerCase()}`}
-                    onClick={() => onTravelDecision?.(selected, outcome)}
-                  >
-                    {outcome === "APPROVED" ? "Approve" : outcome === "DENIED" ? "Deny" : "Escalate"}
-                  </button>
-                ))}
-              </div>
-            )}
 
             {selected.kind === "time" && (
               <div data-testid="tt-time-actions">

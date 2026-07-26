@@ -214,22 +214,23 @@ describe("the VIGIL gate on formal escalations (docs/17 §7 Tier B)", () => {
   });
 });
 
-describe("travel decisions delegate to NEXUS (GD-21 TRAVEL_APPROVAL lives there)", () => {
-  it("clicking Approve invokes onTravelDecision without emitting from SCRIBE", () => {
+describe("travel items are read-only in SCRIBE (decisions belong to NEXUS — GD-21 mandate, WH-28)", () => {
+  it("shows a travel item's detail and flags but renders no decision controls", () => {
     const events: SovereignLogEvent[] = [];
-    const onTravelDecision = jest.fn();
     render(
       <TTManagerReview
         ctx={syntheticCtx(events)}
         items={[travelItem()]}
-        onTravelDecision={onTravelDecision}
       />
     );
-    fireEvent.click(screen.getByTestId("tt-travel-approved"));
-    expect(onTravelDecision).toHaveBeenCalledWith(
-      expect.objectContaining({ kind: "travel" }),
-      "APPROVED"
-    );
-    expect(events).toHaveLength(0); // NEXUS owns the TRAVEL_APPROVAL emission
+    // Detail and analysis are visible — context, not a decision surface.
+    expect(screen.getByTestId("tt-analysis")).toBeInTheDocument();
+    // No Approve/Deny/Escalate controls — decisions belong to NEXUS only.
+    expect(screen.queryByTestId("tt-travel-actions")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("tt-travel-approved")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("tt-travel-denied")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("tt-travel-escalated")).not.toBeInTheDocument();
+    // No SCRIBE event emitted — NEXUS owns the TRAVEL_APPROVAL emission.
+    expect(events).toHaveLength(0);
   });
 });
