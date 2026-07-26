@@ -171,6 +171,16 @@ export function WorkflowArtifactReview({ ctx, bundle, onApproved, onReturnForRev
         <p style={{ ...bodyTextStyle, fontWeight: 600 }}>{artifact.title}</p>
         <p style={bodyTextStyle}>{artifact.summary}</p>
 
+        {artifact.preliminary_context && (
+          <>
+            <h3 style={subHeadingStyle}>Preliminary context</h3>
+            <p style={bodyTextStyle}><strong>Goals and objectives:</strong> {artifact.preliminary_context.GOALS}</p>
+            <p style={bodyTextStyle}><strong>Primary data source:</strong> {artifact.preliminary_context.DATA_SOURCE}</p>
+            <p style={bodyTextStyle}><strong>Governing policy:</strong> {artifact.preliminary_context.GOVERNING_POLICY}</p>
+            <p style={bodyTextStyle}><strong>Affected population:</strong> {artifact.preliminary_context.POPULATION}</p>
+          </>
+        )}
+
         <h3 style={subHeadingStyle}>How the work is done</h3>
         <ol style={stepListStyle}>
           {artifact.steps.map((s) => (

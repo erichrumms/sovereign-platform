@@ -4,6 +4,11 @@
  * Dialogue renders with domain-language questions (Gap 5); the Five-Question Gate indicators update
  * as answers arrive and block artifact production until all five are answered; production logs the
  * four GD-18 artifact events (each with workflow_step_id); the artifact previews in plain prose.
+ *
+ * Session 63 (Task 2, WH-20): the preliminary context stage is shown BEFORE the five questions.
+ * Tests that interact with the five-question section must first complete the preliminary stage via
+ * completePreliminaryStage(). The preliminary stage renders its own four questions; the five-question
+ * section is locked until "Confirm preliminary context" is clicked.
  */
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 
@@ -26,6 +31,18 @@ const QUESTIONS = [
 const offlineComplete = async () =>
   ({ content: "", fallback_tier: "static", fallback_activated: true, sovereign_metadata: {} } as never);
 
+/**
+ * Task 2 (Session 63): complete the preliminary context stage so the five-question
+ * section unlocks. Must be called before tests that interact with the five questions.
+ */
+function completePreliminaryStage(): void {
+  fireEvent.change(screen.getByLabelText(/Goals and objectives/i), { target: { value: "Improve program oversight and accuracy." } });
+  fireEvent.change(screen.getByLabelText(/Primary data source/i), { target: { value: "Oracle Financials and GFEBS." } });
+  fireEvent.change(screen.getByLabelText(/Governing policy/i), { target: { value: "DoD FMR Volume 3, Chapter 8." } });
+  fireEvent.change(screen.getByLabelText(/Affected population/i), { target: { value: "Program analysts and financial managers." } });
+  fireEvent.click(screen.getByRole("button", { name: /confirm preliminary context/i }));
+}
+
 function fillAllAnswers(): void {
   fireEvent.change(screen.getByLabelText(QUESTIONS[0]), { target: { value: "The program analyst reviews each program." } });
   fireEvent.change(screen.getByLabelText(QUESTIONS[1]), { target: { value: "First the analyst reviews, then the manager dispositions." } });
@@ -35,8 +52,26 @@ function fillAllAnswers(): void {
 }
 
 describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
-  it("renders the dialogue with five domain-language questions", () => {
+  it("renders the preliminary context stage with four questions before the five-question section", () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    expect(screen.getByRole("heading", { name: /Preliminary context/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Goals and objectives/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Primary data source/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Governing policy/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Affected population/i)).toBeInTheDocument();
+    // Five-question section is locked until preliminary is confirmed.
+    expect(screen.queryByLabelText(QUESTIONS[0])).not.toBeInTheDocument();
+  });
+
+  it("unlocks the five-question section after the preliminary stage is confirmed", () => {
+    render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
+    for (const q of QUESTIONS) expect(screen.getByLabelText(q)).toBeInTheDocument();
+  });
+
+  it("renders the dialogue with five domain-language questions (after preliminary)", () => {
+    render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
     for (const q of QUESTIONS) expect(screen.getByLabelText(q)).toBeInTheDocument();
   });
 
@@ -46,15 +81,17 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
     expect(text).not.toMatch(/workflow_step_id|SovereignEventType|schema|WorkflowArtifact/);
   });
 
-  it("renders the Five-Question Gate with all five 'Still needed' initially", () => {
+  it("renders the Five-Question Gate with all five 'Still needed' initially (after preliminary)", () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
     const list = screen.getByRole("list", { name: /five-question gate status/i });
     expect(list.querySelectorAll("li")).toHaveLength(5);
     expect(within(list).getAllByText(/Still needed/i)).toHaveLength(5);
   });
 
-  it("flips a gate indicator to Answered when its question is answered", () => {
+  it("flips a gate indicator to Answered when its question is answered (after preliminary)", () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
     fireEvent.change(screen.getByLabelText(QUESTIONS[0]), { target: { value: "The program analyst." } });
     const whoRow = document.querySelector('[data-question="WHO"]') as HTMLElement;
     expect(whoRow.getAttribute("data-answered")).toBe("true");
@@ -66,6 +103,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
   it("WC-3: no amber gate notice on first load; attempting Produce with gaps shows it and does not produce", () => {
     const sink: SovereignLogEvent[] = [];
     render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
+    completePreliminaryStage();
     // First load — the gate warning does not greet the user.
     expect(screen.queryByText(/Five-Question Gate not yet met/i)).not.toBeInTheDocument();
     // Attempt to produce with questions still open — the notice now appears, nothing is produced.
@@ -77,6 +115,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
 
   it("WC-3: the amber gate notice clears once all five are answered", () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
     fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i })); // attempt with gaps
     expect(screen.getByText(/Five-Question Gate not yet met/i)).toBeInTheDocument();
     fillAllAnswers();
@@ -86,6 +125,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
   it("logs FLOWPATH_ARTIFACT_PRODUCED on production, with workflow_step_id", async () => {
     const sink: SovereignLogEvent[] = [];
     render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
+    completePreliminaryStage();
     fillAllAnswers();
     fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
     await waitFor(() => expect(sink.some((e) => e.event_type === "FLOWPATH_ARTIFACT_PRODUCED")).toBe(true));
@@ -97,6 +137,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
   it("logs the vocabulary, data-source, and validation-cadence events on production", async () => {
     const sink: SovereignLogEvent[] = [];
     render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
+    completePreliminaryStage();
     fillAllAnswers();
     fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
     await waitFor(() => expect(sink.some((e) => e.event_type === "FLOWPATH_VALIDATION_CADENCE_SET")).toBe(true));
@@ -109,6 +150,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
   it("every production event carries workflow_step_id (Constraint #6)", async () => {
     const sink: SovereignLogEvent[] = [];
     render(<ElicitationDialogue ctx={makeCtx({ logSink: sink })} complete={offlineComplete} />);
+    completePreliminaryStage();
     fillAllAnswers();
     fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
     await waitFor(() => expect(sink.length).toBeGreaterThanOrEqual(4));
@@ -117,6 +159,7 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
 
   it("previews the produced artifact in plain prose, not a JSON schema dump (Gap 5)", async () => {
     render(<ElicitationDialogue ctx={makeCtx()} complete={offlineComplete} />);
+    completePreliminaryStage();
     fillAllAnswers();
     fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
     const preview = await screen.findByTestId("artifact-preview");

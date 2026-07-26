@@ -2,7 +2,11 @@
 /**
  * module-flowpath — FlowpathApp.test.tsx
  * The composition root: the FLOWPATH header renders, the Session Manager is the default surface,
- * and the tab bar switches to the Elicitation Dialogue.
+ * and the tab bar switches to the Elicitation Dialogue (which now shows preliminary context first).
+ *
+ * Session 63 (WH-20): FlowpathApp owns sessions state and routes navigation through lifecycle
+ * callbacks. makeCtx() now provides a no-op reviewerWorkspaceSurface so workspace-publish effects
+ * don't throw in tests.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -20,10 +24,12 @@ describe("FlowpathApp", () => {
     expect(screen.getByRole("list", { name: /elicitation sessions/i })).toBeInTheDocument();
   });
 
-  it("switches to the Elicitation Dialogue via the tab bar", () => {
+  it("switches to the Elicitation Dialogue via the tab bar and shows the preliminary context stage", () => {
     render(<FlowpathApp ctx={makeCtx()} />);
     fireEvent.click(screen.getByRole("tab", { name: /elicitation dialogue/i }));
-    expect(screen.getByRole("list", { name: /five-question gate status/i })).toBeInTheDocument();
+    // Session 63 Task 2: preliminary context stage is shown first; five questions are locked.
+    expect(screen.getByRole("heading", { name: /Preliminary context/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /confirm preliminary context/i })).toBeInTheDocument();
   });
 
   it("WC-1: clicking a gate-passed session card navigates to the Artifact Review screen", () => {

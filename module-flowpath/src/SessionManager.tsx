@@ -4,15 +4,16 @@
  *
  * The entry point. Shows all elicitation sessions for the organization — each linked to a
  * workflow type, with the participating expert role, the date, and the Five-Question Gate status
- * in plain prose (Gap 5). A "Start a new session" button logs FLOWPATH_SESSION_STARTED.
+ * in plain prose (Gap 5). A "Start a new session" button logs FLOWPATH_SESSION_STARTED and
+ * navigates directly into the Elicitation Dialogue for the new session (WH-20, Session 63).
  *
  * Gap 6: the CPMI-VRS Gate 1 AI-disclosure and GD-10 banners are Category 2 (permanent, blue);
  * the session list is Category 3 (substantive) in a white card on the light canvas.
  *
- * Version: 1.0 · Session 20 (D3) · June 26, 2026
+ * Version: 1.1 · Session 63 (WH-20 — live session navigation) · July 25, 2026
  */
 
-import { useState, type CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
@@ -28,12 +29,21 @@ import {
   type ElicitationSession,
   type WorkflowType,
 } from "./flowpath-contract";
-import { SYNTHETIC_SESSIONS } from "./synthetic-elicitation";
 
 export interface SessionManagerProps {
   ctx: SovereignShellContext;
-  /** Injectable initial sessions (tests). Defaults to the synthetic set. */
-  initialSessions?: ElicitationSession[];
+  /** The current session list — controlled by the parent (FlowpathApp owns state). */
+  sessions: ElicitationSession[];
+  /**
+   * Called when a new session is created. The parent appends it to the list and
+   * then calls onStartSession to navigate into the dialogue for that session.
+   */
+  onNewSession: (session: ElicitationSession) => void;
+  /**
+   * WH-20 (Session 63): called immediately after onNewSession — the shell navigates
+   * into ElicitationDialogue for the newly created session ID.
+   */
+  onStartSession?: (sessionId: string) => void;
   /** Session ids whose artifact has been approved on Screen 3 (committed to the registry). */
   /** D5 (Session 61): widened to readonly — FlowpathApp now passes the session store's snapshot. */
   approvedSessionIds?: readonly string[];
@@ -75,6 +85,12 @@ export function gateStatusProse(session: ElicitationSession): string {
   if (session.status === "GATE_PENDING") {
     return "Awaiting completeness review — some of the five questions are still open.";
   }
+  if (session.preliminary_complete === false || (!session.preliminary_complete && !session.preliminary_context)) {
+    // New sessions with explicit preliminary tracking show the preliminary stage status.
+    if (session.preliminary_complete === false) {
+      return "Preliminary context not yet provided — complete the context questions to unlock elicitation.";
+    }
+  }
   return "Elicitation in progress.";
 }
 
@@ -86,13 +102,22 @@ function readableDate(iso: string): string {
   return `${months[m - 1]} ${d}, ${y}`;
 }
 
-export function SessionManager({ ctx, initialSessions, approvedSessionIds = [], onOpenSession }: SessionManagerProps): JSX.Element {
-  const [sessions, setSessions] = useState<ElicitationSession[]>(initialSessions ?? SYNTHETIC_SESSIONS);
-  const [newCount, setNewCount] = useState(0);
+export function SessionManager({
+  ctx,
+  sessions,
+  onNewSession,
+  onStartSession,
+  approvedSessionIds = [],
+  onOpenSession,
+}: SessionManagerProps): JSX.Element {
+  // Counter for new session IDs. A ref (not state) because the value is only read
+  // during startNewSession — it never drives rendering independently.
+  const newCountRef = useRef(0);
   const approved = new Set(approvedSessionIds);
 
   const startNewSession = (): void => {
-    const n = newCount + 1;
+    const n = newCountRef.current + 1;
+    newCountRef.current = n;
     const sessionId = `S-NEW-${String(n).padStart(3, "0")}`;
     const workflowType: WorkflowType = "operational";
 
@@ -108,11 +133,19 @@ export function SessionManager({ ctx, initialSessions, approvedSessionIds = [], 
       payload: { session_id: sessionId, workflow_type: workflowType },
     });
 
-    setSessions((prev) => [
-      { session_id: sessionId, workflow_type: workflowType, expert_role: ctx.auth.user.name, date: "2026-06-26", status: "IN_PROGRESS", gate_passed: false },
-      ...prev,
-    ]);
-    setNewCount(n);
+    const newSession: ElicitationSession = {
+      session_id: sessionId,
+      workflow_type: workflowType,
+      expert_role: ctx.auth.user.name,
+      date: "2026-07-25",
+      status: "IN_PROGRESS",
+      gate_passed: false,
+      preliminary_complete: false,
+    };
+
+    // WH-20: parent appends the session, then we navigate into the dialogue.
+    onNewSession(newSession);
+    onStartSession?.(sessionId);
   };
 
   return (

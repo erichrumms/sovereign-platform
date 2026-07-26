@@ -67,6 +67,45 @@ export const PR_FLOWPATH_003 = { registryId: "PR-FLOWPATH-003", agentId: FLOWPAT
 export const PR_FLOWPATH_004 = { registryId: "PR-FLOWPATH-004", agentId: FLOWPATH_ANALYZER, mode: "workflow_analysis", status: "APPROVED" } as const;
 
 // ============================================================
+// PRELIMINARY CONTEXT (four context-setting questions answered BEFORE the five)
+// ============================================================
+
+export type PrelimContextQuestionId = "GOALS" | "DATA_SOURCE" | "GOVERNING_POLICY" | "POPULATION";
+
+/**
+ * The user-supplied answers to the four preliminary context questions. Collected at the
+ * start of an elicitation session; gated before the five-question stage begins.
+ * Proposed question wording is in the Session 63 Handoff pending Project Principal sign-off.
+ */
+export interface PreliminaryContext {
+  GOALS: string;
+  DATA_SOURCE: string;
+  GOVERNING_POLICY: string;
+  POPULATION: string;
+}
+
+export const EMPTY_PRELIM_CONTEXT: PreliminaryContext = {
+  GOALS: "",
+  DATA_SOURCE: "",
+  GOVERNING_POLICY: "",
+  POPULATION: "",
+};
+
+export const PRELIM_CONTEXT_LABELS: Record<PrelimContextQuestionId, string> = {
+  GOALS: "Goals and objectives",
+  DATA_SOURCE: "Primary data source",
+  GOVERNING_POLICY: "Governing policy",
+  POPULATION: "Affected population",
+};
+
+export const PRELIM_QUESTION_ORDER: PrelimContextQuestionId[] = [
+  "GOALS",
+  "DATA_SOURCE",
+  "GOVERNING_POLICY",
+  "POPULATION",
+];
+
+// ============================================================
 // WORKFLOW ARTIFACT (the primary elicitation output)
 // ============================================================
 
@@ -103,6 +142,8 @@ export interface WorkflowArtifact {
   steps: WorkflowStep[];
   terminal_condition: string;   // the verifiable state that confirms completion (Q5)
   workflow_step_id: string;
+  /** Preliminary context captured before the five-question elicitation (Task 2, Session 63). */
+  preliminary_context?: PreliminaryContext;
 }
 
 // ============================================================
@@ -255,6 +296,10 @@ export interface ElicitationSession {
   date: string;                 // ISO date (plain-prose rendered)
   status: SessionStatus;
   gate_passed: boolean;
+  /** Preliminary context questions (Task 2, Session 63) — absent until provided. */
+  preliminary_context?: PreliminaryContext;
+  /** True once all four preliminary context questions are answered and confirmed. */
+  preliminary_complete?: boolean;
 }
 
 // ============================================================

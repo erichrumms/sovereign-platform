@@ -54,5 +54,13 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
       isOnHold: (product: SovereignProduct) => held.has(product),
     },
     navigation: { navigateTo: () => {}, currentPath: "/flowpath", breadcrumb: [] },
+    // Task 3 (WH-19): provide a no-op surface so FlowpathApp's workspace-publish
+    // useEffect doesn't throw when reviewerWorkspaceSurface is accessed.
+    reviewerWorkspaceSurface: {
+      publish: () => {},
+      remove: () => {},
+      listForModule: (_moduleId: string) => [],
+      list: () => [],
+    },
   } as unknown as SovereignShellContext;
 }

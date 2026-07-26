@@ -9,10 +9,18 @@
  * WorkflowArtifact + calibration bundle (via createSovereignClient) and the four GD-18 artifact
  * events are logged. The artifact is previewed in plain prose, never a schema dump.
  *
+ * Session 63 (Task 2 — WH-20 governance): a PRELIMINARY CONTEXT stage is shown BEFORE the five
+ * questions. Four context-setting questions (goals, data source, governing policy, population)
+ * must be answered and confirmed before the five-question stage unlocks. The preliminary context
+ * is merged into the artifact for display in WorkflowArtifactReview.
+ *
+ * Question wording for the preliminary stage is PROPOSED in the Session 63 Handoff and is
+ * pending Project Principal sign-off before being treated as final.
+ *
  * Gap 6: Category 1 amber notice for remaining gaps; Category 2 blue AI-disclosure + GD-10;
  * Category 3 the dialogue and emerging artifact in white cards.
  *
- * Version: 1.0 · Session 20 (D4) · June 26, 2026
+ * Version: 1.1 · Session 63 (WH-20 — preliminary context stage + lifecycle navigation) · July 25, 2026
  */
 
 import { useState, type CSSProperties } from "react";
@@ -22,12 +30,21 @@ import {
   Gate1Banner,
   ClassificationBoundaryBanner,
   StatusNotice,
+  GovernanceBanner,
   contentCardStyle,
   sectionHeadingStyle,
   bodyTextStyle,
   gateStatusColors,
 } from "./banners";
-import type { FiveQuestionId, FlowpathMapperOutput } from "./flowpath-contract";
+import {
+  EMPTY_PRELIM_CONTEXT,
+  PRELIM_CONTEXT_LABELS,
+  PRELIM_QUESTION_ORDER,
+  type FiveQuestionId,
+  type FlowpathMapperOutput,
+  type PrelimContextQuestionId,
+  type PreliminaryContext,
+} from "./flowpath-contract";
 import { useFlowpathElicitation, FIVE_QUESTION_ORDER } from "./useFlowpathElicitation";
 import type { MapperDeps } from "./flowpath-mapper";
 import { SYNTHETIC_SESSION_ID } from "./synthetic-elicitation";
@@ -38,6 +55,17 @@ export interface ElicitationDialogueProps {
   sessionId?: string;
   /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
   complete?: MapperDeps["complete"];
+  /**
+   * WH-20 (Session 63): called when all four preliminary context questions are confirmed.
+   * The parent marks the session's preliminary_complete flag.
+   */
+  onPreliminaryComplete?: (sessionId: string) => void;
+  /**
+   * WH-20 (Session 63): called after the workflow artifact is produced (gate passed).
+   * The parent updates the session to COMPLETE + gate_passed, stores the bundle, and
+   * navigates to WorkflowArtifactReview.
+   */
+  onArtifactProduced?: (sessionId: string, bundle: FlowpathMapperOutput) => void;
 }
 
 /**
@@ -54,12 +82,45 @@ const QUESTION_PROMPTS: Record<FiveQuestionId, string> = {
   TERMINAL: "How do you know the work is complete and ready to hand off?",
 };
 
-export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDialogueProps): JSX.Element {
+/**
+ * Proposed preliminary context question prompts — PENDING Project Principal sign-off
+ * (Session 63 Handoff). These are DRAFT wording only; do not treat as final.
+ */
+const PRELIM_QUESTION_PROMPTS: Record<PrelimContextQuestionId, string> = {
+  GOALS: "What are the primary goals or objectives this workflow is intended to accomplish?",
+  DATA_SOURCE: "What data sources, systems, or information does this workflow rely on?",
+  GOVERNING_POLICY: "Which policy, regulation, directive, or internal standard governs this workflow?",
+  POPULATION: "Who are the people, roles, or organizations involved in or affected by this workflow?",
+};
+
+export function ElicitationDialogue({
+  ctx,
+  sessionId,
+  complete,
+  onPreliminaryComplete,
+  onArtifactProduced,
+}: ElicitationDialogueProps): JSX.Element {
   const session = sessionId ?? SYNTHETIC_SESSION_ID;
   const { answers, setAnswer, gate, allAnswered, status, bundle, error, produceArtifact } = useFlowpathElicitation(ctx, {
     sessionId: session,
     complete,
   });
+
+  // Preliminary context state (Task 2).
+  const [prelimAnswers, setPrelimAnswers] = useState<PreliminaryContext>(EMPTY_PRELIM_CONTEXT);
+  const [prelimComplete, setPrelimComplete] = useState(false);
+  const [prelimAttempted, setPrelimAttempted] = useState(false);
+
+  const allPrelimAnswered = PRELIM_QUESTION_ORDER.every((q) => prelimAnswers[q].trim() !== "");
+
+  const confirmPrelim = (): void => {
+    if (!allPrelimAnswered) {
+      setPrelimAttempted(true);
+      return;
+    }
+    setPrelimComplete(true);
+    onPreliminaryComplete?.(session);
+  };
 
   const remaining = gate.filter((g) => !g.answered);
 
@@ -67,13 +128,28 @@ export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDia
   // user actually attempts to produce an artifact with questions still open. `attempted` records
   // that an attempt was made; the notice clears automatically once all five are answered.
   const [attempted, setAttempted] = useState(false);
-  const onProduce = (): void => {
+
+  // Local enriched bundle (preliminary context merged in) — drives the preview and the callback.
+  const [enrichedBundle, setEnrichedBundle] = useState<FlowpathMapperOutput | null>(null);
+
+  const onProduce = async (): Promise<void> => {
     if (!allAnswered) {
-      setAttempted(true); // surface the gate notice; do not produce
+      setAttempted(true);
       return;
     }
-    void produceArtifact();
+    const result = await produceArtifact();
+    if (result) {
+      // Merge preliminary context (user-supplied) into the artifact before handing upstream.
+      const merged: FlowpathMapperOutput = {
+        ...result,
+        artifact: { ...result.artifact, preliminary_context: prelimAnswers },
+      };
+      setEnrichedBundle(merged);
+      onArtifactProduced?.(session, merged);
+    }
   };
+
+  const displayBundle = enrichedBundle ?? bundle;
 
   return (
     <div>
@@ -81,69 +157,130 @@ export function ElicitationDialogue({ ctx, sessionId, complete }: ElicitationDia
       <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
-      {/* Category 1 — temporary gate-failure notice (amber). WC-3: shown only AFTER a produce
-          attempt that still has gaps — never on first load. */}
-      {attempted && !allAnswered && (
-        <StatusNotice label="Five-Question Gate not yet met:">
-          Still needed — {remaining.map((g) => g.label).join(" ")} A workflow artifact cannot be
-          produced until all five questions are answered.
-        </StatusNotice>
-      )}
-
-      {/* Category 3 — the dialogue. */}
+      {/* ── PRELIMINARY CONTEXT STAGE (Task 2) ───────────────────────────────
+          Four context-setting questions answered BEFORE the five-question elicitation.
+          Question wording is PROPOSED — pending Project Principal sign-off (Session 63 Handoff).
+      */}
       <div style={contentCardStyle}>
-        <h2 style={sectionHeadingStyle}>Elicitation dialogue</h2>
+        <h2 style={sectionHeadingStyle}>Preliminary context</h2>
+        <GovernanceBanner label="Proposed wording:">
+          The question wording below is a draft submitted to the Project Principal for sign-off
+          in the Session 63 Handoff. It should not be treated as final until approved.
+        </GovernanceBanner>
         <p style={bodyTextStyle}>
-          Answer each question the way you would describe the work to a new colleague. Your answers
-          become a workflow others can follow.
+          Answer these four questions to set the context for the elicitation. All four are required
+          before the five-question stage unlocks.
         </p>
-        {FIVE_QUESTION_ORDER.map((q) => (
-          <div key={q} style={{ marginBottom: 14 }}>
-            <label htmlFor={`q-${q}`} style={questionLabelStyle}>
-              {QUESTION_PROMPTS[q]}
-            </label>
-            <textarea
-              id={`q-${q}`}
-              aria-label={QUESTION_PROMPTS[q]}
-              value={answers[q]}
-              onChange={(e) => setAnswer(q, e.target.value)}
-              rows={2}
-              style={textareaStyle}
-            />
+        {PRELIM_QUESTION_ORDER.map((q) => {
+          const unanswered = prelimAttempted && prelimAnswers[q].trim() === "";
+          return (
+            <div key={q} style={{ marginBottom: 14 }}>
+              <label htmlFor={`prelim-${q}`} style={questionLabelStyle}>
+                {PRELIM_CONTEXT_LABELS[q]}
+                {unanswered && <span style={errorInlineStyle}> — required</span>}
+              </label>
+              <p style={{ ...bodyTextStyle, margin: "2px 0 6px", fontSize: 13, color: "#64748b" }}>
+                {PRELIM_QUESTION_PROMPTS[q]}
+              </p>
+              <textarea
+                id={`prelim-${q}`}
+                aria-label={PRELIM_CONTEXT_LABELS[q]}
+                aria-required="true"
+                aria-invalid={unanswered}
+                value={prelimAnswers[q]}
+                disabled={prelimComplete}
+                onChange={(e) => setPrelimAnswers((prev) => ({ ...prev, [q]: e.target.value }))}
+                rows={2}
+                style={{ ...textareaStyle, ...(prelimComplete ? { background: "#f8fafc", color: "#64748b" } : {}) }}
+              />
+            </div>
+          );
+        })}
+        {!prelimComplete ? (
+          <button type="button" onClick={confirmPrelim} style={confirmButtonStyle}>
+            Confirm preliminary context
+          </button>
+        ) : (
+          <p style={{ ...bodyTextStyle, color: "#065f46", fontWeight: 600 }}>
+            Preliminary context confirmed.
+          </p>
+        )}
+      </div>
+
+      {/* ── FIVE-QUESTION ELICITATION (unlocked after preliminary context) ─── */}
+      {prelimComplete ? (
+        <>
+          {/* Category 1 — temporary gate-failure notice (amber). WC-3: shown only AFTER a produce
+              attempt that still has gaps — never on first load. */}
+          {attempted && !allAnswered && (
+            <StatusNotice label="Five-Question Gate not yet met:">
+              Still needed — {remaining.map((g) => g.label).join(" ")} A workflow artifact cannot be
+              produced until all five questions are answered.
+            </StatusNotice>
+          )}
+
+          {/* Category 3 — the dialogue. */}
+          <div style={contentCardStyle}>
+            <h2 style={sectionHeadingStyle}>Elicitation dialogue</h2>
+            <p style={bodyTextStyle}>
+              Answer each question the way you would describe the work to a new colleague. Your answers
+              become a workflow others can follow.
+            </p>
+            {FIVE_QUESTION_ORDER.map((q) => (
+              <div key={q} style={{ marginBottom: 14 }}>
+                <label htmlFor={`q-${q}`} style={questionLabelStyle}>
+                  {QUESTION_PROMPTS[q]}
+                </label>
+                <textarea
+                  id={`q-${q}`}
+                  aria-label={QUESTION_PROMPTS[q]}
+                  value={answers[q]}
+                  onChange={(e) => setAnswer(q, e.target.value)}
+                  rows={2}
+                  style={textareaStyle}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* Category 3 — the Five-Question Gate status, visible throughout. */}
-      <div style={contentCardStyle}>
-        <h2 style={sectionHeadingStyle}>Five-Question Gate</h2>
-        <ul style={gateListStyle} aria-label="Five-Question Gate status">
-          {gate.map((g) => {
-            const colors = gateStatusColors(g.answered);
-            return (
-              <li key={g.question} style={gateRowStyle} data-question={g.question} data-answered={g.answered}>
-                <span style={{ ...pillStyle, color: colors.color, background: colors.background }}>
-                  {g.answered ? "Answered" : "Still needed"}
-                </span>
-                <span style={{ fontWeight: 600 }}>{g.label}</span>
-                {!g.answered && g.gap && <span style={gapStyle}> — {g.gap}</span>}
-              </li>
-            );
-          })}
-        </ul>
-        <button
-          type="button"
-          onClick={onProduce}
-          disabled={status === "running"}
-          style={{ ...produceButtonStyle, cursor: status === "running" ? "wait" : "pointer" }}
-        >
-          Produce workflow artifact
-        </button>
-        {error && <p style={{ ...bodyTextStyle, color: "#b91c1c", marginTop: 8 }}>{error}</p>}
-      </div>
+          {/* Category 3 — the Five-Question Gate status, visible throughout. */}
+          <div style={contentCardStyle}>
+            <h2 style={sectionHeadingStyle}>Five-Question Gate</h2>
+            <ul style={gateListStyle} aria-label="Five-Question Gate status">
+              {gate.map((g) => {
+                const colors = gateStatusColors(g.answered);
+                return (
+                  <li key={g.question} style={gateRowStyle} data-question={g.question} data-answered={g.answered}>
+                    <span style={{ ...pillStyle, color: colors.color, background: colors.background }}>
+                      {g.answered ? "Answered" : "Still needed"}
+                    </span>
+                    <span style={{ fontWeight: 600 }}>{g.label}</span>
+                    {!g.answered && g.gap && <span style={gapStyle}> — {g.gap}</span>}
+                  </li>
+                );
+              })}
+            </ul>
+            <button
+              type="button"
+              onClick={() => { void onProduce(); }}
+              disabled={status === "running"}
+              style={{ ...produceButtonStyle, cursor: status === "running" ? "wait" : "pointer" }}
+            >
+              Produce workflow artifact
+            </button>
+            {error && <p style={{ ...bodyTextStyle, color: "#b91c1c", marginTop: 8 }}>{error}</p>}
+          </div>
 
-      {/* Category 3 — the produced artifact, previewed in plain prose (Gap 5 — not a schema dump). */}
-      {bundle && <ArtifactPreview bundle={bundle} />}
+          {/* Category 3 — the produced artifact, previewed in plain prose (Gap 5 — not a schema dump). */}
+          {displayBundle && <ArtifactPreview bundle={displayBundle} />}
+        </>
+      ) : (
+        <div style={{ ...contentCardStyle, background: "#f8fafc", color: "#64748b" }}>
+          <p style={{ margin: 0, fontSize: 14 }}>
+            The five-question elicitation will unlock once the preliminary context is confirmed above.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -187,5 +324,7 @@ const gateRowStyle: CSSProperties = { display: "flex", alignItems: "center", gap
 const pillStyle: CSSProperties = { padding: "2px 8px", borderRadius: 999, fontSize: 12, fontWeight: 700 };
 const gapStyle: CSSProperties = { color: "#475569", fontSize: 13 };
 const produceButtonStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, fontWeight: 600, color: "#fff", background: "#2563eb", border: "1px solid #1d4ed8", borderRadius: 8 };
+const confirmButtonStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, fontWeight: 600, color: "#fff", background: "#047857", border: "1px solid #065f46", borderRadius: 8, cursor: "pointer" };
+const errorInlineStyle: CSSProperties = { color: "#dc2626", fontWeight: 400, fontSize: 13 };
 
 export default ElicitationDialogue;
