@@ -33,10 +33,10 @@
  * health now ALSO renders the individual records (which handoff, which
  * status) below the counts — the counts table and its reasoning are unchanged.
  *
- * Version: 1.3 · Session 70 · July 27, 2026 (WH-30: shared currency formatter)
+ * Version: 1.4 · Session 70 · July 26, 2026 (WG-6: multi-year PPBE data + year selector)
  */
 
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   BarChart,
   Bar,
@@ -71,6 +71,7 @@ import {
   type PPBEDashboardInputs,
 } from "./ppbe-dashboard";
 import { SYNTH_SITE_BREAKDOWNS } from "./ppbe-site-breakdown";
+import { actualsForProgram } from "./ppbe-data-adapter";
 import type { DependencyMap } from "@sovereign/data";
 
 export interface PPBEDashboardProps {
@@ -451,14 +452,51 @@ function SiteBreakdownSection({ names }: { names: Record<string, string> }): JSX
   );
 }
 
+// ─── Fiscal-year helper (local — mirrors fiscalYearOfTimestamp in ppbe-seed.ts) ──
+function fiscalYearOf(isoTimestamp: string): string {
+  const year = Number(isoTimestamp.slice(0, 4));
+  const month = Number(isoTimestamp.slice(5, 7));
+  return `FY ${month >= 10 ? year + 1 : year}`;
+}
+
+const YEAR_PHASE_LABELS: Record<string, string> = {
+  'FY 2025': 'PY (FY 2025)',
+  'FY 2026': 'CY (FY 2026)',
+  'FY 2027': 'BY (FY 2027)',
+  'FY 2028': 'BY+1 (FY 2028)',
+};
+
 // ─── Main dashboard ───────────────────────────────────────────────────────────
 export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): JSX.Element {
   const effectiveInputs = inputs ?? EMPTY_INPUTS;
-  const data = buildPPBEDashboard(effectiveInputs);
+
+  // Year selector — defaults to FY2026 (Current Year). Derive available years from data.
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState('FY 2026');
+  const availableYears = Array.from(
+    new Set(effectiveInputs.programs.map((p) => p.fiscal_year))
+  ).sort();
+
+  // Filter inputs to the selected fiscal year so all metrics are year-scoped.
+  const yearPrograms = effectiveInputs.programs.filter((p) => p.fiscal_year === selectedFiscalYear);
+  const yearObligations = effectiveInputs.obligations.filter(
+    (o) => fiscalYearOf(o.timestamp) === selectedFiscalYear
+  );
+  const yearActualsByProgram: Record<string, Record<string, number>> = {};
+  for (const p of yearPrograms) {
+    yearActualsByProgram[p.program_id] = actualsForProgram(yearObligations, p.program_id);
+  }
+  const yearInputs: PPBEDashboardInputs = {
+    ...effectiveInputs,
+    programs: yearPrograms,
+    obligations: yearObligations,
+    actualsByProgram: yearActualsByProgram,
+  };
+
+  const data = buildPPBEDashboard(yearInputs);
 
   // Name lookup keyed by program_id — used for chart labels and accessible buttons.
   const programNames: Record<string, string> = Object.fromEntries(
-    effectiveInputs.programs.map((p) => [p.program_id, p.name])
+    yearPrograms.map((p) => [p.program_id, p.name])
   );
 
   return (
@@ -467,6 +505,28 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
         <h1 style={titleStyle}>APEX — Execution Monitoring</h1>
         <p style={subtitleStyle}>PPBE Phase 5 · obligation rate · variance · dependency health · learning velocity</p>
       </header>
+
+      {/* ── Year selector (PY / CY / BY / BY+1) ─────────────────────────────── */}
+      {availableYears.length > 1 && (
+        <div style={yearSelectorStyle} role="group" aria-label="Fiscal year">
+          {availableYears.map((yr) => (
+            <button
+              key={yr}
+              type="button"
+              onClick={() => setSelectedFiscalYear(yr)}
+              aria-pressed={yr === selectedFiscalYear}
+              style={{
+                ...yearButtonStyle,
+                background: yr === selectedFiscalYear ? "#0f172a" : "#fff",
+                color: yr === selectedFiscalYear ? "#fff" : "#0f172a",
+                borderColor: yr === selectedFiscalYear ? "#0f172a" : "#e2e8f0",
+              }}
+            >
+              {YEAR_PHASE_LABELS[yr] ?? yr}
+            </button>
+          ))}
+        </div>
+      )}
 
       {data.is_empty && (
         <StatusNotice label="No PPBE execution data is recorded yet.">
@@ -552,4 +612,20 @@ const programButtonStyle: CSSProperties = {
   background: "#fff",
   cursor: "pointer",
   fontFamily: "system-ui, sans-serif",
+};
+const yearSelectorStyle: CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 6,
+  marginBottom: 16,
+};
+const yearButtonStyle: CSSProperties = {
+  padding: "4px 14px",
+  fontSize: 13,
+  border: "1px solid",
+  borderRadius: 6,
+  cursor: "pointer",
+  fontFamily: "system-ui, sans-serif",
+  fontWeight: 500,
+  transition: "background 0.15s, color 0.15s",
 };

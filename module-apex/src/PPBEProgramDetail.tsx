@@ -16,10 +16,10 @@
  * dependencyHealthIndex(), actualsForProgram(), sitesForProgram(), and
  * statusFromObligationRate() — no parallel implementations.
  *
- * Version: 1.1 · Session 70 · July 27, 2026 (WH-30: shared currency formatter)
+ * Version: 1.2 · Session 70 · July 26, 2026 (WG-6: multi-year PPBE data + year selector)
  */
 
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { DependencyMap } from "@sovereign/data";
 import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 import {
@@ -74,8 +74,34 @@ const DEP_STATUS_ORDER: Record<DependencyMap["health_status"], number> = {
   healthy: 2,
 };
 
+function fiscalYearOf(isoTimestamp: string): string {
+  const year = Number(isoTimestamp.slice(0, 4));
+  const month = Number(isoTimestamp.slice(5, 7));
+  return `FY ${month >= 10 ? year + 1 : year}`;
+}
+
+const YEAR_PHASE_LABELS: Record<string, string> = {
+  'FY 2025': 'PY (FY 2025)',
+  'FY 2026': 'CY (FY 2026)',
+  'FY 2027': 'BY (FY 2027)',
+  'FY 2028': 'BY+1 (FY 2028)',
+};
+
 export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDetailProps): JSX.Element {
-  const program = inputs.programs.find((p) => p.program_id === programId);
+  // Derive years available for this specific program.
+  const availableYears = Array.from(
+    new Set(
+      inputs.programs
+        .filter((p) => p.program_id === programId)
+        .map((p) => p.fiscal_year)
+    )
+  ).sort();
+
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState('FY 2026');
+
+  const program = inputs.programs.find(
+    (p) => p.program_id === programId && p.fiscal_year === selectedFiscalYear
+  );
 
   if (!program) {
     return (
@@ -83,13 +109,36 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
         <button type="button" onClick={onBack} style={backButtonStyle}>
           ← Back to dashboard
         </button>
-        <p style={bodyTextStyle}>No PPBE program record found for {programId}.</p>
+        {availableYears.length > 1 && (
+          <div style={yearSelectorStyle} role="group" aria-label="Fiscal year">
+            {availableYears.map((yr) => (
+              <button
+                key={yr}
+                type="button"
+                onClick={() => setSelectedFiscalYear(yr)}
+                aria-pressed={yr === selectedFiscalYear}
+                style={{
+                  ...yearButtonStyle,
+                  background: yr === selectedFiscalYear ? "#0f172a" : "#fff",
+                  color: yr === selectedFiscalYear ? "#fff" : "#0f172a",
+                  borderColor: yr === selectedFiscalYear ? "#0f172a" : "#e2e8f0",
+                }}
+              >
+                {YEAR_PHASE_LABELS[yr] ?? yr}
+              </button>
+            ))}
+          </div>
+        )}
+        <p style={bodyTextStyle}>No PPBE program record found for {programId} in {selectedFiscalYear}.</p>
       </section>
     );
   }
 
-  const obligationMetric = obligationRate(program, inputs.obligations);
-  const actuals = actualsForProgram(inputs.obligations, programId);
+  const yearObligations = inputs.obligations.filter(
+    (o) => fiscalYearOf(o.timestamp) === selectedFiscalYear
+  );
+  const obligationMetric = obligationRate(program, yearObligations);
+  const actuals = actualsForProgram(yearObligations, programId);
   const variances = budgetToActualVariance(program, actuals);
   const filteredDeps = inputs.dependencies.filter(
     (d) => d.source_workflow.includes(programId) || d.target_workflow.includes(programId)
@@ -112,6 +161,27 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
         </h1>
         <p style={{ margin: 0, fontSize: 12, color: "#64748b" }}>{programId}</p>
       </header>
+
+      {availableYears.length > 1 && (
+        <div style={yearSelectorStyle} role="group" aria-label="Fiscal year">
+          {availableYears.map((yr) => (
+            <button
+              key={yr}
+              type="button"
+              onClick={() => setSelectedFiscalYear(yr)}
+              aria-pressed={yr === selectedFiscalYear}
+              style={{
+                ...yearButtonStyle,
+                background: yr === selectedFiscalYear ? "#0f172a" : "#fff",
+                color: yr === selectedFiscalYear ? "#fff" : "#0f172a",
+                borderColor: yr === selectedFiscalYear ? "#0f172a" : "#e2e8f0",
+              }}
+            >
+              {YEAR_PHASE_LABELS[yr] ?? yr}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Section 1 — Obligation status */}
       <div style={contentCardStyle}>
@@ -318,4 +388,19 @@ const backButtonStyle: CSSProperties = {
   cursor: "pointer",
   color: "#0f172a",
   fontFamily: "system-ui, sans-serif",
+};
+const yearSelectorStyle: CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 6,
+  marginBottom: 16,
+};
+const yearButtonStyle: CSSProperties = {
+  padding: "4px 14px",
+  fontSize: 13,
+  border: "1px solid",
+  borderRadius: 6,
+  cursor: "pointer",
+  fontFamily: "system-ui, sans-serif",
+  fontWeight: 500,
 };

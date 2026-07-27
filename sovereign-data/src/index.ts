@@ -167,6 +167,7 @@ export {
 export {
   SYNTH_PPBE_AS_OF,
   SYNTH_PPBE_PERIODS,
+  fiscalYearOfTimestamp,
   synthPeriodForTimestamp,
   SYNTH_PPBE_OBJECTIVES,
   SYNTH_PPBE_PROGRAMS,

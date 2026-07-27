@@ -42,7 +42,16 @@
  *             AND a stalled learning loop (3 of 4 findings not feeding
  *             planning) → FEEDBACK_LOOP_STALL.
  *
- * Version: 1.1 · Session 33 · July 13, 2026 · extended Q1/Q2 Session 59
+ * Session 70 (WG-6):
+ *   FY2025 (Prior Year, closed), FY2027 (Budget Year, requested), and FY2028
+ *   (BY+1, programming) ProgramRecord entries added per the Governance Agent's
+ *   content draft of July 27, 2026. FY2025 obligations added (September 2025
+ *   timestamps → 'FY 2025 Q4'). FY2025 EvaluationFindings for ALPHA and BRAVO.
+ *   fiscalYearOfTimestamp() extracted and exported; synthPeriodForTimestamp()
+ *   made year-aware (backward-compatible: FY2026 obligations produce the same
+ *   period strings as before).
+ *
+ * Version: 1.2 · Session 70 · July 27, 2026 (WG-6: FY2025-2028 data expansion)
  */
 
 import type { StrategicObjective } from '../entities/strategic-objective';
@@ -59,16 +68,28 @@ export const SYNTH_PPBE_AS_OF = '2026-07-13T12:00:00Z';
 export const SYNTH_PPBE_PERIODS = ['FY 2026 Q1', 'FY 2026 Q2', 'FY 2026 Q3', 'FY 2026 Q4'] as const;
 
 /**
- * Map a seeded obligation timestamp to its federal FY 2026 quarter.
- * Q1 = Oct–Dec 2025 (month 10-12), Q2 = Jan–Mar 2026 (month 1-3),
- * Q3 = Apr–Jun 2026 (month 4-6), Q4 = Jul–Sep 2026 (month 7-9).
+ * Derive the federal fiscal year from an ISO timestamp.
+ * FY starts Oct 1: months 10-12 belong to the NEXT calendar year's FY.
+ */
+export function fiscalYearOfTimestamp(isoTimestamp: string): string {
+  const year = Number(isoTimestamp.slice(0, 4));
+  const month = Number(isoTimestamp.slice(5, 7));
+  return `FY ${month >= 10 ? year + 1 : year}`;
+}
+
+/**
+ * Map a seeded obligation timestamp to its federal fiscal quarter string.
+ * Q1 = Oct–Dec (month 10-12), Q2 = Jan–Mar (1-3), Q3 = Apr–Jun (4-6), Q4 = Jul–Sep (7-9).
+ * Year-aware: FY2026 Q3 and FY2025 Q3 produce different strings (backward-compatible
+ * — FY2026 obligations return the same "FY 2026 QN" strings as before).
  */
 export function synthPeriodForTimestamp(isoTimestamp: string): string {
   const month = Number(isoTimestamp.slice(5, 7));
-  if (month >= 10) return 'FY 2026 Q1';
-  if (month <= 3) return 'FY 2026 Q2';
-  if (month <= 6) return 'FY 2026 Q3';
-  return 'FY 2026 Q4';
+  const fy = fiscalYearOfTimestamp(isoTimestamp);
+  if (month >= 10) return `${fy} Q1`;
+  if (month <= 3)  return `${fy} Q2`;
+  if (month <= 6)  return `${fy} Q3`;
+  return `${fy} Q4`;
 }
 
 // ============================================================
@@ -226,6 +247,226 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'depot throughput', baseline_value: 'five percent scheduling improvement by pilot close' },
     ],
   },
+
+  // ── FY 2025 (Prior Year / Evaluation — closed, near-100% obligated) ──────────
+  // Single annual plan period 'FY 2025 Q4' (all four programs closed out in
+  // September 2025). ECHO did not exist in FY2025 (pilot program, started FY2026).
+  {
+    program_id: 'SYNTH-PRG-ALPHA',
+    name: 'Logistics Data Interchange Modernization',
+    sponsor: 'SYNTH PEO Logistics',
+    contract_number: 'SYNTH-W91-26-C-0101',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-01',
+    fiscal_year: 'FY 2025',
+    lifecycle_cost_estimate: 750000,
+    obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 750000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-BRAVO',
+    name: 'Supply Chain Telemetry',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0102',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2025',
+    lifecycle_cost_estimate: 520000,
+    obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 520000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-CHARLIE',
+    name: 'Cyber Resilience Retrofit',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0103',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2025',
+    lifecycle_cost_estimate: 280000,
+    obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 280000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-DELTA',
+    name: 'Legacy Sustainment Consolidation',
+    sponsor: 'SYNTH PEO Sustainment',
+    contract_number: 'SYNTH-W91-26-C-0104',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-03',
+    fiscal_year: 'FY 2025',
+    lifecycle_cost_estimate: 540000,
+    obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 540000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'front-loaded; full estimate obligated by Q4 close' },
+      { metric: 'systems retired', baseline_value: 'four legacy systems retired this fiscal year' },
+    ],
+  },
+
+  // ── FY 2027 (Budget Year / requested — no obligations yet appropriated) ───────
+  // Single annual plan period 'FY 2027' holds the requested amount.
+  // DELTA is the final year; no FY2028 record follows.
+  {
+    program_id: 'SYNTH-PRG-ALPHA',
+    name: 'Logistics Data Interchange Modernization',
+    sponsor: 'SYNTH PEO Logistics',
+    contract_number: 'SYNTH-W91-26-C-0101',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-01',
+    fiscal_year: 'FY 2027',
+    lifecycle_cost_estimate: 860000,
+    obligation_plan: [{ period: 'FY 2027', planned_amount: 860000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-BRAVO',
+    name: 'Supply Chain Telemetry',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0102',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2027',
+    lifecycle_cost_estimate: 500000,
+    obligation_plan: [{ period: 'FY 2027', planned_amount: 500000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-CHARLIE',
+    name: 'Cyber Resilience Retrofit',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0103',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2027',
+    lifecycle_cost_estimate: 340000,
+    obligation_plan: [{ period: 'FY 2027', planned_amount: 340000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
+    ],
+  },
+  {
+    // FINAL year of consolidation activity; no FY2028 record.
+    program_id: 'SYNTH-PRG-DELTA',
+    name: 'Legacy Sustainment Consolidation',
+    sponsor: 'SYNTH PEO Sustainment',
+    contract_number: 'SYNTH-W91-26-C-0104',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-03',
+    fiscal_year: 'FY 2027',
+    lifecycle_cost_estimate: 300000,
+    obligation_plan: [{ period: 'FY 2027', planned_amount: 300000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'full estimate obligated by program closeout end of FY2027' },
+      { metric: 'systems retired', baseline_value: 'all remaining legacy systems retired this fiscal year' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-ECHO',
+    name: 'Depot Scheduling Pilot',
+    sponsor: 'SYNTH PEO Sustainment',
+    contract_number: 'SYNTH-W91-26-C-0105',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-03',
+    fiscal_year: 'FY 2027',
+    lifecycle_cost_estimate: 480000,
+    obligation_plan: [{ period: 'FY 2027', planned_amount: 480000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'depot throughput', baseline_value: 'ten percent scheduling improvement over pilot baseline' },
+    ],
+  },
+
+  // ── FY 2028 (Budget Year+1 / Programming — preliminary estimate, no obligations) ─
+  // Single annual period 'FY 2028'; no DELTA (program closes FY2027).
+  {
+    program_id: 'SYNTH-PRG-ALPHA',
+    name: 'Logistics Data Interchange Modernization',
+    sponsor: 'SYNTH PEO Logistics',
+    contract_number: 'SYNTH-W91-26-C-0101',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-01',
+    fiscal_year: 'FY 2028',
+    lifecycle_cost_estimate: 900000,
+    obligation_plan: [{ period: 'FY 2028', planned_amount: 900000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-BRAVO',
+    name: 'Supply Chain Telemetry',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0102',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2028',
+    lifecycle_cost_estimate: 520000,
+    obligation_plan: [{ period: 'FY 2028', planned_amount: 520000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-CHARLIE',
+    name: 'Cyber Resilience Retrofit',
+    sponsor: 'SYNTH PEO Cyber',
+    contract_number: 'SYNTH-W91-26-C-0103',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-02',
+    fiscal_year: 'FY 2028',
+    lifecycle_cost_estimate: 350000,
+    obligation_plan: [{ period: 'FY 2028', planned_amount: 350000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
+    ],
+  },
+  {
+    program_id: 'SYNTH-PRG-ECHO',
+    name: 'Depot Scheduling Pilot',
+    sponsor: 'SYNTH PEO Sustainment',
+    contract_number: 'SYNTH-W91-26-C-0105',
+    classification_level: 'UNCLASSIFIED',
+    status: 'ACTIVE',
+    objective_id: 'SYNTH-SO-03',
+    fiscal_year: 'FY 2028',
+    lifecycle_cost_estimate: 500000,
+    obligation_plan: [{ period: 'FY 2028', planned_amount: 500000 }],
+    performance_baseline: [
+      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'depot throughput', baseline_value: 'standing-program throughput targets to be defined' },
+    ],
+  },
 ];
 
 // ============================================================
@@ -301,6 +542,14 @@ export const SYNTH_PPBE_OBLIGATIONS: ObligationRecord[] = [
   ob('SYNTH-OB-E2', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 60000, '2026-06-20T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E3', 'SYNTH-PRG-ECHO', 'SYNTH-CC-151', 90000, '2026-07-04T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E4', 'SYNTH-PRG-ECHO', 'SYNTH-CC-151', 68000, '2026-07-11T14:00:00Z', 'SYNTH M. Hale'),
+
+  // ── FY 2025 close-out obligations (Prior Year) ────────────────────────────────
+  // All September 2025 timestamps → synthPeriodForTimestamp maps to 'FY 2025 Q4'
+  // (month=9 → Q4, year=2025 → FY 2025). ECHO had no FY2025 record.
+  ob('SYNTH-OB-A9',  'SYNTH-PRG-ALPHA',   'SYNTH-CC-110', 740000, '2025-09-30T14:00:00Z', 'SYNTH A. Vance'),
+  ob('SYNTH-OB-B6',  'SYNTH-PRG-BRAVO',   'SYNTH-CC-120', 510000, '2025-09-25T14:00:00Z', 'SYNTH R. Okafor'),
+  ob('SYNTH-OB-C6',  'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 275000, '2025-09-20T14:00:00Z', 'SYNTH R. Okafor'),
+  ob('SYNTH-OB-D7',  'SYNTH-PRG-DELTA',   'SYNTH-CC-140', 530000, '2025-09-15T14:00:00Z', 'SYNTH M. Hale'),
 ];
 
 // ============================================================
@@ -449,6 +698,12 @@ export const SYNTH_PPBE_FINDINGS: EvaluationFinding[] = [
   ef('SYNTH-EF-E2', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Obligations exceeded the lifecycle estimate in July; finding recorded but never routed to planning.', false),
   ef('SYNTH-EF-E3', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Scheduler adoption is voluntary and uneven across shifts; not before any planning forum.', false),
   ef('SYNTH-EF-E4', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Depot staff report double-entry against the legacy tool; unrouted.', false),
+
+  // ── FY 2025 evaluation findings (Prior Year close-out) ───────────────────────
+  // Only ALPHA and BRAVO have explicit FY2025 findings per the content draft.
+  // CHARLIE and DELTA FY2025 had no notable findings — closed out on plan.
+  ef('SYNTH-EF-A0', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'on-track', 'Interchange throughput met every quarterly baseline; no corrective action needed entering FY2026.', true),
+  ef('SYNTH-EF-B0', 'SYNTH-PRG-BRAVO', 'SYNTH-SO-02', 'on-track', 'No compliance or execution issues identified. Baseline established for FY2026 scope expansion.', true),
 ];
 
 // ============================================================

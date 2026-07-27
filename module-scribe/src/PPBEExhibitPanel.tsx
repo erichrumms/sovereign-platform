@@ -46,8 +46,10 @@ const EXHIBIT_SYSTEM_PROMPT = exhibitPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, ""
 
 type AgentStatus = "idle" | "running" | "done";
 
-// Use the first seeded PPBE program as the demonstration target.
-const DEMO_PROGRAM = SYNTH_PPBE_PROGRAMS[0];
+// Use the ALPHA FY2027 record as the demonstration target (Budget Year — forward-facing).
+const DEMO_PROGRAM = SYNTH_PPBE_PROGRAMS.find(
+  (p) => p.program_id === 'SYNTH-PRG-ALPHA' && p.fiscal_year === 'FY 2027'
+) ?? SYNTH_PPBE_PROGRAMS[0];
 const DEMO_OBLIGATIONS = SYNTH_PPBE_OBLIGATIONS.filter(
   (o) => o.program_id === DEMO_PROGRAM?.program_id
 );

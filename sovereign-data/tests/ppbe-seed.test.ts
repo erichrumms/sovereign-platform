@@ -10,6 +10,7 @@
 import {
   SYNTH_PPBE_AS_OF,
   SYNTH_PPBE_PERIODS,
+  fiscalYearOfTimestamp,
   synthPeriodForTimestamp,
   SYNTH_PPBE_OBJECTIVES,
   SYNTH_PPBE_PROGRAMS,
@@ -24,6 +25,13 @@ import {
   validateDependencyMap,
   validateBudgetExhibit,
 } from '../src';
+
+/** FY2026 obligations only — used for anomaly tests that assert exact per-year figures. */
+function obligationsFY2026(programId: string): number {
+  return SYNTH_PPBE_OBLIGATIONS.filter(
+    (o) => o.program_id === programId && fiscalYearOfTimestamp(o.timestamp) === 'FY 2026'
+  ).reduce((sum, o) => sum + o.amount, 0);
+}
 
 function totalObligated(programId: string): number {
   return SYNTH_PPBE_OBLIGATIONS.filter((o) => o.program_id === programId).reduce(
@@ -52,10 +60,11 @@ describe('every seeded record is a valid entity instance', () => {
 });
 
 describe('the portfolio shape (goal item 1)', () => {
-  it('holds five programs across three objectives', () => {
-    expect(SYNTH_PPBE_PROGRAMS).toHaveLength(5);
+  it('holds five programs in FY2026 (the current year) across three objectives', () => {
+    const fy2026 = SYNTH_PPBE_PROGRAMS.filter((p) => p.fiscal_year === 'FY 2026');
+    expect(fy2026).toHaveLength(5);
     expect(SYNTH_PPBE_OBJECTIVES).toHaveLength(3);
-    const objectivesUsed = new Set(SYNTH_PPBE_PROGRAMS.map((p) => p.objective_id));
+    const objectivesUsed = new Set(fy2026.map((p) => p.objective_id));
     expect(objectivesUsed.size).toBe(3);
   });
 
@@ -82,34 +91,41 @@ describe('the portfolio shape (goal item 1)', () => {
 });
 
 describe('internal date consistency (the clock of record)', () => {
-  it('every obligation falls inside a period that exists at the clock, and none is future-dated', () => {
+  it('every obligation is before the clock of record, maps to a valid FY period, and that period exists in the matching year\'s program plan', () => {
     for (const ob of SYNTH_PPBE_OBLIGATIONS) {
       expect(ob.timestamp < SYNTH_PPBE_AS_OF).toBe(true);
       const period = synthPeriodForTimestamp(ob.timestamp);
-      expect(SYNTH_PPBE_PERIODS).toContain(period);
-      // The program's plan actually has that period.
-      const program = SYNTH_PPBE_PROGRAMS.find((p) => p.program_id === ob.program_id)!;
-      expect(program.obligation_plan.some((e) => e.period === period)).toBe(true);
+      // Period must be a well-formed fiscal-year quarter string (multi-year aware).
+      expect(period).toMatch(/^FY 20\d\d Q[1-4]$/);
+      // The program record for this obligation's fiscal year has the period in its plan.
+      const fy = fiscalYearOfTimestamp(ob.timestamp);
+      const program = SYNTH_PPBE_PROGRAMS.find(
+        (p) => p.program_id === ob.program_id && p.fiscal_year === fy
+      );
+      expect(program).toBeDefined();
+      expect(program!.obligation_plan.some((e) => e.period === period)).toBe(true);
     }
   });
 });
 
 describe('the deliberate anomaly examples (goal items 2-4) — exact, never accidental', () => {
-  it('EXACTLY one program exceeds its lifecycle estimate (ECHO, the labeled ADA example)', () => {
-    const exceeded = SYNTH_PPBE_PROGRAMS.filter(
-      (p) => totalObligated(p.program_id) > p.lifecycle_cost_estimate
+  it('EXACTLY one FY2026 program exceeds its FY2026 lifecycle estimate (ECHO, the labeled ADA example)', () => {
+    const fy2026 = SYNTH_PPBE_PROGRAMS.filter((p) => p.fiscal_year === 'FY 2026');
+    const exceeded = fy2026.filter(
+      (p) => obligationsFY2026(p.program_id) > p.lifecycle_cost_estimate
     );
     expect(exceeded.map((p) => p.program_id)).toEqual(['SYNTH-PRG-ECHO']);
-    expect(totalObligated('SYNTH-PRG-ECHO')).toBe(458000); // 153 percent of 300000 (Q1–Q4 total)
+    expect(obligationsFY2026('SYNTH-PRG-ECHO')).toBe(458000); // 153 percent of 300000 (Q1–Q4 total)
   });
 
-  it('EXACTLY one program sits in the ceiling-proximity band (DELTA, 90-100 percent)', () => {
-    const proximate = SYNTH_PPBE_PROGRAMS.filter((p) => {
-      const pct = (totalObligated(p.program_id) / p.lifecycle_cost_estimate) * 100;
+  it('EXACTLY one FY2026 program sits in the ceiling-proximity band (DELTA, 90-100 percent)', () => {
+    const fy2026 = SYNTH_PPBE_PROGRAMS.filter((p) => p.fiscal_year === 'FY 2026');
+    const proximate = fy2026.filter((p) => {
+      const pct = (obligationsFY2026(p.program_id) / p.lifecycle_cost_estimate) * 100;
       return pct >= 90 && pct <= 100;
     });
     expect(proximate.map((p) => p.program_id)).toEqual(['SYNTH-PRG-DELTA']);
-    expect(totalObligated('SYNTH-PRG-DELTA')).toBe(485000); // 97 percent of 500000 (Q1–Q4 total)
+    expect(obligationsFY2026('SYNTH-PRG-DELTA')).toBe(485000); // 97 percent of 500000 (Q1–Q4 total)
   });
 
   it('BRAVO under-executes and CHARLIE over-executes Q3 beyond the ten percent threshold; ALPHA and DELTA stay inside it', () => {
@@ -132,9 +148,10 @@ describe('the deliberate anomaly examples (goal items 2-4) — exact, never acci
     expect(deviation('SYNTH-PRG-DELTA')).toBeLessThan(10);
   });
 
-  it('the learning loop: 13 of 20 findings feed planning; ECHO is the stalled program (3 of 4 not feeding)', () => {
-    expect(SYNTH_PPBE_FINDINGS).toHaveLength(20);
-    expect(SYNTH_PPBE_FINDINGS.filter((f) => f.feeds_planning_cycle)).toHaveLength(13);
+  it('the learning loop: 15 of 22 findings feed planning; ECHO is the stalled program (3 of 4 not feeding)', () => {
+    // 20 FY2026 findings + 2 FY2025 close-out findings (ALPHA and BRAVO, both feeds_planning_cycle: true)
+    expect(SYNTH_PPBE_FINDINGS).toHaveLength(22);
+    expect(SYNTH_PPBE_FINDINGS.filter((f) => f.feeds_planning_cycle)).toHaveLength(15);
     const echo = SYNTH_PPBE_FINDINGS.filter((f) => f.program_id === 'SYNTH-PRG-ECHO');
     expect(echo).toHaveLength(4);
     expect(echo.filter((f) => !f.feeds_planning_cycle)).toHaveLength(3);

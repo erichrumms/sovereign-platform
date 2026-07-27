@@ -45,7 +45,7 @@ export const SYNTH_PPBE_EVENT_COUNTS: PPBEEventCounts = {
   PPBE_PHASE_TRANSITION: 5,
   PPBE_DECISION: 5,
   PPBE_ANOMALY: 10,
-  PPBE_EVALUATION_FINDING: 20,
+  PPBE_EVALUATION_FINDING: 22, // 20 FY2026 + 2 FY2025 close-out findings (WG-6, Session 70)
 };
 
 /** Group obligation amounts into per-period actuals for one program. */

@@ -68,7 +68,7 @@ export interface ClearCertificationQueueProps {
 export const CLEAR_DEMO_ITEMS: ClearEvaluationInput[] = [
   {
     document_id: "DOC-A11-FY26-OM",
-    document_name: "FY 2026 O&M Budget Exhibit",
+    document_name: "FY 2027 O&M Budget Exhibit",
     document_type: "OMB A-11 Exhibit",
     data_quality_index: 96,
     is_congressional_submission: false,
@@ -92,7 +92,7 @@ export const CLEAR_DEMO_ITEMS: ClearEvaluationInput[] = [
   },
   {
     document_id: "DOC-CONG-JUST",
-    document_name: "FY 2026 Congressional Justification",
+    document_name: "FY 2027 Congressional Justification",
     document_type: "Congressional Justification",
     data_quality_index: 87, // below threshold on a congressional submission → P1 (red)
     is_congressional_submission: true,
