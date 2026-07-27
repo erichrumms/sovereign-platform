@@ -15,7 +15,11 @@
  * Expired approval requests are auto-rejected with an AGENT_ACTION_EXPIRED system event by
  * a live sweep — on mount and on an interval while the screen is open (WG-5, Session 54).
  *
- * Version: 2.2 (live session-store subscription — D1, docs/30 §2) · Session 61 · July 23, 2026
+ * Session 70 (WH-32):
+ *   confirmBannerStyle is now conditional on lastDecision.action: APPROVE=green,
+ *   REJECT=red, ESCALATE=amber — matching ApprovalDecisionPanel's color scheme.
+ *
+ * Version: 2.3 · Session 70 · July 27, 2026 (WH-32: decision-outcome banner color)
  */
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -207,9 +211,9 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
       ) : (
         <div style={stackStyle}>
           {lastDecision && (
-            <div role="status" style={confirmBannerStyle}>
+            <div role="status" style={confirmBannerStyleFor(lastDecision.action)}>
               Decision recorded: <strong>{lastDecision.action}</strong> · {lastDecision.agentId} ({lastDecision.actionType})
-              <button type="button" onClick={() => setLastDecision(null)} style={dismissStyle} aria-label="Dismiss">✕</button>
+              <button type="button" onClick={() => setLastDecision(null)} style={dismissStyleFor(lastDecision.action)} aria-label="Dismiss">✕</button>
             </div>
           )}
           {expiredRequestCount > 0 && (
@@ -301,14 +305,17 @@ const errorStyle: CSSProperties = {
   margin: "0 0 12px", padding: "8px 10px", borderRadius: 8, background: "#fef2f2",
   border: "1px solid #fecaca", color: "#991b1b", fontSize: 12, maxWidth: 720,
 };
-const confirmBannerStyle: CSSProperties = {
-  display: "flex", alignItems: "center", justifyContent: "space-between",
-  padding: "8px 12px", borderRadius: 8, background: "#f0fdf4",
-  border: "1px solid #bbf7d0", color: "#166534", fontSize: 13, maxWidth: 720,
-};
-const dismissStyle: CSSProperties = {
-  background: "none", border: "none", cursor: "pointer", color: "#166534", fontWeight: 700, padding: "0 4px",
-};
+function confirmBannerStyleFor(action: string): CSSProperties {
+  const approve  = { background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534" };
+  const reject   = { background: "#fef2f2", border: "1px solid #fecaca", color: "#991b1b" };
+  const escalate = { background: "#fffbeb", border: "1px solid #fde68a", color: "#92400e" };
+  const palette  = action === "REJECT" ? reject : action === "ESCALATE" ? escalate : approve;
+  return { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", borderRadius: 8, fontSize: 13, maxWidth: 720, ...palette };
+}
+function dismissStyleFor(action: string): CSSProperties {
+  const color = action === "REJECT" ? "#991b1b" : action === "ESCALATE" ? "#92400e" : "#166534";
+  return { background: "none", border: "none", cursor: "pointer", color, fontWeight: 700, padding: "0 4px" };
+}
 const expiredNoticeStyle: CSSProperties = {
   margin: 0, padding: "7px 12px", borderRadius: 8, background: "#fffbeb",
   border: "1px solid #fde68a", color: "#92400e", fontSize: 12, maxWidth: 720,
