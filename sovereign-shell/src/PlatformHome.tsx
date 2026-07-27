@@ -32,7 +32,13 @@
  *   WH-6: ModuleOrientationPanel receives all modules (not just accessible), shows locked
  *          modules with a role-requirement explanation — matches the sidebar pattern.
  *
- * Version: 2.2 · Session 64 (WH-3, WH-2, WH-4, WH-6) · July 25, 2026
+ * Session 70 (WH-31):
+ *   ModuleOrientationPanel and the hardcoded WorkQueueModuleGroup section merged into a
+ *   single ModuleStatusPanel driven by modules.map(). Locked rows unchanged. Clear rows
+ *   unchanged. Pending modules now show WorkQueueTile cards inline beneath the nav button.
+ *   Work Scope section conditioned on canSeeProgramData (Module Orientation moved out).
+ *
+ * Version: 2.3 · Session 70 · July 27, 2026 (WH-31: merge Module Orientation → To Do / Review)
  */
 
 import { useEffect, useState, type CSSProperties } from "react";
@@ -213,114 +219,90 @@ function WorkQueueTile({ summary }: { summary: WorkQueueSummary }): JSX.Element 
   );
 }
 
-function WorkQueueModuleGroup({
-  moduleId,
-  label,
-  summaries,
-}: {
-  moduleId: string;
-  label: string;
-  summaries: readonly WorkQueueSummary[];
-}): JSX.Element {
-  const relevant = summaries.filter((s) => s.module_id === moduleId);
-  if (relevant.length === 0) return <></>;
-  return (
-    <div style={workQueueGroupStyle}>
-      <span style={workQueueGroupLabelStyle}>{label}</span>
-      <div style={workQueueGroupTilesStyle}>
-        {relevant.map((s) => (
-          <WorkQueueTile key={s.queue_label} summary={s} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ModuleOrientationPanel({
+function ModuleStatusPanel({
   modules,
   workQueues,
   isAccessible = () => false,
   onNavigate,
 }: {
   modules: RegisteredModuleView[];
-  /** Live queue summaries from WorkQueueSurface (D2/WG-7). */
   workQueues: readonly WorkQueueSummary[];
-  /** WH-6: used to show locked modules with a role-requirement explanation. */
   isAccessible?: (m: RegisteredModuleView) => boolean;
-  /** GD-27 navigation callback (D3). Accessible module rows are clickable when provided. */
   onNavigate?: (moduleId: string) => void;
 }): JSX.Element {
+  if (modules.length === 0) {
+    return (
+      <div style={emptyStateBoxStyle}>
+        <span style={{ fontSize: 13, color: "#64748b" }}>
+          No modules registered on this platform.
+        </span>
+      </div>
+    );
+  }
   return (
-    <div style={subPanelStyle}>
-      <h3 style={subPanelTitleStyle}>Module Orientation</h3>
-      {modules.length === 0 ? (
-        <p style={emptyTextStyle}>No modules registered on this platform.</p>
-      ) : (
-        <ul style={moduleListStyle}>
-          {modules.map((m) => {
-            const accessible = isAccessible(m);
-            const shortId = m.moduleId.replace("module-", "");
-            const moduleQueues = workQueues.filter((q) => q.module_id === shortId);
-            const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
-            const highestSeverity = moduleQueues.find((q) => q.highest_severity)?.highest_severity ?? null;
-            const countColor =
-              highestSeverity === "P1" ? "#7f1d1d"
-              : highestSeverity === "P2" ? "#92400e"
-              : "#0c4a6e";
+    <ul style={moduleListStyle}>
+      {modules.map((m) => {
+        const accessible = isAccessible(m);
+        const shortId = m.moduleId.replace("module-", "");
+        const moduleQueues = workQueues.filter((q) => q.module_id === shortId && q.count > 0);
+        const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
 
-            if (!accessible) {
-              return (
-                <li key={m.moduleId} style={{ ...moduleItemStyle, opacity: 0.55 }}>
-                  <span style={moduleNameStyle}>{m.displayName}</span>
-                  <span style={{ ...moduleLabelStyle, display: "flex", alignItems: "center", gap: 4 }}>
-                    <span aria-hidden="true">🔒</span>
-                    <span>Requires {m.minimumRole.filter((r) => r !== "SYSTEM_ADMIN").join(" or ")}</span>
-                  </span>
-                </li>
-              );
-            }
+        if (!accessible) {
+          return (
+            <li key={m.moduleId} style={{ ...moduleItemStyle, opacity: 0.55 }}>
+              <span style={moduleNameStyle}>{m.displayName}</span>
+              <span style={{ ...moduleLabelStyle, display: "flex", alignItems: "center", gap: 4 }}>
+                <span aria-hidden="true">🔒</span>
+                <span>Requires {m.minimumRole.filter((r) => r !== "SYSTEM_ADMIN").join(" or ")}</span>
+              </span>
+            </li>
+          );
+        }
 
-            const rowContent = (
-              <>
+        if (totalCount === 0) {
+          return onNavigate ? (
+            <li key={m.moduleId} style={{ ...moduleItemStyle, padding: 0 }}>
+              <button
+                type="button"
+                onClick={() => onNavigate(m.moduleId)}
+                aria-label={`Navigate to ${m.displayName}`}
+                style={moduleNavButtonStyle}
+              >
                 <span style={moduleNameStyle}>{m.displayName}</span>
-                {totalCount > 0 ? (
-                  <span
-                    style={{
-                      ...moduleLabelStyle,
-                      fontWeight: 700,
-                      color: countColor,
-                    }}
-                    aria-label={`${totalCount} queue item${totalCount !== 1 ? "s" : ""} pending`}
-                  >
-                    {totalCount} pending
-                    {highestSeverity ? ` · ${highestSeverity}` : ""}
-                  </span>
-                ) : (
-                  <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
-                )}
-              </>
-            );
+                <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
+              </button>
+            </li>
+          ) : (
+            <li key={m.moduleId} style={moduleItemStyle}>
+              <span style={moduleNameStyle}>{m.displayName}</span>
+              <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
+            </li>
+          );
+        }
 
-            return onNavigate ? (
-              <li key={m.moduleId} style={{ ...moduleItemStyle, padding: 0 }}>
-                <button
-                  type="button"
-                  onClick={() => onNavigate(m.moduleId)}
-                  aria-label={`Navigate to ${m.displayName}`}
-                  style={moduleNavButtonStyle}
-                >
-                  {rowContent}
-                </button>
-              </li>
+        return (
+          <li key={m.moduleId} style={modulePendingItemStyle}>
+            {onNavigate ? (
+              <button
+                type="button"
+                onClick={() => onNavigate(m.moduleId)}
+                aria-label={`Navigate to ${m.displayName}`}
+                style={moduleNavButtonPendingStyle}
+              >
+                <span style={moduleNameStyle}>{m.displayName}</span>
+              </button>
             ) : (
-              <li key={m.moduleId} style={moduleItemStyle}>
-                {rowContent}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+              <span style={moduleNameStyle}>{m.displayName}</span>
+            )}
+            <div style={workQueueGroupTilesStyle}>
+              {moduleQueues.map((s) => (
+                <WorkQueueTile key={s.queue_label} summary={s} />
+              ))}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -390,6 +372,7 @@ export function PlatformHome({
     const mod = modules.find((m) => m.moduleId === `module-${q.module_id}`);
     return mod ? isAccessible(mod) : false;
   });
+  const totalPending = accessibleQueues.reduce((n, s) => n + s.count, 0);
 
   return (
     <div style={pageStyle}>
@@ -401,28 +384,15 @@ export function PlatformHome({
         </p>
       </header>
 
-      {/* ---- Work Scope ---- */}
-      <section style={sectionStyle} aria-label="Work scope">
-        <div style={sectionHeaderRowStyle}>
-          <h2 style={sectionTitleStyle}>Work Scope</h2>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: canSeeProgramData ? "1fr 1fr" : "1fr",
-            gap: 16,
-            alignItems: "start",
-          }}
-        >
-          {canSeeProgramData && <ProgramHealthPanel programs={programs} />}
-          <ModuleOrientationPanel
-            modules={modules}
-            workQueues={workQueues}
-            isAccessible={isAccessible}
-            onNavigate={(moduleId) => ctx.navigateToModule(moduleId)}
-          />
-        </div>
-      </section>
+      {/* ---- Work Scope — Program Health only (Module Orientation moved to To Do / Review) ---- */}
+      {canSeeProgramData && (
+        <section style={sectionStyle} aria-label="Work scope">
+          <div style={sectionHeaderRowStyle}>
+            <h2 style={sectionTitleStyle}>Work Scope</h2>
+          </div>
+          <ProgramHealthPanel programs={programs} />
+        </section>
+      )}
 
       {/* ---- Issues ---- */}
       <section style={sectionStyle} aria-label="Issues">
@@ -442,31 +412,20 @@ export function PlatformHome({
         )}
       </section>
 
-      {/* ---- To Do / Review — WorkQueueSurface (GD-24, Session 49) ---- */}
+      {/* ---- To Do / Review — merged with Module Orientation (WH-31, Session 70) ---- */}
       <section style={sectionStyle} aria-label="To do and review">
         <div style={sectionHeaderRowStyle}>
           <h2 style={sectionTitleStyle}>To Do / Review</h2>
-          {accessibleQueues.length > 0 && (
-            <span style={issueCountBadgeStyle}>
-              {accessibleQueues.reduce((n, s) => n + s.count, 0)} items
-            </span>
+          {totalPending > 0 && (
+            <span style={issueCountBadgeStyle}>{totalPending} items</span>
           )}
         </div>
-        {accessibleQueues.length === 0 ? (
-          <div style={emptyStateBoxStyle}>
-            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
-            <span style={{ fontSize: 13, color: "#166534" }}>
-              No pending reviews — queues are clear, or no accessible modules have published yet.
-            </span>
-          </div>
-        ) : (
-          <div style={workQueueSectionStyle}>
-            <WorkQueueModuleGroup moduleId="vigil" label="VIGIL" summaries={accessibleQueues} />
-            <WorkQueueModuleGroup moduleId="scribe" label="SCRIBE" summaries={accessibleQueues} />
-            <WorkQueueModuleGroup moduleId="aria" label="ARIA" summaries={accessibleQueues} />
-            <WorkQueueModuleGroup moduleId="nexus" label="NEXUS" summaries={accessibleQueues} />
-          </div>
-        )}
+        <ModuleStatusPanel
+          modules={modules}
+          workQueues={workQueues}
+          isAccessible={isAccessible}
+          onNavigate={(moduleId) => ctx.navigateToModule(moduleId)}
+        />
       </section>
     </div>
   );
@@ -665,27 +624,25 @@ const moduleNavButtonStyle: CSSProperties = {
   textAlign: "left",
 };
 
-const workQueueSectionStyle: CSSProperties = {
+const modulePendingItemStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 12,
+  gap: 8,
+  padding: "4px 0 8px",
+  borderBottom: "1px solid #f1f5f9",
 };
 
-const workQueueGroupStyle: CSSProperties = {
-  border: "1px solid #e2e8f0",
-  borderRadius: 8,
-  padding: "10px 12px",
-  background: "#ffffff",
-};
-
-const workQueueGroupLabelStyle: CSSProperties = {
-  display: "block",
-  fontSize: 10,
-  fontWeight: 700,
-  letterSpacing: 0.8,
-  textTransform: "uppercase",
-  color: "#64748b",
-  marginBottom: 8,
+const moduleNavButtonPendingStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 8,
+  padding: "4px 0 0",
+  width: "100%",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  fontFamily: "system-ui, sans-serif",
+  textAlign: "left",
 };
 
 const workQueueGroupTilesStyle: CSSProperties = {
