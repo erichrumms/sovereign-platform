@@ -16,11 +16,12 @@
  * dependencyHealthIndex(), actualsForProgram(), sitesForProgram(), and
  * statusFromObligationRate() — no parallel implementations.
  *
- * Version: 1.0 · Session 57 · July 23, 2026
+ * Version: 1.1 · Session 70 · July 27, 2026 (WH-30: shared currency formatter)
  */
 
 import type { CSSProperties } from "react";
 import type { DependencyMap } from "@sovereign/data";
+import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 import {
   rootStyle,
   contentCardStyle,
@@ -141,11 +142,11 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
           <tbody>
             <tr>
               <td style={tdLabelStyle}>Planned total</td>
-              <td style={tdValueStyle}>{obligationMetric.planned_total.toLocaleString()}</td>
+              <td style={tdValueStyle}>{formatCurrency(obligationMetric.planned_total)}</td>
             </tr>
             <tr>
               <td style={tdLabelStyle}>Obligated total</td>
-              <td style={tdValueStyle}>{obligationMetric.obligated_total.toLocaleString()}</td>
+              <td style={tdValueStyle}>{formatCurrency(obligationMetric.obligated_total)}</td>
             </tr>
           </tbody>
         </table>
@@ -170,8 +171,8 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
               {variances.map((v) => (
                 <tr key={v.period}>
                   <td style={tdStyle}>{v.period}</td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>{v.planned_amount.toLocaleString()}</td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>{v.actual_amount.toLocaleString()}</td>
+                  <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.planned_amount)}</td>
+                  <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.actual_amount)}</td>
                   <td
                     style={{
                       ...tdStyle,
@@ -181,8 +182,8 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
                     }}
                   >
                     {v.variance > 0
-                      ? `+${v.variance.toLocaleString()}`
-                      : v.variance.toLocaleString()}
+                      ? `+${formatCurrency(v.variance)}`
+                      : formatCurrency(v.variance)}
                   </td>
                 </tr>
               ))}
@@ -250,10 +251,10 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
                   <td style={tdStyle}>{s.site_name}</td>
                   <td style={tdStyle}>{s.region}</td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
-                    {s.obligations_to_date.toLocaleString()}
+                    {formatCurrency(s.obligations_to_date)}
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
-                    {s.planned_amount.toLocaleString()}
+                    {formatCurrency(s.planned_amount)}
                   </td>
                   <td style={tdStyle}>
                     <span style={{ color: statusFill(s.status), fontWeight: 600 }}>

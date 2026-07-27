@@ -33,7 +33,7 @@
  * health now ALSO renders the individual records (which handoff, which
  * status) below the counts — the counts table and its reasoning are unchanged.
  *
- * Version: 1.2 · Session 54 · July 22, 2026
+ * Version: 1.3 · Session 70 · July 27, 2026 (WH-30: shared currency formatter)
  */
 
 import type { CSSProperties } from "react";
@@ -51,6 +51,7 @@ import {
   type TooltipContentProps,
 } from "recharts";
 
+import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 import {
   rootStyle,
   contentCardStyle,
@@ -276,7 +277,7 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis dataKey="label" tick={{ fontSize: 10, angle: -30, textAnchor: "end" }} height={48} />
-            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
+            <YAxis tick={{ fontSize: 11 }} tickFormatter={formatCurrency} />
             <Tooltip content={NarrativeTooltip} />
             {/* WG-4 (Session 54): explicit legend content — the order is now
                 deterministic (Planned, then Actual — matching the bar-body order)
@@ -436,8 +437,8 @@ function SiteBreakdownSection({ names }: { names: Record<string, string> }): JSX
                 <td style={tdStyle}>{names[s.program_id] ?? s.program_id}</td>
                 <td style={tdStyle}>{s.site_name}</td>
                 <td style={tdStyle}>{s.region}</td>
-                <td style={{ ...tdStyle, textAlign: "right" }}>{s.obligations_to_date.toLocaleString()}</td>
-                <td style={{ ...tdStyle, textAlign: "right" }}>{s.planned_amount.toLocaleString()}</td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(s.obligations_to_date)}</td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(s.planned_amount)}</td>
                 <td style={tdStyle}>
                   <span style={{ color: statusFill(st), fontWeight: 600 }}>{statusLabel(st)}</span>
                 </td>

@@ -22,10 +22,11 @@
  *     NOTE: this note is AUDIT-ONLY — it is NOT fed into the draft. The draft is
  *     grounded in TravelRequest + ComplianceFlag data only (governed factual data).
  *
- * Version: 1.1 · Session 30 · July 12, 2026
+ * Version: 1.2 · Session 70 · July 27, 2026 (WH-30: shared currency formatter)
  */
 
 import { useState, type CSSProperties } from "react";
+import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 
 import type { SubmittedTravelItem, SubmittedTimeItem, UseTTIntake } from "./useTTIntake";
 import type { TravelComplianceFinding } from "./tt-travel-compliance-engine";
@@ -109,7 +110,7 @@ export function TravelQueueRow({ item, tt }: { item: SubmittedTravelItem; tt: Tr
   return (
     <div data-testid={`tt-queue-travel-${request.request_id}`} style={cardStyle}>
       <div style={cardHeadStyle}>
-        <strong>{request.request_id}</strong> · {request.destination} · {request.total_cost} total ·{" "}
+        <strong>{request.request_id}</strong> · {request.destination} · {formatCurrency(request.total_cost)} total ·{" "}
         <span style={tierStyle(finding.routing_tier)}>{finding.routing_tier}</span> · authority{" "}
         {finding.required_authority} · status <strong>{request.status}</strong>
       </div>
