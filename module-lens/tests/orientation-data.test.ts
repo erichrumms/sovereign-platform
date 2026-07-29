@@ -27,8 +27,24 @@ describe("orientation knowledge base", () => {
     expect(getOrientation("LENS")).toBeNull();
   });
 
-  it("does not fabricate agent activity inside primary products", () => {
-    expect(PRODUCT_ORIENTATIONS.every((o) => o.active_agents.length === 0)).toBe(true);
+  // WH-44 (Session 73): active_agents populated from real Agent_Identity_Standard.md registry.
+  // Each primary product must list at least its own registered agents.
+  it("lists real registered agents for every primary product", () => {
+    expect(PRODUCT_ORIENTATIONS.every((o) => o.active_agents.length > 0)).toBe(true);
+  });
+
+  it("includes FLOWPATH's six registered agents", () => {
+    const o = getOrientation("FLOWPATH")!;
+    expect(o.active_agents).toContain("flowpath.coordinator");
+    expect(o.active_agents).toContain("flowpath.domain-translator");
+    expect(o.active_agents).toHaveLength(6);
+  });
+
+  it("includes AGENTOS core and orchestration agents", () => {
+    const o = getOrientation("AGENTOS")!;
+    expect(o.active_agents).toContain("agentos.orchestrator");
+    expect(o.active_agents).toContain("agentos.deployer");
+    expect(o.active_agents).toHaveLength(9);
   });
 });
 

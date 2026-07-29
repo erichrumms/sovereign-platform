@@ -30,10 +30,11 @@ describe("PipelineNavigator", () => {
     expect(screen.getByRole("heading", { name: "CPMI", level: 3 })).toBeInTheDocument();
   });
 
-  it("is honest that no AI agents run inside primary products yet", () => {
+  // WH-44 (Session 73): active_agents now populated from the real registry.
+  it("shows real registered agents for a primary product", () => {
     render(<PipelineNavigator ctx={makeCtx({ currentPath: "/nexus" })} />);
     expect(screen.getByLabelText("NEXUS orientation")).toHaveTextContent(
-      /No AI agents are registered inside this product yet/i
+      /nexus\.classification-agent/i
     );
   });
 });

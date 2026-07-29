@@ -10,11 +10,16 @@
  * §3): it does not cross product boundaries or require canonical validation. The
  * Pipeline Navigator makes NO LLM call; it renders from this static data (spec §2.2).
  *
- * `active_agents` is honestly empty for the primary products: the registered agents
- * to date are all companion-module agents (COUNSEL/SCRIBE/VIGIL/LENS), none mounted
- * inside a primary product. LENS does not fabricate agent activity that does not exist.
+ * `active_agents` lists the registered agent_ids for each product, sourced directly
+ * from Agent_Identity_Standard.md (authoritative registry, 44 total as of Session 73).
+ * Cross-product workflow-layer agents (PPBE, T&T) are attributed to their primary host
+ * product. Companion-module agents (COUNSEL/SCRIBE/VIGIL/LENS) are not primary pipeline
+ * products and do not appear in PIPELINE_ORDER — they have no orientation entry.
  *
- * Version: 1.0 · Session 8 · June 22, 2026
+ * WH-44 (Session 73): populated from real registry data; prior version had all arrays
+ * empty because it was written before the primary-product agents were registered.
+ *
+ * Version: 1.1 · Session 73 · July 29, 2026 (WH-44: wire to real agent registry data)
  */
 
 import type { SovereignProduct } from "../../sovereign-shell/shell-contract";
@@ -47,7 +52,15 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: [],
     user_action:
       "Map and validate workflow steps into VVRs. Pre-work captured elsewhere arrives here as session context to be encoded.",
-    active_agents: [],
+    // flowpath.* — 6 agents (Agent_Identity_Standard.md, FLOWPATH section)
+    active_agents: [
+      "flowpath.coordinator",
+      "flowpath.interviewer",
+      "flowpath.mapper",
+      "flowpath.validator",
+      "flowpath.analyzer",
+      "flowpath.domain-translator",
+    ],
   },
   {
     product: "CPMI",
@@ -57,7 +70,12 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["FLOWPATH"],
     user_action:
       "Review governance recommendations and gate status. Gate 3 decisions are human-owned.",
-    active_agents: [],
+    // cpmi.* — 3 agents (Agent_Identity_Standard.md, CPMI section)
+    active_agents: [
+      "cpmi.reasoning-chain",
+      "cpmi.world-model-api",
+      "cpmi.vrs-certification",
+    ],
   },
   {
     product: "AGENTOS",
@@ -67,7 +85,18 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["CPMI"],
     user_action:
       "Agent execution is orchestrated here; human-required authorizations surface in VIGIL's Agent Approval Queue.",
-    active_agents: [],
+    // agentos.* — 9 agents: 6 core + 3 orchestration (Agent_Identity_Standard.md, AgentOS sections)
+    active_agents: [
+      "agentos.orchestrator",
+      "agentos.data-agent",
+      "agentos.training-agent",
+      "agentos.evaluation-agent",
+      "agentos.monitoring-agent",
+      "agentos.compliance-agent",
+      "agentos.deployer",
+      "agentos.exporter",
+      "agentos.configurator",
+    ],
   },
   {
     product: "NEXUS",
@@ -77,7 +106,16 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["CPMI", "AGENTOS"],
     user_action:
       "Manage tasks and correspondence. Drafts prepared in SCRIBE export into NEXUS task intake.",
-    active_agents: [],
+    // 2 native nexus agents + PPBE and T&T layer agents whose primary host is NEXUS
+    active_agents: [
+      "nexus.classification-agent",
+      "nexus.routing-agent",
+      "ppbe-dependency-tracker",
+      "ppbe-coordination-assistant",
+      "tt.travel-compliance-engine",
+      "tt.travel-router",
+      "tt.time-compliance-engine",
+    ],
   },
   {
     product: "APEX",
@@ -87,7 +125,16 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["CPMI", "AGENTOS"],
     user_action:
       "Generate and review reports. Management commentary drafted in SCRIBE exports into APEX report sections.",
-    active_agents: [],
+    // 2 native apex agents + PPBE and T&T layer agents whose primary host is APEX
+    active_agents: [
+      "apex.ai-assistant",
+      "apex.report-generator",
+      "ppbe-ledger-monitor",
+      "ppbe-evidence-synthesizer",
+      "ppbe-scenario-analyst",
+      "tt.pattern-analyst",
+      "tt.audit-reporter",
+    ],
   },
   {
     product: "ARIA",
@@ -97,7 +144,8 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["NEXUS", "APEX"],
     user_action:
       "Adjudicate compliance and maintain rules. Execution-layer decisions are human-only; only rule maintenance accepts drafted proposals.",
-    active_agents: [],
+    // 1 agent — deterministic rule evaluation only, no LLM (Agent_Identity_Standard.md, ARIA section)
+    active_agents: ["aria.rules-engine"],
   },
 ];
 
