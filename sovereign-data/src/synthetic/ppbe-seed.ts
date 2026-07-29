@@ -35,9 +35,11 @@
  *             OBLIGATION_RATE_DEVIATION.
  *   CHARLIE — over-executing (Q3 actuals 60 percent above plan) →
  *             OBLIGATION_RATE_DEVIATION (above-plan direction).
- *   DELTA   — 95 percent of its lifecycle estimate obligated →
- *             CEILING_PROXIMITY (at the standard 90 percent threshold).
- *   ECHO    — 106 percent of its lifecycle estimate obligated →
+ *   DELTA   — FY2026 alone: 485K of 500K lifecycle (97 percent, CEILING_PROXIMITY);
+ *             combined with FY2025 closeout (530K): 1,015K total → 203 percent →
+ *             CEILING_EXCEEDED (WH-47, Session 73: WG-6 FY2025 data already present).
+ *   ECHO    — 153 percent of its lifecycle estimate obligated (458K against 300K);
+ *             104 percent of the 440K annual plan →
  *             CEILING_EXCEEDED (P1) — THE deliberate ADA-exposure example —
  *             AND a stalled learning loop (3 of 4 findings not feeding
  *             planning) → FEEDBACK_LOOP_STALL.
@@ -691,11 +693,13 @@ export const SYNTH_PPBE_FINDINGS: EvaluationFinding[] = [
   ef('SYNTH-EF-C4', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'variance', 'Vendor staffing churn noted in June; not yet before a planning forum.', false),
   // DELTA — 3 findings, 2 feeding.
   ef('SYNTH-EF-D1', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'on-track', 'Two of four legacy systems retired ahead of schedule.', true),
-  ef('SYNTH-EF-D2', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Front-loaded obligations have consumed 95 percent of the lifecycle estimate with two retirements to go.', true),
+  // WH-47 (Session 73): updated from "95 percent" — combined FY2025 closeout (530K) + FY2026 (485K) = 1,015K against the 500K lifecycle estimate, 203 percent CEILING_EXCEEDED.
+  ef('SYNTH-EF-D2', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Lifecycle obligations total 1,015K against the 500K estimate, 203 percent; program is in closeout with two retirements remaining.', true),
   ef('SYNTH-EF-D3', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Data migration rework in one depot; on the working-group list only.', false),
   // ECHO — 4 findings, ONLY 1 feeding: the stalled learning loop (R-P7).
   ef('SYNTH-EF-E1', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'contradicts-assumption', 'Pilot throughput gains are 1 percent, against the 5 percent planning assumption.', true),
-  ef('SYNTH-EF-E2', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Obligations exceeded the lifecycle estimate in July; finding recorded but never routed to planning.', false),
+  // WH-47 (Session 73): updated to state the rate plainly — 458K obligated against 440K annual plan = 104 percent. No invented cause.
+  ef('SYNTH-EF-E2', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'FY2026 obligations reached 104 percent of plan in July; finding recorded but never routed to planning.', false),
   ef('SYNTH-EF-E3', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Scheduler adoption is voluntary and uneven across shifts; not before any planning forum.', false),
   ef('SYNTH-EF-E4', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Depot staff report double-entry against the legacy tool; unrouted.', false),
 
