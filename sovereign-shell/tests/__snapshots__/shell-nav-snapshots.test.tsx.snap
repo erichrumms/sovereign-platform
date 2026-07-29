@@ -2501,372 +2501,127 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
+          Program Health
+        </h3>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+        >
           <div
-            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-001
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
-                >
-                  On Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
-                  title="82% obligated"
-                />
-              </div>
               <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                82
-                % obligated
+                P-2025-001
               </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
               >
-                On track.
-              </p>
+                On Track
+              </span>
             </div>
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
               <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-002
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
-                >
-                  At Risk
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
-                  title="67% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                67
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                At risk.
-              </p>
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                title="82% obligated"
+              />
             </div>
-            <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-003
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
-                >
-                  Off Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
-                  title="41% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                41
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                Off track.
-              </p>
-            </div>
+              82
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              On track.
+            </p>
           </div>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
+            >
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
+              >
+                P-2025-002
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
+              >
+                At Risk
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            >
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                title="67% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
+            >
+              67
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              At risk.
+            </p>
+          </div>
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to SCRIBE"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  SCRIBE
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
               <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                VIGIL
+                P-2025-003
               </span>
               <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
               >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
+                Off Track
               </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                title="41% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+              41
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to APEX"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  APEX
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to FLOWPATH"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  FLOWPATH
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to ARIA Suite"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  ARIA Suite
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to Reviewer's Workspace"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  Reviewer's Workspace
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-          </ul>
+              Off track.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -2981,19 +2736,238 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to SCRIBE"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              SCRIBE
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            VIGIL
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            CPMI
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            AgentOS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            NEXUS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to APEX"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              APEX
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to FLOWPATH"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              FLOWPATH
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to ARIA Suite"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              ARIA Suite
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to Reviewer's Workspace"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
@@ -3022,269 +2996,6 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
       </p>
     </header>
     <section
-      aria-label="Work scope"
-      style="display: flex; flex-direction: column; gap: 12px;"
-    >
-      <div
-        style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;"
-      >
-        <h2
-          style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgb(71, 85, 105);"
-        >
-          Work Scope
-        </h2>
-      </div>
-      <div
-        style="display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start;"
-      >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
-          >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                VIGIL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to NEXUS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  NEXUS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to ARIA Suite"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  ARIA Suite
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to Reviewer's Workspace"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  Reviewer's Workspace
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-    <section
       aria-label="Issues"
       style="display: flex; flex-direction: column; gap: 12px;"
     >
@@ -3316,19 +3027,242 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            VIGIL
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            CPMI
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            AgentOS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to NEXUS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              NEXUS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            APEX
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to ARIA Suite"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              ARIA Suite
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to Reviewer's Workspace"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
@@ -3357,275 +3291,6 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
       </p>
     </header>
     <section
-      aria-label="Work scope"
-      style="display: flex; flex-direction: column; gap: 12px;"
-    >
-      <div
-        style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;"
-      >
-        <h2
-          style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgb(71, 85, 105);"
-        >
-          Work Scope
-        </h2>
-      </div>
-      <div
-        style="display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start;"
-      >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
-          >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                SCRIBE
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                VIGIL
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                NEXUS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                APEX
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                FLOWPATH
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                ARIA Suite
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-            >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                Reviewer's Workspace
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST or AGENT_OPERATOR
-                </span>
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-    <section
       aria-label="Issues"
       style="display: flex; flex-direction: column; gap: 12px;"
     >
@@ -3657,19 +3322,248 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            SCRIBE
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            VIGIL
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            CPMI
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            AgentOS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            NEXUS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            APEX
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            FLOWPATH
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            ARIA Suite
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            Reviewer's Workspace
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST or AGENT_OPERATOR
+            </span>
+          </span>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
@@ -3711,370 +3605,127 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
+          Program Health
+        </h3>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+        >
           <div
-            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-001
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
-                >
-                  On Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
-                  title="82% obligated"
-                />
-              </div>
               <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                82
-                % obligated
+                P-2025-001
               </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
               >
-                On track.
-              </p>
+                On Track
+              </span>
             </div>
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
               <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-002
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
-                >
-                  At Risk
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
-                  title="67% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                67
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                At risk.
-              </p>
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                title="82% obligated"
+              />
             </div>
-            <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-003
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
-                >
-                  Off Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
-                  title="41% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                41
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                Off track.
-              </p>
-            </div>
+              82
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              On track.
+            </p>
           </div>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
+            >
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
+              >
+                P-2025-002
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
+              >
+                At Risk
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            >
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                title="67% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
+            >
+              67
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              At risk.
+            </p>
+          </div>
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to SCRIBE"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  SCRIBE
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
               <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                VIGIL
+                P-2025-003
               </span>
               <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
               >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
+                Off Track
               </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                title="41% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                CPMI
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+              41
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-              >
-                AgentOS
-              </span>
-              <span
-                style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  🔒
-                </span>
-                <span>
-                  Requires 
-                  PLATFORM_ADMIN
-                </span>
-              </span>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to NEXUS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  NEXUS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to APEX"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  APEX
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to FLOWPATH"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  FLOWPATH
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to ARIA Suite"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  ARIA Suite
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to Reviewer's Workspace"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  Reviewer's Workspace
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-          </ul>
+              Off track.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -4189,19 +3840,236 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to SCRIBE"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              SCRIBE
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            VIGIL
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            CPMI
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
+        >
+          <span
+            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+          >
+            AgentOS
+          </span>
+          <span
+            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
+          >
+            <span
+              aria-hidden="true"
+            >
+              🔒
+            </span>
+            <span>
+              Requires 
+              PLATFORM_ADMIN
+            </span>
+          </span>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to NEXUS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              NEXUS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to APEX"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              APEX
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to FLOWPATH"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              FLOWPATH
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to ARIA Suite"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              ARIA Suite
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to Reviewer's Workspace"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
@@ -4243,364 +4111,127 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
+          Program Health
+        </h3>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+        >
           <div
-            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-001
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
-                >
-                  On Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
-                  title="82% obligated"
-                />
-              </div>
               <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                82
-                % obligated
+                P-2025-001
               </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
               >
-                On track.
-              </p>
+                On Track
+              </span>
             </div>
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
               <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-002
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
-                >
-                  At Risk
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
-                  title="67% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                67
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                At risk.
-              </p>
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                title="82% obligated"
+              />
             </div>
-            <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-003
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
-                >
-                  Off Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
-                  title="41% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                41
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                Off track.
-              </p>
-            </div>
+              82
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              On track.
+            </p>
           </div>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
+            >
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
+              >
+                P-2025-002
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
+              >
+                At Risk
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            >
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                title="67% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
+            >
+              67
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              At risk.
+            </p>
+          </div>
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+                P-2025-003
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
+              >
+                Off Track
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
-              <button
-                aria-label="Navigate to SCRIBE"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  SCRIBE
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                title="41% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <button
-                aria-label="Navigate to VIGIL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  VIGIL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+              41
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
             >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to CPMI"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  CPMI
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to AgentOS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  AgentOS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to NEXUS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  NEXUS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to APEX"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  APEX
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to FLOWPATH"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  FLOWPATH
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to ARIA Suite"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  ARIA Suite
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to Reviewer's Workspace"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  Reviewer's Workspace
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-          </ul>
+              Off track.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -4715,19 +4346,230 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to SCRIBE"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              SCRIBE
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to VIGIL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              VIGIL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to CPMI"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              CPMI
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to AgentOS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              AgentOS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to NEXUS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              NEXUS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to APEX"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              APEX
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to FLOWPATH"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              FLOWPATH
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to ARIA Suite"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              ARIA Suite
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to Reviewer's Workspace"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
@@ -4769,36 +4611,18 @@ exports[`PlatformHome snapshots To Do / Review section shows empty state when no
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
-          <p
-            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
-          >
-            No program data published — APEX populates this when programs are loaded.
-          </p>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+          Program Health
+        </h3>
+        <p
+          style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Module Orientation
-          </h3>
-          <p
-            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
-          >
-            No modules registered on this platform.
-          </p>
-        </div>
+          No program data published — APEX populates this when programs are loaded.
+        </p>
       </div>
     </section>
     <section
@@ -4845,13 +4669,9 @@ exports[`PlatformHome snapshots To Do / Review section shows empty state when no
         style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
         <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+          style="font-size: 13px; color: rgb(100, 116, 139);"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
+          No modules registered on this platform.
         </span>
       </div>
     </section>
@@ -4895,36 +4715,18 @@ exports[`PlatformHome snapshots empty state — no programs, no modules (SYSTEM_
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
-          <p
-            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
-          >
-            No program data published — APEX populates this when programs are loaded.
-          </p>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+          Program Health
+        </h3>
+        <p
+          style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Module Orientation
-          </h3>
-          <p
-            style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
-          >
-            No modules registered on this platform.
-          </p>
-        </div>
+          No program data published — APEX populates this when programs are loaded.
+        </p>
       </div>
     </section>
     <section
@@ -4971,13 +4773,9 @@ exports[`PlatformHome snapshots empty state — no programs, no modules (SYSTEM_
         style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
       >
         <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+          style="font-size: 13px; color: rgb(100, 116, 139);"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
+          No modules registered on this platform.
         </span>
       </div>
     </section>
@@ -5021,364 +4819,127 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
         </h2>
       </div>
       <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;"
+        style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
+        <h3
+          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
         >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
-          >
-            Program Health
-          </h3>
+          Program Health
+        </h3>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+        >
           <div
-            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-001
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
-                >
-                  On Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
-                  title="82% obligated"
-                />
-              </div>
               <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                82
-                % obligated
+                P-2025-001
               </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(220, 252, 231); color: rgb(22, 101, 52); white-space: nowrap; flex-shrink: 0;"
               >
-                On track.
-              </p>
+                On Track
+              </span>
             </div>
             <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
               <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-002
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
-                >
-                  At Risk
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
-                  title="67% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                67
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                At risk.
-              </p>
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                title="82% obligated"
+              />
             </div>
-            <div
-              style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
-              >
-                <span
-                  style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
-                >
-                  P-2025-003
-                </span>
-                <span
-                  style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
-                >
-                  Off Track
-                </span>
-              </div>
-              <div
-                style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
-              >
-                <div
-                  style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
-                  title="41% obligated"
-                />
-              </div>
-              <span
-                style="font-size: 10px; color: rgb(100, 116, 139);"
-              >
-                41
-                % obligated
-              </span>
-              <p
-                style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
-              >
-                Off track.
-              </p>
-            </div>
+              82
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              On track.
+            </p>
           </div>
-        </div>
-        <div
-          style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
-        >
-          <h3
-            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            Module Orientation
-          </h3>
-          <ul
-            style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
+            >
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
+              >
+                P-2025-002
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 249, 195); color: rgb(133, 77, 14); white-space: nowrap; flex-shrink: 0;"
+              >
+                At Risk
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            >
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                title="67% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
+            >
+              67
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
+            >
+              At risk.
+            </p>
+          </div>
+          <div
+            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: rgb(248, 250, 252); display: flex; flex-direction: column; gap: 4px;"
           >
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 6px;"
             >
-              <button
-                aria-label="Navigate to COUNSEL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
+              <span
+                style="font-size: 12px; font-weight: 700; color: rgb(15, 23, 42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; min-width: 0;"
               >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  COUNSEL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+                P-2025-003
+              </span>
+              <span
+                style="padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: rgb(254, 226, 226); color: rgb(127, 29, 29); white-space: nowrap; flex-shrink: 0;"
+              >
+                Off Track
+              </span>
+            </div>
+            <div
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
             >
-              <button
-                aria-label="Navigate to SCRIBE"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  SCRIBE
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+              <div
+                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                title="41% obligated"
+              />
+            </div>
+            <span
+              style="font-size: 10px; color: rgb(100, 116, 139);"
             >
-              <button
-                aria-label="Navigate to VIGIL"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  VIGIL
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+              41
+              % obligated
+            </span>
+            <p
+              style="margin: 4px 0px 0px; font-size: 11px; color: rgb(71, 85, 105); line-height: 1.4;"
             >
-              <button
-                aria-label="Navigate to LENS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  LENS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to CPMI"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  CPMI
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to AgentOS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  AgentOS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to NEXUS"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  NEXUS
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to APEX"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  APEX
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to FLOWPATH"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  FLOWPATH
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to ARIA Suite"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  ARIA Suite
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-            <li
-              style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
-            >
-              <button
-                aria-label="Navigate to Reviewer's Workspace"
-                style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
-                type="button"
-              >
-                <span
-                  style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-                >
-                  Reviewer's Workspace
-                </span>
-                <span
-                  style="font-size: 11px; color: rgb(22, 163, 74);"
-                >
-                  Clear
-                </span>
-              </button>
-            </li>
-          </ul>
+              Off track.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -5493,19 +5054,230 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
           To Do / Review
         </h2>
       </div>
-      <div
-        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgb(240, 253, 244); border-radius: 6px; border: 1px solid #bbf7d0;"
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
-        <span
-          aria-hidden="true"
-          style="width: 8px; height: 8px; border-radius: 50%; background: rgb(34, 197, 94); flex-shrink: 0;"
-        />
-        <span
-          style="font-size: 13px; color: rgb(22, 101, 52);"
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
-          No pending reviews — queues are clear, or no accessible modules have published yet.
-        </span>
-      </div>
+          <button
+            aria-label="Navigate to COUNSEL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              COUNSEL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to SCRIBE"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              SCRIBE
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to VIGIL"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              VIGIL
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to CPMI"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              CPMI
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to AgentOS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              AgentOS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to NEXUS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              NEXUS
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to APEX"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              APEX
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to FLOWPATH"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              FLOWPATH
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to ARIA Suite"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              ARIA Suite
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to Reviewer's Workspace"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>

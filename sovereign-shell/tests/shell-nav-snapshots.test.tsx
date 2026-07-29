@@ -290,12 +290,13 @@ describe("PlatformHome snapshots", () => {
   });
 
   // ---- To Do / Review — WorkQueueSurface (GD-24, Session 49) ----
-  // The placeholder was replaced by real WorkQueueSurface tiles. With no modules
-  // having published yet (empty surface), the section shows the empty-state message.
+  // WH-31 (Session 70): Module Orientation merged into To Do / Review. With no modules
+  // registered (no `modules` prop) the section shows "No modules registered".
+  // The old "No pending reviews" placeholder is gone.
   it("To Do / Review section shows empty state when no modules have published (GD-24)", () => {
     const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN" });
     const { container } = render(<PlatformHome ctx={ctx} />);
-    expect(container.textContent).toContain("No pending reviews");
+    expect(container.textContent).toContain("No modules registered on this platform.");
     expect(container.textContent).not.toContain("wired in a future session");
     expect(container).toMatchSnapshot();
   });

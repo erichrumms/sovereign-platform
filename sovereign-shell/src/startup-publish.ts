@@ -54,9 +54,14 @@ import { publishScribeWorkspaceItems } from "../../module-scribe/src/scribe-work
 import { isScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
 import { ttReviewItemKey } from "../../module-scribe/src/TTManagerReview";
 
-// NEXUS — open PPBE coordination items (the same count PPBECoordinationPanel derives).
+// NEXUS — open PPBE coordination items (the same count PPBECoordinationPanel derives)
+// + routed/escalated travel requests (WH-43: startup-publish now matches VIGIL/ARIA/SCRIBE).
 import { SYNTH_PPBE_COORDINATION_ITEMS } from "../../module-nexus/src/ppbe-synthetic-coordination";
 import { publishNexusWorkQueues } from "../../module-nexus/src/nexus-work-queue-publisher";
+import { publishNexusTravelItems } from "../../module-nexus/src/nexus-workspace-publisher";
+import { evaluateTravelRequest } from "../../module-nexus/src/tt-travel-compliance-engine";
+import { travelWorkflowStep } from "../../module-nexus/src/tt-travel-queue";
+import { SYNTH_TT_TRAVEL_REQUESTS, SYNTH_TT_TRAVEL_POLICY } from "@sovereign/data";
 
 /**
  * Publish every module's surface data once, at shell start. Call after
@@ -118,4 +123,15 @@ export function publishModuleSurfacesAtStartup(ctx: SovereignShellContext): void
     ctx.workQueueSurface,
     now
   );
+
+  // ---- NEXUS (GD-25 / WH-43): pending travel requests → Reviewer's Workspace.
+  // Evaluates the seed requests purely (zero Logger events, same as useTTIntake's
+  // seededTravel useMemo). NexusApp's publish effect re-runs on mount and
+  // reconciles against the same surface (last-write-wins, no divergence).
+  const startupTravelItems = SYNTH_TT_TRAVEL_REQUESTS.map((request) => ({
+    request,
+    finding: evaluateTravelRequest(request, SYNTH_TT_TRAVEL_POLICY, {}),
+    workflow_step_id: travelWorkflowStep(request.request_id),
+  }));
+  publishNexusTravelItems(startupTravelItems, ctx.reviewerWorkspaceSurface, now);
 }

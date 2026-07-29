@@ -26,18 +26,25 @@ import type { SubmittedTravelItem } from "./useTTIntake";
 export const NEXUS_WORKSPACE_MODULE_ID = "nexus";
 
 /**
- * Publish the current set of routed travel items to the ReviewerWorkspaceSurface.
- * Items that are no longer routed (decided or removed) are reconciled out.
+ * Publish the current set of pending travel items to the ReviewerWorkspaceSurface.
+ * "Pending" = ROUTED (awaiting current-authority decision) or ESCALATED (sent to
+ * senior authority, final APPROVED/DENIED not yet recorded). Both statuses represent
+ * an open final outcome — this single computation drives the Workspace badge count and
+ * the NEXUS Travel section together (Rule 11: one computation, reused).
+ * Items that have reached a final outcome (APPROVED or DENIED) are reconciled out.
  */
 export function publishNexusTravelItems(
   items: readonly SubmittedTravelItem[],
   surface: ReviewerWorkspaceSurface,
   timestamp: string
 ): void {
-  // Only ROUTED items belong in the Workspace — they are the ones awaiting a decision.
-  const routed = items.filter((i) => i.request.status === "ROUTED");
+  // ROUTED = awaiting current-authority decision; ESCALATED = pending senior-authority
+  // decision. Both appear as "pending a final outcome" in NEXUS's own Travel queue.
+  const pending = items.filter(
+    (i) => i.request.status === "ROUTED" || i.request.status === "ESCALATED"
+  );
 
-  for (const item of routed) {
+  for (const item of pending) {
     surface.publish({
       module_id: NEXUS_WORKSPACE_MODULE_ID,
       item_id: item.request.request_id,
@@ -46,10 +53,10 @@ export function publishNexusTravelItems(
     });
   }
 
-  // Reconcile: remove anything published under "nexus" that is no longer routed.
-  const routedIds = new Set(routed.map((i) => i.request.request_id));
+  // Reconcile: remove anything published under "nexus" that is no longer pending.
+  const pendingIds = new Set(pending.map((i) => i.request.request_id));
   for (const existing of surface.listForModule(NEXUS_WORKSPACE_MODULE_ID)) {
-    if (!routedIds.has(existing.item_id)) {
+    if (!pendingIds.has(existing.item_id)) {
       surface.remove(NEXUS_WORKSPACE_MODULE_ID, existing.item_id);
     }
   }

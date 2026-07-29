@@ -500,7 +500,7 @@ function NexusWorkspaceSection({
   );
 
   if (travelItems.length === 0) {
-    return <EmptySection sourceLabel="NEXUS has published no routed travel requests this session." />;
+    return <EmptySection sourceLabel="NEXUS has no travel requests pending a decision this session." />;
   }
 
   return (
@@ -534,8 +534,21 @@ function NexusWorkspaceSection({
                   )
                 );
               }
-              // Remove the decided item from this surface.
-              ctx.reviewerWorkspaceSurface.remove(NEXUS_WORKSPACE_MODULE_ID, requestId);
+              if (outcome === "ESCALATED") {
+                // ESCALATED = pending senior-authority action — item remains on the
+                // surface as a read-only card (decidable becomes false, no buttons).
+                // Publish the updated payload so TravelQueueRow reflects the new status.
+                // NexusApp's publish effect reconciles this further on remount.
+                ctx.reviewerWorkspaceSurface.publish({
+                  module_id: NEXUS_WORKSPACE_MODULE_ID,
+                  item_id: requestId,
+                  payload: { ...item, request: decided.request },
+                  published_at: new Date().toISOString(),
+                });
+              } else {
+                // APPROVED and DENIED are final outcomes — item leaves the surface.
+                ctx.reviewerWorkspaceSurface.remove(NEXUS_WORKSPACE_MODULE_ID, requestId);
+              }
             } catch (err) {
               // Surface the error without crashing — the user can try again.
               console.error("NEXUS workspace decision error:", err);
