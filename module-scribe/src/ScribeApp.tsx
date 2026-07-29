@@ -37,6 +37,7 @@ import { IntermediateWorkspace } from "./IntermediateWorkspace";
 import { StyleDNAManager } from "./StyleDNAManager";
 import { TTManagerReview, ttReviewItemKey } from "./TTManagerReview";
 import { DEMO_TT_REVIEW_ITEMS } from "./tt-synthetic-review";
+import { SYNTH_TT_EMPLOYEES } from "@sovereign/data";
 import { PPBEExhibitPanel } from "./PPBEExhibitPanel";
 import { publishScribeWorkQueues } from "./scribe-work-queue-publisher";
 import {
@@ -154,6 +155,8 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
           items={pendingItems}
           // GD-27 — seed the review's existing selection with the navigation intent.
           initialSelectedKey={initialState?.selectedItemKey}
+          // WH-13 (Session 73): supply human-readable names for the queue item labels.
+          employeeNames={Object.fromEntries(SYNTH_TT_EMPLOYEES.map((e) => [e.employee_id, e.name]))}
           // GD-25 — the decision-commit path: a sent communication leaves the
           // Reviewer's Workspace rather than lingering. WG-15: also mark it
           // sent in the session store so future mounts exclude it.

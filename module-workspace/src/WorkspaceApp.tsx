@@ -91,6 +91,7 @@ import { FLOWPATH_WORKSPACE_MODULE_ID } from "../../module-flowpath/src/flowpath
 import { markScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
 import { publishScribeWorkQueues } from "../../module-scribe/src/scribe-work-queue-publisher";
 import { publishAriaWorkQueues } from "../../module-aria/src/aria-work-queue-publisher";
+import { SYNTH_TT_EMPLOYEES } from "@sovereign/data";
 
 import { useReviewerWorkspaceItems } from "./useReviewerWorkspaceItems";
 
@@ -468,6 +469,8 @@ function ScribeWorkspaceSection({
       <TTManagerReview
         ctx={ctx}
         items={narrowed}
+        // WH-13 (Session 73): supply human-readable names for the queue item labels.
+        employeeNames={Object.fromEntries(SYNTH_TT_EMPLOYEES.map((e) => [e.employee_id, e.name]))}
         // GD-25 — the decision-commit path: a sent communication leaves the Workspace.
         // D2 (WG-15): also mark it sent in the session store so future SCRIBE mounts
         // and startup-publish exclude it from their counts.

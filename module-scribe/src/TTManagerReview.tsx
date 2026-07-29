@@ -81,6 +81,12 @@ export interface TTManagerReviewProps {
    * ttReviewItemKey. An unknown key falls back to the default first-item selection.
    */
   initialSelectedKey?: string;
+  /**
+   * WH-13 (Session 73): optional map of employee_id → display name. When provided,
+   * time-record queue items show the human name in place of the raw SYNTH-E-201 ID.
+   * Falls back to the raw id when absent so existing callers need not pass this.
+   */
+  employeeNames?: Record<string, string>;
 }
 
 /**
@@ -93,12 +99,12 @@ export function ttReviewItemKey(item: TTReviewItem): string {
   return item.kind === "travel" ? `travel-${item.request.request_id}` : `time-${item.flag.flag_id}`;
 }
 
-function itemLabel(item: TTReviewItem): string {
+function itemLabel(item: TTReviewItem, employeeNames?: Record<string, string>): string {
   return item.kind === "travel"
     ? `${item.request.request_id} · ${item.request.destination} · ${item.request.routing_tier ?? "UNEVALUATED"}`
-    // §2.1 Supervision Efficiency: surface employee_id so the reviewer sees who this is about
-    // without navigating into the detail panel.
-    : `${item.flag.flag_id} · ${item.flag.employee_id} · ${item.flag.rule_category} · ${item.flag.severity}`;
+    // §2.1 Supervision Efficiency / WH-13: surface the employee's name (or fall back
+    // to employee_id) so the reviewer sees who this is about without opening the detail panel.
+    : `${employeeNames?.[item.flag.employee_id] ?? item.flag.employee_id} · ${item.flag.flag_id} · ${item.flag.rule_category} · ${item.flag.severity}`;
 }
 
 /** Build the plain-text copy payload from a TTDraft (subject + body). */
@@ -106,7 +112,7 @@ function buildDraftText(draft: TTDraft): string {
   return draft.subject ? `${draft.subject}\n\n${draft.body}` : draft.body;
 }
 
-export function TTManagerReview({ ctx, items, onSent, initialSelectedKey }: TTManagerReviewProps) {
+export function TTManagerReview({ ctx, items, onSent, initialSelectedKey, employeeNames }: TTManagerReviewProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(() => {
     // GD-27: an externally-supplied starting value for the existing selection —
     // honored only when it names a real item; otherwise the default stands.
@@ -212,7 +218,7 @@ export function TTManagerReview({ ctx, items, onSent, initialSelectedKey }: TTMa
                     fontWeight: isSelected ? 600 : 400,
                   }}
                 >
-                  {itemLabel(item)}
+                  {itemLabel(item, employeeNames)}
                 </button>
               </li>
             );

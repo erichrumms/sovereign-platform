@@ -25,6 +25,7 @@ import type { TravelRequest } from '../entities/travel-request';
 import type { TimeRecord } from '../entities/time-record';
 import type { ComplianceFlag } from '../entities/compliance-flag';
 import type { CorrectionRecord } from '../entities/correction-record';
+import type { Employee } from '../entities/employee';
 
 // ============================================================
 // ACTIVE TRAVEL POLICY — loaded by tt.travel-compliance-engine at startup
@@ -514,4 +515,30 @@ export const SYNTH_TT_CORRECTION_RECORDS: CorrectionRecord[] = [
     supervisor_notified: true,
     counsel_decision_record_id: 'SYNTH-CDR-9',
   },
+];
+
+// ============================================================
+// EMPLOYEES — WH-13 (Session 73): synthetic, clearly fictional names for every
+// employee referenced by T&T travel requests (SYNTH-E-101 to E-108) and time
+// records (SYNTH-E-201 to E-206). Used by SCRIBE's T&T queue to display human-
+// readable names in place of raw IDs; never represents a real person.
+// ============================================================
+
+export const SYNTH_TT_EMPLOYEES: Employee[] = [
+  // ── Travel-request employees (E-101 to E-108) ───────────────────────────────
+  { employee_id: 'SYNTH-E-101', name: 'Andrew Vance',     org_unit: 'SYNTH PEO Logistics',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-110', 'SYNTH-CC-111'] },
+  { employee_id: 'SYNTH-E-102', name: 'Rachel Okafor',    org_unit: 'SYNTH PEO Cyber',        role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-120', 'SYNTH-CC-121'] },
+  { employee_id: 'SYNTH-E-103', name: 'Dominique Chen',   org_unit: 'SYNTH PEO Logistics',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-110'] },
+  { employee_id: 'SYNTH-E-104', name: 'Marcus Webb',      org_unit: 'SYNTH PEO Sustainment',  role: 'PROGRAM_MANAGER',  clearance_level: 'SECRET',       cost_code_assignments: ['SYNTH-CC-140', 'SYNTH-CC-141'] },
+  { employee_id: 'SYNTH-E-105', name: 'Lydia Kim',        org_unit: 'SYNTH PEO Logistics',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-110', 'SYNTH-CC-111'] },
+  { employee_id: 'SYNTH-E-106', name: 'Ethan Hale',       org_unit: 'SYNTH PEO Cyber',        role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-120'] },
+  { employee_id: 'SYNTH-E-107', name: 'Cassandra Rivera', org_unit: 'SYNTH PEO Sustainment',  role: 'PROGRAM_MANAGER',  clearance_level: 'SECRET',       cost_code_assignments: ['SYNTH-CC-140'] },
+  { employee_id: 'SYNTH-E-108', name: 'Timothy Patel',    org_unit: 'SYNTH PEO Cyber',        role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-120', 'SYNTH-CC-121'] },
+  // ── Time-record employees (E-201 to E-206) ──────────────────────────────────
+  { employee_id: 'SYNTH-E-201', name: 'Marcus Okafor',    org_unit: 'Engineering — P-100',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-1001', 'SYNTH-CC-4002'] },
+  { employee_id: 'SYNTH-E-202', name: 'Sarah Whitfield',  org_unit: 'Engineering — P-100',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-1001'] },
+  { employee_id: 'SYNTH-E-203', name: 'James Delaney',    org_unit: 'Engineering — P-100',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-1001'] },
+  { employee_id: 'SYNTH-E-204', name: 'Patricia Nguyen',  org_unit: 'Program Management',     role: 'ANALYST',          clearance_level: 'UNCLASSIFIED', cost_code_assignments: ['SYNTH-CC-3001'] },
+  { employee_id: 'SYNTH-E-205', name: 'Kevin Ramirez',    org_unit: 'Engineering — P-100',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-1001'] },
+  { employee_id: 'SYNTH-E-206', name: 'Diana Hartwell',   org_unit: 'Engineering — P-100',    role: 'ANALYST',          clearance_level: 'CUI',          cost_code_assignments: ['SYNTH-CC-1001'] },
 ];

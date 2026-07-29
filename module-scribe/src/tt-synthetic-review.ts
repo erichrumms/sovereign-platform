@@ -59,13 +59,18 @@ function item(
   };
 }
 
+// WH-13 (Session 73): draft greetings use first names from SYNTH_TT_EMPLOYEES.
+// SYNTH-E-201 → Marcus Okafor  · SYNTH-E-202 → Sarah Whitfield
+// SYNTH-E-203 → James Delaney  · SYNTH-E-204 → Patricia Nguyen
+// SYNTH-E-205 → Kevin Ramirez  · SYNTH-E-206 → Diana Hartwell
+
 /** One review item per communication type, plus both formal-escalation gate states. */
 export const DEMO_TT_REVIEW_ITEMS: TimeReviewItem[] = [
   item("SYNTH-TM-201-F1", {
     communication_type: "ERROR_CORRECTION",
     subject: "Time record 2026-06-22 to 2026-06-26 — correction required",
     body:
-      "Hi,\n\nDuring review of your time record for the period June 22–26, the five entries " +
+      "Hi Marcus,\n\nDuring review of your time record for the period June 22–26, the five entries " +
       "charged to account SYNTH-CC-4002 were flagged: that account was closed on June 15 and " +
       "no longer accepts charges (Timekeeping Policy, authorized charge account lists).\n\n" +
       "To correct: open the period in the timekeeping application, select each June 22–26 " +
@@ -77,7 +82,7 @@ export const DEMO_TT_REVIEW_ITEMS: TimeReviewItem[] = [
     communication_type: "CLARIFICATION_REQUEST",
     subject: "Time record 2026-06-22 to 2026-06-26 — quick confirmation",
     body:
-      "Hi,\n\nYour time record for June 22–26 shows three 12-hour days against the " +
+      "Hi Sarah,\n\nYour time record for June 22–26 shows three 12-hour days against the " +
       "engineering account, which is above the standard 10-hour daily threshold " +
       "(Timekeeping Policy, overtime thresholds). This is often legitimate — for example " +
       "(1) approved surge support for the integration test window, or (2) a shift " +
@@ -88,10 +93,10 @@ export const DEMO_TT_REVIEW_ITEMS: TimeReviewItem[] = [
     communication_type: "JUSTIFICATION_REQUEST",
     subject: "Time record 2026-06-22 to 2026-06-26 — justification needed",
     body:
-      "Hi,\n\nThe 10-hour entry on June 24 requires a brief justification narrative " +
+      "Hi James,\n\nThe 10-hour entry on June 24 requires a brief justification narrative " +
       "(Timekeeping Policy, justification requirements) and none was recorded. Example: " +
-      "“Extended shift to complete test data reduction before the June 25 review; " +
-      "approved by the program lead.”\n\nTo add it: open June 24 in the timekeeping " +
+      "\u201cExtended shift to complete test data reduction before the June 25 review; " +
+      "approved by the program lead.\u201d\n\nTo add it: open June 24 in the timekeeping " +
       "application, select the entry, and enter the narrative in the justification field.\n\n" +
       "Thank you.",
   }),
@@ -99,7 +104,7 @@ export const DEMO_TT_REVIEW_ITEMS: TimeReviewItem[] = [
     communication_type: "PATTERN_FLAG_NOTICE",
     subject: "Checking in on recent time charging",
     body:
-      "Hi,\n\nNo action needed — just checking in. Your charging this period shifted " +
+      "Hi Patricia,\n\nNo action needed — just checking in. Your charging this period shifted " +
       "noticeably toward the overhead account compared with your recent baseline. If your " +
       "assignments changed, that explains it and we're all set; if not, it may be worth a " +
       "quick look at the period before close. Happy to talk it through either way.\n\nThanks.",

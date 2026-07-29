@@ -156,6 +156,7 @@ export {
   SYNTH_TT_TIME_RECORDS,
   SYNTH_TT_COMPLIANCE_FLAGS,
   SYNTH_TT_CORRECTION_RECORDS,
+  SYNTH_TT_EMPLOYEES,
 } from './synthetic/tt-seed';
 
 // PPBE canonical synthetic seed data (Session 33 — WE-6, the Walkthrough F
