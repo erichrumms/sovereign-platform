@@ -105,7 +105,7 @@ describe("PlatformHome on a fresh session after startup publication — WG-1 (Se
     // section shows its honest empty state (publication is role-blind; the
     // READ side filters, unchanged from GD-24).
     expect(screen.queryByText("Pending Approvals")).not.toBeInTheDocument();
-    expect(screen.getByText(/No pending reviews/)).toBeInTheDocument();
+    expect(screen.getByText(/No modules are accessible to your current role/)).toBeInTheDocument();
   });
 });
 

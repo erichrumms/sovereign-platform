@@ -34,7 +34,7 @@ describe("Startup surface publication — WG-1 (Session 54)", () => {
     publishModuleSurfacesAtStartup(ctx);
 
     const programs = ctx.programStatusSurface.list();
-    expect(programs).toHaveLength(SYNTH_PPBE_PROGRAMS.length); // 5
+    expect(programs).toHaveLength(5); // 5 unique programs; SYNTH_PPBE_PROGRAMS.length is 18 after WG-6
     // The deliberately flagged programs are visible without APEX ever mounting.
     expect(programs.some((p) => p.status !== "on_track")).toBe(true);
   });
