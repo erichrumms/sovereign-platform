@@ -77,39 +77,47 @@ export function PPBEAgentsPanel({ ctx: _ctx, inputs }: PPBEAgentsPanelProps): JS
 
   async function runSynthesis(): Promise<void> {
     setSynthStatus("running");
-    const evidenceInput: EvidenceSynthesisInput = {
-      findings: inputs.findings,
-      programs: apexPrograms,
-      fiscal_context: FISCAL_CONTEXT,
-    };
-    const wsid = synthesisWorkflowStep(evidenceInput);
-    const reqCtx: SovereignRequestContext = {
-      workflow_step_id: wsid,
-      product: "APEX",
-      agent_id: PPBE_EVIDENCE_SYNTHESIZER_AGENT_ID,
-      tier: "standard",
-    };
-    const outcome = await runEvidenceSynthesis(evidenceInput, EVIDENCE_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
-    setSynthOutcome(outcome);
-    setSynthStatus("done");
+    try {
+      const evidenceInput: EvidenceSynthesisInput = {
+        findings: inputs.findings,
+        programs: apexPrograms,
+        fiscal_context: FISCAL_CONTEXT,
+      };
+      const wsid = synthesisWorkflowStep(evidenceInput);
+      const reqCtx: SovereignRequestContext = {
+        workflow_step_id: wsid,
+        product: "APEX",
+        agent_id: PPBE_EVIDENCE_SYNTHESIZER_AGENT_ID,
+        tier: "standard",
+      };
+      const outcome = await runEvidenceSynthesis(evidenceInput, EVIDENCE_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
+      setSynthOutcome(outcome);
+      setSynthStatus("done");
+    } catch {
+      setSynthStatus("idle");
+    }
   }
 
   async function runScenario(): Promise<void> {
     setScenStatus("running");
-    const scenInput: ScenarioAnalysisInput = {
-      programs: inputs.programs,
-      fiscal_context: FISCAL_CONTEXT,
-    };
-    const wsid = scenarioWorkflowStep(scenInput);
-    const reqCtx: SovereignRequestContext = {
-      workflow_step_id: wsid,
-      product: "APEX",
-      agent_id: PPBE_SCENARIO_ANALYST_AGENT_ID,
-      tier: "standard",
-    };
-    const outcome = await runScenarioAnalysis(scenInput, SCENARIO_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
-    setScenOutcome(outcome);
-    setScenStatus("done");
+    try {
+      const scenInput: ScenarioAnalysisInput = {
+        programs: inputs.programs,
+        fiscal_context: FISCAL_CONTEXT,
+      };
+      const wsid = scenarioWorkflowStep(scenInput);
+      const reqCtx: SovereignRequestContext = {
+        workflow_step_id: wsid,
+        product: "APEX",
+        agent_id: PPBE_SCENARIO_ANALYST_AGENT_ID,
+        tier: "standard",
+      };
+      const outcome = await runScenarioAnalysis(scenInput, SCENARIO_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
+      setScenOutcome(outcome);
+      setScenStatus("done");
+    } catch {
+      setScenStatus("idle");
+    }
   }
 
   return (

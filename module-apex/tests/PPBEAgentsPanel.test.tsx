@@ -59,6 +59,30 @@ describe("PPBEAgentsPanel — Part 2 PPBE agent triggers", () => {
   });
 });
 
+describe("PPBEAgentsPanel — WH-40 button reset on error", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("resets synthesis button to idle (not stuck at running) when runEvidenceSynthesis throws", async () => {
+    jest.spyOn(evidenceSynthModule, "runEvidenceSynthesis").mockRejectedValue(new Error("test_error"));
+    render(<PPBEAgentsPanel ctx={makeCtx()} inputs={inputs} />);
+    fireEvent.click(screen.getByTestId("ppbe-run-evidence-synthesis"));
+    await waitFor(() =>
+      expect(screen.getByTestId("ppbe-run-evidence-synthesis")).not.toBeDisabled()
+    );
+    expect(screen.getByTestId("ppbe-run-evidence-synthesis")).toHaveTextContent("Run Evidence Synthesis");
+  });
+
+  it("resets scenario button to idle (not stuck at running) when runScenarioAnalysis throws", async () => {
+    jest.spyOn(scenarioModule, "runScenarioAnalysis").mockRejectedValue(new Error("test_error"));
+    render(<PPBEAgentsPanel ctx={makeCtx()} inputs={inputs} />);
+    fireEvent.click(screen.getByTestId("ppbe-run-scenario-analysis"));
+    await waitFor(() =>
+      expect(screen.getByTestId("ppbe-run-scenario-analysis")).not.toBeDisabled()
+    );
+    expect(screen.getByTestId("ppbe-run-scenario-analysis")).toHaveTextContent("Run Scenario Analysis");
+  });
+});
+
 describe("PPBEAgentsPanel — systemPrompt matches approved .md files", () => {
   afterEach(() => jest.restoreAllMocks());
 
