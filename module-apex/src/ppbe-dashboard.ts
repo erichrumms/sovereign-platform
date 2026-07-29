@@ -23,6 +23,7 @@
  * Version: 1.0 · Session 32 · July 13, 2026
  */
 
+import { fiscalYearOfTimestamp } from "@sovereign/data";
 import type {
   DependencyMap,
   EvaluationFinding,
@@ -214,10 +215,34 @@ export interface PPBEDashboardData {
   is_empty: boolean;
 }
 
+/** Return only obligations whose fiscal year matches the given label (e.g. "FY 2026"). */
+function obligationsForYear(
+  obligations: readonly ObligationRecord[],
+  fiscalYear: string
+): readonly ObligationRecord[] {
+  return obligations.filter((o) => fiscalYearOfTimestamp(o.timestamp) === fiscalYear);
+}
+
+/** De-duplicate ProgramRecord[] by program_id, preserving first-occurrence order. */
+function uniqueByProgramId(programs: readonly ProgramRecord[]): ProgramRecord[] {
+  const seen = new Set<string>();
+  const out: ProgramRecord[] = [];
+  for (const p of programs) {
+    if (!seen.has(p.program_id)) { seen.add(p.program_id); out.push(p); }
+  }
+  return out;
+}
+
 export function buildPPBEDashboard(inputs: PPBEDashboardInputs): PPBEDashboardData {
-  const sorted = [...inputs.programs].sort((a, b) => a.program_id.localeCompare(b.program_id));
+  // WG-6 added multiple ProgramRecord entries per program_id (one per fiscal year).
+  // Obligation rates and variances are computed once per unique program, using only
+  // that record's fiscal year's obligations so the denominator matches the numerator.
+  const unique = uniqueByProgramId(inputs.programs);
+  const sorted = unique.sort((a, b) => a.program_id.localeCompare(b.program_id));
   return {
-    obligation_rates: sorted.map((p) => obligationRate(p, inputs.obligations)),
+    obligation_rates: sorted.map((p) =>
+      obligationRate(p, obligationsForYear(inputs.obligations, p.fiscal_year))
+    ),
     variances: sorted.flatMap((p) => budgetToActualVariance(p, inputs.actualsByProgram[p.program_id] ?? {})),
     dependency_health: dependencyHealthIndex(inputs.dependencies),
     learning_velocity: learningVelocity(inputs.findings),
@@ -264,8 +289,10 @@ export function publishProgramStatuses(
   surface: ProgramStatusSurface,
   nowIso: string
 ): void {
-  for (const program of inputs.programs) {
-    const metric = obligationRate(program, inputs.obligations);
+  // One snapshot per program_id; later fiscal-year entries for the same program are skipped
+  // so the surface always reflects the primary (first-listed) year's execution rate.
+  for (const program of uniqueByProgramId(inputs.programs)) {
+    const metric = obligationRate(program, obligationsForYear(inputs.obligations, program.fiscal_year));
     surface.publish({
       program_id: metric.program_id,
       percent_obligated: metric.rate_percent ?? 0,

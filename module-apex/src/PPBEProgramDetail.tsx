@@ -97,7 +97,9 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
     )
   ).sort();
 
-  const [selectedFiscalYear, setSelectedFiscalYear] = useState('FY 2026');
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState(() =>
+    availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026')
+  );
 
   const program = inputs.programs.find(
     (p) => p.program_id === programId && p.fiscal_year === selectedFiscalYear

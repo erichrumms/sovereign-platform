@@ -36,7 +36,7 @@ describe("ApexApp", () => {
     // The Session 32 empty state is gone — the host adapter feeds the seeded portfolio.
     expect(screen.queryByText(/No PPBE execution data is recorded yet/)).not.toBeInTheDocument();
     expect(screen.getByText(/Logistics Data Interchange Modernization has obligated 802000 of 825000 planned — 97 percent/)).toBeInTheDocument();
-    expect(screen.getByText(/13 of 20 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
+    expect(screen.getByText(/15 of 22 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
   });
 
   it("shows a hint when Program Detail is opened with no program selected (WF-4)", () => {

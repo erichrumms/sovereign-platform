@@ -470,11 +470,14 @@ const YEAR_PHASE_LABELS: Record<string, string> = {
 export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): JSX.Element {
   const effectiveInputs = inputs ?? EMPTY_INPUTS;
 
-  // Year selector — defaults to FY2026 (Current Year). Derive available years from data.
-  const [selectedFiscalYear, setSelectedFiscalYear] = useState('FY 2026');
+  // Year selector — defaults to FY2026 (Current Year) when available; falls back to
+  // the earliest listed year so unit tests with non-FY2026 fixtures don't show empty state.
   const availableYears = Array.from(
     new Set(effectiveInputs.programs.map((p) => p.fiscal_year))
   ).sort();
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState(() =>
+    availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026')
+  );
 
   // Filter inputs to the selected fiscal year so all metrics are year-scoped.
   const yearPrograms = effectiveInputs.programs.filter((p) => p.fiscal_year === selectedFiscalYear);

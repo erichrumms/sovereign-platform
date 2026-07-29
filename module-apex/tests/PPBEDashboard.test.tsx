@@ -38,7 +38,7 @@ const inputs: PPBEDashboardInputs = {
       program_id: "PRG-001",
       cost_code: "CC-1",
       amount: 50000,
-      timestamp: "2026-07-12T15:30:00Z",
+      timestamp: "2026-10-15T15:30:00Z",
       authorizing_official: "Jane Smith",
       workflow_step_id: "ppbe-obligation-OB-1",
     },

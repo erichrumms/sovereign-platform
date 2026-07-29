@@ -21,9 +21,9 @@ import {
 describe("actualsForProgram", () => {
   it("derives per-period actuals from the obligation records — no restated numbers", () => {
     const alpha = actualsForProgram(SYNTH_PPBE_OBLIGATIONS, "SYNTH-PRG-ALPHA");
-    expect(alpha).toEqual({ "FY 2026 Q1": 145000, "FY 2026 Q2": 172000, "FY 2026 Q3": 200000, "FY 2026 Q4": 285000 });
+    expect(alpha).toEqual({ "FY 2025 Q4": 740000, "FY 2026 Q1": 145000, "FY 2026 Q2": 172000, "FY 2026 Q3": 200000, "FY 2026 Q4": 285000 });
     const bravo = actualsForProgram(SYNTH_PPBE_OBLIGATIONS, "SYNTH-PRG-BRAVO");
-    expect(bravo).toEqual({ "FY 2026 Q1": 45000, "FY 2026 Q2": 72000, "FY 2026 Q3": 60000, "FY 2026 Q4": 90000 });
+    expect(bravo).toEqual({ "FY 2025 Q4": 510000, "FY 2026 Q1": 45000, "FY 2026 Q2": 72000, "FY 2026 Q3": 60000, "FY 2026 Q4": 90000 });
   });
 });
 
@@ -38,7 +38,7 @@ describe("createSyntheticPPBEDashboardInputs → buildPPBEDashboard", () => {
     expect(byProgram["SYNTH-PRG-BRAVO"].rate_percent).toBe(46); // 267000 of 580000 (Q1–Q4)
     expect(byProgram["SYNTH-PRG-ECHO"].rate_percent).toBe(104); // 458000 of 440000 — the ADA example (Q1–Q4)
     expect(data.dependency_health.index_percent).toBe(75); // 6 of 8 healthy
-    expect(data.learning_velocity.velocity_percent).toBe(65); // 13 of 20
+    expect(data.learning_velocity.velocity_percent).toBe(68); // 15 of 22 (WG-6 added EF-A0 + EF-B0)
     expect(data.event_counts).toEqual(SYNTH_PPBE_EVENT_COUNTS);
   });
 
@@ -56,7 +56,7 @@ describe("PPBEDashboard renders the adapter's data live", () => {
     expect(screen.queryByText(/No PPBE execution data is recorded yet/)).not.toBeInTheDocument();
     expect(screen.getByText(/97 percent/)).toBeInTheDocument();
     expect(screen.getByText(/6 of 8 registered dependencies are healthy \(75 percent\)/)).toBeInTheDocument();
-    expect(screen.getByText(/13 of 20 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
+    expect(screen.getByText(/15 of 22 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_ANOMALY: 10 recorded events/)).toBeInTheDocument();
   });
 });
