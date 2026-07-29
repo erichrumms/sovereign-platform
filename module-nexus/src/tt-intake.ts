@@ -132,6 +132,17 @@ export function buildTravelRequest(
   const category = form.special_authority_category.trim();
   if (category !== "") request.special_authority_category = category;
 
+  // User-facing presence checks for required text fields — these must run before
+  // validateTravelRequest so the operator sees a plain prompt ("Please enter…")
+  // rather than the schema-validator's internal property notation (WH-45).
+  const requiredErrors: string[] = [];
+  if (!request.destination) requiredErrors.push("Please enter a destination.");
+  if (!request.mission_purpose) requiredErrors.push("Please enter a mission purpose.");
+  if (!request.justification) requiredErrors.push("Please enter a justification.");
+  if (!request.travel_start_date) requiredErrors.push("Please enter a travel start date.");
+  if (!request.travel_end_date) requiredErrors.push("Please enter a travel end date.");
+  if (requiredErrors.length > 0) return { ok: false, errors: requiredErrors };
+
   const check = validateTravelRequest(request);
   return check.valid ? { ok: true, value: request } : { ok: false, errors: check.errors };
 }

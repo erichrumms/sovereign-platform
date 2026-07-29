@@ -87,6 +87,20 @@ describe("buildTravelRequest", () => {
     expect(negative.ok).toBe(false);
   });
 
+  it("WH-45: empty submit shows plain user-facing prompts, not raw schema-validator notation", () => {
+    const empty = buildTravelRequest(EMPTY_TRAVEL_FORM, "TR-0", "E-900", NOW);
+    expect(empty.ok).toBe(false);
+    if (!empty.ok) {
+      const msg = empty.errors.join(" ");
+      // Must not expose raw schema-validator notation (property:type format)
+      expect(msg).not.toMatch(/required string/);
+      expect(msg).not.toMatch(/required ISO 8601/);
+      // Must give the operator actionable prompts
+      expect(msg).toContain("Please enter a destination");
+      expect(msg).toContain("Please enter a travel start date");
+    }
+  });
+
   it("surfaces the entity validator's errors (end date before start)", () => {
     const bad = buildTravelRequest(
       travelForm({ travel_end_date: "2026-08-01" }),
