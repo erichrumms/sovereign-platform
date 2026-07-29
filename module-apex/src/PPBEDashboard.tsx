@@ -425,8 +425,8 @@ function SiteBreakdownSection({ names }: { names: Record<string, string> }): JSX
             <th style={thStyle}>Program</th>
             <th style={thStyle}>Site</th>
             <th style={thStyle}>Region</th>
-            <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
             <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
+            <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
             <th style={thStyle}>Status</th>
           </tr>
         </thead>
@@ -438,8 +438,8 @@ function SiteBreakdownSection({ names }: { names: Record<string, string> }): JSX
                 <td style={tdStyle}>{names[s.program_id] ?? s.program_id}</td>
                 <td style={tdStyle}>{s.site_name}</td>
                 <td style={tdStyle}>{s.region}</td>
-                <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(s.obligations_to_date)}</td>
                 <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(s.planned_amount)}</td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(s.obligations_to_date)}</td>
                 <td style={tdStyle}>
                   <span style={{ color: statusFill(st), fontWeight: 600 }}>{statusLabel(st)}</span>
                 </td>

@@ -163,6 +163,17 @@ describe("PPBEDashboard", () => {
     expect(table).toHaveTextContent("Planned");
   });
 
+  it("WH-39: Planned column precedes Obligated column in the site breakdown header", () => {
+    render(<PPBEDashboard inputs={inputs} />);
+    const table = screen.getByLabelText("Per-site obligation breakdown (illustrative)");
+    const headers = Array.from(table.querySelectorAll("th")).map((th) => th.textContent ?? "");
+    const plannedIdx = headers.indexOf("Planned");
+    const obligatedIdx = headers.indexOf("Obligated");
+    expect(plannedIdx).toBeGreaterThan(-1);
+    expect(obligatedIdx).toBeGreaterThan(-1);
+    expect(plannedIdx).toBeLessThan(obligatedIdx);
+  });
+
   it("D3: site breakdown renders synthetic sites (multiple programs share Aberdeen Proving Ground)", () => {
     render(<PPBEDashboard inputs={inputs} />);
     // Aberdeen appears in ALPHA, ECHO, BRAVO rows — three occurrences expected.
