@@ -239,25 +239,25 @@ function ModuleStatusPanel({
       </div>
     );
   }
+
+  const accessibleModules = modules.filter(isAccessible);
+
+  if (accessibleModules.length === 0) {
+    return (
+      <div style={emptyStateBoxStyle}>
+        <span style={{ fontSize: 13, color: "#64748b" }}>
+          No modules are accessible to your current role.
+        </span>
+      </div>
+    );
+  }
+
   return (
     <ul style={moduleListStyle}>
-      {modules.map((m) => {
-        const accessible = isAccessible(m);
+      {accessibleModules.map((m) => {
         const shortId = m.moduleId.replace("module-", "");
         const moduleQueues = workQueues.filter((q) => q.module_id === shortId && q.count > 0);
         const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
-
-        if (!accessible) {
-          return (
-            <li key={m.moduleId} style={{ ...moduleItemStyle, opacity: 0.55 }}>
-              <span style={moduleNameStyle}>{m.displayName}</span>
-              <span style={{ ...moduleLabelStyle, display: "flex", alignItems: "center", gap: 4 }}>
-                <span aria-hidden="true">🔒</span>
-                <span>Requires {m.minimumRole.filter((r) => r !== "SYSTEM_ADMIN").join(" or ")}</span>
-              </span>
-            </li>
-          );
-        }
 
         if (totalCount === 0) {
           return onNavigate ? (

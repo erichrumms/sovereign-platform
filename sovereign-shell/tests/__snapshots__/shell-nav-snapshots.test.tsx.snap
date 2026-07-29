@@ -2780,28 +2780,6 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
           </button>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            VIGIL
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
@@ -2820,72 +2798,6 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
               Clear
             </span>
           </button>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            CPMI
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            AgentOS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            NEXUS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
-            </span>
-          </span>
         </li>
         <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
@@ -3051,50 +2963,6 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
           </button>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            SCRIBE
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            VIGIL
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
@@ -3115,50 +2983,6 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
           </button>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            CPMI
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            AgentOS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
@@ -3177,50 +3001,6 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
               Clear
             </span>
           </button>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            APEX
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            FLOWPATH
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
-            </span>
-          </span>
         </li>
         <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
@@ -3346,50 +3126,6 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
           </button>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            SCRIBE
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            VIGIL
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
@@ -3408,160 +3144,6 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
               Clear
             </span>
           </button>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            CPMI
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            AgentOS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            NEXUS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or AGENT_OPERATOR or PROGRAM_MANAGER or COMPLIANCE_OFFICER
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            APEX
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or PROGRAM_MANAGER or ANALYST
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            FLOWPATH
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or AGENT_OPERATOR or ANALYST or PROGRAM_MANAGER
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            ARIA Suite
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            Reviewer's Workspace
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN or COMPLIANCE_OFFICER or PROGRAM_MANAGER or ANALYST or AGENT_OPERATOR
-            </span>
-          </span>
         </li>
       </ul>
     </section>
@@ -3884,28 +3466,6 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
           </button>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            VIGIL
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
@@ -3924,50 +3484,6 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
               Clear
             </span>
           </button>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            CPMI
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
-        </li>
-        <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; border-bottom: 1px solid #f1f5f9; opacity: 0.55;"
-        >
-          <span
-            style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
-          >
-            AgentOS
-          </span>
-          <span
-            style="font-size: 11px; color: rgb(100, 116, 139); display: flex; align-items: center; gap: 4px;"
-          >
-            <span
-              aria-hidden="true"
-            >
-              🔒
-            </span>
-            <span>
-              Requires 
-              PLATFORM_ADMIN
-            </span>
-          </span>
         </li>
         <li
           style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
@@ -4061,6 +3577,89 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
               style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
             >
               Reviewer's Workspace
+            </span>
+            <span
+              style="font-size: 11px; color: rgb(22, 163, 74);"
+            >
+              Clear
+            </span>
+          </button>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>
+`;
+
+exports[`PlatformHome snapshots READ_ONLY — cannot see Program Health/Flagged, sees only LENS (no locked modules shown) (WH-42) 1`] = `
+<div>
+  <div
+    style="padding: 24px 28px; font-family: system-ui, sans-serif; color: rgb(15, 23, 42); max-width: 1100px; box-sizing: border-box; overflow: auto; display: flex; flex-direction: column; gap: 24px;"
+  >
+    <header
+      style="margin-bottom: 4px;"
+    >
+      <h1
+        style="margin: 0px 0px 4px; font-size: 22px; font-weight: 700; letter-spacing: 0.3px; color: rgb(15, 23, 42);"
+      >
+        SOVEREIGN Platform
+      </h1>
+      <p
+        style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139);"
+      >
+        Test Operator
+         · 
+        READ_ONLY
+         — Select a module from the left navigation to begin
+      </p>
+    </header>
+    <section
+      aria-label="Issues"
+      style="display: flex; flex-direction: column; gap: 12px;"
+    >
+      <div
+        style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;"
+      >
+        <h2
+          style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgb(71, 85, 105);"
+        >
+          Issues
+        </h2>
+      </div>
+      <p
+        style="margin: 0px; font-size: 12px; color: rgb(100, 116, 139); font-style: italic;"
+      >
+        Program status is visible to Program Managers, Analysts, Platform Admins, and System Admins.
+      </p>
+    </section>
+    <section
+      aria-label="To do and review"
+      style="display: flex; flex-direction: column; gap: 12px;"
+    >
+      <div
+        style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;"
+      >
+        <h2
+          style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgb(71, 85, 105);"
+        >
+          To Do / Review
+        </h2>
+      </div>
+      <ul
+        style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
+      >
+        <li
+          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+        >
+          <button
+            aria-label="Navigate to LENS"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            type="button"
+          >
+            <span
+              style="font-size: 13px; font-weight: 700; color: rgb(15, 23, 42); min-width: 80px;"
+            >
+              LENS
             </span>
             <span
               style="font-size: 11px; color: rgb(22, 163, 74);"

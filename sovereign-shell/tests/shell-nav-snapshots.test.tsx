@@ -289,6 +289,18 @@ describe("PlatformHome snapshots", () => {
     expect(container).toMatchSnapshot();
   });
 
+  it("READ_ONLY — cannot see Program Health/Flagged, sees only LENS (no locked modules shown) (WH-42)", () => {
+    const ctx = makePlatformHomeCtx({ role: "READ_ONLY", programSnapshots: SAMPLE_PROGRAMS });
+    const isAccessible = makeIsAccessible("READ_ONLY");
+    const { container } = render(
+      <PlatformHome ctx={ctx} modules={ALL_MODULES} isAccessible={isAccessible} />
+    );
+    // No locked-module rows — the honest empty state shows only accessible modules.
+    expect(container.textContent).not.toContain("Requires");
+    expect(container.textContent).not.toContain("🔒");
+    expect(container).toMatchSnapshot();
+  });
+
   // ---- To Do / Review — WorkQueueSurface (GD-24, Session 49) ----
   // WH-31 (Session 70): Module Orientation merged into To Do / Review. With no modules
   // registered (no `modules` prop) the section shows "No modules registered".
