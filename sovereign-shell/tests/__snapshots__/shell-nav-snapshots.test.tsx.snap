@@ -127,7 +127,7 @@ exports[`ModuleNav role-access snapshots ANALYST — 7 modules accessible (COUNS
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Ghostwrites Your Memos
+            Drafts Your Documents
           </span>
         </span>
       </span>
@@ -318,7 +318,7 @@ exports[`ModuleNav role-access snapshots ANALYST — 7 modules accessible (COUNS
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Manages AI Models
+            Dispatches Agent Tasks
           </span>
         </span>
       </span>
@@ -528,11 +528,27 @@ exports[`ModuleNav role-access snapshots ANALYST — 7 modules accessible (COUNS
           <span>
             Reviewer's Workspace
           </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reviews All Decisions
+          </span>
         </span>
       </span>
       <span
         style="display: flex; align-items: center; gap: 6px;"
-      />
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
     </button>
   </nav>
 </div>
@@ -606,7 +622,7 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 5 modules access
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Ghostwrites Your Memos
+            Drafts Your Documents
           </span>
         </span>
       </span>
@@ -803,7 +819,7 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 5 modules access
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Manages AI Models
+            Dispatches Agent Tasks
           </span>
         </span>
       </span>
@@ -1020,11 +1036,27 @@ exports[`ModuleNav role-access snapshots COMPLIANCE_OFFICER — 5 modules access
           <span>
             Reviewer's Workspace
           </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reviews All Decisions
+          </span>
         </span>
       </span>
       <span
         style="display: flex; align-items: center; gap: 6px;"
-      />
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
     </button>
   </nav>
 </div>
@@ -1098,7 +1130,7 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 2 modules acce
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Ghostwrites Your Memos
+            Drafts Your Documents
           </span>
         </span>
       </span>
@@ -1295,7 +1327,7 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 2 modules acce
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Manages AI Models
+            Dispatches Agent Tasks
           </span>
         </span>
       </span>
@@ -1527,11 +1559,26 @@ exports[`ModuleNav role-access snapshots INDEPENDENT_REVIEWER — 2 modules acce
           <span>
             Reviewer's Workspace
           </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reviews All Decisions
+          </span>
         </span>
       </span>
       <span
         style="display: flex; align-items: center; gap: 6px;"
       >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
         <span
           aria-hidden="true"
           style="font-size: 11px;"
@@ -1611,7 +1658,7 @@ exports[`ModuleNav role-access snapshots PROGRAM_MANAGER — 8 modules accessibl
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Ghostwrites Your Memos
+            Drafts Your Documents
           </span>
         </span>
       </span>
@@ -1802,7 +1849,7 @@ exports[`ModuleNav role-access snapshots PROGRAM_MANAGER — 8 modules accessibl
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Manages AI Models
+            Dispatches Agent Tasks
           </span>
         </span>
       </span>
@@ -2005,11 +2052,27 @@ exports[`ModuleNav role-access snapshots PROGRAM_MANAGER — 8 modules accessibl
           <span>
             Reviewer's Workspace
           </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reviews All Decisions
+          </span>
         </span>
       </span>
       <span
         style="display: flex; align-items: center; gap: 6px;"
-      />
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
     </button>
   </nav>
 </div>
@@ -2082,7 +2145,7 @@ exports[`ModuleNav role-access snapshots SYSTEM_ADMIN — all 11 modules accessi
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Ghostwrites Your Memos
+            Drafts Your Documents
           </span>
         </span>
       </span>
@@ -2258,7 +2321,7 @@ exports[`ModuleNav role-access snapshots SYSTEM_ADMIN — all 11 modules accessi
           <span
             style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
           >
-            Manages AI Models
+            Dispatches Agent Tasks
           </span>
         </span>
       </span>
@@ -2455,11 +2518,27 @@ exports[`ModuleNav role-access snapshots SYSTEM_ADMIN — all 11 modules accessi
           <span>
             Reviewer's Workspace
           </span>
+          <span
+            style="font-size: 10px; color: rgb(142, 148, 170); font-weight: 400; line-height: 1;"
+          >
+            Reviews All Decisions
+          </span>
         </span>
       </span>
       <span
         style="display: flex; align-items: center; gap: 6px;"
-      />
+      >
+        <span
+          style="position: relative; display: inline-flex; align-items: center;"
+        >
+          <span
+            aria-label="Module info"
+            style="font-size: 12px; color: rgb(142, 148, 170); line-height: 1; cursor: default; user-select: none;"
+          >
+            ⓘ
+          </span>
+        </span>
+      </span>
     </button>
   </nav>
 </div>

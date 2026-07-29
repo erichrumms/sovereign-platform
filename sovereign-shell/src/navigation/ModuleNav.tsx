@@ -29,7 +29,7 @@ export interface ModuleInfo {
   bullets: string[];
 }
 
-/** Three-word labels and hover bullet content per moduleId (Session 42, D1). */
+/** Three-word labels and hover bullet content per moduleId. */
 export const MODULE_INFO: Record<string, ModuleInfo> = {
   "module-counsel": {
     label: "Argues Both Sides",
@@ -40,10 +40,8 @@ export const MODULE_INFO: Record<string, ModuleInfo> = {
     ],
   },
   "module-scribe": {
-    // PROVISIONAL — Project Principal confirmation needed. Was "Your Ghostwriter"
-    // (two words) before this session; current spec says "Ghostwrites Your Memos".
-    // See handoff F1.
-    label: "Ghostwrites Your Memos",
+    // WH-26 Issue B (Session 73): label confirmed, provisional flag removed.
+    label: "Drafts Your Documents",
     bullets: [
       "Writes your emails and memos",
       "Drafts fixes for travel and timesheet issues",
@@ -66,8 +64,7 @@ export const MODULE_INFO: Record<string, ModuleInfo> = {
     ],
   },
   "module-cpmi": {
-    // Bullets drawn from governance documentation; visual double-check recommended.
-    // See handoff F2.
+    // WH-26 Issue C (Session 73): provisional flag removed; bullets confirmed against governance docs.
     label: "Signs The Certificate",
     bullets: [
       "Double-checks big decisions, step by step",
@@ -76,11 +73,13 @@ export const MODULE_INFO: Record<string, ModuleInfo> = {
     ],
   },
   "module-agentos": {
-    label: "Manages AI Models",
+    // WH-26 Issue A (Session 73): corrected from model-training description.
+    // Real screens are Task Registry and Agent Dispatch — task/agent orchestration, not model lifecycle.
+    label: "Dispatches Agent Tasks",
     bullets: [
-      "Starts and watches AI training",
-      "Rolls out new models, once approved",
-      "Watches for models drifting off track",
+      "Routes work to the right AI agent",
+      "Tracks every task from assignment to completion",
+      "Queues actions that need human approval",
     ],
   },
   "module-nexus": {
@@ -109,12 +108,21 @@ export const MODULE_INFO: Record<string, ModuleInfo> = {
     ],
   },
   "module-aria": {
-    // Bullets drawn from governance documentation; visual double-check recommended.
-    // See handoff F2.
+    // WH-26 Issue D (Session 73): provisional flag removed; bullets confirmed against governance docs.
     label: "Runs The Checklist",
     bullets: [
       "Applies rules automatically, no AI",
       "Proves the rules were followed",
+    ],
+  },
+  "module-workspace": {
+    // WH-26 Issue E (Session 73): Reviewer's Workspace was absent from the tooltip system.
+    label: "Reviews All Decisions",
+    bullets: [
+      "Collects pending approvals from VIGIL",
+      "Shows compliance certifications from ARIA",
+      "Surfaces T&T communications from SCRIBE",
+      "Logs every decision made this session",
     ],
   },
 };
