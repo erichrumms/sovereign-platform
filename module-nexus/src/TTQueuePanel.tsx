@@ -27,6 +27,7 @@
 
 import { useState, type CSSProperties } from "react";
 import { formatCurrency } from "../../sovereign-shell/src/format-currency";
+import { isScribeItemSent } from "../../module-scribe/src/scribe-sent-session";
 
 import type { SubmittedTravelItem, SubmittedTimeItem, UseTTIntake } from "./useTTIntake";
 import type { TravelComplianceFinding } from "./tt-travel-compliance-engine";
@@ -212,6 +213,9 @@ function DraftPanel({ item }: { item: SubmittedTravelItem }): JSX.Element | null
 
 function TimeQueueRow({ item }: { item: SubmittedTimeItem }): JSX.Element {
   const { record, flags, evaluated } = item;
+  const sentFlags = flags.filter((f) => isScribeItemSent(`time-${f.flag_id}`));
+  const allSent = flags.length > 0 && sentFlags.length === flags.length;
+  const someSent = sentFlags.length > 0 && !allSent;
   return (
     <div data-testid={`tt-queue-time-${record.record_id}`} style={cardStyle}>
       <div style={cardHeadStyle}>
@@ -227,6 +231,17 @@ function TimeQueueRow({ item }: { item: SubmittedTimeItem }): JSX.Element {
             </li>
           ))}
         </ul>
+      )}
+      {/* WH-16: SCRIBE correspondence status — read-only, one direction, no navigation */}
+      {allSent && (
+        <div style={correspondenceSentStyle} aria-label="Correspondence sent via SCRIBE">
+          Correspondence sent
+        </div>
+      )}
+      {someSent && (
+        <div style={correspondencePartialStyle} aria-label="Correspondence partially sent via SCRIBE">
+          {sentFlags.length} of {flags.length} correspondence items sent
+        </div>
       )}
     </div>
   );
@@ -254,6 +269,8 @@ const approveBtnStyle: CSSProperties = { padding: "5px 12px", borderRadius: 6, b
 const denyBtnStyle: CSSProperties = { padding: "5px 12px", borderRadius: 6, border: "1px solid #b91c1c", background: "#b91c1c", color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600 };
 const escalateBtnStyle: CSSProperties = { padding: "5px 12px", borderRadius: 6, border: "1px solid #b45309", background: "#b45309", color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600 };
 const errorStyle: CSSProperties = { margin: 0, color: "#b91c1c", fontSize: 13, fontWeight: 600 };
+const correspondenceSentStyle: CSSProperties = { fontSize: 11, color: "#166534", background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 4, padding: "2px 8px", alignSelf: "flex-start" };
+const correspondencePartialStyle: CSSProperties = { fontSize: 11, color: "#854d0e", background: "#fef9c3", border: "1px solid #fde68a", borderRadius: 4, padding: "2px 8px", alignSelf: "flex-start" };
 const draftPanelStyle: CSSProperties = { border: "1px solid #bfdbfe", borderRadius: 6, padding: "8px 12px", background: "#eff6ff", marginTop: 4, display: "flex", flexDirection: "column", gap: 4 };
 const draftHeaderStyle: CSSProperties = { fontSize: 12, fontWeight: 700, color: "#1e40af" };
 const draftTierStyle: CSSProperties = { fontSize: 11, color: "#64748b" };
