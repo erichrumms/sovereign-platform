@@ -46,6 +46,14 @@ describe("orientation knowledge base", () => {
     expect(o.active_agents).toContain("agentos.deployer");
     expect(o.active_agents).toHaveLength(9);
   });
+
+  // Session 73 Round 2: tt.escalation-monitor added per Governance Agent decision.
+  it("includes NEXUS's eight registered agents including tt.escalation-monitor", () => {
+    const o = getOrientation("NEXUS")!;
+    expect(o.active_agents).toContain("nexus.classification-agent");
+    expect(o.active_agents).toContain("tt.escalation-monitor");
+    expect(o.active_agents).toHaveLength(8);
+  });
 });
 
 describe("productFromPath (frozen-contract currentPath derivation)", () => {

@@ -106,7 +106,9 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
     receives_from: ["CPMI", "AGENTOS"],
     user_action:
       "Manage tasks and correspondence. Drafts prepared in SCRIBE export into NEXUS task intake.",
-    // 2 native nexus agents + PPBE and T&T layer agents whose primary host is NEXUS
+    // 2 native nexus agents + PPBE and T&T layer agents whose primary host is NEXUS (8 total)
+    // tt.escalation-monitor added per Governance Agent decision, Session 73 Round 2:
+    // registry lists "VIGIL / NEXUS infrastructure"; NEXUS is the primary pipeline host.
     active_agents: [
       "nexus.classification-agent",
       "nexus.routing-agent",
@@ -115,6 +117,7 @@ export const PRODUCT_ORIENTATIONS: readonly ProductOrientation[] = [
       "tt.travel-compliance-engine",
       "tt.travel-router",
       "tt.time-compliance-engine",
+      "tt.escalation-monitor",
     ],
   },
   {
