@@ -48,6 +48,12 @@ import type {
   SovereignRole,
   WorkQueueSummary,
 } from "../shell-contract";
+import {
+  buildPPBEDashboard,
+  type PPBEDashboardData,
+  type PeriodVariance,
+} from "../../module-apex/src/ppbe-dashboard";
+import { createSyntheticPPBEDashboardInputs } from "../../module-apex/src/ppbe-data-adapter";
 import type { RegisteredModuleView } from "./module-loader";
 import {
   expireVigilSessionRequests,
@@ -108,10 +114,18 @@ function StatusBadge({
 
 function ProgramTile({
   snapshot,
+  variances,
 }: {
   snapshot: ProgramStatusSnapshot;
+  variances?: PeriodVariance[];
 }): JSX.Element {
   const pct = Math.round(snapshot.percent_obligated);
+  const latestVariance = variances && variances.length > 0
+    ? variances[variances.length - 1]
+    : undefined;
+  const varianceSign = latestVariance
+    ? latestVariance.variance > 0 ? "+" : latestVariance.variance < 0 ? "" : "±"
+    : null;
   return (
     <div style={programTileStyle}>
       <div
@@ -138,6 +152,21 @@ function ProgramTile({
         />
       </div>
       <span style={pctLabelStyle}>{pct}% obligated</span>
+      {latestVariance && varianceSign !== null && (
+        <span style={{
+          ...pctLabelStyle,
+          color: latestVariance.variance === 0 ? "#16a34a"
+            : latestVariance.variance > 0 ? "#92400e"
+            : "#6b7280",
+        }}>
+          {latestVariance.period}: {varianceSign}{latestVariance.variance.toLocaleString()} variance
+        </span>
+      )}
+      {snapshot.point_of_contact && (
+        <span style={pocLabelStyle}>
+          {snapshot.point_of_contact.name} · {snapshot.point_of_contact.role}
+        </span>
+      )}
       {snapshot.narrative && (
         <p style={tileNarrativeStyle}>{snapshot.narrative}</p>
       )}
@@ -147,21 +176,64 @@ function ProgramTile({
 
 function ProgramHealthPanel({
   programs,
+  ppbeMetrics,
 }: {
   programs: readonly ProgramStatusSnapshot[];
+  ppbeMetrics?: PPBEDashboardData;
 }): JSX.Element {
+  const depHealth = ppbeMetrics?.dependency_health;
+  const lv = ppbeMetrics?.learning_velocity;
   return (
     <div style={subPanelStyle}>
       <h3 style={subPanelTitleStyle}>Program Health</h3>
+      {ppbeMetrics && (
+        <div style={portfolioMetricsRowStyle}>
+          <div style={portfolioMetricBoxStyle}>
+            <span style={portfolioMetricLabelStyle}>Dependency Health</span>
+            <span style={portfolioMetricValueStyle}>
+              {depHealth?.index_percent !== null && depHealth?.index_percent !== undefined
+                ? `${depHealth.index_percent}%`
+                : "—"}
+            </span>
+            {depHealth && (
+              <span style={portfolioMetricSubStyle}>
+                {depHealth.healthy} healthy · {depHealth.at_risk} at risk · {depHealth.failed} failed
+              </span>
+            )}
+          </div>
+          <div style={portfolioMetricBoxStyle}>
+            <span style={portfolioMetricLabelStyle}>Learning Velocity</span>
+            <span style={portfolioMetricValueStyle}>
+              {lv?.velocity_percent !== null && lv?.velocity_percent !== undefined
+                ? `${lv.velocity_percent}%`
+                : "—"}
+            </span>
+            {lv && (
+              <span style={portfolioMetricSubStyle}>
+                {lv.feeding_planning_cycle} of {lv.total_findings} findings feeding planning
+              </span>
+            )}
+          </div>
+        </div>
+      )}
       {programs.length === 0 ? (
         <p style={emptyTextStyle}>
           No program data published — APEX populates this when programs are loaded.
         </p>
       ) : (
         <div style={programGridStyle}>
-          {[...programs].map((p) => (
-            <ProgramTile key={p.program_id} snapshot={p} />
-          ))}
+          {[...programs].map((p) => {
+            const programVariances = ppbeMetrics?.variances.filter(
+              (v) => v.program_id === p.program_id
+            );
+            return (
+              <ProgramTile
+                key={p.program_id}
+                snapshot={p}
+                variances={programVariances}
+              />
+            );
+          })}
         </div>
       )}
     </div>
@@ -310,6 +382,11 @@ function ModuleStatusPanel({
 // MAIN COMPONENT
 // ============================================================
 
+// Compute PPBE portfolio metrics once at module level — the seed is static and
+// deterministic, so there is no need to re-run on every render.
+const _ppbeInputs = createSyntheticPPBEDashboardInputs();
+const _ppbeMetrics: PPBEDashboardData = buildPPBEDashboard(_ppbeInputs);
+
 export function PlatformHome({
   ctx,
   modules = [],
@@ -390,7 +467,7 @@ export function PlatformHome({
           <div style={sectionHeaderRowStyle}>
             <h2 style={sectionTitleStyle}>Work Scope</h2>
           </div>
-          <ProgramHealthPanel programs={programs} />
+          <ProgramHealthPanel programs={programs} ppbeMetrics={_ppbeMetrics} />
         </section>
       )}
 
@@ -569,6 +646,51 @@ const tileNarrativeStyle: CSSProperties = {
   fontSize: 11,
   color: "#475569",
   lineHeight: 1.4,
+};
+
+const pocLabelStyle: CSSProperties = {
+  fontSize: 10,
+  color: "#64748b",
+  fontStyle: "italic",
+};
+
+const portfolioMetricsRowStyle: CSSProperties = {
+  display: "flex",
+  gap: 10,
+  flexWrap: "wrap",
+  marginBottom: 8,
+};
+
+const portfolioMetricBoxStyle: CSSProperties = {
+  flex: "1 1 140px",
+  border: "1px solid #e2e8f0",
+  borderRadius: 6,
+  padding: "8px 10px",
+  background: "#f8fafc",
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+};
+
+const portfolioMetricLabelStyle: CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: 0.5,
+  textTransform: "uppercase",
+  color: "#475569",
+};
+
+const portfolioMetricValueStyle: CSSProperties = {
+  fontSize: 20,
+  fontWeight: 700,
+  color: "#0c4a6e",
+  lineHeight: 1.2,
+};
+
+const portfolioMetricSubStyle: CSSProperties = {
+  fontSize: 10,
+  color: "#64748b",
+  lineHeight: 1.3,
 };
 
 const emptyStateBoxStyle: CSSProperties = {

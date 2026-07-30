@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.23
+ * Version: 1.24
  * Date: July 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,27 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.24 (July 29, 2026) — GD-30 (Program Point-of-Contact addition, approved by the
+ *                       Project Principal July 29, 2026, this session, scope limited to:
+ *                       add optional `point_of_contact` field (name + role strings) to
+ *                       `ProgramStatusSnapshot` (PROGRAM STATUS SURFACE TYPES block,
+ *                       Section 7). Optional — absent when APEX does not populate it;
+ *                       present for all five SYNTH-PRG programs. This is a type-level
+ *                       addition only — non-breaking widening of an existing surface type.
+ *                       Impact assessment: NO HumanDecisionType change (not synced to
+ *                       shared-types.ts or Python logger — Constraint #11 has nothing to
+ *                       propagate for this GD). NO SovereignEventType change. NO AgentClass
+ *                       change. NO SovereignRole / SovereignProduct change.
+ *                       sovereign-api-client/src/types.ts NOT affected (copies only
+ *                       SovereignProduct / SovereignTier / ClearanceLevel — none changed).
+ *                       MODULE-LOADER and VALID_AGENT_CLASSES: not touched. sovereign_logger.py
+ *                       APPROVED_* lists: not touched. Standing Constraint #7 (export count):
+ *                       NOT incremented — widens an existing export's type, not adds a new
+ *                       context member. CONSUMERS: APEX (publishProgramStatuses now includes
+ *                       point_of_contact drawn from ProgramRecord when present); PlatformHome
+ *                       (ProgramTile renders POC beneath the narrative when the snapshot
+ *                       carries it). Both shell-contract copies SHA-256 re-verified identical
+ *                       at v1.24.
  *   v1.23 (July 23, 2026) — GD-28 (Logger read exposure, approved by the Project Principal
  *                       July 22, 2026, per docs/29 §Decision 3). ONE change: added
  *                       `getEntries: () => readonly SovereignLogEvent[]` to the `logger`
@@ -1257,6 +1278,9 @@ export interface ProgramStatusSnapshot {
       rather than building a second summarization path (docs/20 §2). */
   readonly narrative: string;
   readonly updated_at: string; // ISO 8601
+  // GD-30 (v1.24) — point of contact for this program's portfolio entry. Optional:
+  // absent when APEX does not populate it (backward-compatible widening).
+  readonly point_of_contact?: { readonly name: string; readonly role: string };
 }
 
 export interface ProgramStatusSurface {

@@ -163,6 +163,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
       { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
     ],
+    point_of_contact: { name: 'Marcus Cole', role: 'Program Manager' },
   },
   {
     program_id: 'SYNTH-PRG-BRAVO',
@@ -184,6 +185,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
       { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
     ],
+    point_of_contact: { name: 'Sarah Okonkwo', role: 'Program Manager' },
   },
   {
     program_id: 'SYNTH-PRG-CHARLIE',
@@ -205,6 +207,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
       { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
     ],
+    point_of_contact: { name: 'James Rivera', role: 'Senior Analyst' },
   },
   {
     program_id: 'SYNTH-PRG-DELTA',
@@ -226,6 +229,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'obligation rate', baseline_value: 'front-loaded; full estimate obligated by Q4 close' },
       { metric: 'systems retired', baseline_value: 'four legacy systems retired this fiscal year' },
     ],
+    point_of_contact: { name: 'Patricia Webb', role: 'Program Manager' },
   },
   {
     // THE DELIBERATE CEILING-EXCEEDED EXAMPLE — see the portfolio story above.
@@ -248,6 +252,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
       { metric: 'depot throughput', baseline_value: 'five percent scheduling improvement by pilot close' },
     ],
+    point_of_contact: { name: 'David Nkosi', role: 'Program Manager' },
   },
 
   // ── FY 2025 (Prior Year / Evaluation — closed, near-100% obligated) ──────────

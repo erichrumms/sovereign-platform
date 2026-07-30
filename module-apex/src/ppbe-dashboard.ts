@@ -299,6 +299,7 @@ export function publishProgramStatuses(
       status: statusFromObligationRate(metric.rate_percent),
       narrative: metric.narrative,
       updated_at: nowIso,
+      ...(program.point_of_contact ? { point_of_contact: program.point_of_contact } : {}),
     });
   }
 }

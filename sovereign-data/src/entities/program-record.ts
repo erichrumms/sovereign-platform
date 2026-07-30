@@ -44,6 +44,8 @@ export interface ProgramRecord extends Program {
   obligation_plan: ObligationPlanEntry[];
   /** Feeds Phase 6 evaluation comparison. */
   performance_baseline: PerformanceBaselineMetric[];
+  /** GD-30 (v1.24) — primary point of contact name and role for this program record. */
+  point_of_contact?: { name: string; role: string };
 }
 
 export function validateProgramRecord(record: unknown): ValidationResult {
