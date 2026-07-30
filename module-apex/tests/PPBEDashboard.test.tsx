@@ -25,10 +25,10 @@ const inputs: PPBEDashboardInputs = {
       contract_number: "W91-26-C-0001",
       classification_level: "UNCLASSIFIED",
       status: "ACTIVE",
-      objective_id: "SO-2027-01",
-      fiscal_year: "FY 2027",
+      objective_id: "SO-2026-01",
+      fiscal_year: "FY 2026",
       lifecycle_cost_estimate: 1000000,
-      obligation_plan: [{ period: "FY 2027 Q1", planned_amount: 100000 }],
+      obligation_plan: [{ period: "FY 2026 Q1", planned_amount: 100000 }],
       performance_baseline: [{ metric: "obligation rate", baseline_value: "on plan" }],
     },
   ],
@@ -38,12 +38,12 @@ const inputs: PPBEDashboardInputs = {
       program_id: "PRG-001",
       cost_code: "CC-1",
       amount: 50000,
-      timestamp: "2026-10-15T15:30:00Z",
+      timestamp: "2025-10-15T15:30:00Z",
       authorizing_official: "Jane Smith",
       workflow_step_id: "ppbe-obligation-OB-1",
     },
   ],
-  actualsByProgram: { "PRG-001": { "FY 2027 Q1": 50000 } },
+  actualsByProgram: { "PRG-001": { "FY 2026 Q1": 50000 } },
   dependencies: [
     {
       dependency_id: "D-1",
@@ -75,7 +75,7 @@ describe("PPBEDashboard", () => {
     render(<PPBEDashboard inputs={inputs} />);
     expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
     expect(screen.getByText(/obligated 50000 of 100000 planned — 50 percent/)).toBeInTheDocument();
-    expect(screen.getByText(/Logistics Data Interchange.*FY 2027 Q1.*under-executing.*actuals of 50000 are 50000 below plan/)).toBeInTheDocument();
+    expect(screen.getByText(/Logistics Data Interchange.*FY 2026 Q1.*under-executing.*actuals of 50000 are 50000 below plan/)).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 registered dependencies are healthy/)).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_DECISION: 2 recorded events/)).toBeInTheDocument();
@@ -201,6 +201,47 @@ describe("PPBEDashboard", () => {
     // Remaining programs are between 1 and 6 exclusive
     const between = counts.filter((c) => c > 1 && c < 6);
     expect(between.length).toBeGreaterThan(0);
+  });
+});
+
+// ── WH-37: BY/BY+1 planning-phase gating ─────────────────────────────────────
+
+const BY_INPUTS: PPBEDashboardInputs = {
+  programs: [
+    {
+      program_id: "PRG-BY",
+      name: "Budget Year Program",
+      sponsor: "PEO Test",
+      contract_number: "W91-27-C-0001",
+      classification_level: "UNCLASSIFIED",
+      status: "ACTIVE",
+      objective_id: "SO-2027-01",
+      fiscal_year: "FY 2027",
+      lifecycle_cost_estimate: 500000,
+      obligation_plan: [{ period: "FY 2027 Q1", planned_amount: 80000 }],
+      performance_baseline: [],
+    },
+  ],
+  obligations: [],
+  actualsByProgram: {},
+  dependencies: [],
+  findings: [],
+  eventCounts: { ...EMPTY_PPBE_EVENT_COUNTS },
+};
+
+describe("PPBEDashboard — WH-37 BY/BY+1 planning-phase gating", () => {
+  it("BY (FY 2027): obligation rate section shows planning notice, not chart or execution status", () => {
+    render(<PPBEDashboard inputs={BY_INPUTS} />);
+    // Chart must not be present.
+    expect(screen.queryByLabelText("Obligation rate bar chart")).not.toBeInTheDocument();
+    // Planning notice must be present.
+    expect(screen.getByText(/BY \(FY 2027\) is a budget-year request/)).toBeInTheDocument();
+  });
+
+  it("BY (FY 2027): variance section shows planning notice, not chart", () => {
+    render(<PPBEDashboard inputs={BY_INPUTS} />);
+    expect(screen.queryByLabelText("Budget-to-actual variance chart")).not.toBeInTheDocument();
+    expect(screen.getByText(/Budget-year planning estimates.*do not have actual obligation records by definition/)).toBeInTheDocument();
   });
 });
 

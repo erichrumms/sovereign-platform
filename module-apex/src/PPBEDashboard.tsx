@@ -479,6 +479,10 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
     availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026')
   );
 
+  // BY (FY2027) is a formal budget request; BY+1 (FY2028) has no obligation concept.
+  // Execution metrics (obligation rate, variance vs. actuals) must not render for these years.
+  const isBudgetYear = selectedFiscalYear === 'FY 2027' || selectedFiscalYear === 'FY 2028';
+
   // Filter inputs to the selected fiscal year so all metrics are year-scoped.
   const yearPrograms = effectiveInputs.programs.filter((p) => p.fiscal_year === selectedFiscalYear);
   const yearObligations = effectiveInputs.obligations.filter(
@@ -541,7 +545,13 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
 
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Obligation rate</h2>
-        {data.obligation_rates.length === 0 ? (
+        {isBudgetYear ? (
+          <StatusNotice label={`${YEAR_PHASE_LABELS[selectedFiscalYear] ?? selectedFiscalYear} — planning phase.`}>
+            {selectedFiscalYear === 'FY 2028'
+              ? 'BY+1 (FY 2028) has no obligation concept. Obligation rates and on-track/off-track status are not applicable to this year.'
+              : 'BY (FY 2027) is a budget-year request. Obligation rates and execution status apply only to years with actual obligation records (PY and CY).'}
+          </StatusNotice>
+        ) : data.obligation_rates.length === 0 ? (
           <p style={bodyTextStyle}>No programs are recorded.</p>
         ) : (
           <ObligationRateChart
@@ -554,7 +564,12 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
 
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Budget-to-actual variance</h2>
-        {data.variances.length === 0 ? (
+        {isBudgetYear ? (
+          <StatusNotice label={`${YEAR_PHASE_LABELS[selectedFiscalYear] ?? selectedFiscalYear} — planning phase.`}>
+            Variance analysis compares actual obligations against plan. Budget-year planning estimates
+            do not have actual obligation records by definition — displaying a variance figure would be structurally misleading.
+          </StatusNotice>
+        ) : data.variances.length === 0 ? (
           <p style={bodyTextStyle}>No obligation plans are recorded.</p>
         ) : (
           <VarianceChart variances={data.variances} />

@@ -21,12 +21,12 @@ const BASE_PROGRAM = {
   contract_number: "W91-26-C-0001",
   classification_level: "UNCLASSIFIED" as const,
   status: "ACTIVE" as const,
-  objective_id: "SO-2027-01",
-  fiscal_year: "FY 2027",
+  objective_id: "SO-2026-01",
+  fiscal_year: "FY 2026",
   lifecycle_cost_estimate: 1000000,
   obligation_plan: [
-    { period: "FY 2027 Q1", planned_amount: 100000 },
-    { period: "FY 2027 Q2", planned_amount: 120000 },
+    { period: "FY 2026 Q1", planned_amount: 100000 },
+    { period: "FY 2026 Q2", planned_amount: 120000 },
   ],
   performance_baseline: [{ metric: "obligation rate", baseline_value: "on plan" }],
 };
@@ -39,7 +39,7 @@ const INPUTS: PPBEDashboardInputs = {
       program_id: "SYNTH-PRG-ALPHA",
       cost_code: "CC-1",
       amount: 90000,
-      timestamp: "2027-01-15T00:00:00Z",
+      timestamp: "2026-01-15T00:00:00Z",
       authorizing_official: "J. Smith",
       workflow_step_id: "ppbe-obligation-OB-1",
     },
@@ -48,13 +48,13 @@ const INPUTS: PPBEDashboardInputs = {
       program_id: "SYNTH-PRG-ALPHA",
       cost_code: "CC-1",
       amount: 60000,
-      timestamp: "2027-04-10T00:00:00Z",
+      timestamp: "2026-04-10T00:00:00Z",
       authorizing_official: "J. Smith",
       workflow_step_id: "ppbe-obligation-OB-2",
     },
   ],
   actualsByProgram: {
-    "SYNTH-PRG-ALPHA": { "FY 2027 Q1": 90000, "FY 2027 Q2": 60000 },
+    "SYNTH-PRG-ALPHA": { "FY 2026 Q1": 90000, "FY 2026 Q2": 60000 },
   },
   dependencies: [
     {
@@ -101,8 +101,8 @@ describe("PPBEProgramDetail", () => {
   it("shows variance history for each obligation plan period (via narrative captions below chart)", () => {
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={() => {}} />);
     // Period labels appear in the narrative captions rendered below the line chart (Gap 5).
-    expect(screen.getByText(/FY 2027 Q1/)).toBeInTheDocument();
-    expect(screen.getByText(/FY 2027 Q2/)).toBeInTheDocument();
+    expect(screen.getByText(/FY 2026 Q1/)).toBeInTheDocument();
+    expect(screen.getByText(/FY 2026 Q2/)).toBeInTheDocument();
     // Chart container is present.
     expect(screen.getByLabelText("Budget-to-actual variance history chart")).toBeInTheDocument();
   });
@@ -145,5 +145,40 @@ describe("PPBEProgramDetail", () => {
     };
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={noPlanInputs} onBack={() => {}} />);
     expect(screen.getByText(/No obligation plan periods are recorded/)).toBeInTheDocument();
+  });
+});
+
+describe("PPBEProgramDetail — WH-37 BY/BY+1 planning-phase gating", () => {
+  const BY_PROGRAM = {
+    ...BASE_PROGRAM,
+    fiscal_year: "FY 2027",
+    obligation_plan: [{ period: "FY 2027 Q1", planned_amount: 100000 }],
+  };
+  const BY_INPUTS: PPBEDashboardInputs = {
+    ...INPUTS,
+    programs: [BY_PROGRAM],
+    obligations: [],
+    actualsByProgram: {},
+  };
+
+  it("BY (FY 2027): obligation status section shows planning notice, not rate or badge", () => {
+    render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={BY_INPUTS} onBack={() => {}} />);
+    // Execution metrics must not be present.
+    expect(screen.queryByLabelText(/Obligation rate:/)).not.toBeInTheDocument();
+    // Planning notice must be present.
+    expect(screen.getByText(/BY \(FY 2027\) is a budget-year request/)).toBeInTheDocument();
+  });
+
+  it("BY (FY 2027): variance section shows planning notice, not chart", () => {
+    render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={BY_INPUTS} onBack={() => {}} />);
+    expect(screen.queryByLabelText("Budget-to-actual variance history chart")).not.toBeInTheDocument();
+    expect(screen.getByText(/Budget-year planning estimates.*do not have actual obligation records by definition/)).toBeInTheDocument();
+  });
+
+  it("BY+1 (FY 2028): obligation status section shows BY+1 planning notice", () => {
+    const BY1_PROGRAM = { ...BY_PROGRAM, fiscal_year: "FY 2028" };
+    const BY1_INPUTS: PPBEDashboardInputs = { ...BY_INPUTS, programs: [BY1_PROGRAM] };
+    render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={BY1_INPUTS} onBack={() => {}} />);
+    expect(screen.getByText(/BY\+1 \(FY 2028\) has no obligation concept/)).toBeInTheDocument();
   });
 });

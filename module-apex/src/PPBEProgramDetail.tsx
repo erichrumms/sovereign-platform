@@ -37,6 +37,7 @@ import {
   contentCardStyle,
   sectionHeadingStyle,
   bodyTextStyle,
+  StatusNotice,
 } from "./banners";
 import {
   obligationRate,
@@ -146,6 +147,10 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
     );
   }
 
+  // BY (FY2027) is a formal budget request; BY+1 (FY2028) has no obligation concept.
+  // Execution metrics (obligation rate, variance vs. actuals) must not render for these years.
+  const isBudgetYear = selectedFiscalYear === 'FY 2027' || selectedFiscalYear === 'FY 2028';
+
   const yearObligations = inputs.obligations.filter(
     (o) => fiscalYearOf(o.timestamp) === selectedFiscalYear
   );
@@ -198,82 +203,99 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
       {/* Section 1 — Obligation status */}
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Obligation status</h2>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <span
-            aria-label={`Obligation rate: ${obligationMetric.rate_percent !== null ? `${obligationMetric.rate_percent}%` : "not computed"}`}
-            style={{ fontSize: 28, fontWeight: 700, color: statusFill(obligationStatus) }}
-          >
-            {obligationMetric.rate_percent !== null ? `${obligationMetric.rate_percent}%` : "—"}
-          </span>
-          <span
-            style={{
-              padding: "2px 10px",
-              borderRadius: 10,
-              fontSize: 11,
-              fontWeight: 700,
-              background: "#f8fafc",
-              border: `1px solid ${statusFill(obligationStatus)}`,
-              color: statusFill(obligationStatus),
-            }}
-          >
-            {statusLabel(obligationStatus)}
-          </span>
-        </div>
-        <p style={captionStyle}>{obligationMetric.narrative}</p>
-        <table style={tableStyle} aria-label="Obligation totals">
-          <tbody>
-            <tr>
-              <td style={tdLabelStyle}>Planned total</td>
-              <td style={tdValueStyle}>{formatCurrency(obligationMetric.planned_total)}</td>
-            </tr>
-            <tr>
-              <td style={tdLabelStyle}>Obligated total</td>
-              <td style={tdValueStyle}>{formatCurrency(obligationMetric.obligated_total)}</td>
-            </tr>
-          </tbody>
-        </table>
+        {isBudgetYear ? (
+          <StatusNotice label={`${YEAR_PHASE_LABELS[selectedFiscalYear] ?? selectedFiscalYear} — planning phase.`}>
+            {selectedFiscalYear === 'FY 2028'
+              ? 'BY+1 (FY 2028) has no obligation concept. Obligation rates and execution status are not applicable to this year.'
+              : 'BY (FY 2027) is a budget-year request. Obligation rates and on-track/off-track status apply only to years with actual obligation records (PY and CY).'}
+          </StatusNotice>
+        ) : (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <span
+                aria-label={`Obligation rate: ${obligationMetric.rate_percent !== null ? `${obligationMetric.rate_percent}%` : "not computed"}`}
+                style={{ fontSize: 28, fontWeight: 700, color: statusFill(obligationStatus) }}
+              >
+                {obligationMetric.rate_percent !== null ? `${obligationMetric.rate_percent}%` : "—"}
+              </span>
+              <span
+                style={{
+                  padding: "2px 10px",
+                  borderRadius: 10,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  background: "#f8fafc",
+                  border: `1px solid ${statusFill(obligationStatus)}`,
+                  color: statusFill(obligationStatus),
+                }}
+              >
+                {statusLabel(obligationStatus)}
+              </span>
+            </div>
+            <p style={captionStyle}>{obligationMetric.narrative}</p>
+            <table style={tableStyle} aria-label="Obligation totals">
+              <tbody>
+                <tr>
+                  <td style={tdLabelStyle}>Planned total</td>
+                  <td style={tdValueStyle}>{formatCurrency(obligationMetric.planned_total)}</td>
+                </tr>
+                <tr>
+                  <td style={tdLabelStyle}>Obligated total</td>
+                  <td style={tdValueStyle}>{formatCurrency(obligationMetric.obligated_total)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
 
       {/* Section 2 — Budget-to-actual variance history */}
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Budget-to-actual variance history</h2>
-        {variances.length === 0 ? (
+        {isBudgetYear ? (
+          <StatusNotice label={`${YEAR_PHASE_LABELS[selectedFiscalYear] ?? selectedFiscalYear} — planning phase.`}>
+            Variance analysis compares actual obligations against plan. Budget-year planning estimates
+            do not have actual obligation records by definition — displaying a variance figure would be structurally misleading.
+          </StatusNotice>
+        ) : variances.length === 0 ? (
           <p style={bodyTextStyle}>No obligation plan periods are recorded for this program.</p>
         ) : (
-          <div aria-label="Budget-to-actual variance history chart" style={{ marginBottom: 8 }}>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={variances}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="period" tick={{ fontSize: 10, angle: -20, textAnchor: "end" }} height={44} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={formatCurrency} />
-                <Tooltip formatter={(val) => (typeof val === "number" ? formatCurrency(val) : String(val))} />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="planned_amount"
-                  name="Planned"
-                  stroke="#94a3b8"
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="actual_amount"
-                  name="Actual"
-                  stroke="#0c4a6e"
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <>
+            <div aria-label="Budget-to-actual variance history chart" style={{ marginBottom: 8 }}>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={variances}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="period" tick={{ fontSize: 10, angle: -20, textAnchor: "end" }} height={44} />
+                  <YAxis tick={{ fontSize: 11 }} tickFormatter={formatCurrency} />
+                  <Tooltip formatter={(val) => (typeof val === "number" ? formatCurrency(val) : String(val))} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="planned_amount"
+                    name="Planned"
+                    stroke="#94a3b8"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="actual_amount"
+                    name="Actual"
+                    stroke="#0c4a6e"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            {/* Narrative captions — Gap 5 compliance */}
+            {variances.map((v) => (
+              <p key={`n-${v.period}`} style={captionStyle}>{v.narrative}</p>
+            ))}
+          </>
         )}
-        {/* Narrative captions — Gap 5 compliance */}
-        {variances.map((v) => (
-          <p key={`n-${v.period}`} style={captionStyle}>{v.narrative}</p>
-        ))}
       </div>
 
       {/* Section 3 — Dependency health (filtered to this program's workflows) */}
