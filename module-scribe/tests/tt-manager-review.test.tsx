@@ -214,6 +214,35 @@ describe("the VIGIL gate on formal escalations (docs/17 §7 Tier B)", () => {
   });
 });
 
+describe("employeeNames prop (WH-13, Session 73) — human name vs. raw ID in queue labels", () => {
+  it("shows the human name in the queue label when employeeNames is supplied", () => {
+    const events: SovereignLogEvent[] = [];
+    render(
+      <TTManagerReview
+        ctx={syntheticCtx(events)}
+        items={[timeItem()]}
+        employeeNames={{ "TEST-EMP-200": "Casey Stafford" }}
+      />
+    );
+    const queue = screen.getByTestId("tt-review-queue");
+    expect(queue).toHaveTextContent("Casey Stafford");
+    expect(queue).not.toHaveTextContent("TEST-EMP-200");
+  });
+
+  it("falls back to the raw employee_id when employeeNames is not supplied (backward-compatible)", () => {
+    const events: SovereignLogEvent[] = [];
+    render(
+      <TTManagerReview
+        ctx={syntheticCtx(events)}
+        items={[timeItem()]}
+        // no employeeNames prop
+      />
+    );
+    const queue = screen.getByTestId("tt-review-queue");
+    expect(queue).toHaveTextContent("TEST-EMP-200");
+  });
+});
+
 describe("travel items are read-only in SCRIBE (decisions belong to NEXUS — GD-21 mandate, WH-28)", () => {
   it("shows a travel item's detail and flags but renders no decision controls", () => {
     const events: SovereignLogEvent[] = [];
