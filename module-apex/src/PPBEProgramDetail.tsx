@@ -20,6 +20,16 @@
  */
 
 import { useState, type CSSProperties } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import type { DependencyMap } from "@sovereign/data";
 import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 import {
@@ -230,38 +240,37 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
         {variances.length === 0 ? (
           <p style={bodyTextStyle}>No obligation plan periods are recorded for this program.</p>
         ) : (
-          <table style={tableStyle} aria-label="Budget-to-actual variance by period">
-            <thead>
-              <tr>
-                <th style={thStyle}>Period</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Actual</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Variance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {variances.map((v) => (
-                <tr key={v.period}>
-                  <td style={tdStyle}>{v.period}</td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.planned_amount)}</td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.actual_amount)}</td>
-                  <td
-                    style={{
-                      ...tdStyle,
-                      textAlign: "right",
-                      color: v.variance === 0 ? "#334155" : v.variance > 0 ? "#059669" : "#dc2626",
-                      fontWeight: v.variance !== 0 ? 600 : 400,
-                    }}
-                  >
-                    {v.variance > 0
-                      ? `+${formatCurrency(v.variance)}`
-                      : formatCurrency(v.variance)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div aria-label="Budget-to-actual variance history chart" style={{ marginBottom: 8 }}>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={variances}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="period" tick={{ fontSize: 10, angle: -20, textAnchor: "end" }} height={44} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={formatCurrency} />
+                <Tooltip formatter={(val) => (typeof val === "number" ? formatCurrency(val) : String(val))} />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="planned_amount"
+                  name="Planned"
+                  stroke="#94a3b8"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="actual_amount"
+                  name="Actual"
+                  stroke="#0c4a6e"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         )}
+        {/* Narrative captions — Gap 5 compliance */}
         {variances.map((v) => (
           <p key={`n-${v.period}`} style={captionStyle}>{v.narrative}</p>
         ))}

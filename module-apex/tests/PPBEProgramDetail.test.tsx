@@ -98,10 +98,13 @@ describe("PPBEProgramDetail", () => {
     expect(screen.getByText(/has obligated 150000 of 220000 planned/)).toBeInTheDocument();
   });
 
-  it("shows variance history rows for each obligation plan period", () => {
+  it("shows variance history for each obligation plan period (via narrative captions below chart)", () => {
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={() => {}} />);
-    expect(screen.getByText("FY 2027 Q1")).toBeInTheDocument();
-    expect(screen.getByText("FY 2027 Q2")).toBeInTheDocument();
+    // Period labels appear in the narrative captions rendered below the line chart (Gap 5).
+    expect(screen.getByText(/FY 2027 Q1/)).toBeInTheDocument();
+    expect(screen.getByText(/FY 2027 Q2/)).toBeInTheDocument();
+    // Chart container is present.
+    expect(screen.getByLabelText("Budget-to-actual variance history chart")).toBeInTheDocument();
   });
 
   it("shows dependency health filtered to only this program's workflows (not BRAVO's)", () => {
