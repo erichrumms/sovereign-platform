@@ -2869,11 +2869,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2881,19 +2881,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to SCRIBE"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2901,19 +2905,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               SCRIBE
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2921,19 +2929,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to APEX"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2941,19 +2953,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               APEX
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to FLOWPATH"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2961,19 +2977,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               FLOWPATH
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to ARIA Suite"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -2981,19 +3001,23 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               ARIA Suite
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to Reviewer's Workspace"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3001,12 +3025,16 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             >
               Reviewer's Workspace
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -3072,11 +3100,11 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3084,19 +3112,23 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3104,19 +3136,23 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to NEXUS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3124,19 +3160,23 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             >
               NEXUS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to ARIA Suite"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3144,19 +3184,23 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             >
               ARIA Suite
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to Reviewer's Workspace"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3164,12 +3208,16 @@ exports[`PlatformHome snapshots COMPLIANCE_OFFICER — cannot see Program Health
             >
               Reviewer's Workspace
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -3235,11 +3283,11 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3247,19 +3295,23 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3267,12 +3319,16 @@ exports[`PlatformHome snapshots INDEPENDENT_REVIEWER — cannot see Program Heal
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -3605,11 +3661,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3617,19 +3673,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to SCRIBE"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3637,19 +3697,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               SCRIBE
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3657,19 +3721,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to NEXUS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3677,19 +3745,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               NEXUS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to APEX"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3697,19 +3769,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               APEX
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to FLOWPATH"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3717,19 +3793,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               FLOWPATH
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to ARIA Suite"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3737,19 +3817,23 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               ARIA Suite
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to Reviewer's Workspace"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3757,12 +3841,16 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             >
               Reviewer's Workspace
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -3828,11 +3916,11 @@ exports[`PlatformHome snapshots READ_ONLY — cannot see Program Health/Flagged,
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -3840,12 +3928,16 @@ exports[`PlatformHome snapshots READ_ONLY — cannot see Program Health/Flagged,
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -4178,11 +4270,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4190,19 +4282,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to SCRIBE"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4210,19 +4306,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               SCRIBE
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to VIGIL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4230,19 +4330,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               VIGIL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4250,19 +4354,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to CPMI"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4270,19 +4378,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               CPMI
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to AgentOS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4290,19 +4402,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               AgentOS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to NEXUS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4310,19 +4426,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               NEXUS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to APEX"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4330,19 +4450,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               APEX
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to FLOWPATH"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4350,19 +4474,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               FLOWPATH
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to ARIA Suite"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4370,19 +4498,23 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               ARIA Suite
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to Reviewer's Workspace"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -4390,12 +4522,16 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             >
               Reviewer's Workspace
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>
@@ -5036,11 +5172,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
         style="margin: 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 6px;"
       >
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to COUNSEL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5048,19 +5184,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               COUNSEL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to SCRIBE"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5068,19 +5208,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               SCRIBE
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to VIGIL"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5088,19 +5232,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               VIGIL
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to LENS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5108,19 +5256,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               LENS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to CPMI"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5128,19 +5280,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               CPMI
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to AgentOS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5148,19 +5304,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               AgentOS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to NEXUS"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5168,19 +5328,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               NEXUS
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to APEX"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5188,19 +5352,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               APEX
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to FLOWPATH"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5208,19 +5376,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               FLOWPATH
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to ARIA Suite"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5228,19 +5400,23 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               ARIA Suite
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
         <li
-          style="display: flex; align-items: baseline; gap: 8px; padding: 0px; border-bottom: 1px solid #f1f5f9;"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0px 8px; border-bottom: 1px solid #f1f5f9;"
         >
           <button
             aria-label="Navigate to Reviewer's Workspace"
-            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px; width: 100%; background: none; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
+            style="display: flex; align-items: baseline; gap: 8px; padding: 4px 0px 0px; width: 100%; background: none; cursor: pointer; font-family: system-ui, sans-serif; text-align: left;"
             type="button"
           >
             <span
@@ -5248,12 +5424,16 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             >
               Reviewer's Workspace
             </span>
+          </button>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap;"
+          >
             <span
-              style="font-size: 11px; color: rgb(22, 163, 74);"
+              style="font-size: 11px; font-weight: 600; color: rgb(22, 101, 52); background: rgb(220, 252, 231); border: 1px solid #bbf7d0; border-radius: 10px; padding: 1px 8px; align-self: flex-start;"
             >
               Clear
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </section>

@@ -331,27 +331,6 @@ function ModuleStatusPanel({
         const moduleQueues = workQueues.filter((q) => q.module_id === shortId && q.count > 0);
         const totalCount = moduleQueues.reduce((n, s) => n + s.count, 0);
 
-        if (totalCount === 0) {
-          return onNavigate ? (
-            <li key={m.moduleId} style={{ ...moduleItemStyle, padding: 0 }}>
-              <button
-                type="button"
-                onClick={() => onNavigate(m.moduleId)}
-                aria-label={`Navigate to ${m.displayName}`}
-                style={moduleNavButtonStyle}
-              >
-                <span style={moduleNameStyle}>{m.displayName}</span>
-                <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
-              </button>
-            </li>
-          ) : (
-            <li key={m.moduleId} style={moduleItemStyle}>
-              <span style={moduleNameStyle}>{m.displayName}</span>
-              <span style={{ ...moduleLabelStyle, color: "#16a34a" }}>Clear</span>
-            </li>
-          );
-        }
-
         return (
           <li key={m.moduleId} style={modulePendingItemStyle}>
             {onNavigate ? (
@@ -367,9 +346,13 @@ function ModuleStatusPanel({
               <span style={moduleNameStyle}>{m.displayName}</span>
             )}
             <div style={workQueueGroupTilesStyle}>
-              {moduleQueues.map((s) => (
-                <WorkQueueTile key={s.queue_label} summary={s} />
-              ))}
+              {totalCount === 0 ? (
+                <span style={moduleClearChipStyle}>Clear</span>
+              ) : (
+                moduleQueues.map((s) => (
+                  <WorkQueueTile key={s.queue_label} summary={s} />
+                ))
+              )}
             </div>
           </li>
         );
@@ -712,14 +695,6 @@ const moduleListStyle: CSSProperties = {
   gap: 6,
 };
 
-const moduleItemStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "baseline",
-  gap: 8,
-  padding: "4px 0",
-  borderBottom: "1px solid #f1f5f9",
-};
-
 const moduleNameStyle: CSSProperties = {
   fontSize: 13,
   fontWeight: 700,
@@ -727,23 +702,15 @@ const moduleNameStyle: CSSProperties = {
   minWidth: 80,
 };
 
-const moduleLabelStyle: CSSProperties = {
+const moduleClearChipStyle: CSSProperties = {
   fontSize: 11,
-  color: "#64748b",
-};
-
-const moduleNavButtonStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "baseline",
-  gap: 8,
-  padding: "4px 0",
-  width: "100%",
-  background: "none",
-  border: "none",
-  borderBottom: "1px solid #f1f5f9",
-  cursor: "pointer",
-  fontFamily: "system-ui, sans-serif",
-  textAlign: "left",
+  fontWeight: 600,
+  color: "#166534",
+  background: "#dcfce7",
+  border: "1px solid #bbf7d0",
+  borderRadius: 10,
+  padding: "1px 8px",
+  alignSelf: "flex-start",
 };
 
 const modulePendingItemStyle: CSSProperties = {
