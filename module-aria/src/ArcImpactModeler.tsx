@@ -33,20 +33,46 @@
 
 import { useMemo, useState, type CSSProperties } from "react";
 
+import { SYNTH_PPBE_EXHIBITS, SYNTH_PPBE_PROGRAMS } from "@sovereign/data";
+import type { BudgetExhibit, ProgramRecord } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { GovernanceBanner, contentCardStyle, sectionHeadingStyle, bodyTextStyle } from "./banners";
 import { SeverityBadge } from "./clear-ui";
 import type { ClearSeverity, RegulatorySourceId } from "./clear-types";
 import { REGULATORY_SOURCES } from "./clear-engine";
-import { modelImpact } from "./arc-engine";
+import { DEPENDENCY_MODEL, modelImpact } from "./arc-engine";
 import type {
   ChangeScope,
+  DependentItem,
   DependentItemKind,
   ImpactReport,
   ImpactSeverity,
   ImpactedItem,
   OverallSeverity,
 } from "./arc-types";
+
+/** Primary (FY 2026) ProgramRecord for each SYNTH-PRG id — the execution-year record. */
+const FY2026_PROGRAMS: ProgramRecord[] = SYNTH_PPBE_PROGRAMS.filter((p) => p.fiscal_year === "FY 2026");
+
+/** Exhibit for a program (FY 2026 only), if one exists in the seed. */
+function exhibitForProgram(programId: string): BudgetExhibit | undefined {
+  return SYNTH_PPBE_EXHIBITS.find((e) => e.program_id === programId);
+}
+
+/** Human-readable CLEAR certification status label. */
+function certLabel(exhibit: BudgetExhibit): string {
+  if (exhibit.certification_status === "CERTIFIED") return "CLEAR certified";
+  return "Not certified — pending CLEAR review";
+}
+
+/** Auto-generate the ARC change description from a program + regulatory source. */
+function buildDescription(program: ProgramRecord, sourceTitle: string): string {
+  return (
+    `Proposed change to ${sourceTitle} as it applies to ${program.name} (${program.program_id}). ` +
+    `Model the projected impact on platform items that depend on this regulatory source, ` +
+    `given ${program.name}'s current budget exhibit and obligation status.`
+  );
+}
 
 export interface ArcImpactModelerProps {
   ctx: SovereignShellContext;
@@ -112,7 +138,8 @@ export function ArcDeterminismNotice(): JSX.Element {
 }
 
 export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Element {
-  const [affectedSource, setAffectedSource] = useState<RegulatorySourceId>("omba11");
+  const [selectedProgramId, setSelectedProgramId] = useState<string>("");
+  const [affectedSource, setAffectedSource] = useState<RegulatorySourceId>("dod-ppbe-reform");
   const [description, setDescription] = useState<string>("");
   const [scope, setScope] = useState<ChangeScope>("substantive");
   const [report, setReport] = useState<ImpactReport | null>(null);
@@ -120,15 +147,49 @@ export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Elem
 
   const sources = useMemo(() => REGULATORY_SOURCES.map((s) => ({ ...s })), []);
 
+  const selectedProgram = useMemo(
+    () => FY2026_PROGRAMS.find((p) => p.program_id === selectedProgramId) ?? null,
+    [selectedProgramId]
+  );
+  const selectedExhibit = useMemo(
+    () => (selectedProgramId ? exhibitForProgram(selectedProgramId) : undefined),
+    [selectedProgramId]
+  );
+
+  const handleProgramChange = (programId: string): void => {
+    setSelectedProgramId(programId);
+    setReport(null);
+    const prog = FY2026_PROGRAMS.find((p) => p.program_id === programId);
+    if (prog) {
+      const title = REGULATORY_SOURCES.find((s) => s.id === affectedSource)?.title ?? affectedSource;
+      setDescription(buildDescription(prog, title));
+    } else {
+      setDescription("");
+    }
+  };
+
+  const handleSourceChange = (sourceId: RegulatorySourceId): void => {
+    setAffectedSource(sourceId);
+    setReport(null);
+    if (selectedProgram) {
+      const title = REGULATORY_SOURCES.find((s) => s.id === sourceId)?.title ?? sourceId;
+      setDescription(buildDescription(selectedProgram, title));
+    }
+  };
+
   const runModel = (): void => {
     setError(null);
+    if (!selectedProgramId) {
+      setError("Select a SYNTH-PRG program before modeling regulatory impact.");
+      setReport(null);
+      return;
+    }
     const trimmed = description.trim();
     if (trimmed.length === 0) {
       setError("Describe the proposed regulatory change before modeling its impact.");
       setReport(null);
       return;
     }
-    // The timestamp is the only non-deterministic value; the engine core stays pure (it is passed in).
     const modeledAt = new Date().toISOString();
     setReport(
       modelImpact(
@@ -143,13 +204,41 @@ export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Elem
       {/* Category 2 — permanent governance guardrail (blue). */}
       <ArcDeterminismNotice />
 
-      {/* Step 1 — describe the proposed change. */}
+      {/* Step 1 — select program and describe the proposed change. */}
       <section style={contentCardStyle} data-testid="arc-input">
         <h2 style={sectionHeadingStyle}>Model a proposed regulatory change</h2>
         <p style={bodyTextStyle}>
-          Describe a proposed change to one of the platform's regulatory sources. ARC projects which
+          Select a SYNTH-PRG program, then choose the regulatory source to model. ARC projects which
           platform items would be affected and how severely, based on the current dependency map.
         </p>
+
+        {/* WH-23: program selector — grounds the model in a real program/document intersection. */}
+        <label style={fieldLabelStyle} htmlFor="arc-program-select">
+          Program
+        </label>
+        <select
+          id="arc-program-select"
+          data-testid="arc-program-select"
+          value={selectedProgramId}
+          onChange={(e) => handleProgramChange(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="">— select a SYNTH-PRG program —</option>
+          {FY2026_PROGRAMS.map((p) => (
+            <option key={p.program_id} value={p.program_id}>
+              {p.program_id} · {p.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Per-program exhibit / CLEAR status + dependency coverage for the selected source. */}
+        {selectedProgram && (
+          <ProgramContextPanel
+            program={selectedProgram}
+            exhibit={selectedExhibit}
+            affectedSource={affectedSource}
+          />
+        )}
 
         <label style={fieldLabelStyle} htmlFor="arc-source-select">
           Which regulatory source does the change amend?
@@ -158,7 +247,7 @@ export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Elem
           id="arc-source-select"
           data-testid="arc-source-select"
           value={affectedSource}
-          onChange={(e) => setAffectedSource(e.target.value as RegulatorySourceId)}
+          onChange={(e) => handleSourceChange(e.target.value as RegulatorySourceId)}
           style={selectStyle}
         >
           {sources.map((s) => (
@@ -169,17 +258,26 @@ export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Elem
         </select>
 
         <label style={fieldLabelStyle} htmlFor="arc-description">
-          What is the proposed change?
+          Proposed change description
         </label>
         <textarea
           id="arc-description"
           data-testid="arc-description"
           aria-label="proposed regulatory change description"
-          placeholder="e.g. OMB Circular A-11 Section 51.3 is revised to require a quantified benefit narrative on every budget exhibit."
+          placeholder={
+            selectedProgramId
+              ? ""
+              : "Select a program above to auto-populate the change description."
+          }
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           style={textareaStyle}
         />
+        {selectedProgram && (
+          <p style={descriptionHintStyle}>
+            Description auto-populated from program and source selection — edit as needed.
+          </p>
+        )}
 
         <span style={fieldLabelStyle}>How substantive is the change?</span>
         <div style={scopeRowStyle} role="radiogroup" aria-label="Change scope">
@@ -222,10 +320,68 @@ export function ArcImpactModeler({ ctx: _ctx }: ArcImpactModelerProps): JSX.Elem
       ) : (
         <section style={contentCardStyle} data-testid="arc-empty">
           <p style={{ ...bodyTextStyle, margin: 0, color: "#64748b" }}>
-            Enter a proposed change above and select “Model impact” to see its projected effect.
+            {selectedProgramId
+              ? 'Select "Model impact" to see the projected regulatory effect on this program.'
+              : 'Select a program above, then select "Model impact" to see projected regulatory impact.'}
           </p>
         </section>
       )}
+    </div>
+  );
+}
+
+/**
+ * Per-program panel showing budget exhibit / CLEAR certification status and the dependency model
+ * items that reference the currently-selected regulatory source (WH-23). Read-only — no actions.
+ */
+function ProgramContextPanel({
+  program,
+  exhibit,
+  affectedSource,
+}: {
+  program: ProgramRecord;
+  exhibit: BudgetExhibit | undefined;
+  affectedSource: RegulatorySourceId;
+}): JSX.Element {
+  const coverageItems: readonly DependentItem[] = useMemo(
+    () => DEPENDENCY_MODEL.filter((item) => item.source_id === affectedSource),
+    [affectedSource]
+  );
+
+  return (
+    <div style={programContextPanelStyle} data-testid="arc-program-context">
+      <div style={programContextHeaderStyle}>
+        <span style={programContextNameStyle}>{program.name}</span>
+        <span style={programContextIdStyle}>{program.program_id} · FY 2026</span>
+      </div>
+      {program.point_of_contact && (
+        <p style={programContextMetaStyle}>
+          POC: {program.point_of_contact.name} · {program.point_of_contact.role}
+        </p>
+      )}
+      <p style={programContextMetaStyle}>
+        Budget exhibit:{" "}
+        {exhibit ? (
+          <span style={exhibit.certification_status === "CERTIFIED" ? certifiedStyle : uncertifiedStyle}>
+            {certLabel(exhibit)}
+          </span>
+        ) : (
+          <span style={noExhibitStyle}>No seeded exhibit — CLEAR status not available</span>
+        )}
+      </p>
+      <details style={{ marginTop: 6 }}>
+        <summary style={{ ...programContextMetaStyle, cursor: "pointer" }}>
+          {coverageItems.length} dependency model item{coverageItems.length !== 1 ? "s" : ""} reference this source
+        </summary>
+        <ul style={coverageListStyle}>
+          {coverageItems.map((item) => (
+            <li key={item.item_id} style={coverageItemStyle}>
+              <span style={coverageItemLabelStyle}>{item.label}</span>
+              <span style={coverageCouplingStyle}>{item.coupling}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
     </div>
   );
 }
@@ -257,7 +413,7 @@ function ImpactReportView({ report }: { report: ImpactReport }): JSX.Element {
           prediction of whether the change will be adopted.
         </p>
         <p style={{ ...bodyTextStyle, margin: 0, color: "#475569", fontSize: 13 }}>
-          Proposed change: “{report.change_description}”
+          Proposed change: "{report.change_description}"
         </p>
       </section>
 
@@ -394,6 +550,23 @@ function itemCountPhrase(n: number): string {
 
 // ── Styles (approved white-card pattern on the ARIA light canvas — docs/16 §8) ───────────────────
 const fieldLabelStyle: CSSProperties = { display: "block", fontSize: 13, color: "#475569", fontWeight: 600, margin: "10px 0 4px" };
+const descriptionHintStyle: CSSProperties = { margin: "-4px 0 8px", fontSize: 12, color: "#64748b" };
+// WH-23 — program context panel
+const programContextPanelStyle: CSSProperties = {
+  margin: "8px 0 10px", padding: "10px 14px", background: "#f8fafc",
+  border: "1px solid #e2e8f0", borderRadius: 8, display: "flex", flexDirection: "column", gap: 4,
+};
+const programContextHeaderStyle: CSSProperties = { display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" };
+const programContextNameStyle: CSSProperties = { fontSize: 13, fontWeight: 700, color: "#0f172a" };
+const programContextIdStyle: CSSProperties = { fontSize: 12, color: "#64748b" };
+const programContextMetaStyle: CSSProperties = { margin: 0, fontSize: 12, color: "#475569" };
+const certifiedStyle: CSSProperties = { color: "#166534", fontWeight: 600 };
+const uncertifiedStyle: CSSProperties = { color: "#854d0e", fontWeight: 600 };
+const noExhibitStyle: CSSProperties = { color: "#94a3b8", fontStyle: "italic" };
+const coverageListStyle: CSSProperties = { margin: "6px 0 0", paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4 };
+const coverageItemStyle: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, fontSize: 12, color: "#334155" };
+const coverageItemLabelStyle: CSSProperties = { flex: 1 };
+const coverageCouplingStyle: CSSProperties = { color: "#64748b", fontSize: 11, whiteSpace: "nowrap", fontStyle: "italic" };
 const selectStyle: CSSProperties = {
   width: "100%", maxWidth: 520, padding: "8px 10px", fontSize: 14, color: "#0f172a",
   border: "1px solid #cbd5e1", borderRadius: 8, background: "#ffffff",

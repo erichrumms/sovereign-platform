@@ -11,7 +11,9 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { ArcImpactModeler } from "../src/ArcImpactModeler";
 import { makeCtx } from "./test-helpers";
 
-function model(source: string, description: string): void {
+function model(source: string, description: string, programId = "SYNTH-PRG-ALPHA"): void {
+  // WH-23: a program must be selected before the model runs.
+  fireEvent.change(screen.getByTestId("arc-program-select"), { target: { value: programId } });
   fireEvent.change(screen.getByTestId("arc-source-select"), { target: { value: source } });
   fireEvent.change(screen.getByTestId("arc-description"), { target: { value: description } });
   fireEvent.click(screen.getByTestId("arc-run"));
