@@ -18,13 +18,15 @@
  * Version: 1.0 · Session 38 · July 16, 2026
  */
 
-import { useState, useRef, type CSSProperties } from "react";
+import { useState, useRef, type CSSProperties, type JSX } from "react";
 
 import { createSovereignClient } from "@sovereign/api-client";
 import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
 
 import { SYNTH_PPBE_PROGRAMS, SYNTH_PPBE_OBLIGATIONS, SYNTH_PPBE_FINDINGS } from "@sovereign/data";
+import type { ObligationRecord } from "@sovereign/data";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 
 import {
   runExhibitDraft,
@@ -45,6 +47,83 @@ import exhibitPromptRaw from "../../ppbe/prompts/exhibit_drafting_system.md?raw"
 const EXHIBIT_SYSTEM_PROMPT = exhibitPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 
 type AgentStatus = "idle" | "running" | "done";
+
+// ─── Cost-code aggregation (D2b — WH-15) ────────────────────────────────────
+
+function aggregateByCostCode(
+  obligations: readonly ObligationRecord[]
+): Array<{ code: string; total: number }> {
+  const map = new Map<string, number>();
+  for (const o of obligations) {
+    map.set(o.cost_code, (map.get(o.cost_code) ?? 0) + o.amount);
+  }
+  return Array.from(map.entries())
+    .map(([code, total]) => ({ code, total }))
+    .sort((a, b) => b.total - a.total);
+}
+
+function CostCodeBarChart({
+  data,
+}: {
+  data: ReadonlyArray<{ code: string; total: number }>;
+}): JSX.Element {
+  const maxVal = Math.max(...data.map((d) => d.total), 1);
+  const labelW = 60;
+  const barAreaW = 220;
+  const valueW = 80;
+  const rowH = 26;
+  const barH = 16;
+  const padTop = 8;
+  const svgW = labelW + barAreaW + valueW;
+  const svgH = padTop + data.length * rowH;
+
+  return (
+    <svg
+      viewBox={`0 0 ${svgW} ${svgH}`}
+      width="100%"
+      style={{ maxWidth: svgW, display: "block" }}
+      aria-label="Obligations by cost code bar chart"
+      role="img"
+    >
+      {data.map(({ code, total }, i) => {
+        const barW = Math.max((total / maxVal) * barAreaW, 2);
+        const y = padTop + i * rowH;
+        return (
+          <g key={code}>
+            <text
+              x={labelW - 4}
+              y={y + barH * 0.72}
+              textAnchor="end"
+              fontSize={10}
+              fill="#475569"
+              fontFamily="system-ui, sans-serif"
+            >
+              {code}
+            </text>
+            <rect
+              x={labelW}
+              y={y}
+              width={barW}
+              height={barH}
+              rx={2}
+              fill="#0c4a6e"
+              fillOpacity={0.72}
+            />
+            <text
+              x={labelW + barW + 4}
+              y={y + barH * 0.72}
+              fontSize={10}
+              fill="#334155"
+              fontFamily="system-ui, sans-serif"
+            >
+              {formatCurrency(total)}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
 
 // Use the ALPHA FY2027 record as the demonstration target (Budget Year — forward-facing).
 const DEMO_PROGRAM = SYNTH_PPBE_PROGRAMS.find(
@@ -155,18 +234,43 @@ export function PPBEExhibitPanel({ ctx: _ctx }: PPBEExhibitPanelProps): JSX.Elem
           <h4 style={outputTitleStyle}>{outcome.draft.title}</h4>
           <p style={outputBodyStyle}>{outcome.draft.narrative}</p>
           {outcome.draft.figures.length > 0 && (
-            <div>
+            <div style={{ marginTop: 8 }}>
               <strong style={{ fontSize: 12 }}>Figures</strong>
-              <ul style={figureListStyle}>
-                {outcome.draft.figures.map((fig, i) => (
-                  <li key={i} style={figureItemStyle}>
-                    {fig.label}: {fig.value.toLocaleString()}
-                    <span style={sourceStyle}> · source: {fig.source_workflow_step_id}</span>
-                  </li>
-                ))}
-              </ul>
+              <table style={figureTableStyle} aria-label="Exhibit figures">
+                <thead>
+                  <tr>
+                    <th style={figThStyle}>Label</th>
+                    <th style={{ ...figThStyle, textAlign: "right" }}>Value</th>
+                    <th style={figThStyle}>Source</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {outcome.draft.figures.map((fig, i) => (
+                    <tr key={i}>
+                      <td style={figTdStyle}>{fig.label}</td>
+                      <td style={{ ...figTdStyle, textAlign: "right" }}>
+                        {formatCurrency(fig.value)}
+                      </td>
+                      <td style={{ ...figTdStyle, ...sourceStyle }}>
+                        {fig.source_workflow_step_id}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
+          {DEMO_OBLIGATIONS.length > 0 && (() => {
+            const costCodeData = aggregateByCostCode(DEMO_OBLIGATIONS);
+            return (
+              <div style={{ marginTop: 12 }}>
+                <strong style={{ fontSize: 12 }}>Obligations by cost code</strong>
+                <div style={{ marginTop: 6 }}>
+                  <CostCodeBarChart data={costCodeData} />
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
     </section>
@@ -186,9 +290,28 @@ const outputStyle: CSSProperties = {
 const tierRowStyle: CSSProperties = { display: "flex", alignItems: "center", gap: 8, marginBottom: 8 };
 const outputTitleStyle: CSSProperties = { margin: "0 0 6px", fontSize: 14, fontWeight: 600 };
 const outputBodyStyle: CSSProperties = { margin: "0 0 8px", fontSize: 12, color: "#334155" };
-const figureListStyle: CSSProperties = { margin: "4px 0 0", paddingLeft: 18 };
-const figureItemStyle: CSSProperties = { fontSize: 12, color: "#334155" };
 const sourceStyle: CSSProperties = { fontSize: 11, color: "#94a3b8" };
+const figureTableStyle: CSSProperties = {
+  borderCollapse: "collapse",
+  width: "100%",
+  fontSize: 12,
+  marginTop: 4,
+};
+const figThStyle: CSSProperties = {
+  padding: "4px 8px",
+  background: "#f8fafc",
+  borderBottom: "1px solid #e2e8f0",
+  textAlign: "left",
+  fontWeight: 600,
+  color: "#0f172a",
+  fontSize: 11,
+};
+const figTdStyle: CSSProperties = {
+  padding: "4px 8px",
+  borderBottom: "1px solid #f1f5f9",
+  color: "#334155",
+  fontSize: 12,
+};
 const mutedStyle: CSSProperties = { margin: 0, fontSize: 13, color: "#64748b" };
 const btnStyle: CSSProperties = {
   padding: "6px 14px", borderRadius: 6, border: "1px solid #0c4a6e",

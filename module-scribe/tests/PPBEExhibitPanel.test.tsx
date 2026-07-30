@@ -61,6 +61,31 @@ describe("PPBEExhibitPanel — Part 2 ppbe-exhibit-drafter trigger", () => {
   });
 });
 
+describe("PPBEExhibitPanel — figures table and cost-code chart (WH-15)", () => {
+  it("shows a figures table (not a list) after clicking Draft Exhibit", async () => {
+    render(<PPBEExhibitPanel ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("ppbe-run-exhibit-draft"));
+    await waitFor(() =>
+      expect(screen.getByTestId("ppbe-exhibit-draft-output")).toBeInTheDocument()
+    );
+    // Static BUDGET_EXHIBIT draft produces obligation-based figures — verify table exists.
+    expect(screen.getByRole("table", { name: "Exhibit figures" })).toBeInTheDocument();
+    // The old <ul> must not be present.
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
+  it("shows cost-code bar chart after clicking Draft Exhibit when obligations exist", async () => {
+    render(<PPBEExhibitPanel ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("ppbe-run-exhibit-draft"));
+    await waitFor(() =>
+      expect(screen.getByTestId("ppbe-exhibit-draft-output")).toBeInTheDocument()
+    );
+    expect(
+      screen.getByRole("img", { name: "Obligations by cost code bar chart" })
+    ).toBeInTheDocument();
+  });
+});
+
 describe("PPBEExhibitPanel — systemPrompt matches approved .md file", () => {
   afterEach(() => jest.restoreAllMocks());
 
