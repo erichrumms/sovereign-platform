@@ -9,13 +9,14 @@
  *
  * Session 42: added three-word module labels (shown as muted subtext below each
  * display name) and a hover ⓘ popover with plain-English bullet content per
- * module. The SCRIBE label "Ghostwrites Your Memos" is PROVISIONAL — see
- * handoff F1 for Project Principal confirmation needed.
+ * module. Tooltip content and labels confirmed for all modules (WH-26,
+ * Session 73 — AgentOS label corrected, SCRIBE/CPMI/ARIA provisional flags
+ * removed, module-workspace entry added).
  *
  * Accessibility of each module is supplied by the host via `isAccessible`,
  * which should mirror the ModuleLoader's active RoleAccessPolicy.
  *
- * Version: 1.1 · Session 42 · July 19, 2026
+ * Version: 1.2 · Session 73 · July 29, 2026
  */
 
 import { useRef, useState } from "react";
