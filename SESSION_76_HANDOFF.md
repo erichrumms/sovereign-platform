@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-30  
 **Branch:** main  
-**HEAD at close:** `9b718f4`  
+**HEAD at close:** `eaaaf14`  
 **Shell contract:** v1.24 · hash `487054e2b66473ccbbd87e333db70910127549570ce449210a29afd444b4152f` — both copies verified unchanged at open and close.
 
 ---
@@ -119,14 +119,84 @@ This is the WG-2 (Session 54) portal fix that escaped the sidebar's overflow cli
 
 ---
 
+## Supplemental — Cross-Module Connection Checks
+
+Four checks requested after the D1–D4 deliverables were committed. All are code-level findings with direct evidence; no plausibility arguments.
+
+---
+
+### Supplemental Check 1 — WH-49 × WH-37: Carried Fiscal Year Respects the Budget-Year Gate
+
+**Gap found and fixed.** The two fixes (WH-49: carry fiscal year; WH-37: gate execution metrics) were each tested in isolation. No prior test exercised both together on a program that has records for multiple fiscal years.
+
+**What was verified:** `PPBEProgramDetail`'s `useState` initializer (line 118–120) honors `initialFiscalYear` when it appears in `availableYears`. `availableYears` is derived at lines 107–113 by filtering the programs array on `program_id`. When the Dashboard opens on PY (FY 2025) and the user clicks through to a multi-year program, `initialFiscalYear="FY 2025"` lands in `availableYears` (because PY records exist), and `selectedFiscalYear` is set to FY 2025. Then `isBudgetYear` evaluates to false (FY 2025 is not FY 2027 or FY 2028) — correctly showing execution metrics for PY. When `initialFiscalYear="FY 2027"` (BY), `isBudgetYear` becomes true — correctly showing the planning notice.
+
+**Test added:** New `describe("PPBEProgramDetail — WH-49 × WH-37 interaction", ...)` in `PPBEProgramDetail.test.tsx` using `MULTI_YEAR_INPUTS` (FY 2026 + FY 2027 records for the same `program_id`):
+- `initialFiscalYear="FY 2027"` → planning notice renders, obligation rate absent, variance table absent.
+- No `initialFiscalYear` → defaults to CY, execution metrics render, planning notice absent.
+
+**Commit:** `eaaaf14`
+
+---
+
+### Supplemental Check 2 — WH-48 × WH-37: Variance Table Suppressed for BY/BY+1
+
+**No gap.** The WH-48 table is inside `VarianceChart` in `PPBEDashboard.tsx` and inside the non-`isBudgetYear` else branch in `PPBEProgramDetail.tsx`. Since neither renders when `isBudgetYear === true`, the table is suppressed by the same gate.
+
+**Exact conditionals:**
+- Dashboard: `isBudgetYear ? <StatusNotice> : ... <VarianceChart variances={data.variances} />` — `VarianceChart` contains the table at line 303.
+- Detail: `isBudgetYear ? <StatusNotice> : variances.length === 0 ? <p>…</p> : <> <chart/> <table aria-label="Budget-to-actual variance by period"> </>` — table is in the final else branch.
+
+`isBudgetYear` at Dashboard:513 / Detail:160: `selectedFiscalYear === 'FY 2027' || selectedFiscalYear === 'FY 2028'`.
+
+**Test coverage updated:** Both existing WH-37 "BY variance" tests now explicitly assert `queryByLabelText("Budget-to-actual variance by period")` is absent (`null`). Commit: `eaaaf14`.
+
+---
+
+### Supplemental Check 3 — HUMAN_DECISION Emission Pattern, Platform-Wide
+
+**Question:** Does "emit only inside click handlers, never in useEffect" hold for every HUMAN_DECISION / actor_name emission across the entire platform?
+
+**Finding: Yes, without exception.** Every emission site surveyed:
+
+| Module | Emission site | Event type | actor_name | Call chain |
+|--------|--------------|------------|------------|------------|
+| VIGIL | `useApprovalDecision.ts:69` | `AGENT_APPROVAL_DECISION` | `ctx.auth.user.name` | `decide` useCallback → button onClick |
+| FLOWPATH | `WorkflowArtifactReview.tsx:88,101` | `HUMAN_DECISION` / `FLOWPATH_ARTIFACT_APPROVED` | `ctx.auth.user.name` | `approve()` → `onClick={approve}` |
+| FLOWPATH | `GateRunnerPanel.tsx:85,112` | `HUMAN_DECISION` | `ctx.auth.user.name` | `attestGate3()` / `completeGate4()` → `onClick=` |
+| ARIA | `ClearCertificationQueue.tsx:176,198` | `ARIA_CERTIFICATION_ISSUED` / `ARIA_VIOLATION_FLAGGED` | `ctx.auth.user.name` | `decide()` → `onClick=` |
+| NEXUS | `tt-travel-queue.ts:165` | `HUMAN_DECISION / TRAVEL_APPROVAL` | `decider.name` | `recordTravelDecision` ← `decideTravel` useCallback ← button onClick |
+| SCRIBE | `TTManagerReview.tsx:159` | `HUMAN_DECISION / TIME_CORRECTION_SENT` | `ctx.auth.user.name` | `recordSend` ← `onClick={() => recordSend(selected)}` |
+
+All `useEffect` bodies that reach `ctx.logger` either emit with no `actor_name` (e.g. `WorkspaceApp.tsx:315` → `AGENT_ACTION_EXPIRED`) or write to workspace surfaces only — never to `ctx.logger` with `actor_name` set.
+
+`WorkflowArtifactReview.tsx:134` (`returnForRevision`) emits `FLOWPATH_GATE_FAILED` with `actor_id` only — no `actor_name`. Invisible to the per-user Activity filter.
+`useApprovalBrief.ts` emits `AGENT_STEP_START` / `FALLBACK_ACTIVATED` / `AGENT_STEP_COMPLETE` — no `actor_name`.
+
+**No code changes.** Finding only.
+
+---
+
+### Supplemental Check 4 — WH-49 Root Cause Pattern, Searched Platform-Wide
+
+**Question:** Any other Dashboard-to-Detail navigation pair where two components independently initialize shared state that users would expect to carry?
+
+**Finding: None.** The only instance of this pattern is WH-49 itself (fixed in `d4e3447`). Specifics for the closest candidate:
+- **NEXUS `RequestQueuePanel`** — lifts `selectedId` to its parent via props. No duplicate initialization.
+- No other module has a two-level view (list → detail) where both levels independently derive the same state from their own defaults.
+
+**No code changes.** Finding only.
+
+---
+
 ## Test Results
 
-Full suite across all 14 packages, matching the established baseline of 2,135 passing.
+Full suite across all 14 packages. Module-apex increased to 228 (two new WH-49 × WH-37 interaction tests added in supplemental commit `eaaaf14`).
 
 | Package | Tests |
 |---------|-------|
 | module-agentos | 89 |
-| module-apex | 226 |
+| module-apex | 228 |
 | module-aria | 150 |
 | module-counsel | 100 |
 | module-cpmi | 58 |
@@ -139,10 +209,10 @@ Full suite across all 14 packages, matching the established baseline of 2,135 pa
 | sovereign-api-client | 175 |
 | sovereign-data | 125 |
 | sovereign-shell | 19 |
-| **JS/TS subtotal** | **1,791** |
+| **JS/TS subtotal** | **1,793** |
 | e2e | 149 passed, 4 skipped |
 | Python (sovereign-security) | 195 |
-| **Total** | **2,135** |
+| **Total** | **2,137** |
 
 TSC: clean across all 14 packages.
 
@@ -155,6 +225,7 @@ Shell contract: `487054e2b66473ccbbd87e333db70910127549570ce449210a29afd444b4152
 ## Commits This Session
 
 ```
+eaaaf14  test(WH-49×WH-37,WH-48×WH-37): add cross-fix interaction tests
 9b718f4  fix(D2/WH-48): replace variance prose narratives with Period/Planned/Actual/Variance table
 d4e3447  fix(WH-49): carry selected fiscal year from PPBE dashboard to program detail
 ```

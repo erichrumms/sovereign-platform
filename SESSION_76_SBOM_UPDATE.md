@@ -68,6 +68,25 @@ No new components, hooks, or types introduced. No shell contract changes. Functi
 
 ---
 
+---
+
+### Supplemental — Cross-Fix Interaction Tests
+
+**Commit:** `eaaaf14`  
+**Packages modified:** `module-apex`  
+**Files:**
+
+| File | Change |
+|------|--------|
+| `module-apex/tests/PPBEProgramDetail.test.tsx` | Added `describe("PPBEProgramDetail — WH-49 × WH-37 interaction", ...)` with two tests using multi-year inputs (FY 2026 + FY 2027 records). Updated WH-37 BY variance test to also assert WH-48 table absent. |
+| `module-apex/tests/PPBEDashboard.test.tsx` | Updated WH-37 BY variance test to assert `queryByLabelText("Budget-to-actual variance by period")` is absent. |
+
+**Net test delta:** +2 tests (228 total in module-apex, up from 226 after D2).
+
+**Shell contract delta:** None. Test-only changes.
+
+---
+
 ## Packages Not Modified This Session
 
 All 13 other packages (module-agentos, module-aria, module-counsel, module-cpmi, module-flowpath, module-lens, module-nexus, module-scribe, module-vigil, module-workspace, sovereign-api-client, sovereign-data, sovereign-shell) and e2e suite are unchanged. Their test counts are stable at the Session 75 baseline.
