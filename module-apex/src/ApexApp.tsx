@@ -56,6 +56,9 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
   }, [ppbeInputs, ctx.programStatusSurface]);
   const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
   const [ppbeDetailProgram, setPpbeDetailProgram] = useState<string | null>(null);
+  // WH-49: track the fiscal year selected in PPBEDashboard at the time of navigation
+  // so PPBEProgramDetail opens on the same year rather than defaulting to CY.
+  const [ppbeDetailFiscalYear, setPpbeDetailFiscalYear] = useState<string>("FY 2026");
 
   const openProgram = (programId: string): void => {
     setSelectedProgram(programId);
@@ -111,10 +114,17 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
             programId={ppbeDetailProgram}
             inputs={ppbeInputs}
             onBack={() => setPpbeDetailProgram(null)}
+            initialFiscalYear={ppbeDetailFiscalYear}
           />
         ) : (
           <>
-            <PPBEDashboard inputs={ppbeInputs} onSelectProgram={setPpbeDetailProgram} />
+            <PPBEDashboard
+            inputs={ppbeInputs}
+            onSelectProgram={(id, fiscalYear) => {
+              setPpbeDetailProgram(id);
+              setPpbeDetailFiscalYear(fiscalYear);
+            }}
+          />
             <PPBEAgentsPanel ctx={ctx} inputs={ppbeInputs} />
           </>
         )

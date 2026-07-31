@@ -129,7 +129,9 @@ describe("PPBEDashboard", () => {
     fireEvent.click(
       screen.getByRole("button", { name: /View detail for Logistics Data Interchange/ })
     );
-    expect(onSelect).toHaveBeenCalledWith("PRG-001");
+    // WH-49: onSelectProgram now receives both the program ID and the currently
+    // selected fiscal year so PPBEProgramDetail can open on the same year.
+    expect(onSelect).toHaveBeenCalledWith("PRG-001", expect.any(String));
   });
 
   it("D2: no program selection buttons are rendered when onSelectProgram is not provided", () => {

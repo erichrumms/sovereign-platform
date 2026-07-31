@@ -81,8 +81,12 @@ export interface PPBEDashboardProps {
    * D2 callback: called when the user selects a program in the obligation-rate
    * chart. The host (ApexApp) wires this to setSelectedProgram + setTab("detail")
    * — the existing infrastructure, not a new navigation mechanism.
+   *
+   * WH-49 fix: the currently selected fiscal year is passed alongside the program
+   * ID so the host can initialize PPBEProgramDetail to the same year, preventing
+   * the PY→CY default reset on navigation.
    */
-  onSelectProgram?: (programId: string) => void;
+  onSelectProgram?: (programId: string, fiscalYear: string) => void;
 }
 
 const EMPTY_INPUTS: PPBEDashboardInputs = {
@@ -479,6 +483,12 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
     availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026')
   );
 
+  // WH-49: wrap the caller's callback to inject the currently selected fiscal year.
+  // Only event handlers (not effects) call this — StrictMode double-fire is not a concern.
+  const handleSelectProgram = (programId: string): void => {
+    onSelectProgram?.(programId, selectedFiscalYear);
+  };
+
   // BY (FY2027) is a formal budget request; BY+1 (FY2028) has no obligation concept.
   // Execution metrics (obligation rate, variance vs. actuals) must not render for these years.
   const isBudgetYear = selectedFiscalYear === 'FY 2027' || selectedFiscalYear === 'FY 2028';
@@ -557,7 +567,7 @@ export function PPBEDashboard({ inputs, onSelectProgram }: PPBEDashboardProps): 
           <ObligationRateChart
             rates={data.obligation_rates}
             names={programNames}
-            onSelectProgram={onSelectProgram}
+            onSelectProgram={onSelectProgram ? handleSelectProgram : undefined}
           />
         )}
       </div>

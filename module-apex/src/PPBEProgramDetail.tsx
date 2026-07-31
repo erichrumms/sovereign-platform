@@ -53,6 +53,10 @@ export interface PPBEProgramDetailProps {
   programId: string;
   inputs: PPBEDashboardInputs;
   onBack: () => void;
+  /** WH-49: the fiscal year selected in PPBEDashboard at the time the user navigated
+   *  here. When provided and valid for this program, the detail view opens on that
+   *  year rather than always defaulting to CY (FY 2026). */
+  initialFiscalYear?: string;
 }
 
 function statusFill(status: ReturnType<typeof statusFromObligationRate>): string {
@@ -98,7 +102,7 @@ const YEAR_PHASE_LABELS: Record<string, string> = {
   'FY 2028': 'BY+1 (FY 2028)',
 };
 
-export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDetailProps): JSX.Element {
+export function PPBEProgramDetail({ programId, inputs, onBack, initialFiscalYear }: PPBEProgramDetailProps): JSX.Element {
   // Derive years available for this specific program.
   const availableYears = Array.from(
     new Set(
@@ -108,9 +112,13 @@ export function PPBEProgramDetail({ programId, inputs, onBack }: PPBEProgramDeta
     )
   ).sort();
 
-  const [selectedFiscalYear, setSelectedFiscalYear] = useState(() =>
-    availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026')
-  );
+  // WH-49: prefer the year the user had selected in PPBEDashboard when they navigated
+  // here. Fall back to CY (FY 2026) if the passed year is not in this program's data,
+  // and to the earliest available year if FY 2026 is not present either.
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState(() => {
+    if (initialFiscalYear && availableYears.includes(initialFiscalYear)) return initialFiscalYear;
+    return availableYears.includes('FY 2026') ? 'FY 2026' : (availableYears[0] ?? 'FY 2026');
+  });
 
   const program = inputs.programs.find(
     (p) => p.program_id === programId && p.fiscal_year === selectedFiscalYear
