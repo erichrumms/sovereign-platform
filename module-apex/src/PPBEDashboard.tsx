@@ -299,10 +299,29 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
         </ResponsiveContainer>
       </div>
 
-      {/* Narrative captions — Gap 5 compliance */}
-      {variances.map((v) => (
-        <p key={`${v.program_id}-${v.period}`} style={captionStyle}>{v.narrative}</p>
-      ))}
+      {/* WH-48: table replaces per-period prose sentences — same data, more legible */}
+      <table style={tableStyle} aria-label="Budget-to-actual variance by period">
+        <thead>
+          <tr>
+            <th style={thStyle}>Period</th>
+            <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
+            <th style={{ ...thStyle, textAlign: "right" }}>Actual</th>
+            <th style={{ ...thStyle, textAlign: "right" }}>Variance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {variances.map((v) => (
+            <tr key={`${v.program_id}-${v.period}`}>
+              <td style={tdStyle}>{`${shortId(v.program_id)} ${v.period}`}</td>
+              <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.planned_amount)}</td>
+              <td style={{ ...tdStyle, textAlign: "right" }}>{formatCurrency(v.actual_amount)}</td>
+              <td style={{ ...tdStyle, textAlign: "right", color: v.variance < 0 ? "#dc2626" : v.variance > 0 ? "#059669" : "#64748b", fontWeight: 600 }}>
+                {v.variance === 0 ? "On plan" : `${v.variance > 0 ? "+" : ""}${formatCurrency(v.variance)}`}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

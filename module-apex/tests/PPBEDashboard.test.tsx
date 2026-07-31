@@ -8,8 +8,9 @@
  *   D2 — onSelectProgram fires when an accessible program button is clicked.
  *   D3 — per-site breakdown section is present with visible placeholder disclosure.
  *
- * Narrative prose assertions (obligation rate, variance, dependency health) still
- * pass because the prose is kept as caption text below each chart (Gap 5).
+ * Narrative prose assertions (obligation rate, dependency health) still pass because
+ * the prose is kept as caption text (Gap 5). WH-48 replaced variance prose with a
+ * Period/Planned/Actual/Variance table — the variance assertion below checks the table.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 
@@ -69,13 +70,15 @@ const inputs: PPBEDashboardInputs = {
 };
 
 describe("PPBEDashboard", () => {
-  // ── Session 32 baseline assertions (still pass — prose is kept in DOM) ────
+  // ── Session 32 baseline assertions ────────────────────────────────────────
 
   it("renders all four metric sections and the event activity with data", () => {
     render(<PPBEDashboard inputs={inputs} />);
     expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
     expect(screen.getByText(/obligated 50000 of 100000 planned — 50 percent/)).toBeInTheDocument();
-    expect(screen.getByText(/Logistics Data Interchange.*FY 2026 Q1.*under-executing.*actuals of 50000 are 50000 below plan/)).toBeInTheDocument();
+    // WH-48: variance prose replaced by table — check table and period cell.
+    expect(screen.getByLabelText("Budget-to-actual variance by period")).toBeInTheDocument();
+    expect(screen.getByText("001 FY 2026 Q1")).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 registered dependencies are healthy/)).toBeInTheDocument();
     expect(screen.getByText(/0 of 1 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_DECISION: 2 recorded events/)).toBeInTheDocument();
