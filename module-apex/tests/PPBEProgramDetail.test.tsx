@@ -169,9 +169,11 @@ describe("PPBEProgramDetail — WH-37 BY/BY+1 planning-phase gating", () => {
     expect(screen.getByText(/BY \(FY 2027\) is a budget-year request/)).toBeInTheDocument();
   });
 
-  it("BY (FY 2027): variance section shows planning notice, not chart", () => {
+  it("BY (FY 2027): variance section shows planning notice, not chart or WH-48 table", () => {
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={BY_INPUTS} onBack={() => {}} />);
     expect(screen.queryByLabelText("Budget-to-actual variance history chart")).not.toBeInTheDocument();
+    // WH-48 × WH-37: the new Period/Planned/Actual/Variance table must also be absent for BY.
+    expect(screen.queryByLabelText("Budget-to-actual variance by period")).not.toBeInTheDocument();
     expect(screen.getByText(/Budget-year planning estimates.*do not have actual obligation records by definition/)).toBeInTheDocument();
   });
 
@@ -180,5 +182,59 @@ describe("PPBEProgramDetail — WH-37 BY/BY+1 planning-phase gating", () => {
     const BY1_INPUTS: PPBEDashboardInputs = { ...BY_INPUTS, programs: [BY1_PROGRAM] };
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={BY1_INPUTS} onBack={() => {}} />);
     expect(screen.getByText(/BY\+1 \(FY 2028\) has no obligation concept/)).toBeInTheDocument();
+  });
+});
+
+// ── WH-49 × WH-37 interaction ─────────────────────────────────────────────────
+// Both fixes were built in separate sessions and only tested in isolation.
+// This suite verifies the combined path: Dashboard carries BY via initialFiscalYear
+// (WH-49) and Detail correctly gates execution metrics for that carried year (WH-37).
+
+describe("PPBEProgramDetail — WH-49 × WH-37 interaction", () => {
+  // Multi-year data: the same program has both CY (FY 2026) and BY (FY 2027) records.
+  // This is the realistic case: a user selects BY on the Dashboard, which then carries
+  // 'FY 2027' as initialFiscalYear when navigating into the Detail.
+  const BY_PROGRAM = {
+    ...BASE_PROGRAM,
+    fiscal_year: "FY 2027",
+    obligation_plan: [{ period: "FY 2027", planned_amount: 300000 }],
+  };
+  const MULTI_YEAR_INPUTS: PPBEDashboardInputs = {
+    ...INPUTS,
+    programs: [BASE_PROGRAM, BY_PROGRAM],
+  };
+
+  it("initialFiscalYear='FY 2027' on a multi-year program opens on BY and shows planning notice", () => {
+    render(
+      <PPBEProgramDetail
+        programId="SYNTH-PRG-ALPHA"
+        inputs={MULTI_YEAR_INPUTS}
+        onBack={() => {}}
+        initialFiscalYear="FY 2027"
+      />
+    );
+    // WH-49: the Dashboard's selected year is honored — component opens on FY 2027,
+    // not the CY default that would otherwise win (the program has FY 2026 data too).
+    // WH-37: isBudgetYear is true for FY 2027 — planning notice renders, not metrics.
+    expect(screen.getByText(/BY \(FY 2027\) is a budget-year request/)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Obligation rate:/)).not.toBeInTheDocument();
+    // WH-48: the variance table is also absent (same isBudgetYear gate covers it).
+    expect(screen.queryByLabelText("Budget-to-actual variance by period")).not.toBeInTheDocument();
+  });
+
+  it("without initialFiscalYear, a multi-year program defaults to CY (FY 2026) and shows execution metrics", () => {
+    render(
+      <PPBEProgramDetail
+        programId="SYNTH-PRG-ALPHA"
+        inputs={MULTI_YEAR_INPUTS}
+        onBack={() => {}}
+      />
+    );
+    // No initialFiscalYear → defaults to CY (FY 2026) → execution metrics render.
+    expect(screen.getByLabelText(/Obligation rate:/)).toBeInTheDocument();
+    // Variance table present (CY has obligation data).
+    expect(screen.getByLabelText("Budget-to-actual variance by period")).toBeInTheDocument();
+    // Planning notice must NOT be shown for CY.
+    expect(screen.queryByText(/BY \(FY 2027\) is a budget-year request/)).not.toBeInTheDocument();
   });
 });

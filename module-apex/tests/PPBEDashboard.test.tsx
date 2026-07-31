@@ -243,9 +243,11 @@ describe("PPBEDashboard — WH-37 BY/BY+1 planning-phase gating", () => {
     expect(screen.getByText(/BY \(FY 2027\) is a budget-year request/)).toBeInTheDocument();
   });
 
-  it("BY (FY 2027): variance section shows planning notice, not chart", () => {
+  it("BY (FY 2027): variance section shows planning notice, not chart or WH-48 table", () => {
     render(<PPBEDashboard inputs={BY_INPUTS} />);
     expect(screen.queryByLabelText("Budget-to-actual variance chart")).not.toBeInTheDocument();
+    // WH-48 × WH-37: the new Period/Planned/Actual/Variance table must also be absent for BY.
+    expect(screen.queryByLabelText("Budget-to-actual variance by period")).not.toBeInTheDocument();
     expect(screen.getByText(/Budget-year planning estimates.*do not have actual obligation records by definition/)).toBeInTheDocument();
   });
 });
