@@ -207,7 +207,22 @@ Before building or redesigning any screen where a human makes a real decision:
   recommended when `docs/27` was written but never actually carried out until now.
 - **This document's relationship to the eventual Reviewer's Workspace spec:** the Workspace shipped
   (GD-25 through GD-27) and now has a real Activity/Decision History tab too (GD-28, Session 58) —
-  this remains the design authority both should be read against, not restated by either.
+  this remains the design authority both should be read against, not restated by either. **Updated
+  July 27, 2026:** the Workspace's actual embedded scope grew from three panels to five (WH-19,
+  Session 63 — NEXUS and FLOWPATH added), each still following exactly this document's §2
+  principle: a curated, deliberately-narrow slice of the source module's real decision surface
+  embedded directly, not a summary or a link out (NEXUS's travel-decision half only, not its
+  read-only time-record display; FLOWPATH's artifact review only, not its one-time certification
+  gate). The pattern held at five instances the same way it held at three — worth noting as
+  confirming evidence for §2's principle, not a new decision.
+- **A real, live application of §2's curated-context principle, found during this update, worth
+  recording as a concrete instance rather than only an abstract one:** NEXUS's own read-only
+  time-record display and SCRIBE's correspondence-drafting queue can show the same underlying
+  compliance finding, unlinked. The resolution (WH-16, `docs/30`) was to fold a curated status
+  fact — has correspondence already been sent, yes or no — into NEXUS's card, rather than build a
+  cross-link into SCRIBE. That is precisely §2's resolving principle applied to a real screen: the
+  small slice that changes what a reviewer needs to know travels; SCRIBE's full drafting detail
+  stays exactly where it already lives.
 
 ---
 
@@ -215,3 +230,30 @@ Before building or redesigning any screen where a human makes a real decision:
 *Updated July 24, 2026 — §10 EG-E cross-reference added*
 *Pre-Decisional · Internal Working Document*
 *Read before building or redesigning any decision-facing feature*
+
+---
+
+## Update — July 30, 2026, appended to §10
+
+**A real, ready-to-build item named in `docs/27`'s cross-reference has been sitting
+unaddressed since July 21, worth flagging here since §10 already tracks that
+cross-reference.** EG-C (VIGIL's `expireOverdue()` running only on mount, not a live
+timer) was scoped as build-ready with no governance decision required, and has not
+been picked up across six further sessions (71-76) that otherwise closed nearly
+everything else raised in that window. Not a defect in this document's own content —
+a gap in whether the backlog it points to actually gets checked, worth naming so it
+doesn't recur.
+
+**EG-A, EG-B, EG-D remain fully open, unchanged since July 21.** EG-E remains open per
+the July 24 update already recorded above — the propagation gap was closed, the
+underlying question was not.
+
+**A related discipline point, worth recording here given this document's own concern
+with how decisions get made:** Session 73 (July 29) caught a fabricated Handoff section
+— specific, plausible, and false. The standing rule that followed applies directly to
+this document's own §3 materiality-test discipline: a claim's specificity is not
+evidence of its accuracy, for a curated decision summary any more than for a Handoff.
+
+---
+
+*docs/22 · July 30, 2026 append*

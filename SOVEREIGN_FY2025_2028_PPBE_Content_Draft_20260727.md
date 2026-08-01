@@ -1,5 +1,24 @@
 # SOVEREIGN Platform — FY2025-2028 PPBE Data Content Draft
-## Prepared by Governance Agent, July 27, 2026 · Draft for Project Principal confirmation
+## Prepared by Governance Agent, July 27, 2026 · BUILT — Session 70, confirmed against real code
+
+**Status: no longer a draft.** Confirmed by the Project Principal and built in full by
+Session 70 (`096618a`) — 13 new `ProgramRecord` entries, 4 new FY2025 obligation records,
+2 new FY2025 evaluation findings, a PY/CY/BY/BY+1 selector added to both `PPBEDashboard.tsx`
+and `PPBEProgramDetail.tsx`, ARIA's live document names advanced to FY2027, SCRIBE's
+exhibit demo repointed to ALPHA's FY2027 record with zero code changes (confirmed —
+`ppbe-exhibit-contract.ts` already read `fiscal_year` dynamically). Every figure below was
+independently verified against the real repository at Session 70's close, not taken from
+the Handoff alone.
+
+**WH-33, found and resolved the same session:** building ECHO's full multi-year record
+surfaced a genuine pre-existing inconsistency — `lifecycle_cost_estimate: 300,000` had
+been sitting in ECHO's FY2026 record since before this arc, never displayed or computed
+against by anything in the UI, while the program's real obligation total (458,000, verified
+unchanged — the underlying obligation records were not touched by Session 70) had already
+exceeded it. **Resolution: Congressional appropriation added funds mid-year and those were
+obligated** — `lifecycle_cost_estimate` becomes 458,000, matching what was actually
+obligated. The FY2026 `obligation_plan` total (440,000) and its 104%-obligated figure are
+unchanged and were never the problem; that figure was correct throughout.
 
 **Resolves WG-6** (`docs/30`, open since July 21: *"the real question — what the period
 scope should be once real data exists — remains genuinely open... this document's own
@@ -115,7 +134,12 @@ Health two genuine, different narratives instead of one flat risk case.
 **FY2025:** No record. Program did not yet exist.
 
 **FY2026 (current — unchanged):** 440,000 planned · 458,000 obligated · **104%** ·
-currently shown as on-track despite over-obligation *(existing data — worth a look at
+currently shown as on-track despite over-obligation. **`lifecycle_cost_estimate` corrected
+this session (WH-33) from 300,000 to 458,000** — Congressional appropriation added funds
+mid-year, obligated in full; this only touches the lifecycle ceiling field, never displayed
+in the UI before now. The 104%-of-plan figure and its status label are unrelated to this
+fix and were already correct *(the on-track-despite-over-obligation status-label question
+remains its own separate, still-open finding — worth a look at
 whether 104% obligated genuinely warrants an "on-track" label, separate from this
 content draft; flagging, not fixing here)*
 
@@ -151,3 +175,48 @@ actual status-derivation logic is a code question, not a data question.
 
 *FY2025-2028 PPBE Content Draft · July 27, 2026 · Governance Agent*
 *Pre-Decisional · Internal Working Document · Draft for review, not yet adopted*
+
+---
+
+## Update — July 30, 2026: Point-of-Contact Data Added; Two Loose Threads This Draft Named Closed
+
+**This draft's own "cross-cutting notes" flagged one thing as "a real, separate
+finding, not something this content draft should silently fix" — ECHO's 104%/on-track
+mismatch. It's now resolved, and the resolution is worth recording against the exact
+program data this draft established.**
+
+**Point-of-contact data (Session 75, GD-30) — added to all five FY2026 records:**
+
+| Program | POC Name | Role |
+|---|---|---|
+| SYNTH-PRG-ALPHA | Marcus Cole | Program Manager |
+| SYNTH-PRG-BRAVO | Sarah Okonkwo | Program Manager |
+| SYNTH-PRG-CHARLIE | James Rivera | Senior Analyst |
+| SYNTH-PRG-DELTA | Patricia Webb | Program Manager |
+| SYNTH-PRG-ECHO | David Nkosi | Program Manager |
+
+All clearly synthetic, consistent with WH-13's naming precedent.
+
+**The obligation-percentage math itself was independently broken and is now fixed
+(WH-34, Session 71) — separate from, but related to, the on-track-label question this
+draft flagged.** The root cause: consumers were summing obligated dollars across a
+program's multiple year-records while dividing by a single year's plan, producing
+badly wrong figures (DELTA showed 338%). This draft's own real, correct per-year
+figures were never wrong — the bug was entirely in how a downstream display aggregated
+them.
+
+**ECHO's on-track/104% mismatch — resolved (WH-47, Session 73).** The `EvaluationFinding`
+narrative was rewritten as a plain factual restatement: FY2026 obligations exceed plan
+by approximately 4%, no invented causal story attached, matching this draft's own
+standing no-fabrication discipline.
+
+**DELTA's obligation ceiling — a related, distinct issue, surfaced and resolved
+(Session 76).** DELTA's lifecycle obligations (1,015K against a 500K estimate, 203%)
+correctly trip the ledger monitor's `CEILING_EXCEEDED` check — this data has existed
+since this draft was written; only the narrative describing it was stale. Rewritten the
+same way as ECHO's: a plain factual restatement citing the real total and the program's
+FY2027 closeout status, no invented cause.
+
+---
+
+*FY2025-2028 PPBE Content Draft · July 30, 2026 append*

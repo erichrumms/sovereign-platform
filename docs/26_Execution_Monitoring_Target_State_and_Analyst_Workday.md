@@ -160,3 +160,32 @@ Before building or redesigning any APEX/PPBE screen, or scoping any real data in
 *docs/26 — Portfolio/Program/Project Execution Monitoring: Target State and the Analyst/PM Workday Principle*
 *July 21, 2026 · Pre-Decisional · Internal Working Document · Revised same session*
 *Read before scoping any real data integration or redesigning any monitoring/reporting screen*
+
+---
+
+## Update — July 30, 2026: Real Progress at the Program Level, Confirmed Against This Document's Own Test
+
+**Session 75's Program Health redesign (Dependency Health Index, Learning Velocity,
+per-tile variance, point-of-contact) and Sessions 74/76's chart-and-table work (WH-38,
+WH-15, WH-48) are genuine, correctly-scoped progress — sitting exactly where this
+document's own §1 said tonight's screen sits: at the program level, one real piece of
+a considerably larger portfolio/program/project picture, not a preview of the whole
+thing with the data source swapped out.** None of it claims to be portfolio- or
+project-level monitoring, and none of it should be read as such.
+
+**The "doesn't need all the data, just needs to link to detail" pattern (§4) has not
+yet been exercised by any of this work.** `navigateToModule` exists and is proven
+elsewhere in the platform; nothing in the Program Health redesign or the new charts
+uses it to link down to real underlying detail. Worth checking against this document's
+§7 test before the next round of monitoring-screen work, not just at the moment a new
+BI-grade capability gets proposed.
+
+**§3's open item closed:** READ_ONLY is confirmed, directly and repeatedly (Walkthrough
+H's WH-42 fix, re-confirmed twice during Walkthrough I), to be the eighth role, with its
+own correctly-scoped, honest empty-state behavior — not missing from the dropdown, and
+not a role this or any Program Health screen needs to account for beyond what's already
+built.
+
+---
+
+*docs/26 · July 30, 2026 append*

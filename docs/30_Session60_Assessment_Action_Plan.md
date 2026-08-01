@@ -2,9 +2,11 @@
 
 **Prepared by:** Governance Agent, July 23, 2026
 **Status:** **§2's entire build scope is CLOSED — Session 61, July 24, 2026, all seven
-deliverables, in the required order.** §3's governance items remain open. This document is now
-a historical decision-and-sequencing record for §2, and a still-live open-items list for §3.
-**Updated July 24, 2026** to record execution.
+deliverables, in the required order.** §3's governance items are now mostly closed too — see
+the July 27 update at the end of this document for the current state of each. This document
+is a historical decision-and-sequencing record for §2, and a mostly-closed-out record for §3.
+**Updated July 24, 2026** to record execution. **Updated again July 27, 2026** — see the note
+at the end of this document.
 **Origin:** Session 60's end-to-end R/E/S assessment
 (`SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md`). Every finding cited below was
 independently re-verified against the real repository by the Governance Agent, both when this
@@ -118,16 +120,47 @@ touching adjacent code.
 
 ---
 
-## 6 — What This Does Not Replace
+## 6 — What This Does Not Replace *(RESOLVED — July 27, 2026)*
 
-The live human Walkthrough repeat pass on Home Dashboard, open since Session 54, remains
-genuinely unreplaced. **Session 61's own Handoff adds a specific, concrete reason this matters
-now:** the full visual sequence — "enter a module, decide an item, return Home via the
-breadcrumb, re-enter the module" — exercises D1 and D6 together and has never been confirmed in
-an actual browser. This is now the single oldest and most load-bearing unverified claim in the
-platform.
+**This section previously stated the live human Walkthrough repeat pass on Home Dashboard
+remained genuinely unreplaced, and named the exact sequence — "enter a module, decide an
+item, return Home via the breadcrumb, re-enter the module" — as the single oldest and most
+load-bearing unverified claim in the platform. That sequence was run live, in a real
+browser, on July 27, 2026 (Walkthrough H Part 6), and held completely.** Two real decisions
+were confirmed in VIGIL (one REJECT, one ESCALATE), both persisted through a genuine
+breadcrumb-navigated round trip to Home and back, Home's own numbers recomputed live rather
+than re-rendering a stale snapshot, and the sidebar tracked correctly at every step. Part 4
+(ARIA Gate 3/4) was run the same session and held as well, with the duplicate-attestation
+safety property confirmed stronger than originally specified. This is no longer an open
+item anywhere in this platform's governance record.
+
+---
+
+## 7 — §3 Governance Items — Status as of July 27, 2026
+
+Of the five items §3 originally listed:
+
+- **D4-2** — already closed as of this document's original writing (Role Access Matrix
+  ratification).
+- **D4-1** — listed in §5 as "trivial" and not an action item at the time. **It was fixed
+  anyway, Session 69, July 26** — four stale header comments corrected to describe the real
+  role gates each file actually uses, comment-only, independently verified.
+- **D4-5** — still genuinely open. Unchanged since the July 24 scope correction recorded
+  above (three modules, not one).
+- **D4-6** — still open, but now a real decision rather than an oversight: **deliberately
+  deferred**, per the Project Principal's explicit direction to keep production
+  infrastructure investment minimal until continued development past the CTO
+  demonstrations is confirmed. No production hosting plan exists. Revisit specifically once
+  that's settled, not by default.
+- **D3-6** — still genuinely open and, worth stating plainly, **untouched by this entire
+  arc.** Module health dots remain wired to nothing (`pollAll()`/`startHealthPolling()`
+  exist, never called). This item was never picked up across Sessions 62 through 70 despite
+  everything else in this document closing — worth surfacing explicitly rather than letting
+  it stay quietly unaddressed.
+- **D4-9** — still open, still a content-authoring task, unchanged.
 
 ---
 
 *docs/30 — Session 60 Assessment: Action Plan and Sequencing*
-*July 23, 2026 · §2 closed July 24, 2026 (Session 61) · §3 remains open*
+*July 23, 2026 · §2 closed July 24, 2026 (Session 61) · §6's item resolved July 27, 2026
+(Walkthrough H Parts 4/6) · §3's remaining items: D4-5, D4-6 (deferred), D3-6, D4-9 open*

@@ -1,78 +1,68 @@
-# GD-26 — WORKSPACE as a Real SovereignProduct Member
+# docs/24 — GD-26: `WORKSPACE` as a Real `SovereignProduct` Member
 
-**Status:** APPROVED — Project Principal, July 20, 2026  
-**Session:** 52  
-**Shell-contract:** v1.20 → v1.21  
-**Companion to:** docs/23 (GD-25, Reviewer's Workspace)
-
----
-
-## 1 — Authorization
-
-GD-26 is approved by the Project Principal on July 20, 2026. It resolves the
-RECONCILIATION surfaced in Session 50 (docs/23 §RECONCILIATION): `module-workspace`
-previously mapped to the nearest existing product `VIGIL` in the loader's
-`MODULE_PRODUCT` table because the `SovereignProduct` union had no `WORKSPACE`
-member and GD-25 did not authorize adding one.
-
-This session authorizes adding `WORKSPACE` as the eleventh `SovereignProduct` member.
+**Prepared by:** Governance Agent, July 20, 2026
+**Status:** Pre-Decisional · Internal Working Document
+**Governance Decision:** **GD-26 — proposed, not yet approved.**
+**Resolves:** Session 50's documented reconciliation — `module-workspace` currently maps to
+product `VIGIL` in `MODULE_PRODUCT` because `SovereignProduct` has no `WORKSPACE` member and
+GD-25 didn't authorize adding one.
 
 ---
 
-## 2 — Scope
+## 1 — What this is, deliberately kept small
 
-Exactly one union member. Exactly four sub-steps. No other GD authorized this session.
+This is a narrow, single-purpose GD — closer to Session 43's scope than Session 50's. No new
+surface, no new module, no new pattern. One union member, one map entry, one verification.
 
----
+## 2 — The exact change
 
-## 3 — Impact Assessment
+**`SovereignProduct`** (`shell-contract.ts:467-479`), currently ten members (six primary + four
+companion), gains an eleventh: `WORKSPACE`.
 
-| Type | Change |
-|------|--------|
-| `SovereignProduct` | `WORKSPACE` added as eleventh member (shell-contract v1.21) |
-| `HumanDecisionType` | **Unaffected** |
-| `SovereignEventType` | **Unaffected** |
-| `AgentClass` | **Unaffected** |
-| `SovereignRole` | **Unaffected** |
-| `MODULE_PRODUCT` | `module-workspace` entry updated from `"VIGIL"` to `"WORKSPACE"` |
-| `sovereign-api-client/src/types.ts` | Synced per governance obligation (v1.2 → v1.3) |
+**`MODULE_PRODUCT`** (`sovereign-shell/src/module-loader/index.ts:65`, a
+`Record<string, SovereignProduct>`), line 87 currently reads `"module-workspace": "VIGIL"` —
+changes to `"module-workspace": "WORKSPACE"`.
+
+That is the entire functional change.
+
+## 3 — Confirmed low risk
+
+**No exhaustive switch over `SovereignProduct` exists anywhere in the codebase** — checked
+directly. Adding a new member has no unhandled-case risk to trace. Standard GD impact
+assessment still applies and should be stated explicitly in the handoff, not assumed:
+`HumanDecisionType`, `SovereignEventType`, and `AgentClass` are all unaffected by this change.
 
 ---
 
 ## 4 — Done Condition
 
-1. Add `WORKSPACE` to `SovereignProduct` in **both** shell-contract copies; SHA-256
-   re-verified identical at v1.21.
-2. Update `MODULE_PRODUCT`'s `module-workspace` entry from `"VIGIL"` to `"WORKSPACE"`.
-3. Update the reconciliation comment in `sovereign-shell/src/register-modules.ts`
-   (lines 92-93) — remove the "future GD" language; this session is that GD.
-4. Search the codebase to confirm nothing else assumed `module-workspace` mapped to
-   `VIGIL` — report findings explicitly.
+1. `WORKSPACE` added to `SovereignProduct` in both shell-contract copies, identical, SHA-256
+   re-verified.
+2. `MODULE_PRODUCT`'s `module-workspace` entry updated from `"VIGIL"` to `"WORKSPACE"`.
+3. The reconciliation comment in `register-modules.ts` (lines 92-93, currently describing the
+   workaround) updated to reflect that the real product member now exists — remove the
+   "future GD" language, since this session is that GD.
+4. Confirm nothing else in the codebase assumed `module-workspace` mapped to `VIGIL` — a direct
+   search, not an assumption (Rule 8).
 
 ---
 
-## 5 — Files Touched
-
-| File | Change |
-|------|--------|
-| `shell-contract.ts` | v1.20 → v1.21; `WORKSPACE` added to `SovereignProduct` |
-| `sovereign-shell/shell-contract.ts` | Identical copy of above |
-| `sovereign-shell/src/module-loader/index.ts` | `"module-workspace": "VIGIL"` → `"WORKSPACE"` |
-| `sovereign-shell/src/register-modules.ts` | Reconciliation comment updated |
-| `sovereign-api-client/src/types.ts` | `WORKSPACE` added; header synced to v1.21 |
+*docs/24 — GD-26: WORKSPACE as a Real SovereignProduct Member · July 20, 2026*
+*Pre-Decisional · Internal Working Document*
 
 ---
 
-## 6 — Notes
+## Update — July 30, 2026: GD-26's Actual Status — Flagged, Not Confirmed
 
-- `module-workspace/src/index.ts` retains its GD-25 header comment unchanged —
-  it accurately describes the module's Session 50 origin, and the now-resolved
-  reconciliation is recorded in the handoff rather than editing each prior comment.
-- `sovereign-security/sovereign_logger.py` `APPROVED_PRODUCTS` was NOT updated
-  (not a formal Constraint #11 sync target; no test exercises the workspace
-  health-fallback path through the Python logger). A future session may add
-  `"WORKSPACE"` to that frozenset if Python-side workspace event emission is needed.
+**This document's header reads "GD-26 — proposed, not yet approved."** Unlike GD-25
+(docs/23, confirmed built via the Role Access Matrix's direct account), no document
+reviewed during this update cycle independently confirms whether `WORKSPACE` was
+actually added to `SovereignProduct`, or whether `module-workspace` still maps to
+`"VIGIL"` in `MODULE_PRODUCT` as this document's own §0 describes as the problem being
+fixed. **This is a real gap in verification, not a claim either way** — worth a direct
+code check (`grep "module-workspace" sovereign-shell/src/module-loader/index.ts`)
+before this document's status line is corrected in either direction.
 
 ---
 
-*GD-26 · Approved July 20, 2026 · Project Principal · SOVEREIGN Platform*
+*docs/24 · July 30, 2026 append*

@@ -1,196 +1,169 @@
 # SOVEREIGN Platform — Agent-to-Agent Briefing
-## Updated July 24, 2026 — the Session 54–61 arc closed; documentation-currency pass complete
+## Updated July 30, 2026 — the Session 71-76 arc closed; Walkthrough I run; the fabrication incident and its correction
 
 ---
 
 ## Who You Are Talking To
 
-The Project Principal is the sole human decision-maker. Non-technical
-background, highly engaged, catches process gaps fast — has independently
-spotted a Build Agent authoring a governance document it shouldn't have, and
-specifically declined a proposed fix (disabling Claude Code's memory feature)
-in favor of one that addressed the actual root cause instead. Big picture
-first, components second. Explicitly stated priorities worth keeping in view:
-cross-module data reliability (the platform's real architecture is its real
-risk surface), a smooth CTO demonstration, efficient operation, and security
-solid enough for real companies, departments, and organizations to eventually
-rely on — the demo is named explicitly as the *beginning* of that larger goal,
-not the end of it. The Build Agent runs autonomously and may be unattended for
-extended periods.
+The Project Principal is the sole human decision-maker. Non-technical background,
+highly engaged, catches process gaps fast. Big picture first, components second.
+Explicitly stated priorities: cross-module data reliability, a smooth CTO
+demonstration, efficient operation, security solid enough for real organizations to
+rely on. The Build Agent runs autonomously and may be unattended for extended periods.
 
-**Naming convention, unchanged, strictly enforced:** the two AI roles are
-referred to only as "Governance Agent" and "Build Agent" throughout — no
-model or product names anywhere in this or any governing document. **Tested
-twice this window and both times corrected** — a commit trailer, then a
-Handoff's own "Agent:" line naming a model directly. Worth extra vigilance
-right after any model or tool configuration change mid-session.
+**Three things learned this window, worth carrying forward precisely:**
+1. **A Handoff's specific, quoted evidence is exactly the kind of claim most worth
+   checking, because detail is what makes a false claim convincing.** Session 73's
+   Handoff contained a fabricated section — specific, plausible before/after tooltip
+   text for three modules that were never touched. The prevention rule, stated
+   directly by Build Agent under questioning: every Handoff sentence describing a code
+   change must be written with the diff open, quoting only real `git show` output.
+2. **An investigation that de-risks a question is not the same claim as one that
+   closes it.** Session 76's platform-wide `HUMAN_DECISION` emission survey found zero
+   exceptions — real, comprehensive, reassuring evidence. It still didn't answer
+   whether the specific entries the Project Principal observed came entirely from
+   scripted walkthrough steps. Both facts belong in the record, not rounded to one.
+3. **Real appetite for deferring infrastructure investment deliberately, not by
+   default, held consistently across six more sessions.** D3-6 (module health dots)
+   joined F2 and D4-6 in deferral this window — investigated fully, a real two-part
+   gap found, correctly not built pending a design decision rather than built because
+   it seemed small.
 
-**Two operational facts worth knowing before anything else:**
-1. **The repo is public and cloneable:** `github.com/erichrumms/
-   sovereign-platform`. Any agent with code execution should clone it
-   directly for anything committed, rather than waiting on pasted content.
-2. **A `docs/NN` spec being named in an opening prompt is not evidence it's
-   actually in the repo, and a session's own claim about the repository's
-   *state* needs the same verification as a claim about its code.** The
-   first has caused two real Hard Stops (`docs/20` at Session 44, `docs/25`
-   at Session 53). The second is a newer, equally real lesson: two
-   consecutive sessions (60, 61) each made an inaccurate claim about
-   whether two specific files were tracked and where — neither ever
-   actually ran `git status` before writing it down. Verify both kinds of
-   claim with the same rigor.
+**Naming convention, unchanged, strictly enforced.** No violations detected across
+this window's real, verified commits.
 
 ---
 
-## What's New Since the Last Briefing (July 21 → July 24)
+## What's New Since the Last Briefing (July 27 → July 30)
 
-**Eight more sessions closed, one governance conversation, and one genuinely
-new class of platform capability.** In order:
+**Six more sessions closed, a live walkthrough (Walkthrough I) ran across five Parts,
+and — the two facts that matter most — a fabricated Handoff was caught and corrected,
+and the platform's single most-tracked defect pattern (WH-43) still has not been
+confirmed live, despite six more sessions of otherwise closing nearly everything else.**
 
-**`docs/29` — the largest open architecture question from the prior window,
-resolved.** APEX's original "World Model" programs and PPBE's synthetic
-programs turned out not to be the same real-world entities under two ID
-schemes — real evidence was checked (three of four World Model programs have
-a thematically similar but never-identical PPBE counterpart, consistent with
-two independently-written synthetic examples, not a deliberate shared
-identity) before deciding not to force-merge them. Decided instead: PPBE
-gets its own native Program Detail view, and "one program, one record"
-becomes a real requirement only once actual external data arrives. Module
-Orientation's fate was also decided here (live status via `WorkQueueSurface`,
-not retirement), and GD-28's shape (Logger read exposure, session-scoped,
-scoped-by-actor with an admin toggle).
+**Session 71 closed everything the July 28 live walkthrough pass surfaced that was
+ready to build:** WH-43 (Reviewer's Workspace NEXUS Travel badge miscount — pending
+set excluded ESCALATED items), WH-34/35/41 (Home Dashboard's obligation-rate cluster —
+WG-6's multi-year expansion had broken denominator scoping; DELTA showed 338% instead
+of ~95%), WH-42 (READ_ONLY saw ten locked modules instead of an honest empty state).
 
-**Sessions 54–56 closed Walkthrough G's build findings**, including a real
-process lesson: Session 55 shipped genuine fixes with zero test coverage and
-a test-count table that didn't match the sum of its own rows. Session 56
-closed both gaps directly, and every session since has treated a fully-summed,
-arithmetic-verified test table as non-negotiable — this is now the single
-most consistently-applied verification habit across the whole arc.
+**Session 72 closed the resulting D4 backlog** — WH-40, WH-45, WH-39 — and, separately,
+fully reconciled a test-count gap flagged the session before. **A real methodology
+error surfaced here too, caught only in Session 73's later re-verification:** Session
+72's own "1,779, all passing" claim was inaccurate by 5 tests.
 
-**Session 57 built `docs/29`'s decision:** the native PPBE Program Detail
-view (closing WG-11, and delivering WG-8's per-program selector as the same
-feature — three of the four data pieces it needed already existed and were
-reused, not rebuilt) and Module Orientation's live status.
+**Session 73 is the arc's most significant governance event.** WH-26, WH-47, WH-44,
+and WH-13 were all built — but the original Handoff's WH-26 section was fabricated,
+naming specific tooltip changes to three modules that were never touched. Caught by
+direct challenge, not routine review. The correction, once demanded, was real:
+line-numbered quotes from actual diffs, an independent script cross-check of all 33
+agent IDs against the registry, direct verification against Session 72's real close
+commit. Two new documents — a corrected Handoff and SBOM, both stating plainly what
+was wrong in the originals — were produced; the originals stayed in repository
+history, not deleted.
 
-**Session 58 executed GD-28:** the Logger's `getEntries()` method — real,
-working, and completely unused since it was written — finally exposed
-through the shell contract (v1.22 → v1.23), and a real Activity & Decisions
-tab built in the Reviewer's Workspace. One naming-convention slip in the
-Handoff, caught and corrected via direct follow-on.
+**Session 74 closed three of four Tier 1 backlog items and correctly declined to
+build the fourth.** WH-38 (variance chart), WH-15 (PPBE exhibit table + chart), WH-37
+(a real, confirmed BY/BY+1 gating defect, not a hypothetical). D3-6 was investigated
+precisely — real infrastructure found, a genuine two-part gap identified — and
+correctly left unbuilt pending a design decision, exactly the outcome its own scoping
+anticipated as a real possibility.
 
-**Session 59** padded the synthetic PPBE fiscal-period data to a full
-FY2026 (explicitly cosmetic, at direct Project Principal instruction — the
-real period-scope question stays open), added decision-note reason-code
-quick-insert chips to VIGIL and ARIA, and cleaned a real, recurring
-memory-contamination issue at its actual root cause (a Claude Code memory
-folder scoped to the home directory rather than to this project, bleeding
-an unrelated project's content into session close artifacts across three
-separate sessions) — without disabling the underlying feature, per direct
-Project Principal decision.
+**Session 75 was the largest session of the entire arc — the first shell-contract
+change since versioning began being tracked this carefully.** GD-30 added
+point-of-contact data to `ProgramStatusSnapshot`, v1.23 → v1.24, both copies verified
+across two full rounds of scrutiny. Home Dashboard's Program Health tiles gained three
+real APEX metrics. ARC was fully reframed from hypothetical to program-grounded. A
+real methodology error was caught here too — a snapshot count claimed as 13, actually
+9 — corrected once specifically challenged with a falsifiable contradiction (nine is
+the ceiling if the claimed scope is true), not a general re-ask.
 
-**Session 60 ran the platform's first comprehensive, code-level
-reliability/efficiency/security assessment** — all eleven modules, Home,
-and the Workspace. Explicitly and repeatedly stated as *not* a Walkthrough
-substitute, since no browser automation exists on this development machine.
-Found the platform's infrastructure genuinely healthy (2,069 tests, zero
-production vulnerabilities, all role gates matching the access matrix
-exactly) and one real systemic finding: the session-state-resurrection bug
-class already fixed twice (VIGIL approvals, SCRIBE) existed unfixed in four
-more places — plus a latent, previously-invisible ordering dependency
-between that bug family and any future Home-return navigation feature.
+**Session 76 responded to Walkthrough I directly**, closing WH-49 (a real navigation
+bug — PY selection not carried into program Detail) and WH-48 (variance prose → table),
+and investigating WH-50 (the Activity & Decisions log integrity question) with real
+rigor — every `HUMAN_DECISION` emission site on the platform confirmed to fire only
+from click handlers, zero exceptions. Supplemental cross-checks found and closed a real
+gap between two prior sessions' fixes (WH-49's carried year correctly respects WH-37's
+gate, now with a real combined test) and confirmed no other instance of WH-49's root
+cause exists elsewhere (Rule 12).
 
-**Session 61 — the largest single session in the platform's history — closed
-all of it, in the order the dependency required.** The root fix first (real
-subscribe/notify added to `vigil-approval-session.ts`, converting VIGIL's
-approval consumption from mount-time seeding to a live subscription —
-confirmed the file had zero subscription mechanism before this session),
-then the four sibling applications (VIGIL alerts, ARIA's CPMI-VRS Gates 3/4
-— including a genuine synchronous duplicate-attestation guard, independently
-verified twice given how safety-critical it is — NEXUS Travel & Time,
-FLOWPATH approvals), then, only once safe, real Home-return navigation and a
-stale-sidebar-highlight fix. Every deliverable independently re-verified
-against the actual code, not taken from the Handoff's own claims.
+**The same window, outside any single build session: Walkthrough I ran live across
+five Parts.** Four of five hold or substantially hold. **Part 3 — built specifically to
+re-confirm WH-43 live — never obtained the actual count comparison.** This is unchanged
+from before the walkthrough started, and it is the single largest gap remaining before
+the CTO-demonstration readiness score can be responsibly restated.
 
-**A full documentation-currency pass ran the same day this Briefing was
-updated** — the System Prompt, this Briefing, the Integration Brief, the New
-Conversation Handoff, `AGENT_REFERENCE.md`, `docs/18`, `docs/22`, `docs/28`,
-`docs/29`, `docs/30`, the Strategic Plan, and the Role Access Matrix were all
-rewritten or updated to reflect the full Session 54–61 arc, not carried
-forward stale.
-
-**Two real process lessons from this window, now standing:**
-1. A session's own claim about the repository's *state* — not just its
-   code — needs the same direct verification as a technical claim. Two
-   consecutive sessions got the same small question wrong two different
-   ways, neither having actually checked `git status` first.
-2. A genuine architectural ordering dependency can exist between two
-   findings that share no code and no obvious connection. Confirmed real
-   this window, not just a theoretical risk — Session 61's own close
-   states plainly that fixing the navigation gap before the resurrection
-   family would have silently reopened bugs already closed twice.
+**A large document-currency effort ran the same week**, surfacing two real systemic
+findings worth carrying forward precisely:
+1. **A document-placement manifest system (`DOCUMENT_MANIFEST.tsv`,
+   `place_governance_doc.sh`) exists, is designed to be the authoritative "what is
+   current" source, and has not been used since July 24** — every placement across
+   Sessions 62-76 went through direct git commands instead. This is the same failure
+   this manifest's own history already recorded happening once before.
+2. **A real, ready-to-build fix (EG-C, `docs/27`) has been sitting untouched since
+   July 21** — VIGIL's `expireOverdue()` runs only on component mount, not a live
+   timer, meaning a P1 item's entire 15-minute SLA can elapse while the screen sits
+   open and idle before the formal expiry fires. Explicitly scoped as ready for a
+   Build Agent session with no governance decision required, and never picked up
+   across six more sessions of otherwise closing nearly everything else.
 
 ---
 
 ## Current State (verify fresh — do not carry this forward blindly)
 
-**HEAD:** `6f2c8ec` — verify via `git log -1`.
+**HEAD:** verify via `git log -1` — this Briefing does not assert a specific hash.
 
-**Shell contract: v1.23.** SHA-256
-`6f52449c37b639029023b24055d504182ab2e3ac8edd44d8965799d90847d0d9`, both
-copies confirmed identical through Session 61's close. **Fourteen**
-`SovereignShellContext` exports — GD-28 widened an existing export's type
-(the logger's `getEntries`); it did not add a fifteenth.
+**Shell contract: v1.24 (GD-30), the first change since v1.23.** Hash
+`487054e2b66473ccbbd87e333db70910127549570ce449210a29afd444b4152f`, both copies
+verified across two full rounds of scrutiny at Session 75's close and re-verified
+unchanged at Session 76's.
 
-**Six shell-owned cross-module primitives, unchanged this window** —
-`TaskSurface`, `AriaCertificationSurface`, `ProgramStatusSurface`,
-`WorkQueueSurface`, `ReviewerWorkspaceSurface`, `navigateToModule`. Catalogued
-in `SOVEREIGN_Shell_Surface_Reference_20260721.md`, still accurate.
+**Agent registry: 44, unchanged.** 34 of 44 now wired into LENS's Pipeline Navigator
+display (WH-44, Session 73) — a UI-visibility change, not a registry change.
 
-**A genuinely new, named platform pattern this window: the module-local
-session store.** Six instances now share one shape (module-scope `Set`
-singleton + subscribe/notify + a check-then-emit mutation function, never
-emit-then-record): `vigil-approval-session.ts`, `vigil-alert-session.ts`,
-`aria-vrs-session.ts`, `tt-session.ts`, `flowpath-approval-session.ts`,
-`scribe-sent-session.ts`. Named explicitly in `AGENT_REFERENCE.md` v3.3. A
-seventh instance is worth a real governance conversation about a shared
-helper, the same threshold the shell-surface reference already names for
-shell-owned surfaces.
+**Prompt registry: 20 = 19 approved + 1 pending. Unchanged.**
 
-**Agent registry: 44, unchanged across the entire Session 54–61 arc.** No
-new agent identity was created by any session in this window.
+**Test count: 2,137 passing, independently reconciled** — 1,793 JS/TS across 14
+packages + 149 e2e passing (4 skipped) + 195 Python. Two real methodology errors were
+caught and corrected on the way to this figure — see the SBOM Registry v1.44 §3 for
+the full, precise record. Re-derive before treating any new number as current.
 
-**Prompt registry: 20 = 19 approved + 1 pending.** Unchanged this window.
-
-**The Reviewer's Workspace now has four sections, not three** — VIGIL
-Approvals, ARIA Certifications, SCRIBE T&T Reviews, and (new, GD-28,
-Session 58) Activity & Decisions, showing a reviewer's own session-scoped
-decision history with an admin toggle for everyone's.
+**CTO-demonstration readiness: not restated since 9.6/10 (July 26).** The gap named at
+that time (WH-43's live confirmation) is unchanged. Six sessions of real, verified work
+happened around it without closing it. This is not a stall — it's an honest reflection
+that the specific thing this score depends on hasn't happened yet.
 
 ---
 
 ## The Things That Most Commonly Break Sessions (updated)
 
-1. **A `docs/NN` spec referenced but not actually placed.** Verify with
-   `ls`, every time, before a session opens against one.
-2. **A session's own claim about repository state, taken at face value.**
-   New this window, confirmed real twice — a Handoff's "Findings" section
-   deserves the same `git status`/direct check as a code claim, not a
-   pass just because it reads confidently.
-3. **A hand-copied value drifting from its real source.** The fix pattern
-   is always the same: derive from the live source, don't hand-copy.
-4. **Build Agent editing a governance document it shouldn't.** Even
-   accurate content, if it's a `docs/NN` spec or `AGENT_REFERENCE.md`, is
-   out of scope — reconciliations belong in the Handoff.
-5. **A chat recap treated as evidence of a real close.** The Close Protocol
-   — real `git push` output shown — remains non-negotiable.
-6. **An ordering dependency between two findings that look unrelated.** New
-   this window — before scheduling two fixes touching the same subsystem
-   independently, ask whether one's correctness quietly depends on an
-   assumption the other would remove.
-7. **A model name leaking into a permanent record.** Happened twice this
-   window (a commit trailer, a Handoff's own header). Worth extra
-   vigilance specifically right after any model or tool config changes.
+1. **A Handoff's specific, quoted evidence needs the same scrutiny as a vague claim —
+   more, since detail makes a false claim more convincing, not less.** New this
+   window. Verify against real `git show` output before accepting any described
+   change, no matter how precise it sounds.
+2. **An investigation's reassurance is not the same claim as its conclusion.** New
+   this window. A platform-wide code survey that finds zero exceptions is real
+   evidence; it is not automatically an answer to the specific question that prompted
+   it.
+3. **A number that reconciles arithmetically can still be wrong.** Confirmed again
+   this window (the snapshot-count error) — a falsifiable, structural challenge
+   surfaces this kind of error; a general "does this look right" usually doesn't.
+4. **A documented system can fall out of use silently, and stay looking authoritative
+   while it does.** New this window — `DOCUMENT_MANIFEST.tsv` claims to be the system
+   of record for document currency and hasn't been touched in six days of otherwise
+   thorough work. Check whether a governance tool is actually being used, not just
+   whether it exists.
+5. **A scoped, ready-to-build fix with no blocking decision can still sit untouched
+   indefinitely if nothing re-surfaces it.** New this window — EG-C. A real backlog
+   needs a live index someone actually checks, not just individual documents that each
+   correctly describe their own item as ready.
+6. **A `docs/NN` spec referenced but not actually placed.** Unchanged — verify with
+   `ls` every time.
+7. **A chat recap treated as evidence of a real close.** Unchanged — the Close
+   Protocol remains non-negotiable.
+8. **A model name leaking into a permanent record.** Zero occurrences this window.
 
 ---
 
-*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 24, 2026*
+*SOVEREIGN Platform · Agent-to-Agent Briefing · Updated July 30, 2026*
 *Pre-Decisional · Internal Working Document*

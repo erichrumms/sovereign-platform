@@ -155,3 +155,29 @@ tooltip — same standard as ARIA's `LockedTabNotice`, not a new convention.
 *GD-25 proposed, pending Project Principal approval*
 *Design authority: docs/22_Informed_Decision_Making.md*
 *Pre-Decisional · Internal Working Document*
+
+---
+
+## Update — July 30, 2026: GD-25 Was Approved and Built — This Document Was Never Updated to Say So
+
+**This document's own header still reads "GD-25 — proposed, not yet approved" and
+describes v1 scope as three decision screens.** Both are stale. GD-25 was approved and
+built (Session ~50, per the Role Access Matrix's own account), then extended from three
+embedded panels to five in Session 63 (WH-19 — NEXUS and FLOWPATH added, each embedding
+its real decision component exactly per this document's own §2 design principle), and
+gained a sixth section (Activity & Decisions, GD-28, Session 58) that this document's
+original v1 scope never anticipated.
+
+**The design held.** WH-19's two additions and GD-28's Activity tab all follow §2's
+resolving principle exactly — real, working components embedded directly, curated
+per-section role gating inherited from each source module's own existing rule, not a
+new access decision invented for the Workspace. Worth recording as confirming evidence
+for this document's own design, not just a status correction.
+
+**Still open, unchanged since v1:** state-preserving "return to source module"
+navigation remains deferred (v1.1, never scoped). The VVR obligation-accuracy review
+surface remains explicitly out of scope by direct decision, not an oversight.
+
+---
+
+*docs/23 · July 30, 2026 append*
