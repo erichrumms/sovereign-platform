@@ -127,6 +127,12 @@ export type { RoutedInferenceDeps } from "./routed-inference";
 export { readOllamaEndpoint, readOllamaEnabled } from "./ollama-endpoint";
 
 // ============================================================
+// RE-EXPORTS — TOKEN COST (GD-31)
+// ============================================================
+
+export { computeEstimatedCostUSD } from "./token-cost";
+
+// ============================================================
 // PROVIDER SELECTION
 // ============================================================
 

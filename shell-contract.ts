@@ -6,8 +6,8 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.24
- * Date: July 2026
+ * Version: 1.25
+ * Date: August 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
  *
@@ -18,6 +18,21 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.25 (August 2, 2026) — GD-31 (Token & Cost Telemetry, approved by the Project
+ *                       Principal August 1, 2026, per docs/31). ONE change: added optional
+ *                       `token_usage` field to `SovereignLogEvent` (scoped to
+ *                       AGENT_STEP_COMPLETE events). When present, carries `input_tokens:
+ *                       number`, `output_tokens: number`, and optional `estimated_cost_usd?:
+ *                       number` (computed from a versioned static rate table — no new
+ *                       production dependency). Absent (never zero) on any event where
+ *                       FALLBACK_ACTIVATED served the response instead. Impact assessment: NO
+ *                       HumanDecisionType change. NO SovereignEventType change. NO AgentClass
+ *                       change. NO SovereignRole / SovereignProduct change. sovereign-api-
+ *                       client/src/types.ts NOT affected. MODULE-LOADER and
+ *                       VALID_AGENT_CLASSES: not touched. sovereign_logger.py APPROVED_*
+ *                       lists: not touched. Standing Constraint #7 (export count): NOT
+ *                       incremented — widens `SovereignLogEvent`, not a new context member.
+ *                       Both shell-contract copies SHA-256 re-verified identical at v1.25.
  *   v1.24 (July 29, 2026) — GD-30 (Program Point-of-Contact addition, approved by the
  *                       Project Principal July 29, 2026, this session, scope limited to:
  *                       add optional `point_of_contact` field (name + role strings) to
@@ -761,6 +776,14 @@ export interface SovereignLogEvent {
     override_occurred: boolean;
     override_reason?: string;
   };
+  // GD-31 (v1.25) — AGENT_STEP_COMPLETE events only. Real usage from the model provider
+  // response. Present only when a live call actually occurred; absent (never zero) when
+  // FALLBACK_ACTIVATED served the response instead, since no live usage exists to report.
+  token_usage?: {
+    input_tokens: number;
+    output_tokens: number;
+    estimated_cost_usd?: number;
+  };
 }
 
 // ------------------------------------------------------------
@@ -1466,6 +1489,7 @@ export interface SovereignModuleContract {
 // ✓ workflow_step_id        — every Logger event
 // ✓ decision_type           — every HUMAN_DECISION event
 // ✓ deployment_feedback     — every AGENT_STEP_COMPLETE event
+// ✓ token_usage             — AGENT_STEP_COMPLETE when live tier served (absent on fallback)
 // ✓ ANOMALY_DETECTED        — includes workflow_step_id
 // ✓ classification_level    — every program entity
 // ✓ VVR export schema       — {step_id, description, inputs, outputs,
