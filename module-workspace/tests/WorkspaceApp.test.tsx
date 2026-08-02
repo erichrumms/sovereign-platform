@@ -412,6 +412,154 @@ describe("WorkspaceApp Activity & Decisions tab (GD-28 / Session 58)", () => {
   });
 });
 
+describe("WorkspaceApp Cost Dashboard (GD-32 / docs/32)", () => {
+  it("Cost Dashboard tab is enabled for SYSTEM_ADMIN and PLATFORM_ADMIN, disabled for others", () => {
+    const adminRoles = ["SYSTEM_ADMIN", "PLATFORM_ADMIN"] as const;
+    for (const role of adminRoles) {
+      const { unmount } = render(<WorkspaceApp ctx={makeCtx({ role })} />);
+      expect(tab(/Cost Dashboard/)).toBeEnabled();
+      unmount();
+    }
+    const noAccessRoles = ["COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST"] as const;
+    for (const role of noAccessRoles) {
+      const { unmount } = render(<WorkspaceApp ctx={makeCtx({ role })} />);
+      expect(tab(/Cost Dashboard/)).toBeDisabled();
+      expect(tab(/Cost Dashboard/)).toHaveAttribute(
+        "title",
+        expect.stringContaining("requires role: PLATFORM_ADMIN / SYSTEM_ADMIN")
+      );
+      unmount();
+    }
+  });
+
+  it("shows the session-scope disclosure banner matching the Activity tab's pattern", () => {
+    render(<WorkspaceApp ctx={makeCtx({ role: "SYSTEM_ADMIN" })} />);
+    fireEvent.click(tab(/Cost Dashboard/));
+    const disclosure = screen.getByTestId("cost-scope-disclosure");
+    expect(disclosure).toBeInTheDocument();
+    expect(disclosure).toHaveTextContent(/session-scoped only/i);
+    expect(disclosure).toHaveTextContent(/in-memory/i);
+  });
+
+  it("shows the GD-31 coverage disclosure grounded in actual facts (10 in-scope sites, 5 excluded)", () => {
+    render(<WorkspaceApp ctx={makeCtx({ role: "SYSTEM_ADMIN" })} />);
+    fireEvent.click(tab(/Cost Dashboard/));
+    const coverage = screen.getByTestId("cost-coverage-disclosure");
+    expect(coverage).toBeInTheDocument();
+    expect(coverage).toHaveTextContent(/GD-31/);
+    expect(coverage).toHaveTextContent(/10 in-scope/);
+  });
+
+  it("shows honest empty state when no agent steps have been recorded this session", () => {
+    render(<WorkspaceApp ctx={makeCtx({ role: "SYSTEM_ADMIN" })} />);
+    fireEvent.click(tab(/Cost Dashboard/));
+    expect(screen.getByTestId("cost-empty")).toBeInTheDocument();
+  });
+
+  it("convergence: aggregates match direct calculation for a known mix of events", () => {
+    // Seed: 3 live AGENT_STEP_COMPLETE events with token_usage, 1 fallback AGENT_STEP_COMPLETE
+    // (no token_usage), and 2 FALLBACK_ACTIVATED events. Direct calculation:
+    //   totalInput  = 100 + 200 + 300 = 600
+    //   totalOutput =  50 +  80 + 120 = 250
+    //   totalCost   = 0.001 + 0.002 + 0.003 = 0.006 → "$0.0060"
+    //   liveSteps   = 3  (the 4th AGENT_STEP_COMPLETE has no token_usage, must be excluded)
+    //   fallbacks   = 2  (distinct line, never merged into cost total — docs/32 §4)
+    //   VIGIL totals: input=300, output=130
+    //   NEXUS totals: input=300, output=120
+    const logSink: SovereignLogEvent[] = [
+      {
+        event_type: "AGENT_STEP_COMPLETE",
+        workflow_step_id: "step-1",
+        sovereign_tier: "enhanced",
+        product: "VIGIL",
+        agent_id: "vigil-triage-agent",
+        actor_id: "agent",
+        outcome: "complete",
+        payload: {},
+        token_usage: { input_tokens: 100, output_tokens: 50, estimated_cost_usd: 0.001 },
+      },
+      {
+        event_type: "AGENT_STEP_COMPLETE",
+        workflow_step_id: "step-2",
+        sovereign_tier: "enhanced",
+        product: "VIGIL",
+        agent_id: "vigil-triage-agent",
+        actor_id: "agent",
+        outcome: "complete",
+        payload: {},
+        token_usage: { input_tokens: 200, output_tokens: 80, estimated_cost_usd: 0.002 },
+      },
+      {
+        event_type: "AGENT_STEP_COMPLETE",
+        workflow_step_id: "step-3",
+        sovereign_tier: "standard",
+        product: "NEXUS",
+        agent_id: "nexus-router-agent",
+        actor_id: "agent",
+        outcome: "complete",
+        payload: {},
+        token_usage: { input_tokens: 300, output_tokens: 120, estimated_cost_usd: 0.003 },
+      },
+      {
+        // Fallback step — AGENT_STEP_COMPLETE without token_usage. Must NOT appear in totals.
+        event_type: "AGENT_STEP_COMPLETE",
+        workflow_step_id: "step-4",
+        sovereign_tier: "standard",
+        product: "NEXUS",
+        agent_id: "nexus-router-agent",
+        actor_id: "agent",
+        outcome: "fallback",
+        payload: {},
+      },
+      {
+        event_type: "FALLBACK_ACTIVATED",
+        workflow_step_id: "step-4",
+        sovereign_tier: "standard",
+        product: "NEXUS",
+        actor_id: "agent",
+        outcome: "fallback",
+        payload: {},
+      },
+      {
+        event_type: "FALLBACK_ACTIVATED",
+        workflow_step_id: "step-5",
+        sovereign_tier: "enhanced",
+        product: "VIGIL",
+        actor_id: "agent",
+        outcome: "fallback",
+        payload: {},
+      },
+    ];
+
+    const ctx = makeCtx({ role: "SYSTEM_ADMIN", logSink });
+    render(<WorkspaceApp ctx={ctx} />);
+    fireEvent.click(tab(/Cost Dashboard/));
+
+    // Running totals — verified by direct calculation, not visual inspection.
+    expect(screen.getByTestId("cost-total-input")).toHaveTextContent("600");
+    expect(screen.getByTestId("cost-total-output")).toHaveTextContent("250");
+    expect(screen.getByTestId("cost-total-usd")).toHaveTextContent("$0.0060");
+    expect(screen.getByTestId("cost-total-steps")).toHaveTextContent("3"); // live only; fallback step excluded
+
+    // Fallback count is its own distinct line — not merged into the cost total.
+    expect(screen.getByTestId("cost-fallback-count")).toHaveTextContent("2");
+
+    // Per-product breakdown: VIGIL input=300 (100+200), output=130 (50+80).
+    const vigilRow = screen.getByTestId("cost-product-VIGIL");
+    expect(vigilRow).toHaveTextContent("300"); // input
+    expect(vigilRow).toHaveTextContent("130"); // output
+
+    // NEXUS: input=300 (live only), output=120. The fallback step adds no tokens.
+    const nexusRow = screen.getByTestId("cost-product-NEXUS");
+    expect(nexusRow).toHaveTextContent("300");
+    expect(nexusRow).toHaveTextContent("120");
+
+    // Per-agent: vigil-triage-agent = 2 steps (live), nexus-router-agent = 1 step (live only).
+    expect(screen.getByTestId("cost-agent-vigil-triage-agent")).toHaveTextContent("2");
+    expect(screen.getByTestId("cost-agent-nexus-router-agent")).toHaveTextContent("1");
+  });
+});
+
 describe("WorkspaceApp WG-16 — SCRIBE section republishes T&T Review count after send decision", () => {
   beforeEach(() => resetScribeSessionForTests());
 

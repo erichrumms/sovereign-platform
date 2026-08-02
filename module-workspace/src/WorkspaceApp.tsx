@@ -111,7 +111,7 @@ export interface WorkspaceAppProps {
   ctx: SovereignShellContext;
 }
 
-type Section = WorkspaceModuleId | "activity";
+type Section = WorkspaceModuleId | "activity" | "cost";
 
 // Per-section role definitions (GD-25 / docs/23 §3). Admin roles are included in every
 // list — the check is straightforward list membership, no separate superuser path —
@@ -126,6 +126,8 @@ const SECTION_ROLES: Record<Section, SovereignRole[]> = {
   flowpath: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "PROGRAM_MANAGER", "AGENT_OPERATOR"],
   // Union of all five section roles — updated by WH-27 after WH-19 added NEXUS/FLOWPATH (both include AGENT_OPERATOR).
   activity: ["PLATFORM_ADMIN", "SYSTEM_ADMIN", "COMPLIANCE_OFFICER", "PROGRAM_MANAGER", "ANALYST", "AGENT_OPERATOR"],
+  // GD-32 (docs/32) — token cost telemetry; same two roles as VIGIL.
+  cost:     ["PLATFORM_ADMIN", "SYSTEM_ADMIN"],
 };
 
 // The primary (non-admin) role for each section — shown in disabled-tab tooltips.
@@ -135,6 +137,7 @@ const SECTION_PRIMARY_ROLE: Record<Section, string> = {
   scribe:   "PROGRAM_MANAGER / ANALYST",
   nexus:    "AGENT_OPERATOR / PROGRAM_MANAGER / COMPLIANCE_OFFICER",
   flowpath: "PROGRAM_MANAGER / AGENT_OPERATOR",
+  cost:     "PLATFORM_ADMIN / SYSTEM_ADMIN",
   activity: "(all roles)",
 };
 
@@ -144,11 +147,12 @@ const SECTIONS: Array<{ id: Section; label: string }> = [
   { id: "scribe",   label: "SCRIBE T&T Reviews" },
   { id: "nexus",    label: "NEXUS Travel" },
   { id: "flowpath", label: "FLOWPATH Review" },
+  { id: "cost",     label: "Cost Dashboard" },
   { id: "activity", label: "Activity & Decisions" },
 ];
 
 // Sections in order — used to pick the default active section.
-const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe", "nexus", "flowpath", "activity"];
+const SECTION_ORDER: readonly Section[] = ["vigil", "aria", "scribe", "nexus", "flowpath", "cost", "activity"];
 
 // Never-return exhaustiveness guard. renderSection()'s switch default calls this so
 // TypeScript flags any new Section member without a corresponding render branch.
@@ -188,12 +192,17 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
     ? allEntries.length
     : allEntries.filter((e) => e.actor_name === ctx.auth.user.name).length;
 
+  const costCount = allEntries.filter(
+    (e) => e.event_type === "AGENT_STEP_COMPLETE" && e.token_usage != null
+  ).length;
+
   const countFor: Record<Section, number> = {
-    vigil: vigilItems.length,
-    aria: ariaItems.length,
-    scribe: scribeItems.length,
-    nexus: nexusItems.length,
+    vigil:    vigilItems.length,
+    aria:     ariaItems.length,
+    scribe:   scribeItems.length,
+    nexus:    nexusItems.length,
     flowpath: flowpathItems.length,
+    cost:     costCount,
     activity: activityCount,
   };
 
@@ -221,6 +230,10 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
         return canAccessSection("flowpath")
           ? <FlowpathWorkspaceSection ctx={ctx} items={flowpathItems} />
           : <LockedSectionNotice sectionLabel="FLOWPATH Review" requiredRole={SECTION_PRIMARY_ROLE.flowpath} />;
+      case "cost":
+        return canAccessSection("cost")
+          ? <CostDashboardSection ctx={ctx} />
+          : <LockedSectionNotice sectionLabel="Cost Dashboard" requiredRole={SECTION_PRIMARY_ROLE.cost} />;
       case "activity":
         return canAccessSection("activity")
           ? <ActivitySection ctx={ctx} showAll={showAll} setShowAll={setShowAll} />
@@ -693,6 +706,179 @@ function ActivitySection({
 }
 
 // ============================================================
+// COST DASHBOARD SECTION — GD-32 (docs/32). SYSTEM_ADMIN / PLATFORM_ADMIN only.
+// Reads ctx.logger.getEntries() — the same session-scoped in-memory buffer the
+// Activity tab uses. Filters to AGENT_STEP_COMPLETE events where token_usage is
+// present (i.e. live calls only; FALLBACK_ACTIVATED steps have no token_usage).
+// FALLBACK_ACTIVATED events are counted separately as a distinct "wasted spend"
+// line, never merged into the cost total (docs/32 §4).
+// ============================================================
+
+function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Element {
+  const allEntries = ctx.logger.getEntries();
+
+  // Live-call steps: AGENT_STEP_COMPLETE with real token_usage (absent on fallback).
+  const stepEvents = allEntries.filter(
+    (e) => e.event_type === "AGENT_STEP_COMPLETE" && e.token_usage != null
+  );
+
+  // Fallback activations — distinct line, never merged into cost total (docs/32 §4).
+  const fallbackCount = allEntries.filter((e) => e.event_type === "FALLBACK_ACTIVATED").length;
+
+  // Running totals.
+  let totalInput = 0;
+  let totalOutput = 0;
+  let totalCost = 0;
+  for (const e of stepEvents) {
+    totalInput += e.token_usage!.input_tokens;
+    totalOutput += e.token_usage!.output_tokens;
+    totalCost += e.token_usage!.estimated_cost_usd ?? 0;
+  }
+
+  // Per-product aggregates.
+  const byProduct = new Map<string, { input: number; output: number; cost: number; steps: number }>();
+  for (const e of stepEvents) {
+    const p = byProduct.get(e.product) ?? { input: 0, output: 0, cost: 0, steps: 0 };
+    byProduct.set(e.product, {
+      input: p.input + e.token_usage!.input_tokens,
+      output: p.output + e.token_usage!.output_tokens,
+      cost: p.cost + (e.token_usage!.estimated_cost_usd ?? 0),
+      steps: p.steps + 1,
+    });
+  }
+
+  // Per-agent aggregates (agent_id may be absent on some events).
+  const byAgent = new Map<string, { input: number; output: number; cost: number; steps: number }>();
+  for (const e of stepEvents) {
+    if (!e.agent_id) continue;
+    const a = byAgent.get(e.agent_id) ?? { input: 0, output: 0, cost: 0, steps: 0 };
+    byAgent.set(e.agent_id, {
+      input: a.input + e.token_usage!.input_tokens,
+      output: a.output + e.token_usage!.output_tokens,
+      cost: a.cost + (e.token_usage!.estimated_cost_usd ?? 0),
+      steps: a.steps + 1,
+    });
+  }
+
+  return (
+    <div data-testid="cost-dashboard-section">
+      {/* Session-scope banner — same wording pattern as Activity & Decisions tab (docs/32 §4). */}
+      <div style={activityDisclosureStyle} data-testid="cost-scope-disclosure">
+        Session-scoped only: this buffer is in-memory and does not persist across page reloads
+        (Stage 1 / Decision 21). It is not a permanent cost record — consult the platform
+        audit log for historical spend.
+      </div>
+
+      {/* Coverage statement — grounded in GD-31 Build Session 1 actual facts. */}
+      <div style={costCoverageStyle} data-testid="cost-coverage-disclosure">
+        Coverage (GD-31): all 10 in-scope AGENT_STEP_COMPLETE emission sites are instrumented.
+        The 5 excluded sites (tracer-integration, security-query, 2 NEXUS deterministic
+        engines, counsel REASONING_STEP_COMPLETE) do not call the model — they have no token
+        usage to report. This session total is complete.
+      </div>
+
+      {stepEvents.length === 0 && fallbackCount === 0 ? (
+        <div style={emptyStyle} data-testid="cost-empty">
+          No agent steps recorded this session. Token usage data appears here as agent
+          steps complete with live model calls.
+        </div>
+      ) : (
+        <>
+          {/* Running session total */}
+          <section style={costBlockStyle} aria-label="Running session total">
+            <h2 style={costHeadingStyle}>Running Session Total</h2>
+            <table style={costTableStyle} aria-label="Session cost totals">
+              <tbody>
+                <tr>
+                  <td style={costLabelCellStyle}>Input tokens</td>
+                  <td style={costNumCellStyle} data-testid="cost-total-input">{totalInput.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style={costLabelCellStyle}>Output tokens</td>
+                  <td style={costNumCellStyle} data-testid="cost-total-output">{totalOutput.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style={costLabelCellStyle}>Live agent steps</td>
+                  <td style={costNumCellStyle} data-testid="cost-total-steps">{stepEvents.length.toLocaleString()}</td>
+                </tr>
+                <tr style={costTotalRowStyle}>
+                  <td style={costLabelCellStyle}>Estimated cost (USD)</td>
+                  <td style={costNumCellStyle} data-testid="cost-total-usd">${totalCost.toFixed(4)}</td>
+                </tr>
+                <tr style={costFallbackRowStyle}>
+                  <td style={costLabelCellStyle}>Fallback activations (wasted spend — no live tokens consumed)</td>
+                  <td style={costNumCellStyle} data-testid="cost-fallback-count">{fallbackCount.toLocaleString()}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          {/* Per-product breakdown */}
+          {byProduct.size > 0 && (
+            <section style={costBlockStyle} aria-label="Cost by product">
+              <h2 style={costHeadingStyle}>By Product</h2>
+              <table style={costTableStyle} aria-label="Cost breakdown by product">
+                <thead>
+                  <tr>
+                    <th style={costThStyle}>Product</th>
+                    <th style={costThStyle}>Steps</th>
+                    <th style={costThStyle}>Input tokens</th>
+                    <th style={costThStyle}>Output tokens</th>
+                    <th style={costThStyle}>Est. cost (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from(byProduct.entries()).map(([product, stats]) => (
+                    <tr key={product} data-testid={`cost-product-${product}`}>
+                      <td style={costLabelCellStyle}>
+                        <span style={activityProductBadgeStyle}>{product}</span>
+                      </td>
+                      <td style={costNumCellStyle}>{stats.steps.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>{stats.input.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>{stats.output.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>${stats.cost.toFixed(4)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          )}
+
+          {/* Per-agent breakdown */}
+          {byAgent.size > 0 && (
+            <section style={costBlockStyle} aria-label="Cost by agent">
+              <h2 style={costHeadingStyle}>By Agent</h2>
+              <table style={costTableStyle} aria-label="Cost breakdown by agent">
+                <thead>
+                  <tr>
+                    <th style={costThStyle}>Agent</th>
+                    <th style={costThStyle}>Steps</th>
+                    <th style={costThStyle}>Input tokens</th>
+                    <th style={costThStyle}>Output tokens</th>
+                    <th style={costThStyle}>Est. cost (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from(byAgent.entries()).map(([agentId, stats]) => (
+                    <tr key={agentId} data-testid={`cost-agent-${agentId}`}>
+                      <td style={costLabelCellStyle}>{agentId}</td>
+                      <td style={costNumCellStyle}>{stats.steps.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>{stats.input.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>{stats.output.toLocaleString()}</td>
+                      <td style={costNumCellStyle}>${stats.cost.toFixed(4)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
 // SHARED PRESENTATION
 // ============================================================
 
@@ -840,5 +1026,27 @@ const activityProductBadgeStyle: CSSProperties = {
 };
 const activityActorStyle: CSSProperties = { color: "#64748b", fontSize: 12 };
 const activityOutcomeStyle: CSSProperties = { marginLeft: "auto", color: "#475569", fontSize: 12 };
+
+// Cost Dashboard styles (GD-32)
+const costCoverageStyle: CSSProperties = {
+  padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8,
+  color: "#166534", fontSize: 13, marginBottom: 16, maxWidth: 720,
+};
+const costBlockStyle: CSSProperties = { marginBottom: 20, maxWidth: 720 };
+const costHeadingStyle: CSSProperties = { margin: "0 0 8px", fontSize: 14, fontWeight: 700, color: "#0f172a" };
+const costTableStyle: CSSProperties = { width: "100%", borderCollapse: "collapse", fontSize: 13 };
+const costThStyle: CSSProperties = {
+  textAlign: "left", padding: "6px 12px", background: "#f1f5f9", color: "#475569",
+  fontWeight: 700, fontSize: 12, borderBottom: "1px solid #e2e8f0",
+};
+const costLabelCellStyle: CSSProperties = {
+  padding: "6px 12px", color: "#475569", borderBottom: "1px solid #f1f5f9",
+};
+const costNumCellStyle: CSSProperties = {
+  padding: "6px 12px", fontVariantNumeric: "tabular-nums", color: "#0f172a",
+  borderBottom: "1px solid #f1f5f9",
+};
+const costTotalRowStyle: CSSProperties = { fontWeight: 700 };
+const costFallbackRowStyle: CSSProperties = { background: "#fef9c3" };
 
 export default WorkspaceApp;
