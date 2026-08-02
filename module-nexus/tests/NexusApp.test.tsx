@@ -5,7 +5,7 @@
  * submit a request, route it, drive the approval path to COMPLETE, and assert the GD-11
  * Logger trail. Also: the GD-10 intake refusal surfaced in the UI.
  */
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent, within, waitFor } from "@testing-library/react";
 
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import { NexusApp } from "../src/NexusApp";
@@ -95,6 +95,43 @@ describe("NexusApp", () => {
     expect(screen.getByText(/Second request/).closest("tr")).toBeTruthy();
     expect(screen.getByText(/req-1/)).toBeInTheDocument();
     expect(screen.getByText(/req-2/)).toBeInTheDocument();
+  });
+
+  it("populates token_usage on AGENT_STEP_COMPLETE when travelDrafter live tier serves (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const mockComplete = async () =>
+      ({
+        content: "Subject: Travel approved\n\nYour travel to Huntsville is approved.",
+        fallback_activated: false,
+        fallback_tier: "live",
+        usage: { input_tokens: 100, output_tokens: 50 },
+      } as unknown as import("@sovereign/api-client").SovereignLLMResponse);
+    render(<NexusApp ctx={makeCtx({ logSink })} travelDrafterComplete={mockComplete} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Travel & Time Queue" }));
+    fireEvent.click(screen.getByTestId("tt-approve-SYNTH-TR-102"));
+    await waitFor(() => {
+      const e = logSink.find(
+        (ev) => ev.event_type === "AGENT_STEP_COMPLETE" && ev.agent_id === "tt.travel-drafter"
+      );
+      expect(e).toBeDefined();
+      expect(e!.token_usage?.input_tokens).toBe(100);
+      expect(e!.token_usage?.output_tokens).toBe(50);
+      expect(typeof e!.token_usage?.estimated_cost_usd).toBe("number");
+    });
+  });
+
+  it("leaves token_usage absent on AGENT_STEP_COMPLETE when travelDrafter fallback served (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    render(<NexusApp ctx={makeCtx({ logSink })} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Travel & Time Queue" }));
+    fireEvent.click(screen.getByTestId("tt-approve-SYNTH-TR-102"));
+    await waitFor(() => {
+      const e = logSink.find(
+        (ev) => ev.event_type === "AGENT_STEP_COMPLETE" && ev.agent_id === "tt.travel-drafter"
+      );
+      expect(e).toBeDefined();
+      expect(e!.token_usage).toBeUndefined();
+    });
   });
 
   it("refuses a CUI intake (GD-10) and shows the boundary message", () => {

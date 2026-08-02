@@ -79,6 +79,8 @@ import { publishNexusTravelItems } from "./nexus-workspace-publisher";
 
 export interface NexusAppProps {
   ctx: SovereignShellContext;
+  /** Injectable LLM call for the travelDrafter port (tests). Defaults to createSovereignClient(). */
+  travelDrafterComplete?: TTDraftDeps["complete"];
 }
 
 type Tab = "intake" | "queue" | "tt" | "ppbe-coordination";
@@ -90,7 +92,7 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: "ppbe-coordination", label: "PPBE Coordination" },
 ];
 
-export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
+export function NexusApp({ ctx, travelDrafterComplete }: NexusAppProps): JSX.Element {
   // Live AgentOS-backed port (Item 57): captures the shell ctx so its submitTask creates a real
   // AgentOS task and publishes it to ctx.taskSurface. Stable across renders (the request lifecycle
   // and AgentOS task store live behind it), mirroring the prior synthetic port's identity.
@@ -137,13 +139,15 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
         });
 
         const deps: TTDraftDeps = {
-          complete: async (messages, reqCtx) => {
-            const client = createSovereignClient(
-              { tier: "standard" },
-              { api_key_anthropic: readAnthropicKey() }
-            );
-            return client.complete(messages, reqCtx);
-          },
+          complete:
+            travelDrafterComplete ??
+            (async (messages, reqCtx) => {
+              const client = createSovereignClient(
+                { tier: "standard" },
+                { api_key_anthropic: readAnthropicKey() }
+              );
+              return client.complete(messages, reqCtx);
+            }),
           cacheGet: (key) => drafterCacheRef.current.get(key) ?? null,
           cacheSet: (key, value) => { drafterCacheRef.current.set(key, value); },
         };
@@ -181,7 +185,7 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
         return { draft: result.draft, tier: result.tier };
       },
     }),
-    [ctx]
+    [ctx, travelDrafterComplete]
   );
 
   // TT intake ports (Session 29): synthetic policy + the module-apex engine as configuration.
