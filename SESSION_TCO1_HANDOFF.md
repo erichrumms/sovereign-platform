@@ -212,4 +212,33 @@ Commits made per-deliverable. See `git log` for real commit SHAs after push.
 
 ---
 
-*Build Agent · GD-31 Build Session 1 · August 2, 2026*
+---
+
+## 8 — Follow-on Addendum (NexusApp injection seam — closed)
+
+The open item disclosed in §2 ("Composition root (no injection point)") is now closed.
+
+**Changes made:**
+
+`NexusAppProps` in `module-nexus/src/NexusApp.tsx` gains:
+
+```typescript
+travelDrafterComplete?: TTDraftDeps["complete"];
+```
+
+In the `travelDrafter` `useMemo`, `deps.complete` changes from an inline-only async
+function to `travelDrafterComplete ?? (async (messages, reqCtx) => { ... })`. The
+`useMemo` deps array changes from `[ctx]` to `[ctx, travelDrafterComplete]`.
+
+Two convergence tests added to `module-nexus/tests/NexusApp.test.tsx`:
+- Live tier: renders NexusApp with `travelDrafterComplete` mock returning
+  `usage: {input_tokens:100, output_tokens:50}`; fires Approve on SYNTH-TR-102;
+  `waitFor` asserts `AGENT_STEP_COMPLETE` with `agent_id="tt.travel-drafter"` carries
+  populated `token_usage`.
+- Fallback tier: renders NexusApp without `travelDrafterComplete`; fires Approve on
+  SYNTH-TR-102; `waitFor` asserts same event has `token_usage` absent.
+
+**Test run at follow-on close:** 1,813 JS/TS, 149 e2e (4 skip), 195 Python.
+module-nexus: 166 → 168.
+
+*Build Agent · GD-31 Build Session 1 — follow-on close · August 2, 2026*

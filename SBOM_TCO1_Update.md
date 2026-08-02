@@ -32,7 +32,8 @@
 | Close point | JS/TS | e2e | Python | Platform Total | Confidence |
 |---|---|---|---|---|---|
 | Session 76 | 1,793 | 149 (4 skip) | 195 | 2,137 | High |
-| **GD-31 Build Session 1** | **1,811** | 149 (4 skip) | 195 | **2,155** | **High — full 14-package run at close; +18 convergence tests (2 per hookable emission site × 9 sites)** |
+| GD-31 Build Session 1 | 1,811 | 149 (4 skip) | 195 | 2,155 | High — full 14-package run at close; +18 convergence tests (2 per hookable emission site × 9 sites) |
+| **GD-31 Build Session 1 — follow-on (NexusApp close)** | **1,813** | 149 (4 skip) | 195 | **2,157** | **High — full 14-package run at follow-on close; module-nexus 166→168 (+2 convergence tests)** |
 
 ---
 
@@ -56,11 +57,18 @@ sites now thread `token_usage` from real provider usage. 7 hooks received full
 directly at composition root.
 
 **Tests** — 18 new convergence tests across 9 hook test files (3 new files, 6 existing).
-All 1,811 JS/TS tests pass.
+All 1,811 JS/TS tests pass at Build Session 1 close; 1,813 at follow-on close (+2 NexusApp tests).
 
 **Out-of-scope sites** — `tracer-integration.ts` (no LLM call), `security-query.ts`
 (synthetic data), counsel `REASONING_STEP_COMPLETE` hooks (wrong event type), two nexus
 deterministic engines (no LLM call). All recorded in session Handoff.
+
+**Follow-on (NexusApp injection seam)** — `NexusAppProps` gains optional
+`travelDrafterComplete?: TTDraftDeps["complete"]`. In `travelDrafter` useMemo,
+`deps.complete` now uses `travelDrafterComplete ?? (default client)`. useMemo deps
+updated from `[ctx]` to `[ctx, travelDrafterComplete]`. Two convergence tests added
+to `module-nexus/tests/NexusApp.test.tsx` (live tier populates token_usage; fallback
+leaves it absent). The open item disclosed in the Session 1 Handoff is closed.
 
 ---
 
