@@ -23,7 +23,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -159,6 +159,7 @@ export function useReasoningChain(ctx: SovereignShellContext, opts: UseReasoning
             fallback_activated: fellBack,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
         ctx.logger.log({
           event_type: "CPMI_REASONING_CHAIN_COMPLETE",

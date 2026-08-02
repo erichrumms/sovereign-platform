@@ -27,13 +27,18 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import type { AnomalyContext } from "./vigil-types";
 import { isTriageEligible, PR_VIGIL_001, type TriageBrief } from "./triage-contract";
 import { runTriageAnalysis, type TriageDeps, type TriageOutcome } from "./triage-engine";
+
+export interface UseTriageOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: TriageDeps["complete"];
+}
 import { TRIAGE_ANALYSIS_SYSTEM_PROMPT, TRIAGE_ANALYSIS_PROMPT_VERSION } from "./prompts/triage-system.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -56,7 +61,7 @@ export interface UseTriage {
   reset: () => void;
 }
 
-export function useTriage(ctx: SovereignShellContext): UseTriage {
+export function useTriage(ctx: SovereignShellContext, opts: UseTriageOptions = {}): UseTriage {
   const operatorId = ctx.auth.user.employee_id;
 
   const [status, setStatus] = useState<TriageStatus>("idle");
@@ -116,13 +121,15 @@ export function useTriage(ctx: SovereignShellContext): UseTriage {
       }
 
       const deps: TriageDeps = {
-        complete: async (messages, reqCtx) => {
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -163,6 +170,7 @@ export function useTriage(ctx: SovereignShellContext): UseTriage {
             alert_id: alert.alertId,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
         ctx.logger.log({
           event_type: "TRIAGE_ANALYSIS_PRODUCED",
@@ -199,7 +207,7 @@ export function useTriage(ctx: SovereignShellContext): UseTriage {
         setStatus("error");
       }
     },
-    [ctx, operatorId]
+    [ctx, operatorId, opts.complete]
   );
 
   const reset = useCallback((): void => {

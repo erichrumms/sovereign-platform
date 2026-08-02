@@ -21,12 +21,17 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { approvalWorkflowStep, PR_VIGIL_002, type AgentApprovalRequest } from "./approval-contract";
 import { runApprovalBrief, type BriefDeps, type BriefOutcome } from "./approval-engine";
+
+export interface UseApprovalBriefOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: BriefDeps["complete"];
+}
 import { APPROVAL_SYSTEM_PROMPT, APPROVAL_PROMPT_VERSION } from "./prompts/approval-system.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -42,7 +47,7 @@ export interface UseApprovalBrief {
   reset: () => void;
 }
 
-export function useApprovalBrief(ctx: SovereignShellContext): UseApprovalBrief {
+export function useApprovalBrief(ctx: SovereignShellContext, opts: UseApprovalBriefOptions = {}): UseApprovalBrief {
   const operatorId = ctx.auth.user.employee_id;
   const [status, setStatus] = useState<BriefStatus>("idle");
   const [outcome, setOutcome] = useState<BriefOutcome | null>(null);
@@ -87,13 +92,15 @@ export function useApprovalBrief(ctx: SovereignShellContext): UseApprovalBrief {
       }
 
       const deps: BriefDeps = {
-        complete: async (messages, reqCtx) => {
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -134,6 +141,7 @@ export function useApprovalBrief(ctx: SovereignShellContext): UseApprovalBrief {
             fallback_activated: fellBack,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
@@ -151,7 +159,7 @@ export function useApprovalBrief(ctx: SovereignShellContext): UseApprovalBrief {
         setStatus("error");
       }
     },
-    [ctx, operatorId]
+    [ctx, operatorId, opts.complete]
   );
 
   const reset = useCallback((): void => {

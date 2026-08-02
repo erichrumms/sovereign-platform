@@ -23,7 +23,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -34,6 +34,11 @@ import {
   type IntermediateDeps,
   type IntermediateOutcome,
 } from "./intermediate-engine";
+
+export interface UseIntermediateOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: IntermediateDeps["complete"];
+}
 import { DRAFTING_SYSTEM_PROMPT, DRAFTING_PROMPT_VERSION } from "./prompts/drafting-system.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -49,7 +54,7 @@ export interface UseIntermediate {
   reset: () => void;
 }
 
-export function useIntermediate(ctx: SovereignShellContext): UseIntermediate {
+export function useIntermediate(ctx: SovereignShellContext, opts: UseIntermediateOptions = {}): UseIntermediate {
   const [status, setStatus] = useState<IntermediateStatus>("idle");
   const [outcome, setOutcome] = useState<IntermediateOutcome | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -96,13 +101,15 @@ export function useIntermediate(ctx: SovereignShellContext): UseIntermediate {
       }
 
       const deps: IntermediateDeps = {
-        complete: async (messages, reqCtx) => {
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -145,6 +152,7 @@ export function useIntermediate(ctx: SovereignShellContext): UseIntermediate {
             produces_product_intake: false,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
@@ -162,7 +170,7 @@ export function useIntermediate(ctx: SovereignShellContext): UseIntermediate {
         setStatus("error");
       }
     },
-    [ctx]
+    [ctx, opts.complete]
   );
 
   const reset = useCallback((): void => {

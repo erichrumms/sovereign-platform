@@ -18,7 +18,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -119,6 +119,7 @@ export function useBenchmark(ctx: SovereignShellContext, opts: UseBenchmarkOptio
           step_completion_rate: result.step_completion_rate,
           gate3_ready: result.gate3_ready,
         },
+        ...(result.total_usage ? { token_usage: { ...result.total_usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.total_usage.input_tokens, result.total_usage.output_tokens) } } : {}),
       });
     } catch (err) {
       return surfaceLoggerError(err);

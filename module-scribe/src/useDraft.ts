@@ -27,7 +27,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -39,6 +39,11 @@ import {
   type DraftInput,
   type DraftOutcome,
 } from "./draft-engine";
+
+export interface UseDraftOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: DraftDeps["complete"];
+}
 import { DRAFTING_SYSTEM_PROMPT, DRAFTING_PROMPT_VERSION } from "./prompts/drafting-system.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -54,7 +59,7 @@ export interface UseDraft {
   reset: () => void;
 }
 
-export function useDraft(ctx: SovereignShellContext): UseDraft {
+export function useDraft(ctx: SovereignShellContext, opts: UseDraftOptions = {}): UseDraft {
   const [status, setStatus] = useState<DraftStatus>("idle");
   const [outcome, setOutcome] = useState<DraftOutcome | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -105,15 +110,17 @@ export function useDraft(ctx: SovereignShellContext): UseDraft {
 
       // --- Run the three-tier draft (never throws). Exactly one live attempt. ---
       const deps: DraftDeps = {
-        complete: async (messages, reqCtx) => {
-          // createSovereignClient throws for tier "standard" without a key; that
-          // rejection routes the engine to the cache/static tiers.
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            // createSovereignClient throws for tier "standard" without a key; that
+            // rejection routes the engine to the cache/static tiers.
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -154,6 +161,7 @@ export function useDraft(ctx: SovereignShellContext): UseDraft {
             fallback_activated: fellBack,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
@@ -172,7 +180,7 @@ export function useDraft(ctx: SovereignShellContext): UseDraft {
         setStatus("error");
       }
     },
-    [ctx]
+    [ctx, opts.complete]
   );
 
   const reset = useCallback((): void => {

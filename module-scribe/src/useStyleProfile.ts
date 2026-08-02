@@ -30,7 +30,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 import type { StyleProfile } from "@sovereign/data";
 
@@ -41,6 +41,11 @@ import {
   type StyleProfileValidator,
 } from "./style-contract";
 import { runStyleAnalysis, type StyleDeps, type StyleOutcome } from "./style-engine";
+
+export interface UseStyleProfileOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: StyleDeps["complete"];
+}
 import { STYLE_ANALYSIS_SYSTEM_PROMPT, STYLE_ANALYSIS_PROMPT_VERSION } from "./prompts/style-analysis-system.prompt";
 import { readAnthropicKey } from "./anthropic-key";
 
@@ -72,7 +77,7 @@ function profileValidatorFromCtx(ctx: SovereignShellContext): StyleProfileValida
   return fn;
 }
 
-export function useStyleProfile(ctx: SovereignShellContext, store: StyleProfileStore): UseStyleProfile {
+export function useStyleProfile(ctx: SovereignShellContext, store: StyleProfileStore, opts: UseStyleProfileOptions = {}): UseStyleProfile {
   const userId = ctx.auth.user.employee_id;
 
   const [status, setStatus] = useState<StyleStatus>("idle");
@@ -126,13 +131,15 @@ export function useStyleProfile(ctx: SovereignShellContext, store: StyleProfileS
       }
 
       const deps: StyleDeps = {
-        complete: async (messages, reqCtx) => {
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -178,6 +185,7 @@ export function useStyleProfile(ctx: SovereignShellContext, store: StyleProfileS
             data_classification: "user",
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
@@ -195,7 +203,7 @@ export function useStyleProfile(ctx: SovereignShellContext, store: StyleProfileS
         setStatus("error");
       }
     },
-    [ctx, store, userId]
+    [ctx, store, userId, opts.complete]
   );
 
   const save = useCallback(

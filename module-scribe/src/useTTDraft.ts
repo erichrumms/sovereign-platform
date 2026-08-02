@@ -27,7 +27,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
@@ -46,6 +46,11 @@ import {
   type TTDraftInput,
   type TTDraftOutcome,
 } from "./tt-draft-engine";
+
+export interface UseTTDraftOptions {
+  /** Injectable LLM call (tests). Defaults to createSovereignClient(). */
+  complete?: TTDraftDeps["complete"];
+}
 import {
   TT_TRAVEL_DRAFTING_SYSTEM_PROMPT,
   TT_TRAVEL_DRAFTING_PROMPT_VERSION,
@@ -88,7 +93,7 @@ export function ttDrafterIdentity(input: TTDraftInput): {
       };
 }
 
-export function useTTDraft(ctx: SovereignShellContext): UseTTDraft {
+export function useTTDraft(ctx: SovereignShellContext, opts: UseTTDraftOptions = {}): UseTTDraft {
   const [status, setStatus] = useState<TTDraftStatus>("idle");
   const [outcome, setOutcome] = useState<TTDraftOutcome | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -135,13 +140,15 @@ export function useTTDraft(ctx: SovereignShellContext): UseTTDraft {
       }
 
       const deps: TTDraftDeps = {
-        complete: async (messages, reqCtx) => {
-          const client = createSovereignClient(
-            { tier: "standard" },
-            { api_key_anthropic: readAnthropicKey() }
-          );
-          return client.complete(messages, reqCtx);
-        },
+        complete:
+          opts.complete ??
+          (async (messages, reqCtx) => {
+            const client = createSovereignClient(
+              { tier: "standard" },
+              { api_key_anthropic: readAnthropicKey() }
+            );
+            return client.complete(messages, reqCtx);
+          }),
         cacheGet: (key) => cacheRef.current.get(key) ?? null,
         cacheSet: (key, value) => {
           cacheRef.current.set(key, value);
@@ -188,6 +195,7 @@ export function useTTDraft(ctx: SovereignShellContext): UseTTDraft {
             fallback_activated: fellBack,
             detail: result.detail,
           },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
@@ -205,7 +213,7 @@ export function useTTDraft(ctx: SovereignShellContext): UseTTDraft {
         setStatus("error");
       }
     },
-    [ctx]
+    [ctx, opts.complete]
   );
 
   const reset = useCallback((): void => {

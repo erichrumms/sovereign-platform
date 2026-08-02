@@ -36,7 +36,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
+import { createSovereignClient, computeEstimatedCostUSD, SOVEREIGN_DEFAULT_MODEL } from "@sovereign/api-client";
 import type { SovereignRequestContext } from "@sovereign/api-client";
 
 import {
@@ -175,6 +175,7 @@ export function NexusApp({ ctx }: NexusAppProps): JSX.Element {
           agent_class: "Operational",
           outcome: "tt_travel_draft_complete",
           payload: { request_id: request.request_id, tier: result.tier, communication_type: result.draft.communication_type },
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
         });
 
         return { draft: result.draft, tier: result.tier };
