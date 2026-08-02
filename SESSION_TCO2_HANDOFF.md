@@ -117,8 +117,14 @@ in the follow-on build before this session started.
 
 ## 7 — Git Push Output
 
-*(shown after push below — per CLAUDE.md §3, a session is not closed until push
-has actually run and its output is shown here)*
+```
+To https://github.com/erichrumms/sovereign-platform.git
+   bf45f5f..e370a53  main -> main
+```
+
+Two commits pushed:
+- `72bddf6` — `feat(workspace): add Cost Dashboard tab to Reviewer's Workspace (GD-32)`
+- `e370a53` — `docs: GD-32 Build Session 2 handoff and SBOM update v1.46`
 
 ---
 
