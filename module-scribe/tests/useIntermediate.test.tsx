@@ -59,4 +59,38 @@ describe("useIntermediate", () => {
     expect(result.current.error).toMatch(/Logger emission failed/);
     expect(result.current.outcome).toBeNull();
   });
+
+  it("populates token_usage on AGENT_STEP_COMPLETE when live tier serves (GD-31)", async () => {
+    const events: SovereignLogEvent[] = [];
+    const mockComplete = async () =>
+      ({
+        content: "Here is the synthesized prose.",
+        fallback_activated: false,
+        fallback_tier: "live",
+        usage: { input_tokens: 100, output_tokens: 50 },
+      } as unknown as import("@sovereign/api-client").SovereignLLMResponse);
+    const { result } = renderHook(() =>
+      useIntermediate(makeCtx({ log: (e) => events.push(e) }), { complete: mockComplete })
+    );
+    await act(async () => {
+      await result.current.run({ mode: "synthesis", capturedMaterial: "some notes" });
+    });
+    expect(result.current.outcome?.tier).toBe("live");
+    const complete = events.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage?.input_tokens).toBe(100);
+    expect(complete.token_usage?.output_tokens).toBe(50);
+    expect(typeof complete.token_usage?.estimated_cost_usd).toBe("number");
+  });
+
+  it("leaves token_usage absent on AGENT_STEP_COMPLETE when fallback served (GD-31)", async () => {
+    const events: SovereignLogEvent[] = [];
+    const { result } = renderHook(() =>
+      useIntermediate(makeCtx({ log: (e) => events.push(e) }))
+    );
+    await act(async () => {
+      await result.current.run({ mode: "synthesis", capturedMaterial: "some notes" });
+    });
+    const complete = events.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage).toBeUndefined();
+  });
 });

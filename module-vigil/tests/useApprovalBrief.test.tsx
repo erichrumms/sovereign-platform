@@ -55,4 +55,36 @@ describe("useApprovalBrief", () => {
     expect(result.current.status).toBe("error");
     expect(result.current.error).toMatch(/Logger emission failed/);
   });
+
+  it("populates token_usage on AGENT_STEP_COMPLETE when live tier serves (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const mockComplete = async () =>
+      ({
+        content: "REQUESTED ACTION: deploy model\nWHAT CHANGES: Model goes live.",
+        fallback_activated: false,
+        fallback_tier: "live",
+        usage: { input_tokens: 100, output_tokens: 50 },
+      } as unknown as import("@sovereign/api-client").SovereignLLMResponse);
+    const { result } = renderHook(() =>
+      useApprovalBrief(makeCtx({ logSink }), { complete: mockComplete })
+    );
+    await act(async () => {
+      await result.current.generate(REQUEST);
+    });
+    expect(result.current.outcome?.tier).toBe("live");
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage?.input_tokens).toBe(100);
+    expect(complete.token_usage?.output_tokens).toBe(50);
+    expect(typeof complete.token_usage?.estimated_cost_usd).toBe("number");
+  });
+
+  it("leaves token_usage absent on AGENT_STEP_COMPLETE when fallback served (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const { result } = renderHook(() => useApprovalBrief(makeCtx({ logSink })));
+    await act(async () => {
+      await result.current.generate(REQUEST);
+    });
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage).toBeUndefined();
+  });
 });

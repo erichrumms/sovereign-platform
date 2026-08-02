@@ -85,4 +85,41 @@ describe("useExplanation", () => {
     const steps = [...new Set(logSink.map((e) => e.workflow_step_id))];
     expect(steps).toEqual(["lens-explain-1", "lens-explain-2"]);
   });
+
+  it("populates token_usage on AGENT_STEP_COMPLETE when live tier serves (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const mockComplete = async () =>
+      ({
+        content: JSON.stringify({
+          explanation: "Only users with PLATFORM_ADMIN role can see all security alerts in VIGIL.",
+          sources: ["vigil_alert_response"],
+          confidence: "grounded",
+          gaps: [],
+        }),
+        fallback_activated: false,
+        fallback_tier: "live",
+        usage: { input_tokens: 100, output_tokens: 50 },
+      } as unknown as import("@sovereign/api-client").SovereignLLMResponse);
+    const { result } = renderHook(() =>
+      useExplanation(makeCtx({ logSink }), { complete: mockComplete })
+    );
+    await act(async () => {
+      await result.current.ask("Who can see security alerts in VIGIL?");
+    });
+    expect(result.current.outcome?.tier).toBe("live");
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage?.input_tokens).toBe(100);
+    expect(complete.token_usage?.output_tokens).toBe(50);
+    expect(typeof complete.token_usage?.estimated_cost_usd).toBe("number");
+  });
+
+  it("leaves token_usage absent on AGENT_STEP_COMPLETE when fallback served (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const { result } = renderHook(() => useExplanation(makeCtx({ logSink })));
+    await act(async () => {
+      await result.current.ask("Who can see security alerts in VIGIL?");
+    });
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage).toBeUndefined();
+  });
 });

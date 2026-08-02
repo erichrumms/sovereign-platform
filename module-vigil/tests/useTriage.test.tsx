@@ -73,4 +73,41 @@ describe("useTriage", () => {
     expect(result.current.status).toBe("error");
     expect(result.current.error).toMatch(/Gate 2/);
   });
+
+  it("populates token_usage on AGENT_STEP_COMPLETE when live tier serves (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const mockComplete = async () =>
+      ({
+        content: JSON.stringify({
+          likely_causes: [{ cause: "Baseline shift", likelihood: "high" }],
+          recommended_steps: ["Confirm the event source."],
+          false_positive_likelihood: 25,
+          false_positive_explanation: "Alert pattern consistent with a genuine shift.",
+        }),
+        fallback_activated: false,
+        fallback_tier: "live",
+        usage: { input_tokens: 100, output_tokens: 50 },
+      } as unknown as import("@sovereign/api-client").SovereignLLMResponse);
+    const { result } = renderHook(() =>
+      useTriage(makeCtx({ logSink }), { complete: mockComplete })
+    );
+    await act(async () => {
+      await result.current.runTriage(contextFor("ANOMALY_DETECTED"));
+    });
+    expect(result.current.outcome?.tier).toBe("live");
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage?.input_tokens).toBe(100);
+    expect(complete.token_usage?.output_tokens).toBe(50);
+    expect(typeof complete.token_usage?.estimated_cost_usd).toBe("number");
+  });
+
+  it("leaves token_usage absent on AGENT_STEP_COMPLETE when fallback served (GD-31)", async () => {
+    const logSink: SovereignLogEvent[] = [];
+    const { result } = renderHook(() => useTriage(makeCtx({ logSink })));
+    await act(async () => {
+      await result.current.runTriage(contextFor("ANOMALY_DETECTED"));
+    });
+    const complete = logSink.find((e) => e.event_type === "AGENT_STEP_COMPLETE")!;
+    expect(complete.token_usage).toBeUndefined();
+  });
 });
