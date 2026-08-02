@@ -86,6 +86,8 @@ export interface TTDraftOutcome {
   tier: TTDraftTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-31: real token counts from the live call. Absent when fallback served. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 /** Injected dependencies — the hook wires these to sovereign-api-client + a session cache. */
@@ -245,7 +247,7 @@ export async function runTTDraft(
       const parsed = parseTTDraft(communicationType, response.content);
       if (parsed) {
         deps.cacheSet(key, parsed);
-        return { draft: parsed, tier: "live" };
+        return { draft: parsed, tier: "live", usage: response.usage };
       }
       detail = "live_response_failed_draft_validation";
     } else {

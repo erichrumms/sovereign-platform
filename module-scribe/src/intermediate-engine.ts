@@ -42,6 +42,8 @@ export interface IntermediateOutcome {
   tier: IntermediateTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-31: real token counts from the live call. Absent when fallback served. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 export interface IntermediateDeps {
@@ -183,7 +185,7 @@ export async function runIntermediate(
       const prose = extractProse(response.content);
       if (hasUsableProse(prose)) {
         deps.cacheSet(key, prose);
-        return { result: { mode: input.mode, prose }, tier: "live" };
+        return { result: { mode: input.mode, prose }, tier: "live", usage: response.usage };
       }
       detail = "live_response_empty";
     } else {

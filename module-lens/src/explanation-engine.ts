@@ -38,6 +38,8 @@ export interface ExplanationOutcome {
   tier: ExplanationTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-31: real token counts from the live call. Absent when fallback served. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 export interface ExplanationDeps {
@@ -138,7 +140,7 @@ export async function runExplanation(
       const explanation = parseExplanation(response.content);
       if (explanation) {
         deps.cacheSet(key, explanation);
-        return { explanation, tier: "live" };
+        return { explanation, tier: "live", usage: response.usage };
       }
       detail = "live_response_failed_schema_validation";
     } else {

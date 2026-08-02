@@ -38,6 +38,8 @@ export interface StyleOutcome {
   tier: StyleTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-31: real token counts from the live call. Absent when fallback served. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 export interface StyleDeps {
@@ -128,7 +130,7 @@ export async function runStyleAnalysis(
         const profile = assembleStyleProfile(analysis, deps.prior, deps.userId, deps.now());
         if (deps.validateProfile(profile).valid) {
           deps.cacheSet(key, profile);
-          return { profile, tier: "live" };
+          return { profile, tier: "live", usage: response.usage };
         }
         detail = "assembled_profile_failed_validation";
       } else {

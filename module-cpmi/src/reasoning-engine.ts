@@ -37,6 +37,8 @@ export interface ReasoningOutcome {
   tier: ReasoningTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-31: real token counts from the live call. Absent when fallback served. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 export interface ReasoningDeps {
@@ -144,7 +146,7 @@ export async function runReasoningChain(
       const output = parseReasoningOutput(response.content);
       if (output) {
         deps.cacheSet(key, output);
-        return { output, tier: "live" };
+        return { output, tier: "live", usage: response.usage };
       }
       detail = "live_response_not_surfaceable";
     } else {

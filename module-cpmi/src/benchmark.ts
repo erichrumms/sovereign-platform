@@ -33,6 +33,8 @@ export interface ScenarioResult {
   steps_completed: number; // must be 6
   recommendation_present: boolean;
   output: ReasoningChainOutput;
+  /** GD-31: token counts when the reasoning chain ran live. Absent on fallback. */
+  usage?: { input_tokens: number; output_tokens: number };
 }
 
 export interface BenchmarkReport {
@@ -44,6 +46,8 @@ export interface BenchmarkReport {
   scenario_results: ScenarioResult[];
   gate3_ready: boolean; // true only when both rates are 1.0 across all three scenarios
   workflow_step_id: string;
+  /** GD-31: sum of token counts across all live scenario calls. Absent if none ran live. */
+  total_usage?: { input_tokens: number; output_tokens: number };
 }
 
 interface BenchmarkScenario {
@@ -140,12 +144,18 @@ export async function runBenchmark(
       steps_completed: stepsCompleted(o),
       recommendation_present: typeof o.recommendation === "string" && o.recommendation.trim() !== "",
       output: o,
+      usage: outcome.usage,
     });
   }
 
   const schema_compliance_rate = results.filter((r) => r.schema_valid).length / results.length;
   const step_completion_rate = results.filter((r) => r.steps_completed === 6).length / results.length;
   const gate3_ready = results.length === 3 && results.every((r) => r.schema_valid && r.steps_completed === 6);
+
+  const liveUsages = results.map((r) => r.usage).filter((u): u is { input_tokens: number; output_tokens: number } => u !== undefined);
+  const total_usage = liveUsages.length > 0
+    ? { input_tokens: liveUsages.reduce((s, u) => s + u.input_tokens, 0), output_tokens: liveUsages.reduce((s, u) => s + u.output_tokens, 0) }
+    : undefined;
 
   return {
     run_id: meta.runId,
@@ -156,5 +166,6 @@ export async function runBenchmark(
     scenario_results: results,
     gate3_ready,
     workflow_step_id: `cpmi-benchmark-${meta.runId}`,
+    total_usage,
   };
 }
