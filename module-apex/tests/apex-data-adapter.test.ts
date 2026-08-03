@@ -8,9 +8,16 @@ import { createSyntheticApexDataAdapter } from "../src/apex-data-adapter";
 describe("createSyntheticApexDataAdapter", () => {
   const adapter = createSyntheticApexDataAdapter();
 
-  it("lists the full portfolio (4 synthetic programs)", () => {
+  it("lists the full portfolio (17 synthetic programs — GD-33 expanded from 4 to 17)", () => {
     const ids = adapter.listPrograms().map((p) => p.program_id).sort();
-    expect(ids).toEqual(["P-100", "P-150", "P-200", "P-300"]);
+    // Original 4: P-100, P-150, P-200, P-300. GD-33 adds P-401–P-413 (13 new World Model stubs).
+    expect(ids).toHaveLength(17);
+    expect(ids).toContain("P-100");
+    expect(ids).toContain("P-150");
+    expect(ids).toContain("P-200");
+    expect(ids).toContain("P-300");
+    expect(ids).toContain("P-401");
+    expect(ids).toContain("P-413");
   });
 
   it("returns each program with UNCLASSIFIED classification (GD-10)", () => {

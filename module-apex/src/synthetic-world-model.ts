@@ -281,7 +281,333 @@ const P300: ApexProgramRecord = {
   last_updated: "2026-06-07",
 };
 
-export const SYNTHETIC_PROGRAMS: readonly ApexProgramRecord[] = [P100, P200, P150, P300];
+// ── P-401 through P-413 — GD-33 World Model expansion (Session GD-33) ────────────────
+// 13 new programs across World Model I (Dana Jones) and World Model II (Robin Vasquez)
+// teams. Lightweight entries sufficient for staff-visibility reporting (docs/35 §4).
+// Full dossier data will be added when the reporting layer (docs/34 Phase 4) is built.
+
+const P401: ApexProgramRecord = {
+  program_id: "P-401",
+  program_name: "Integrated Financial Reporting Platform",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Integrated Financial Reporting Platform is 45 percent complete and all milestones are on schedule. No open risk flags.",
+  completion_pct: 45,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Consolidate disparate financial reporting feeds into a single governed platform."],
+  milestones: [
+    { name: "Milestone 1 — Requirements baseline", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — System design review", status_narrative: "On schedule.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["OMB Circular A-11"],
+  prior_governance_records: [],
+  last_updated: "2026-07-31",
+};
+
+const P402: ApexProgramRecord = {
+  program_id: "P-402",
+  program_name: "Contract Performance Monitoring Suite",
+  classification: "UNCLASSIFIED",
+  status_label: "AT_RISK",
+  status_narrative: "The Contract Performance Monitoring Suite is 38 percent complete. One milestone is at risk due to a vendor staffing gap.",
+  completion_pct: 38,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Automate contract performance data collection and alerting."],
+  milestones: [
+    { name: "Milestone 1 — Data schema approval", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Pilot deployment", status_narrative: "Two weeks behind schedule due to vendor staffing gap.", on_track: false },
+  ],
+  risk_flags: [
+    {
+      flag_id: "P-402-R1",
+      summary: "Vendor staffing below planned level; integration timeline at risk.",
+      severity: "P2",
+      provenance: {
+        entity_type: "World Model risk flag",
+        field_label: "Vendor staffing",
+        source_data: "CPMI World Model vendor register for P-402.",
+        baseline: "Full vendor team on-site by June 2026.",
+        current_actual_value: "Vendor team is at sixty percent of planned headcount.",
+        variance_from_baseline: "Forty percent below planned headcount — unfavorable.",
+        last_updated: "2026-07-28",
+        trend: "STABLE",
+        responsible_party: "Contracting Officer Representative",
+      },
+    },
+  ],
+  regulatory_context: ["FAR 42.15 — contractor performance information"],
+  prior_governance_records: [],
+  last_updated: "2026-07-28",
+};
+
+const P403: ApexProgramRecord = {
+  program_id: "P-403",
+  program_name: "Workforce Analytics Dashboard",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Workforce Analytics Dashboard is 60 percent complete and performing as planned.",
+  completion_pct: 60,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Provide leadership with near-real-time workforce readiness metrics."],
+  milestones: [
+    { name: "Milestone 1 — Data ingestion pipeline", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Dashboard MVP", status_narrative: "On track for completion in Q4.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["Privacy Act of 1974"],
+  prior_governance_records: ["Dashboard scope approved April 2026."],
+  last_updated: "2026-07-25",
+};
+
+const P404: ApexProgramRecord = {
+  program_id: "P-404",
+  program_name: "Regulatory Compliance Tracking System",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Regulatory Compliance Tracking System is 55 percent complete and on schedule.",
+  completion_pct: 55,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Consolidate regulatory compliance obligations into a single governed tracker."],
+  milestones: [
+    { name: "Milestone 1 — Obligation inventory", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Workflow integration", status_narrative: "On track.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["OMB Circular A-123"],
+  prior_governance_records: [],
+  last_updated: "2026-07-20",
+};
+
+const P405: ApexProgramRecord = {
+  program_id: "P-405",
+  program_name: "Mission Systems Health Monitor",
+  classification: "UNCLASSIFIED",
+  status_label: "AT_RISK",
+  status_narrative: "The Mission Systems Health Monitor is 42 percent complete. Cost variance is trending slightly unfavorable.",
+  completion_pct: 42,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Provide continuous health monitoring for mission-critical systems."],
+  milestones: [
+    { name: "Milestone 1 — Sensor integration", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Alert routing", status_narrative: "On track.", on_track: true },
+  ],
+  risk_flags: [
+    {
+      flag_id: "P-405-R1",
+      summary: "Cost variance trending 5 percent above plan.",
+      severity: "P3",
+      provenance: {
+        entity_type: "World Model risk flag",
+        field_label: "Cost variance",
+        source_data: "CPMI World Model cost ledger for P-405.",
+        baseline: "Planned spend of 40 percent of budget at this schedule point.",
+        current_actual_value: "Spending is at 45 percent of budget.",
+        variance_from_baseline: "5 percentage points above plan — slightly unfavorable.",
+        last_updated: "2026-07-30",
+        trend: "STABLE",
+        responsible_party: "Business Financial Manager",
+      },
+    },
+  ],
+  regulatory_context: ["DoD 5000.02"],
+  prior_governance_records: [],
+  last_updated: "2026-07-30",
+};
+
+const P406: ApexProgramRecord = {
+  program_id: "P-406",
+  program_name: "Data Quality Governance Framework",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Data Quality Governance Framework is 70 percent complete and performing as planned.",
+  completion_pct: 70,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Establish a governed framework for enterprise data quality monitoring."],
+  milestones: [
+    { name: "Milestone 1 — Standards publication", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Tool deployment", status_narrative: "On track for Q4 completion.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["Federal Data Strategy 2020 Action Plan"],
+  prior_governance_records: ["Standards approved by data governance board June 2026."],
+  last_updated: "2026-07-22",
+};
+
+const P407: ApexProgramRecord = {
+  program_id: "P-407",
+  program_name: "Acquisition Lifecycle Transparency Tool",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Acquisition Lifecycle Transparency Tool is 50 percent complete and on schedule.",
+  completion_pct: 50,
+  responsible_party: "Program Manager Dana Jones",
+  objectives: ["Provide end-to-end acquisition lifecycle visibility to program stakeholders."],
+  milestones: [
+    { name: "Milestone 1 — Data model finalization", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Stakeholder pilot", status_narrative: "Scheduled for Q4.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["FAR Part 4 — administrative matters"],
+  prior_governance_records: [],
+  last_updated: "2026-07-18",
+};
+
+const P408: ApexProgramRecord = {
+  program_id: "P-408",
+  program_name: "Interoperability Standards Registry",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Interoperability Standards Registry is 35 percent complete and progressing as planned.",
+  completion_pct: 35,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Maintain a governed registry of approved interoperability standards."],
+  milestones: [
+    { name: "Milestone 1 — Registry schema approval", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Population sprint", status_narrative: "On track.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["DoD Instruction 8330.01"],
+  prior_governance_records: [],
+  last_updated: "2026-07-26",
+};
+
+const P409: ApexProgramRecord = {
+  program_id: "P-409",
+  program_name: "Strategic Communication Workflow",
+  classification: "UNCLASSIFIED",
+  status_label: "AT_RISK",
+  status_narrative: "The Strategic Communication Workflow is 28 percent complete. A dependency on a shared platform integration is delayed.",
+  completion_pct: 28,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Streamline the production and approval workflow for strategic communications."],
+  milestones: [
+    { name: "Milestone 1 — Workflow design", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Platform integration", status_narrative: "Three weeks behind schedule due to upstream dependency.", on_track: false },
+  ],
+  risk_flags: [
+    {
+      flag_id: "P-409-R1",
+      summary: "Upstream platform integration delayed by three weeks.",
+      severity: "P2",
+      provenance: {
+        entity_type: "World Model risk flag",
+        field_label: "Platform integration dependency",
+        source_data: "CPMI World Model dependency tracker for P-409.",
+        baseline: "Integration complete by end of July 2026.",
+        current_actual_value: "Integration now forecast for mid-August 2026.",
+        variance_from_baseline: "Three weeks behind plan — unfavorable.",
+        last_updated: "2026-07-29",
+        trend: "STABLE",
+        responsible_party: "Integration Program Office",
+      },
+    },
+  ],
+  regulatory_context: ["DoD Directive 5122.05"],
+  prior_governance_records: [],
+  last_updated: "2026-07-29",
+};
+
+const P410: ApexProgramRecord = {
+  program_id: "P-410",
+  program_name: "Knowledge Management Portal",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Knowledge Management Portal is 65 percent complete and performing as planned.",
+  completion_pct: 65,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Provide a governed portal for institutional knowledge capture and retrieval."],
+  milestones: [
+    { name: "Milestone 1 — Portal launch", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Content migration", status_narrative: "On track.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["Federal Records Act"],
+  prior_governance_records: ["Portal launch approved May 2026."],
+  last_updated: "2026-07-21",
+};
+
+const P411: ApexProgramRecord = {
+  program_id: "P-411",
+  program_name: "Audit Readiness Accelerator",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Audit Readiness Accelerator is 48 percent complete and on schedule.",
+  completion_pct: 48,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Accelerate audit readiness by automating evidence collection and packaging."],
+  milestones: [
+    { name: "Milestone 1 — Evidence taxonomy", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Automated collection pilot", status_narrative: "On track.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["OMB Circular A-123", "DoD Financial Improvement and Audit Readiness"],
+  prior_governance_records: [],
+  last_updated: "2026-07-17",
+};
+
+const P412: ApexProgramRecord = {
+  program_id: "P-412",
+  program_name: "Resource Allocation Decision Support",
+  classification: "UNCLASSIFIED",
+  status_label: "AT_RISK",
+  status_narrative: "The Resource Allocation Decision Support program is 32 percent complete. A requirements gap was identified in July.",
+  completion_pct: 32,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Provide decision-support tooling for enterprise resource allocation."],
+  milestones: [
+    { name: "Milestone 1 — Use case definition", status_narrative: "Completed with a minor scope change.", on_track: true },
+    { name: "Milestone 2 — Prototype", status_narrative: "At risk; requirements gap under resolution.", on_track: false },
+  ],
+  risk_flags: [
+    {
+      flag_id: "P-412-R1",
+      summary: "Requirements gap identified; prototype timeline at risk.",
+      severity: "P2",
+      provenance: {
+        entity_type: "World Model risk flag",
+        field_label: "Requirements completeness",
+        source_data: "CPMI World Model requirements tracker for P-412.",
+        baseline: "Requirements complete by end of June 2026.",
+        current_actual_value: "Two use cases remain undefined as of July 2026.",
+        variance_from_baseline: "Two requirements gaps outstanding — unfavorable.",
+        last_updated: "2026-07-27",
+        trend: "IMPROVING",
+        responsible_party: "Requirements Lead",
+      },
+    },
+  ],
+  regulatory_context: ["OMB Circular A-11"],
+  prior_governance_records: [],
+  last_updated: "2026-07-27",
+};
+
+const P413: ApexProgramRecord = {
+  program_id: "P-413",
+  program_name: "Executive Decision Briefing Automation",
+  classification: "UNCLASSIFIED",
+  status_label: "ON_TRACK",
+  status_narrative: "The Executive Decision Briefing Automation program is 55 percent complete and performing as planned.",
+  completion_pct: 55,
+  responsible_party: "Program Manager Robin Vasquez",
+  objectives: ["Automate the preparation and formatting of executive decision briefings."],
+  milestones: [
+    { name: "Milestone 1 — Template library", status_narrative: "Completed on schedule.", on_track: true },
+    { name: "Milestone 2 — Workflow integration", status_narrative: "On track for Q4.", on_track: true },
+  ],
+  risk_flags: [],
+  regulatory_context: ["DoD Directive 5105.53"],
+  prior_governance_records: [],
+  last_updated: "2026-07-15",
+};
+
+export const SYNTHETIC_PROGRAMS: readonly ApexProgramRecord[] = [
+  P100, P200, P150, P300,
+  // GD-33 World Model I additions (Dana Jones team)
+  P401, P402, P403, P404, P405, P406, P407,
+  // GD-33 World Model II additions (Robin Vasquez team)
+  P408, P409, P410, P411, P412, P413,
+];
 
 // ── Supporting dossier records (DC-2), keyed by program ───────────────────────────────
 
