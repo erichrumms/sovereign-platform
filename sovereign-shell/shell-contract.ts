@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.25
+ * Version: 1.26
  * Date: August 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,24 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.26 (August 3, 2026) — GD-33 (Program & Staff Data Foundation, Phase 1+2, approved by
+ *                       the Project Principal August 2, 2026, per docs/35). ONE change: added
+ *                       optional `reports_to?: string` field to `SovereignUser` (Section 1).
+ *                       When present, carries the `employee_id` of this user's direct
+ *                       supervisor. Optional — absent for users with no supervisor relationship
+ *                       in the platform (backward-compatible widening). Impact assessment: NO
+ *                       HumanDecisionType change (not a new union member — Constraint #11 has
+ *                       nothing to propagate to shared-types.ts or Python logger for this GD).
+ *                       NO SovereignEventType change. NO AgentClass change. NO SovereignRole /
+ *                       SovereignProduct change. sovereign-api-client/src/types.ts NOT affected
+ *                       (copies only SovereignProduct / SovereignTier / ClearanceLevel — none
+ *                       changed). MODULE-LOADER and VALID_AGENT_CLASSES: not touched.
+ *                       sovereign_logger.py APPROVED_* lists: not touched. Standing Constraint
+ *                       #7 (export count): NOT incremented — widens `SovereignUser`, not a new
+ *                       context member. `Employee` entity in
+ *                       sovereign-data/src/entities/employee.ts widened to match (same optional
+ *                       field added; validateEmployee updated to accept it when present). Both
+ *                       shell-contract copies SHA-256 re-verified identical at v1.26.
  *   v1.25 (August 2, 2026) — GD-31 (Token & Cost Telemetry, approved by the Project
  *                       Principal August 1, 2026, per docs/31). ONE change: added optional
  *                       `token_usage` field to `SovereignLogEvent` (scoped to
@@ -547,6 +565,9 @@ export interface SovereignUser {
   role: SovereignRole;
   clearance_level: ClearanceLevel;
   cost_code_assignments: string[];
+  // GD-33 (v1.26) — employee_id of this user's direct supervisor. Optional; absent when no
+  // supervisor relationship exists in the platform for this user.
+  reports_to?: string;
 }
 
 export type SovereignRole =

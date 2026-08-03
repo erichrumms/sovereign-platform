@@ -19,6 +19,10 @@ export interface Employee {
   clearance_level: ClearanceLevel;
   /** Cost codes this employee is assigned to (cost_code identifiers). */
   cost_code_assignments: string[];
+  // GD-33 (shell-contract v1.26) — employee_id of this employee's direct supervisor.
+  // Optional; absent when no supervisor relationship exists (e.g. the Project Principal).
+  // Mirrors SovereignUser.reports_to — the two types are kept in sync.
+  reports_to?: string;
 }
 
 export function validateEmployee(employee: unknown): ValidationResult {
@@ -43,6 +47,10 @@ export function validateEmployee(employee: unknown): ValidationResult {
   if (!Array.isArray(e.cost_code_assignments) ||
       !e.cost_code_assignments.every((c) => typeof c === 'string')) {
     errors.push('cost_code_assignments: must be string[]');
+  }
+  if (e.reports_to !== undefined &&
+      (typeof e.reports_to !== 'string' || e.reports_to.trim() === '')) {
+    errors.push('reports_to: must be a non-empty string when present');
   }
 
   return errors.length === 0 ? { valid: true } : { valid: false, errors };
