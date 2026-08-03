@@ -145,6 +145,28 @@ export { validateEvaluationFinding } from './entities/evaluation-finding';
 export type { DependencyMap, DependencyHealthStatus } from './entities/dependency-map';
 export { validateDependencyMap } from './entities/dependency-map';
 
+// GD-33 — Program & Staff Data Foundation (docs/35, August 3, 2026).
+// StaffProjectAssignment: the many-to-many link between staff and programs.
+export type { StaffProjectAssignment } from './entities/staff-project-assignment';
+export { validateStaffProjectAssignment } from './entities/staff-project-assignment';
+
+// Staff & Program seed data (GD-33, docs/35). 56 Employee records, 10 new PPBE-native
+// ProgramRecord instances, 34 TravelRequest records, 24 TimeRecord records, and
+// StaffProjectAssignment records. Generated deterministically from STAFF_SEED.
+// New World Model program IDs (P-401–P-413) are listed here; full ApexProgramRecord
+// data for those 13 programs lives in module-apex/src/synthetic-world-model.ts.
+export {
+  STAFF_SEED,
+  SYNTH_PROJECT_PRINCIPAL_ID,
+  SYNTH_STAFF_EMPLOYEES,
+  SYNTH_STAFF_PPBE_PROGRAMS,
+  SYNTH_STAFF_TRAVEL_REQUESTS,
+  SYNTH_STAFF_TIME_RECORDS,
+  SYNTH_STAFF_ASSIGNMENTS,
+  SYNTH_STAFF_WORLD_MODEL_PROGRAM_IDS,
+  generateStaffData,
+} from './synthetic/staff-seed';
+
 // Time & Travel canonical synthetic seed data (Session 29 — Walkthrough E
 // WE-1/WE-5). Validated SYNTH- prefixed INSTANCES of the six D-TT3 entities,
 // single-sourced here because the TT workflow layer spans four host modules
@@ -179,4 +201,4 @@ export {
 } from './synthetic/ppbe-seed';
 
 /** Package version. */
-export const SOVEREIGN_DATA_VERSION = '1.6.0';
+export const SOVEREIGN_DATA_VERSION = '1.7.0';
