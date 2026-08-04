@@ -17,3 +17,8 @@ npm-debug.log*
 sovereign-security/logs/sovereign.jsonl
 logs/sovereign.jsonl
 sovereign-security/logs/sovereign.jsonl
+
+# Local environment files — never commit real credentials
+.env
+.env.local
+.env.*.local
