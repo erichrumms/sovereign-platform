@@ -76,6 +76,8 @@ SBOM_TCO2_Update.md|repo|de5212d5dd7c840465407fab5dc26b906a7f130458b73a45308d1e0
 SESSION_TCO2_HANDOFF.md|repo|204e27ea39570d2fb85e2b2171784d67b6914e881b0012658c8a1f93bbdde8c5|132|GD-32 Session 78 Handoff|2026-08-03
 SBOM_GD33_Update.md|repo|c44b94aef8a41ea624ebd0ab5f156b7ee950448ea0f8f24c101e36d3a5a191d1|196|v1.47 — GD-33; supersedes v1.46|2026-08-03
 SESSION_GD33_HANDOFF.md|repo|15264c913bb43032f645a88ef0209aee46deb61cb92f810e22e4ab5c20ae7d96|235|GD-33 Session 79 Handoff|2026-08-03
+SBOM_Session80_Update.md|repo|32cf02f319c910c2fd56848c93663576dc2ee79d53505886d08f7b094b1ce859|142|v1.48 — Session 80 browser-safety hotfix; supersedes v1.47|2026-08-04
+SESSION_80_HANDOFF.md|repo|2f3a7ff7aa7ab928b4cd4571190bb3c77482a915088d0dc21509c9c8ae65706a|99|Session 80 Handoff — process.env browser-safety fix|2026-08-04
 
 # --- iCloud Governance/ ---
 SBOM_Registry_v1.42.md|icloud|ed6166b555ffdcb3b2109ec80dac413c0168b15774b45972cecdb49f15ceb8c3|138|v1.42 — merges Sessions 54-61; supersedes v1.41|2026-07-24

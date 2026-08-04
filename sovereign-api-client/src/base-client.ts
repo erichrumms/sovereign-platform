@@ -247,7 +247,8 @@ export interface ClientLogger {
  */
 export class ConsoleClientLogger implements ClientLogger {
   log(event: Parameters<ClientLogger["log"]>[0]): void {
-    if (process.env["NODE_ENV"] !== "production") {
+    const env = typeof process !== "undefined" ? process.env : undefined;
+    if (env?.["NODE_ENV"] !== "production") {
       console.warn("[SOVEREIGN base-client]", event.event_type, event.payload);
     }
   }
@@ -360,7 +361,8 @@ export abstract class BaseSovereignClient {
 
       // SOVEREIGN_CLIENT_DEBUG=1 — temporary diagnostic gate (Session 36).
       // Remove after live-call failure is diagnosed.
-      if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+      const debugEnv = typeof process !== "undefined" ? process.env : undefined;
+      if (debugEnv?.["SOVEREIGN_CLIENT_DEBUG"]) {
         console.log(
           `[SOVEREIGN DEBUG] complete() tier-1 catch: reason=${reason} detail=${detail}`
         );

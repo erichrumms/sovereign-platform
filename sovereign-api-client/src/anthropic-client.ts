@@ -238,7 +238,8 @@ export class AnthropicClient extends BaseSovereignClient {
   protected buildHeaders(): Record<string, string> {
     // SOVEREIGN_CLIENT_DEBUG=1 — temporary diagnostic gate (Session 36).
     // Remove after live-call failure is diagnosed.
-    if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+    const env = typeof process !== "undefined" ? process.env : undefined;
+    if (env?.["SOVEREIGN_CLIENT_DEBUG"]) {
       console.log(
         "[SOVEREIGN DEBUG] buildHeaders: api_key=" +
           (this.api_key ? `present (length: ${this.api_key.length})` : "MISSING") +
@@ -265,6 +266,7 @@ export class AnthropicClient extends BaseSovereignClient {
     headers: Record<string, string>
   ): Promise<{ content: string; usage: { input_tokens: number; output_tokens: number } }> {
 
+    const env = typeof process !== "undefined" ? process.env : undefined;
     const { system, wire_messages } = this._translateMessages(messages);
     const body: AnthropicRequest = {
       model: this.model,
@@ -276,7 +278,7 @@ export class AnthropicClient extends BaseSovereignClient {
     }
 
     // SOVEREIGN_CLIENT_DEBUG=1 — temporary (Session 36).
-    if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+    if (env?.["SOVEREIGN_CLIENT_DEBUG"]) {
       console.log(
         `[SOVEREIGN DEBUG] callProvider: about to fetch ${ANTHROPIC_API_URL}` +
           ` model=${body.model} max_tokens=${body.max_tokens}` +
@@ -293,7 +295,7 @@ export class AnthropicClient extends BaseSovereignClient {
     if (!raw.ok) {
       const errorText = await raw.text();
       // SOVEREIGN_CLIENT_DEBUG=1 — temporary (Session 36).
-      if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+      if (env?.["SOVEREIGN_CLIENT_DEBUG"]) {
         console.log(
           `[SOVEREIGN DEBUG] callProvider non-ok: status=${raw.status}` +
             ` body_preview=${errorText.slice(0, 300)}`
@@ -313,7 +315,7 @@ export class AnthropicClient extends BaseSovereignClient {
 
     const responseText = await raw.text();
     // SOVEREIGN_CLIENT_DEBUG=1 — temporary (Session 36).
-    if (process.env["SOVEREIGN_CLIENT_DEBUG"]) {
+    if (env?.["SOVEREIGN_CLIENT_DEBUG"]) {
       console.log(
         `[SOVEREIGN DEBUG] callProvider ok: status=${raw.status}` +
           ` body_length=${responseText.length}` +

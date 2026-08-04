@@ -535,3 +535,61 @@ describe("default config values", () => {
     expect(response.sovereign_metadata.sovereign_version).toBe("1.0");
   });
 });
+
+// ============================================================
+// TESTS — Browser environment safety (process undefined)
+// ============================================================
+
+describe("browser environment safety — process undefined", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let savedProcess: any;
+
+  beforeEach(() => {
+    savedProcess = global.process;
+    // Simulate a browser environment where the `process` global does not exist.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (global as any).process;
+  });
+
+  afterEach(() => {
+    global.process = savedProcess;
+  });
+
+  test("ConsoleClientLogger.log() does not throw when process is undefined", () => {
+    const logger = new ConsoleClientLogger();
+    expect(() =>
+      logger.log({
+        event_type: "FALLBACK_ACTIVATED",
+        workflow_step_id: "WF-BROWSER-001",
+        product: "NEXUS",
+        actor_id: "test-agent",
+        outcome: "test",
+        payload: {},
+      })
+    ).not.toThrow();
+  });
+
+  test("complete() degrades to static fallback without throwing when process is undefined", async () => {
+    const client = new TestClient(
+      BASE_CONFIG,
+      new SpyLogger(),
+      new NullFallbackCache(),
+      makeFailProvider()
+    );
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.fallback_activated).toBe(true);
+    expect(response.fallback_tier).toBe("static");
+  });
+
+  test("complete() returns live response without throwing when process is undefined and provider succeeds", async () => {
+    const client = new TestClient(
+      BASE_CONFIG,
+      new SpyLogger(),
+      new NullFallbackCache(),
+      makeSuccessProvider("browser-safe response")
+    );
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.content).toBe("browser-safe response");
+    expect(response.fallback_activated).toBe(false);
+  });
+});

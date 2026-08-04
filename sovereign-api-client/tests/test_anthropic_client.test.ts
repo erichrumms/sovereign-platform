@@ -569,3 +569,47 @@ describe("defaultAnthropicConfig factory", () => {
     expect(config.provider).toBe("anthropic");
   });
 });
+
+// ============================================================
+// TESTS — Browser environment safety (process undefined)
+// ============================================================
+
+describe("browser environment safety — process undefined", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let savedProcess: any;
+
+  beforeEach(() => {
+    savedProcess = global.process;
+    // Simulate a browser environment where the `process` global does not exist.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (global as any).process;
+  });
+
+  afterEach(() => {
+    global.process = savedProcess;
+  });
+
+  test("buildHeaders() does not throw when process is undefined — live call succeeds", async () => {
+    mockFetchSuccess("browser-safe response");
+    const client = new AnthropicClient(BASE_CONFIG);
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.content).toBe("browser-safe response");
+    expect(response.fallback_activated).toBe(false);
+  });
+
+  test("callProvider() does not throw when process is undefined and fetch fails — degrades to static", async () => {
+    mockFetchNetworkError("Network failure");
+    const client = new AnthropicClient(BASE_CONFIG, new SpyLogger(), new NullFallbackCache());
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.fallback_activated).toBe(true);
+    expect(response.fallback_tier).toBe("static");
+  });
+
+  test("callProvider() does not throw when process is undefined and server returns 500 — degrades to static", async () => {
+    mockFetchError(500, "api_error", "Internal server error.");
+    const client = new AnthropicClient(BASE_CONFIG, new SpyLogger(), new NullFallbackCache());
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.fallback_activated).toBe(true);
+    expect(response.fallback_tier).toBe("static");
+  });
+});
