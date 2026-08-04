@@ -63,6 +63,20 @@ SOVEREIGN_Walkthrough_G_Findings_Report_20260721.md|repo_docs|f96fe697871b0edee4
 18_PPBE_Workflow_Architecture.md|repo_docs|269c8fbf88f610693153ba0dcbd1d62dcf4e479c2dc41290bae3b77223aa79a4|461|v1.3|2026-07-24
 SOVEREIGN_Shell_Surface_Reference_20260721.md|repo_docs|efe0b4929a6e1f58ed38f255bf4b73c288d67abeb7408ccb48422e37be7dc588|93|six shell-owned surfaces|2026-07-24
 
+# --- docs/ : Sessions 77-79 (GD-31, GD-32, GD-33) ---
+31_TCO_Token_Cost_Telemetry.md|repo_docs|7705e70433f4211f52e0ef2e1e7f43a20dff13bdc045ca5c0b404960fdc9b437|142|GD-31 — Token & Cost Telemetry; Session 77|2026-08-03
+32_SysAdmin_Cost_Dashboard.md|repo_docs|c50e2f8a02d7b390d8bfad5593159fcb287ec82fcc59db3d7a094b205b23d83e|97|GD-32 — SysAdmin Cost Dashboard; Session 78|2026-08-03
+34_Program_Staff_Visibility_Roadmap.md|repo_docs|41cf6388e0a0a3fb4d08fca892dcd7891702a540a65de0d5d32a9ee54ca28dc7|146|design/roadmap doc; no separate GD; Session 79|2026-08-03
+35_Program_Staff_Data_Foundation.md|repo_docs|d610320fcf0aa5b5f96bb432d72d1104d0976e068bf4c84529fe03fab10a420d|131|GD-33 — Program & Staff Data Foundation; Session 79|2026-08-03
+
+# --- Repo root: SBOM updates and Handoffs (Sessions 77-79) ---
+SBOM_TCO1_Update.md|repo|bc09d461357dc4a8606e2a0a5d5ddf223c88db57656f80adc6f971c70c914151|87|v1.45 — GD-31 Build Session 1; supersedes v1.44|2026-08-03
+SESSION_TCO1_HANDOFF.md|repo|09700c8b8c2e977b4bbe0757858c14abe4084a375afc23221d036f52803d9c15|244|GD-31 Session 77 Handoff|2026-08-03
+SBOM_TCO2_Update.md|repo|de5212d5dd7c840465407fab5dc26b906a7f130458b73a45308d1e003e6359be|133|v1.46 — GD-32; supersedes v1.45|2026-08-03
+SESSION_TCO2_HANDOFF.md|repo|204e27ea39570d2fb85e2b2171784d67b6914e881b0012658c8a1f93bbdde8c5|132|GD-32 Session 78 Handoff|2026-08-03
+SBOM_GD33_Update.md|repo|c44b94aef8a41ea624ebd0ab5f156b7ee950448ea0f8f24c101e36d3a5a191d1|196|v1.47 — GD-33; supersedes v1.46|2026-08-03
+SESSION_GD33_HANDOFF.md|repo|15264c913bb43032f645a88ef0209aee46deb61cb92f810e22e4ab5c20ae7d96|235|GD-33 Session 79 Handoff|2026-08-03
+
 # --- iCloud Governance/ ---
 SBOM_Registry_v1.42.md|icloud|ed6166b555ffdcb3b2109ec80dac413c0168b15774b45972cecdb49f15ceb8c3|138|v1.42 — merges Sessions 54-61; supersedes v1.41|2026-07-24
 
