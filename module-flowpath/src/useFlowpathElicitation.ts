@@ -116,74 +116,94 @@ export function useFlowpathElicitation(ctx: SovereignShellContext, opts: UseFlow
     // Defensive: confirm the produced artifact passes the Five-Question Gate before logging it.
     const gateResult = evaluateFiveQuestionGate(result.artifact);
     if (!gateResult.gate_passed) {
-      ctx.logger.log({
-        event_type: "FLOWPATH_GATE_FAILED",
-        workflow_step_id: workflowStep,
-        sovereign_tier: "standard",
-        product: "FLOWPATH",
-        actor_id: actorId,
-        agent_id: FLOWPATH_MAPPER,
-        outcome: "flowpath_gate_failed",
-        payload: { session_id: sessionId, failed_questions: gateResult.failed_questions },
-      });
+      // --- Gate 2: FLOWPATH_GATE_FAILED. A failed emit aborts (do not continue). ---
+      try {
+        ctx.logger.log({
+          event_type: "FLOWPATH_GATE_FAILED",
+          workflow_step_id: workflowStep,
+          sovereign_tier: "standard",
+          product: "FLOWPATH",
+          actor_id: actorId,
+          agent_id: FLOWPATH_MAPPER,
+          outcome: "flowpath_gate_failed",
+          payload: { session_id: sessionId, failed_questions: gateResult.failed_questions },
+        });
+      } catch (err) {
+        return surfaceLoggerError(err);
+      }
       setError("The produced workflow did not pass the Five-Question Gate.");
       setStatus("error");
       return null;
     }
 
-    // FLOWPATH_ARTIFACT_PRODUCED (spec §8).
-    ctx.logger.log({
-      event_type: "FLOWPATH_ARTIFACT_PRODUCED",
-      workflow_step_id: workflowStep,
-      sovereign_tier: "standard",
-      product: "FLOWPATH",
-      actor_id: actorId,
-      agent_id: FLOWPATH_MAPPER,
-      outcome: `flowpath_artifact_${outcome.tier}`,
-      payload: { session_id: sessionId, artifact_type: result.artifact.workflow_type, prompt_version: ORG_ELICITATION_PROMPT_VERSION, registry_id: PR_FLOWPATH_001.registryId, tier: outcome.tier, detail: outcome.detail },
-    });
-
-    // FLOWPATH_VOCABULARY_CAPTURED (DC-7 calibration data).
-    ctx.logger.log({
-      event_type: "FLOWPATH_VOCABULARY_CAPTURED",
-      workflow_step_id: workflowStep,
-      sovereign_tier: "standard",
-      product: "FLOWPATH",
-      actor_id: actorId,
-      agent_id: FLOWPATH_MAPPER,
-      outcome: "flowpath_vocabulary_captured",
-      payload: { session_id: sessionId, term_count: result.vocabulary.entries.length },
-    });
-
-    // FLOWPATH_DATASOURCE_REGISTERED (DC-6) — one event per registered source.
-    for (const source of result.data_sources.sources) {
+    // --- Gate 2: artifact + calibration emissions. A failed emit aborts (do not continue). ---
+    try {
+      // FLOWPATH_ARTIFACT_PRODUCED (spec §8).
       ctx.logger.log({
-        event_type: "FLOWPATH_DATASOURCE_REGISTERED",
+        event_type: "FLOWPATH_ARTIFACT_PRODUCED",
         workflow_step_id: workflowStep,
         sovereign_tier: "standard",
         product: "FLOWPATH",
         actor_id: actorId,
         agent_id: FLOWPATH_MAPPER,
-        outcome: "flowpath_datasource_registered",
-        payload: { session_id: sessionId, source_name: source.source_name, source_type: source.source_type },
+        outcome: `flowpath_artifact_${outcome.tier}`,
+        payload: { session_id: sessionId, artifact_type: result.artifact.workflow_type, prompt_version: ORG_ELICITATION_PROMPT_VERSION, registry_id: PR_FLOWPATH_001.registryId, tier: outcome.tier, detail: outcome.detail },
       });
-    }
 
-    // FLOWPATH_VALIDATION_CADENCE_SET (DC-5).
-    ctx.logger.log({
-      event_type: "FLOWPATH_VALIDATION_CADENCE_SET",
-      workflow_step_id: workflowStep,
-      sovereign_tier: "standard",
-      product: "FLOWPATH",
-      actor_id: actorId,
-      agent_id: FLOWPATH_MAPPER,
-      outcome: "flowpath_validation_cadence_set",
-      payload: { session_id: sessionId, cadence_type: result.validation_cadence.cadence_type },
-    });
+      // FLOWPATH_VOCABULARY_CAPTURED (DC-7 calibration data).
+      ctx.logger.log({
+        event_type: "FLOWPATH_VOCABULARY_CAPTURED",
+        workflow_step_id: workflowStep,
+        sovereign_tier: "standard",
+        product: "FLOWPATH",
+        actor_id: actorId,
+        agent_id: FLOWPATH_MAPPER,
+        outcome: "flowpath_vocabulary_captured",
+        payload: { session_id: sessionId, term_count: result.vocabulary.entries.length },
+      });
+
+      // FLOWPATH_DATASOURCE_REGISTERED (DC-6) — one event per registered source.
+      for (const source of result.data_sources.sources) {
+        ctx.logger.log({
+          event_type: "FLOWPATH_DATASOURCE_REGISTERED",
+          workflow_step_id: workflowStep,
+          sovereign_tier: "standard",
+          product: "FLOWPATH",
+          actor_id: actorId,
+          agent_id: FLOWPATH_MAPPER,
+          outcome: "flowpath_datasource_registered",
+          payload: { session_id: sessionId, source_name: source.source_name, source_type: source.source_type },
+        });
+      }
+
+      // FLOWPATH_VALIDATION_CADENCE_SET (DC-5).
+      ctx.logger.log({
+        event_type: "FLOWPATH_VALIDATION_CADENCE_SET",
+        workflow_step_id: workflowStep,
+        sovereign_tier: "standard",
+        product: "FLOWPATH",
+        actor_id: actorId,
+        agent_id: FLOWPATH_MAPPER,
+        outcome: "flowpath_validation_cadence_set",
+        payload: { session_id: sessionId, cadence_type: result.validation_cadence.cadence_type },
+      });
+    } catch (err) {
+      return surfaceLoggerError(err);
+    }
 
     setBundle(result);
     setStatus("complete");
     return result;
+
+    function surfaceLoggerError(err: unknown): null {
+      setError(
+        `Logger emission failed — artifact production halted (CPMI-VRS Gate 2): ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+      setStatus("error");
+      return null;
+    }
   }, [allAnswered, answers, sessionId, ctx, actorId, opts.complete]);
 
   return { answers, setAnswer, gate, allAnswered, status, bundle, error, produceArtifact };

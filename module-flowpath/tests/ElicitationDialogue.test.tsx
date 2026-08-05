@@ -176,4 +176,16 @@ describe("ElicitationDialogue (Screen 2, organizational mode)", () => {
     expect(sink.some((e) => e.event_type === "FLOWPATH_ARTIFACT_PRODUCED")).toBe(false);
     expect(screen.queryByTestId("artifact-preview")).not.toBeInTheDocument();
   });
+
+  it("Gate 2: a Logger throw on FLOWPATH_ARTIFACT_PRODUCED aborts production and surfaces error (fail-closed)", async () => {
+    render(<ElicitationDialogue ctx={makeCtx({ throwOnLog: true })} complete={offlineComplete} />);
+    completePreliminaryStage();
+    fillAllAnswers();
+    fireEvent.click(screen.getByRole("button", { name: /produce workflow artifact/i }));
+    await waitFor(() =>
+      expect(screen.getByText(/Logger emission failed.*CPMI-VRS Gate 2/i)).toBeInTheDocument()
+    );
+    // Artifact must not be displayed — the failed-closed state aborted production.
+    expect(screen.queryByTestId("artifact-preview")).not.toBeInTheDocument();
+  });
 });
