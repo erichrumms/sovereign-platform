@@ -188,7 +188,7 @@ export function NexusApp({ ctx, travelDrafterComplete }: NexusAppProps): JSX.Ele
             agent_class: "Operational",
             outcome: "tt_travel_draft_complete",
             payload: { request_id: request.request_id, tier: result.tier, communication_type: result.draft.communication_type },
-            ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
+            ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens), duration_ms: result.duration_ms, stop_reason: result.stop_reason, responded_at: result.responded_at } } : {}),
           });
         } catch (err) {
           throw new Error(

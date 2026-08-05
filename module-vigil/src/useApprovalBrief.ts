@@ -141,7 +141,7 @@ export function useApprovalBrief(ctx: SovereignShellContext, opts: UseApprovalBr
             fallback_activated: fellBack,
             detail: result.detail,
           },
-          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
+          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens), duration_ms: result.duration_ms, stop_reason: result.stop_reason, responded_at: result.responded_at } } : {}),
         });
       } catch (err) {
         return surfaceLoggerError(err);
