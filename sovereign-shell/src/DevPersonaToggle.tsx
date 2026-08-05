@@ -24,6 +24,7 @@ export const DEV_PERSONA_ROLES: readonly DevPersonaRole[] = [
   "COMPLIANCE_OFFICER",
   "AGENT_OPERATOR",
   "INDEPENDENT_REVIEWER",
+  "SUPERVISOR",
   "READ_ONLY",
 ];
 
@@ -48,6 +49,7 @@ export const DEV_PERSONA_LABELS: Record<DevPersonaRole, string> = {
   COMPLIANCE_OFFICER: "Compliance Officer",
   AGENT_OPERATOR: "Agent Operator",
   INDEPENDENT_REVIEWER: "Independent Reviewer",
+  SUPERVISOR: "Supervisor",
   READ_ONLY: "Read Only",
 };
 

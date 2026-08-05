@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.27
+ * Version: 1.28
  * Date: August 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,30 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.28 (August 5, 2026) — docs/34 Phase 3 (Program & Staff Visibility Roadmap, Session 91).
+ *                       ONE change: added `SUPERVISOR` to the SovereignRole union (Section 1).
+ *                       This role was deferred from GD-33 / docs/35 (Session 79) because the
+ *                       SovereignRole enum did not yet carry a SUPERVISOR member; the 8 real
+ *                       supervisor employees (SYNTH-E-401–408) carried `INDEPENDENT_REVIEWER`
+ *                       as a documented placeholder per the Session 79 Handoff. Now that the
+ *                       role exists: (a) the 8 synthetic supervisors are reassigned from
+ *                       INDEPENDENT_REVIEWER to SUPERVISOR in staff-seed.ts; (b) FLOWPATH
+ *                       adds SUPERVISOR to its minimumRole list (docs/34 §4 Phase 3: "FLOWPATH
+ *                       access granted explicitly"). Impact assessment: NO HumanDecisionType
+ *                       change (no new decision type). NO SovereignEventType change. NO AgentClass
+ *                       change. NO SovereignProduct change. sovereign-api-client/src/types.ts NOT
+ *                       affected (copies only SovereignProduct / SovereignTier / ClearanceLevel —
+ *                       none changed). sovereign_logger.py APPROVED_* lists: not touched (role
+ *                       taxonomy is not mirrored in the Python logger). MODULE-LOADER VALID_ROLES:
+ *                       synced (SUPERVISOR added — required for FLOWPATH's minimumRole to pass
+ *                       contract validation). sovereign-data/src/shared-types.ts synced: SovereignRole
+ *                       union + SOVEREIGN_ROLES runtime array (Constraint #11). Standing Constraint
+ *                       #7 (export count): NOT incremented — widens SovereignRole, not a new context
+ *                       member. Access-matrix note: SUPERVISOR is NOT added to COUNSEL or LENS
+ *                       minimumRole in this session (those modules currently admit INDEPENDENT_REVIEWER;
+ *                       the 8 supervisors will lose COUNSEL/LENS access after the role change —
+ *                       documented as a known gap for the next supervisor-access-matrix session).
+ *                       Both shell-contract copies SHA-256 re-verified identical at v1.28.
  *   v1.27 (August 4, 2026) — GD-34 (Cost Telemetry Depth — F1/F2/F3/F6b from Session 86
  *                       cost-tracking reflection, approved by the Project Principal August 4,
  *                       2026, this session). FOUR additive changes, all scoped to
@@ -613,7 +637,13 @@ export type SovereignRole =
   // VIGIL declares minimumRole "PLATFORM_ADMIN"; the fail-closed default
   // RoleAccessPolicy (exact match OR SYSTEM_ADMIN superuser) then admits
   // exactly PLATFORM_ADMIN or SYSTEM_ADMIN — the required VIGIL mount gate.
-  | "PLATFORM_ADMIN";
+  | "PLATFORM_ADMIN"
+  // docs/34 Phase 3, August 5, 2026 (shell-contract v1.28) — organizational supervisor role.
+  // Added so the 8 real team supervisors (SYNTH-E-401–408) can carry their correct role
+  // rather than the INDEPENDENT_REVIEWER placeholder used in Session 79 / GD-33.
+  // Access: FLOWPATH (added this session per docs/34 §4). COUNSEL and LENS access-matrix
+  // extension is deferred to the next supervisor-access-matrix session.
+  | "SUPERVISOR";
 
 export type ClearanceLevel =
   | "UNCLASSIFIED"

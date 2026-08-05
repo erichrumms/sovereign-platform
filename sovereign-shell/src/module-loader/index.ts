@@ -101,6 +101,9 @@ const VALID_ROLES: ReadonlySet<SovereignRole> = new Set<SovereignRole>([
   // contract change. The fail-closed default policy then admits PLATFORM_ADMIN
   // or SYSTEM_ADMIN only — the intended VIGIL gate.
   "PLATFORM_ADMIN",
+  // docs/34 Phase 3 / shell-contract v1.28 (August 5, 2026) — organizational supervisor role.
+  // Required so FLOWPATH's minimumRole (now includes SUPERVISOR) passes contract validation.
+  "SUPERVISOR",
 ]);
 
 const VALID_AGENT_CLASSES: ReadonlySet<string> = new Set([

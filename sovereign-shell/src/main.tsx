@@ -89,6 +89,7 @@ const DEV_PERSONA_NAMES: Record<DevPersonaRole, string> = {
   COMPLIANCE_OFFICER:   "Dev — Compliance Officer",
   AGENT_OPERATOR:       "Dev — Agent Operator",
   INDEPENDENT_REVIEWER: "Dev — Independent Reviewer",
+  SUPERVISOR:           "Dev — Supervisor",
   READ_ONLY:            "Dev — Read Only",
 };
 

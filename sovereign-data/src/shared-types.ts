@@ -34,7 +34,7 @@
  *    v1.16 (GD-21) — 22 members)
  */
 
-/** Canonical platform roles. Synced to shell-contract.ts v1.3 (incl. GD-5 PLATFORM_ADMIN). */
+/** Canonical platform roles. Synced to shell-contract.ts v1.28 (incl. GD-5 PLATFORM_ADMIN, docs/34 Phase 3 SUPERVISOR). */
 export type SovereignRole =
   | "PROGRAM_MANAGER"
   | "ANALYST"
@@ -43,7 +43,9 @@ export type SovereignRole =
   | "INDEPENDENT_REVIEWER"
   | "SYSTEM_ADMIN"
   | "READ_ONLY"
-  | "PLATFORM_ADMIN";
+  | "PLATFORM_ADMIN"
+  // docs/34 Phase 3, August 5, 2026 (shell-contract v1.28) — organizational supervisor role.
+  | "SUPERVISOR";
 
 /** Canonical clearance levels. Synced to shell-contract.ts Section 1. */
 export type ClearanceLevel =
@@ -111,6 +113,8 @@ export const SOVEREIGN_ROLES: readonly SovereignRole[] = [
   "SYSTEM_ADMIN",
   "READ_ONLY",
   "PLATFORM_ADMIN",
+  // docs/34 Phase 3, August 5, 2026 (shell-contract v1.28)
+  "SUPERVISOR",
 ];
 
 export const CLEARANCE_LEVELS: readonly ClearanceLevel[] = [
