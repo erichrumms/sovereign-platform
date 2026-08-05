@@ -88,6 +88,12 @@ export interface TTDraftOutcome {
   detail?: string;
   /** GD-31: real token counts from the live call. Absent when fallback served. */
   usage?: { input_tokens: number; output_tokens: number };
+  /** GD-34: wall-clock duration of the live provider call. */
+  duration_ms?: number;
+  /** GD-34: provider stop reason (e.g. "end_turn", "max_tokens"). */
+  stop_reason?: string;
+  /** GD-34: ISO 8601 timestamp when the provider responded. */
+  responded_at?: string;
 }
 
 /** Injected dependencies — the hook wires these to sovereign-api-client + a session cache. */
@@ -247,7 +253,7 @@ export async function runTTDraft(
       const parsed = parseTTDraft(communicationType, response.content);
       if (parsed) {
         deps.cacheSet(key, parsed);
-        return { draft: parsed, tier: "live", usage: response.usage };
+        return { draft: parsed, tier: "live", usage: response.usage, duration_ms: response.duration_ms, stop_reason: response.stop_reason, responded_at: response.sovereign_metadata?.responded_at };
       }
       detail = "live_response_failed_draft_validation";
     } else {

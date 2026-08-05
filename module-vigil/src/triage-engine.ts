@@ -36,6 +36,12 @@ export interface TriageOutcome {
   detail?: string;
   /** GD-31: real token counts from the live call. Absent when fallback served. */
   usage?: { input_tokens: number; output_tokens: number };
+  /** GD-34: wall-clock duration of the live provider call. */
+  duration_ms?: number;
+  /** GD-34: provider stop reason (e.g. "end_turn", "max_tokens"). */
+  stop_reason?: string;
+  /** GD-34: ISO 8601 timestamp when the provider responded. */
+  responded_at?: string;
 }
 
 export interface TriageDeps {
@@ -181,7 +187,7 @@ export async function runTriageAnalysis(
       const brief = parseTriageBrief(response.content);
       if (brief) {
         deps.cacheSet(key, brief);
-        return { brief, tier: "live", usage: response.usage };
+        return { brief, tier: "live", usage: response.usage, duration_ms: response.duration_ms, stop_reason: response.stop_reason, responded_at: response.sovereign_metadata?.responded_at };
       }
       detail = "live_response_failed_schema_validation";
     } else {

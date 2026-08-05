@@ -35,6 +35,8 @@ export interface ScenarioResult {
   output: ReasoningChainOutput;
   /** GD-31: token counts when the reasoning chain ran live. Absent on fallback. */
   usage?: { input_tokens: number; output_tokens: number };
+  /** GD-34: wall-clock duration of the live provider call for this scenario. Absent on fallback. */
+  duration_ms?: number;
 }
 
 export interface BenchmarkReport {
@@ -48,6 +50,8 @@ export interface BenchmarkReport {
   workflow_step_id: string;
   /** GD-31: sum of token counts across all live scenario calls. Absent if none ran live. */
   total_usage?: { input_tokens: number; output_tokens: number };
+  /** GD-34: sum of wall-clock durations across all live scenario calls. Absent if none ran live. */
+  total_duration_ms?: number;
 }
 
 interface BenchmarkScenario {
@@ -145,6 +149,7 @@ export async function runBenchmark(
       recommendation_present: typeof o.recommendation === "string" && o.recommendation.trim() !== "",
       output: o,
       usage: outcome.usage,
+      duration_ms: outcome.duration_ms,
     });
   }
 
@@ -156,6 +161,8 @@ export async function runBenchmark(
   const total_usage = liveUsages.length > 0
     ? { input_tokens: liveUsages.reduce((s, u) => s + u.input_tokens, 0), output_tokens: liveUsages.reduce((s, u) => s + u.output_tokens, 0) }
     : undefined;
+  const liveDurations = results.map((r) => r.duration_ms).filter((d): d is number => d !== undefined);
+  const total_duration_ms = liveDurations.length > 0 ? liveDurations.reduce((s, d) => s + d, 0) : undefined;
 
   return {
     run_id: meta.runId,
@@ -167,5 +174,6 @@ export async function runBenchmark(
     gate3_ready,
     workflow_step_id: `cpmi-benchmark-${meta.runId}`,
     total_usage,
+    total_duration_ms,
   };
 }
