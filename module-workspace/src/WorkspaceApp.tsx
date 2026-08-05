@@ -723,7 +723,13 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
   );
 
   // Fallback activations — distinct line, never merged into cost total (docs/32 §4).
-  const fallbackCount = allEntries.filter((e) => e.event_type === "FALLBACK_ACTIVATED").length;
+  const fallbackEvents = allEntries.filter((e) => e.event_type === "FALLBACK_ACTIVATED");
+  const fallbackCount = fallbackEvents.length;
+  const fallbackByCategory = new Map<string, number>();
+  for (const e of fallbackEvents) {
+    const cat = e.fallback_category ?? "unknown";
+    fallbackByCategory.set(cat, (fallbackByCategory.get(cat) ?? 0) + 1);
+  }
 
   // Running totals.
   let totalInput = 0;
@@ -774,7 +780,8 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
         Coverage (GD-31): all 10 in-scope AGENT_STEP_COMPLETE emission sites are instrumented.
         The 5 excluded sites (tracer-integration, security-query, 2 NEXUS deterministic
         engines, counsel REASONING_STEP_COMPLETE) do not call the model — they have no token
-        usage to report. This session total is complete.
+        usage to report. This session total is complete. GovCloud live-call cost estimates are
+        excluded until R7 resolves — the GovCloud provider always serves the static fallback tier.
       </div>
 
       {stepEvents.length === 0 && fallbackCount === 0 ? (
@@ -809,6 +816,12 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
                   <td style={costLabelCellStyle}>Fallback activations (wasted spend — no live tokens consumed)</td>
                   <td style={costNumCellStyle} data-testid="cost-fallback-count">{fallbackCount.toLocaleString()}</td>
                 </tr>
+                {Array.from(fallbackByCategory.entries()).map(([cat, count]) => (
+                  <tr key={cat}>
+                    <td style={{ ...costLabelCellStyle, paddingLeft: 24, color: "#64748b", fontSize: 12 }}>↳ {cat}</td>
+                    <td style={{ ...costNumCellStyle, color: "#64748b", fontSize: 12 }} data-testid={`cost-fallback-cat-${cat}`}>{count.toLocaleString()}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </section>
