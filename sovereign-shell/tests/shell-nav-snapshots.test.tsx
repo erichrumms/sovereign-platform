@@ -149,6 +149,22 @@ describe("ModuleNav role-access snapshots", () => {
     );
     expect(container).toMatchSnapshot();
   });
+
+  it("SUPERVISOR — 1 module accessible (FLOWPATH) — docs/34 Phase 3, Session 91", () => {
+    // SUPERVISOR was added in shell-contract v1.28 (Session 91). FLOWPATH is the only
+    // module admitting SUPERVISOR in this session; COUNSEL/LENS access-matrix extension
+    // is deferred to the next supervisor-access-matrix session (see Handoff).
+    const isAccessible = makeIsAccessible("SUPERVISOR");
+    const { container } = render(
+      <ModuleNav
+        modules={ALL_MODULES}
+        activeMountPath={ACTIVE_PATH}
+        isAccessible={isAccessible}
+        onSelect={noop}
+      />
+    );
+    expect(container).toMatchSnapshot();
+  });
 });
 
 // ---- PlatformHome snapshot ----

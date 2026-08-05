@@ -17,10 +17,11 @@ describe("flowpathModule contract", () => {
     expect(flowpathModule.displayName).toBe("FLOWPATH");
   });
 
-  it("uses the GD-22 access matrix (AGENT_OPERATOR, ANALYST, PROGRAM_MANAGER + admins)", () => {
+  it("uses the GD-22 + docs/34 Phase 3 access matrix (AGENT_OPERATOR, ANALYST, PROGRAM_MANAGER, SUPERVISOR + admins)", () => {
     // GD-22 (v1.17): replaces the single AGENT_OPERATOR placeholder with the approved list.
+    // docs/34 Phase 3 (shell-contract v1.28, Session 91): SUPERVISOR added.
     expect(flowpathModule.minimumRole).toEqual([
-      "PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER",
+      "PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER", "SUPERVISOR",
     ]);
   });
 
@@ -55,7 +56,8 @@ describe("flowpathModule structural mount gate", () => {
   );
 
   // GD-22: ANALYST and PROGRAM_MANAGER are now admitted to FLOWPATH.
-  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER"] as const)(
+  // docs/34 Phase 3 (Session 91): SUPERVISOR admitted.
+  it.each(["PLATFORM_ADMIN", "SYSTEM_ADMIN", "AGENT_OPERATOR", "ANALYST", "PROGRAM_MANAGER", "SUPERVISOR"] as const)(
     "admits %s (mounts without throwing)",
     (role) => {
       const el = document.createElement("div");

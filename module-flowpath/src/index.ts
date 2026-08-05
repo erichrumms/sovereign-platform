@@ -48,12 +48,15 @@ import {
 
 // GD-22 / SOVEREIGN_Role_Access_Matrix_20260718.md: FLOWPATH elicitation is conducted
 // by analysts and program managers (who know the workflows), plus operators and admins.
+// docs/34 Phase 3 (shell-contract v1.28, August 5, 2026): SUPERVISOR added — supervisors
+// need extensive access to FLOWPATH per the Program & Staff Visibility Roadmap §4.
 const FLOWPATH_MINIMUM_ROLES: SovereignRole[] = [
   "PLATFORM_ADMIN",
   "SYSTEM_ADMIN",
   "AGENT_OPERATOR",
   "ANALYST",
   "PROGRAM_MANAGER",
+  "SUPERVISOR",
 ];
 
 /**
