@@ -53,7 +53,7 @@ describe("Startup surface publication — WG-1 (Session 54)", () => {
     expect(ctx.workQueueSurface.listForModule("nexus")[0].count).toBeGreaterThan(0);
   });
 
-  it("populates ReviewerWorkspaceSurface on all three sections with FULL payloads", () => {
+  it("populates ReviewerWorkspaceSurface on VIGIL, ARIA, SCRIBE, and NEXUS sections with FULL payloads", () => {
     const logged: SovereignLogEvent[] = [];
     const ctx = makeCtx(logged);
     publishModuleSurfacesAtStartup(ctx);
