@@ -74,6 +74,10 @@ export interface SovereignLLMResponse {
     input_tokens: number;
     output_tokens: number;
   };
+  /** Wall-clock milliseconds for the live provider call. Absent on cached/static responses. */
+  duration_ms?: number;
+  /** Provider stop reason (e.g. "end_turn", "max_tokens"). Absent on cached/static responses. */
+  stop_reason?: string;
 }
 
 /**
@@ -208,6 +212,48 @@ export class SovereignTimeoutError extends Error {
 }
 
 // ============================================================
+// FAILURE CATEGORIZATION
+// ============================================================
+
+/**
+ * Structured failure category for FALLBACK_ACTIVATED events.
+ * GD-34 (v1.27) — replaces the unstructured reason string with a typed discriminant
+ * so the Cost Dashboard can surface "Auth failures: N — check API key" instead of
+ * a raw count. Uses instanceof + numeric .status, never string-matching (fragility
+ * warning from SESSION_86_COST_TRACKING_REFLECTION F1).
+ */
+export type FallbackCategory =
+  | "auth_failure"      // HTTP 401 — credential problem
+  | "rate_limited"      // HTTP 429 — quota exhausted
+  | "server_error"      // HTTP 5xx — provider-side failure
+  | "timeout"           // SovereignTimeoutError — no response within timeout_ms
+  | "provider_unresolved" // GovCloudNotYetResolvedException — R7 not yet resolved
+  | "network_or_parse"; // all other failures (network drop, parse error, unknown)
+
+/**
+ * Derive a structured failure category from a caught error.
+ * Checks instanceof for typed errors and duck-types .status for HTTP errors.
+ * Never matches on error.message strings — that would be fragile.
+ */
+function deriveFailureCategory(err: unknown): FallbackCategory {
+  if (err instanceof SovereignTimeoutError) {
+    return "timeout";
+  }
+  // Duck-type check for GovCloudNotYetResolvedException (avoids circular import with govcloud-client.ts).
+  if (err instanceof Error && err.name === "GovCloudNotYetResolvedException") {
+    return "provider_unresolved";
+  }
+  // Duck-type check for HTTP status code (AnthropicAPIError and any future ProviderAPIError).
+  const status = err != null ? (err as Record<string, unknown>)["status"] : undefined;
+  if (typeof status === "number") {
+    if (status === 401) return "auth_failure";
+    if (status === 429) return "rate_limited";
+    if (status >= 500) return "server_error";
+  }
+  return "network_or_parse";
+}
+
+// ============================================================
 // LOGGER SHIM
 // ============================================================
 
@@ -237,6 +283,8 @@ export interface ClientLogger {
     actor_id: string;
     outcome: string;
     payload: Record<string, unknown>;
+    // GD-34 (v1.27) — FALLBACK_ACTIVATED events only. Typed failure category.
+    fallback_category?: FallbackCategory;
   }): void;
 }
 
@@ -324,7 +372,7 @@ export abstract class BaseSovereignClient {
   protected abstract callProvider(
     messages: SovereignMessage[],
     headers: Record<string, string>
-  ): Promise<{ content: string; usage?: { input_tokens: number; output_tokens: number } }>;
+  ): Promise<{ content: string; stop_reason?: string; usage?: { input_tokens: number; output_tokens: number } }>;
 
   // ----------------------------------------------------------
   // PUBLIC — the single entry point for all LLM calls
@@ -351,17 +399,20 @@ export abstract class BaseSovereignClient {
     // ---- Tier 1: live provider ----
     try {
       const headers = this.buildHeaders();
+      const requestedAt = performance.now();
       const raw = await this._withTimeout(
         this.callProvider(messages, headers),
         context.workflow_step_id
       );
+      const duration_ms = Math.round(performance.now() - requestedAt);
 
-      return this._wrapResponse(raw, context, "live", false);
+      return this._wrapResponse(raw, context, "live", false, duration_ms);
 
     } catch (err) {
       const isTimeout = err instanceof SovereignTimeoutError;
       const reason = isTimeout ? "timeout" : "provider_error";
       const detail = err instanceof Error ? err.message : String(err);
+      const fallback_category = deriveFailureCategory(err);
 
       this.logger.log({
         event_type: "FALLBACK_ACTIVATED",
@@ -369,7 +420,8 @@ export abstract class BaseSovereignClient {
         product: context.product,
         actor_id: context.agent_id,
         outcome: "live_tier_failed",
-        payload: { tier: "live", reason, detail, provider: this.provider },
+        fallback_category,
+        payload: { tier: "live", reason, detail, provider: this.provider, fallback_category },
       });
     }
 
@@ -431,10 +483,11 @@ export abstract class BaseSovereignClient {
    * injecting SOVEREIGN metadata per architecture Section 10.
    */
   protected _wrapResponse(
-    raw: { content: string; usage?: { input_tokens: number; output_tokens: number } },
+    raw: { content: string; stop_reason?: string; usage?: { input_tokens: number; output_tokens: number } },
     context: SovereignRequestContext,
     fallback_tier: "live" | "cached" | "static",
-    fallback_activated: boolean
+    fallback_activated: boolean,
+    duration_ms?: number
   ): SovereignLLMResponse {
     const response: SovereignLLMResponse = {
       content: raw.content,
@@ -454,6 +507,12 @@ export abstract class BaseSovereignClient {
 
     if (raw.usage) {
       response.usage = raw.usage;
+    }
+    if (raw.stop_reason !== undefined) {
+      response.stop_reason = raw.stop_reason;
+    }
+    if (duration_ms !== undefined) {
+      response.duration_ms = duration_ms;
     }
 
     // Cache the live response for future fallback use

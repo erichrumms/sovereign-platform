@@ -6,7 +6,7 @@
  * This file defines exactly what the sovereign-shell exports to every product module.
  * Modules must not reach outside this contract.
  *
- * Version: 1.26
+ * Version: 1.27
  * Date: August 2026
  * Authority: Project Principal · SOVEREIGN Platform Governance Authority
  * Status: APPROVED — Session 1 governance record
@@ -18,6 +18,37 @@
  *   4. Assessment of impact on all six product modules
  *
  * Changelog:
+ *   v1.27 (August 4, 2026) — GD-34 (Cost Telemetry Depth — F1/F2/F3/F6b from Session 86
+ *                       cost-tracking reflection, approved by the Project Principal August 4,
+ *                       2026, this session). FOUR additive changes, all scoped to
+ *                       SovereignLogEvent optional fields — no new event types, no new
+ *                       HumanDecisionType, no new AgentClass, no new SovereignProduct,
+ *                       no new SovereignRole, no new shell context export. (1) Added
+ *                       `fallback_category?` to SovereignLogEvent (FALLBACK_ACTIVATED events
+ *                       only) — typed discriminant ("auth_failure" | "rate_limited" |
+ *                       "server_error" | "timeout" | "provider_unresolved" | "network_or_parse")
+ *                       derived from the already-available AnthropicAPIError.status field, so
+ *                       Session 85's credential failure surfaces immediately as
+ *                       "auth_failure" without curl. (2) Added `duration_ms?: number` to
+ *                       the token_usage block — wall-clock ms of the live provider call,
+ *                       computed as performance.now() delta in base-client._wrapResponse.
+ *                       (3) Added `stop_reason?: string` to the token_usage block —
+ *                       forwarded from the Anthropic wire response, enabling "max_tokens"
+ *                       truncation detection in the Cost Dashboard. (4) Added
+ *                       `responded_at?: string` to the token_usage block — forwards the
+ *                       already-present sovereign_metadata.responded_at timestamp so the
+ *                       Cost Dashboard can answer "when did this cost happen?" without
+ *                       parsing sovereign_metadata. Impact assessment: NO HumanDecisionType
+ *                       change. NO SovereignEventType change. NO AgentClass change. NO
+ *                       SovereignRole / SovereignProduct change. sovereign-api-client/src/
+ *                       types.ts NOT affected (copies only SovereignProduct / SovereignTier /
+ *                       ClearanceLevel — none changed). MODULE-LOADER and VALID_AGENT_CLASSES:
+ *                       not touched. sovereign_logger.py APPROVED_* lists: not touched.
+ *                       Standing Constraint #7 (export count): NOT incremented — widens
+ *                       SovereignLogEvent, not a new context member. All four changes are
+ *                       absent-when-not-live (token_usage is only present on live calls,
+ *                       fallback_category only on FALLBACK_ACTIVATED). Both shell-contract
+ *                       copies SHA-256 re-verified identical at v1.27.
  *   v1.26 (August 3, 2026) — GD-33 (Program & Staff Data Foundation, Phase 1+2, approved by
  *                       the Project Principal August 2, 2026, per docs/35). ONE change: added
  *                       optional `reports_to?: string` field to `SovereignUser` (Section 1).
@@ -800,11 +831,22 @@ export interface SovereignLogEvent {
   // GD-31 (v1.25) — AGENT_STEP_COMPLETE events only. Real usage from the model provider
   // response. Present only when a live call actually occurred; absent (never zero) when
   // FALLBACK_ACTIVATED served the response instead, since no live usage exists to report.
+  // GD-34 (v1.27) — extended with duration_ms, stop_reason, responded_at (same live-only guard).
   token_usage?: {
     input_tokens: number;
     output_tokens: number;
     estimated_cost_usd?: number;
+    /** GD-34 (v1.27) — wall-clock ms of the live provider call. */
+    duration_ms?: number;
+    /** GD-34 (v1.27) — provider stop reason (e.g. "end_turn", "max_tokens"). */
+    stop_reason?: string;
+    /** GD-34 (v1.27) — ISO 8601 timestamp when the provider responded (forwarded from sovereign_metadata). */
+    responded_at?: string;
   };
+  // GD-34 (v1.27) — FALLBACK_ACTIVATED events only. Typed failure category derived from
+  // AnthropicAPIError.status / error name so the Cost Dashboard can surface
+  // "Auth failures: N" rather than a raw count (Session 85 gap closed).
+  fallback_category?: "auth_failure" | "rate_limited" | "server_error" | "timeout" | "provider_unresolved" | "network_or_parse";
 }
 
 // ------------------------------------------------------------

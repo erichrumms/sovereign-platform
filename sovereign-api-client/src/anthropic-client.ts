@@ -337,7 +337,7 @@ export class AnthropicClient extends BaseSovereignClient {
    */
   private _parseResponse(
     responseText: string
-  ): { content: string; usage: { input_tokens: number; output_tokens: number } } {
+  ): { content: string; stop_reason?: string; usage: { input_tokens: number; output_tokens: number } } {
     let parsed: AnthropicResponse;
     try {
       parsed = JSON.parse(responseText) as AnthropicResponse;
@@ -367,6 +367,7 @@ export class AnthropicClient extends BaseSovereignClient {
 
     return {
       content,
+      stop_reason: parsed.stop_reason || undefined,
       usage: {
         input_tokens: parsed.usage?.input_tokens ?? 0,
         output_tokens: parsed.usage?.output_tokens ?? 0,
