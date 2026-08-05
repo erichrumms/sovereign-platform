@@ -134,6 +134,22 @@ describe("NexusApp", () => {
     });
   });
 
+  it("Gate 2: a Logger throw on AGENT_STEP_START aborts the travelDrafter and surfaces draftStatus error (fail-closed)", async () => {
+    // Throw only when the drafter emits — let decideTravel's HUMAN_DECISION pass normally.
+    const ctx = makeCtx({
+      logFn: (ev) => {
+        if (ev.agent_id === "tt.travel-drafter") throw new Error("simulated drafter logger failure");
+      },
+    });
+    render(<NexusApp ctx={ctx} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Travel & Time Queue" }));
+    fireEvent.click(screen.getByTestId("tt-approve-SYNTH-TR-102"));
+    await waitFor(() => {
+      expect(screen.getByTestId("tt-draft-error-SYNTH-TR-102")).toBeInTheDocument();
+    });
+    expect(screen.getByTestId("tt-draft-error-SYNTH-TR-102").textContent).toContain("CPMI-VRS Gate 2");
+  });
+
   it("refuses a CUI intake (GD-10) and shows the boundary message", () => {
     const logSink: SovereignLogEvent[] = [];
     render(<NexusApp ctx={makeCtx({ logSink })} />);

@@ -126,17 +126,25 @@ export function NexusApp({ ctx, travelDrafterComplete }: NexusAppProps): JSX.Ele
         };
 
         // Gate 2: AGENT_STEP_START. A failed emit aborts (fail-closed, Constraint #6).
-        ctx.logger.log({
-          event_type: "AGENT_STEP_START",
-          workflow_step_id: wsid,
-          sovereign_tier: "standard",
-          product: "SCRIBE",
-          actor_id: actorId,
-          agent_id: TT_TRAVEL_DRAFTER,
-          agent_class: "Operational",
-          outcome: "tt_travel_draft_started",
-          payload: { request_id: request.request_id, routing_tier: finding.routing_tier },
-        });
+        try {
+          ctx.logger.log({
+            event_type: "AGENT_STEP_START",
+            workflow_step_id: wsid,
+            sovereign_tier: "standard",
+            product: "SCRIBE",
+            actor_id: actorId,
+            agent_id: TT_TRAVEL_DRAFTER,
+            agent_class: "Operational",
+            outcome: "tt_travel_draft_started",
+            payload: { request_id: request.request_id, routing_tier: finding.routing_tier },
+          });
+        } catch (err) {
+          throw new Error(
+            `Logger emission failed — TT travel draft halted (CPMI-VRS Gate 2): ${
+              err instanceof Error ? err.message : String(err)
+            }`
+          );
+        }
 
         const deps: TTDraftDeps = {
           complete:
@@ -155,32 +163,40 @@ export function NexusApp({ ctx, travelDrafterComplete }: NexusAppProps): JSX.Ele
         const result = await runTTDraft(input, TT_TRAVEL_DRAFTING_SYSTEM_PROMPT, requestContext, deps);
         const fellBack = result.tier !== "live";
 
-        if (fellBack) {
+        // Gate 2: FALLBACK_ACTIVATED (if degraded) + AGENT_STEP_COMPLETE. A failed emit aborts.
+        try {
+          if (fellBack) {
+            ctx.logger.log({
+              event_type: "FALLBACK_ACTIVATED",
+              workflow_step_id: wsid,
+              sovereign_tier: "standard",
+              product: "SCRIBE",
+              actor_id: actorId,
+              agent_id: TT_TRAVEL_DRAFTER,
+              agent_class: "Operational",
+              outcome: `tt_travel_draft_fallback_${result.tier}`,
+              payload: { tier: result.tier, detail: result.detail },
+            });
+          }
           ctx.logger.log({
-            event_type: "FALLBACK_ACTIVATED",
+            event_type: "AGENT_STEP_COMPLETE",
             workflow_step_id: wsid,
             sovereign_tier: "standard",
             product: "SCRIBE",
             actor_id: actorId,
             agent_id: TT_TRAVEL_DRAFTER,
             agent_class: "Operational",
-            outcome: `tt_travel_draft_fallback_${result.tier}`,
-            payload: { tier: result.tier, detail: result.detail },
+            outcome: "tt_travel_draft_complete",
+            payload: { request_id: request.request_id, tier: result.tier, communication_type: result.draft.communication_type },
+            ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
           });
+        } catch (err) {
+          throw new Error(
+            `Logger emission failed — TT travel draft halted (CPMI-VRS Gate 2): ${
+              err instanceof Error ? err.message : String(err)
+            }`
+          );
         }
-
-        ctx.logger.log({
-          event_type: "AGENT_STEP_COMPLETE",
-          workflow_step_id: wsid,
-          sovereign_tier: "standard",
-          product: "SCRIBE",
-          actor_id: actorId,
-          agent_id: TT_TRAVEL_DRAFTER,
-          agent_class: "Operational",
-          outcome: "tt_travel_draft_complete",
-          payload: { request_id: request.request_id, tier: result.tier, communication_type: result.draft.communication_type },
-          ...(result.usage ? { token_usage: { ...result.usage, estimated_cost_usd: computeEstimatedCostUSD(SOVEREIGN_DEFAULT_MODEL, result.usage.input_tokens, result.usage.output_tokens) } } : {}),
-        });
 
         return { draft: result.draft, tier: result.tier };
       },

@@ -19,6 +19,8 @@ export interface CtxOverrides {
   logSink?: SovereignLogEvent[];
   /** When true, ctx.logger.log throws — exercises the Gate-2 failure path. */
   throwOnLog?: boolean;
+  /** Custom logger function — overrides logSink/throwOnLog entirely for targeted Gate-2 tests. */
+  logFn?: (event: SovereignLogEvent) => void;
 }
 
 function createNoopWorkQueueSurface(): WorkQueueSurface {
@@ -54,6 +56,7 @@ export function makeCtx(over: CtxOverrides = {}): SovereignShellContext {
     },
     logger: {
       log: (event: SovereignLogEvent) => {
+        if (over.logFn) { over.logFn(event); return; }
         if (over.throwOnLog) throw new Error("simulated logger failure");
         over.logSink?.push(event);
       },

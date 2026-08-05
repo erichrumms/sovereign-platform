@@ -19,7 +19,6 @@ import { publishModuleSurfacesAtStartup } from "../../sovereign-shell/src/startu
 import { resetVigilApprovalSessionForTests } from "../../module-vigil/src/vigil-approval-session";
 import { CLEAR_DEMO_ITEM_COUNT } from "../../module-aria/src/ClearCertificationQueue";
 import { DEMO_TT_REVIEW_ITEMS } from "../../module-scribe/src/tt-synthetic-review";
-import { SYNTH_PPBE_PROGRAMS } from "@sovereign/data";
 import {
   markScribeItemSent,
   resetScribeSessionForTests,
