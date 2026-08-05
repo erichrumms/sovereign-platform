@@ -243,12 +243,16 @@ export interface ClientLogger {
 /**
  * No-op logger — used when no logger is injected (e.g., unit tests that
  * are testing fallback logic only). Writes to console in non-production
- * environments so events are not silently swallowed during development.
+ * Node.js environments so events are not silently swallowed during development.
+ * Silent in browser environments (process is undefined) and in production
+ * (NODE_ENV === "production"). sovereign-api-client compiles as CommonJS
+ * (module: commonjs), where import.meta is invalid — env check uses process.env
+ * with a typeof guard, the same pattern as ollama-endpoint.ts in this package.
  */
 export class ConsoleClientLogger implements ClientLogger {
   log(event: Parameters<ClientLogger["log"]>[0]): void {
     const env = typeof process !== "undefined" ? process.env : undefined;
-    if (env?.["NODE_ENV"] !== "production") {
+    if (env && env["NODE_ENV"] !== "production") {
       console.warn("[SOVEREIGN base-client]", event.event_type, event.payload);
     }
   }
@@ -358,15 +362,6 @@ export abstract class BaseSovereignClient {
       const isTimeout = err instanceof SovereignTimeoutError;
       const reason = isTimeout ? "timeout" : "provider_error";
       const detail = err instanceof Error ? err.message : String(err);
-
-      // SOVEREIGN_CLIENT_DEBUG=1 — temporary diagnostic gate (Session 36).
-      // Remove after live-call failure is diagnosed.
-      const debugEnv = typeof process !== "undefined" ? process.env : undefined;
-      if (debugEnv?.["SOVEREIGN_CLIENT_DEBUG"]) {
-        console.log(
-          `[SOVEREIGN DEBUG] complete() tier-1 catch: reason=${reason} detail=${detail}`
-        );
-      }
 
       this.logger.log({
         event_type: "FALLBACK_ACTIVATED",

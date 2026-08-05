@@ -537,6 +537,60 @@ describe("default config values", () => {
 });
 
 // ============================================================
+// TESTS — ConsoleClientLogger production guard
+// ============================================================
+
+describe("ConsoleClientLogger — NODE_ENV production guard", () => {
+  test("does not call console.warn when NODE_ENV is production", () => {
+    const saved = process.env["NODE_ENV"];
+    process.env["NODE_ENV"] = "production";
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const logger = new ConsoleClientLogger();
+    logger.log({
+      event_type: "FALLBACK_ACTIVATED",
+      workflow_step_id: "WF-PROD-001",
+      product: "NEXUS",
+      actor_id: "test-agent",
+      outcome: "test",
+      payload: {},
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+    if (saved !== undefined) {
+      process.env["NODE_ENV"] = saved;
+    } else {
+      delete process.env["NODE_ENV"];
+    }
+  });
+
+  test("calls console.warn when NODE_ENV is not production", () => {
+    const saved = process.env["NODE_ENV"];
+    process.env["NODE_ENV"] = "development";
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const logger = new ConsoleClientLogger();
+    logger.log({
+      event_type: "FALLBACK_ACTIVATED",
+      workflow_step_id: "WF-DEV-001",
+      product: "NEXUS",
+      actor_id: "test-agent",
+      outcome: "test",
+      payload: {},
+    });
+    expect(warnSpy).toHaveBeenCalledWith(
+      "[SOVEREIGN base-client]",
+      "FALLBACK_ACTIVATED",
+      {}
+    );
+    warnSpy.mockRestore();
+    if (saved !== undefined) {
+      process.env["NODE_ENV"] = saved;
+    } else {
+      delete process.env["NODE_ENV"];
+    }
+  });
+});
+
+// ============================================================
 // TESTS — Browser environment safety (process undefined)
 // ============================================================
 
@@ -567,6 +621,21 @@ describe("browser environment safety — process undefined", () => {
         payload: {},
       })
     ).not.toThrow();
+  });
+
+  test("ConsoleClientLogger.log() does not call console.warn when process is undefined (browser fix)", () => {
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const logger = new ConsoleClientLogger();
+    logger.log({
+      event_type: "FALLBACK_ACTIVATED",
+      workflow_step_id: "WF-BROWSER-002",
+      product: "NEXUS",
+      actor_id: "test-agent",
+      outcome: "test",
+      payload: {},
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
   });
 
   test("complete() degrades to static fallback without throwing when process is undefined", async () => {
