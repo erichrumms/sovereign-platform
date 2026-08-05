@@ -70,7 +70,7 @@ class TestClient extends BaseSovereignClient {
   private _providerImpl: (
     messages: SovereignMessage[],
     headers: Record<string, string>
-  ) => Promise<{ content: string; usage?: { input_tokens: number; output_tokens: number } }>;
+  ) => Promise<{ content: string; stop_reason?: string; usage?: { input_tokens: number; output_tokens: number } }>;
 
   constructor(
     config: BaseClientConfig,
@@ -444,6 +444,89 @@ describe("logger event correctness", () => {
 
     const events = logger.eventsOfType("FALLBACK_ACTIVATED");
     expect(events.every((e) => e.workflow_step_id === "WF-LOGGER-TEST")).toBe(true);
+  });
+});
+
+// ============================================================
+// TESTS — Failure Categorization (F1 / GD-34)
+// ============================================================
+
+describe("failure categorization (FALLBACK_ACTIVATED fallback_category)", () => {
+  function makeStatusFailProvider(status: number) {
+    return async (): Promise<never> => {
+      const err = new Error("API error") as Error & { status: number };
+      err.status = status;
+      throw err;
+    };
+  }
+
+  function makeGovCloudFailProvider() {
+    return async (): Promise<never> => {
+      const err = new Error("GovCloud not yet resolved");
+      err.name = "GovCloudNotYetResolvedException";
+      throw err;
+    };
+  }
+
+  test("generic Error produces fallback_category: network_or_parse", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(BASE_CONFIG, logger, new NullFallbackCache(), makeFailProvider());
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event).toBeDefined();
+    expect(event.fallback_category).toBe("network_or_parse");
+    expect(event.payload["fallback_category"]).toBe("network_or_parse");
+  });
+
+  test("status 401 produces fallback_category: auth_failure", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(BASE_CONFIG, logger, new NullFallbackCache(), makeStatusFailProvider(401));
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event?.fallback_category).toBe("auth_failure");
+  });
+
+  test("status 429 produces fallback_category: rate_limited", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(BASE_CONFIG, logger, new NullFallbackCache(), makeStatusFailProvider(429));
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event?.fallback_category).toBe("rate_limited");
+  });
+
+  test("status 503 produces fallback_category: server_error", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(BASE_CONFIG, logger, new NullFallbackCache(), makeStatusFailProvider(503));
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event?.fallback_category).toBe("server_error");
+  });
+
+  test("GovCloudNotYetResolvedException produces fallback_category: provider_unresolved", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(BASE_CONFIG, logger, new NullFallbackCache(), makeGovCloudFailProvider());
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event?.fallback_category).toBe("provider_unresolved");
+  });
+
+  test("timeout produces fallback_category: timeout", async () => {
+    const logger = new SpyLogger();
+    const client = new TestClient(
+      { ...BASE_CONFIG, timeout_ms: 50 },
+      logger,
+      new NullFallbackCache(),
+      makeSlowProvider(300)
+    );
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const event = logger.eventsOfType("FALLBACK_ACTIVATED")[0];
+    expect(event?.fallback_category).toBe("timeout");
   });
 });
 

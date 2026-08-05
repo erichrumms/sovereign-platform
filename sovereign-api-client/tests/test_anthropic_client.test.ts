@@ -377,6 +377,13 @@ describe("response parsing", () => {
     expect(response.usage).toEqual({ input_tokens: 42, output_tokens: 17 });
   });
 
+  test("stop_reason is forwarded from wire response", async () => {
+    mockFetchSuccess("Analysis complete.");
+    const client = new AnthropicClient(BASE_CONFIG);
+    const response = await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+    expect(response.stop_reason).toBe("end_turn");
+  });
+
   test("concatenates multiple text blocks", async () => {
     const body = JSON.stringify({
       id: "msg_multi",
