@@ -115,6 +115,11 @@ export interface ScenarioOutcome {
   report: PPBEScenarioReport;
   tier: ScenarioTier;
   detail?: string;
+  /** GD-35 (F5) — live-tier fields forwarded to the hook for Logger token_usage emission. */
+  usage?: { input_tokens: number; output_tokens: number };
+  duration_ms?: number;
+  stop_reason?: string;
+  responded_at?: string;
 }
 
 export interface ScenarioDeps {
@@ -339,7 +344,7 @@ export async function runScenarioAnalysis(
     const response = await deps.complete(buildScenarioMessages(input, systemPrompt), requestContext);
     if (!response.fallback_activated) {
       const report = parseScenarioReport(response.content, input.programs);
-      if (report) return { report, tier: "live" };
+      if (report) return { report, tier: "live", usage: response.usage, duration_ms: response.duration_ms, stop_reason: response.stop_reason, responded_at: response.sovereign_metadata?.responded_at };
       detail = "live_response_not_surfaceable";
     } else {
       detail = `api_client_fallback_${response.fallback_tier}`;

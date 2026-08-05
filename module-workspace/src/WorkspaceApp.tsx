@@ -777,7 +777,9 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
 
       {/* Coverage statement — grounded in GD-31 Build Session 1 actual facts. */}
       <div style={costCoverageStyle} data-testid="cost-coverage-disclosure">
-        Coverage (GD-31): all 10 in-scope AGENT_STEP_COMPLETE emission sites are instrumented.
+        Coverage (GD-31 / GD-35): all 14 in-scope AGENT_STEP_COMPLETE emission sites are
+        instrumented. The 4 PPBE advisory panels (ppbe-exhibit-drafter, ppbe-coordination-assistant,
+        ppbe-evidence-synthesizer, ppbe-scenario-analyst) were added in GD-35 (Session 88).
         The 5 excluded sites (tracer-integration, security-query, 2 NEXUS deterministic
         engines, counsel REASONING_STEP_COMPLETE) do not call the model — they have no token
         usage to report. This session total is complete. GovCloud live-call cost estimates are

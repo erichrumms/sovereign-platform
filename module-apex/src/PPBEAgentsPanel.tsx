@@ -19,105 +19,50 @@
  * Version: 1.0 · Session 38 · July 16, 2026
  */
 
-import { useState, type CSSProperties } from "react";
-
-import { createSovereignClient } from "@sovereign/api-client";
-import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
+import { type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  runEvidenceSynthesis,
   PPBE_ADVISORY_LABEL,
-  PPBE_EVIDENCE_SYNTHESIZER_AGENT_ID,
-  synthesisWorkflowStep,
   type EvidenceSynthesisInput,
-  type SynthesisOutcome,
 } from "./ppbe-evidence-synthesizer";
 import {
-  runScenarioAnalysis,
   PPBE_SCENARIO_LABEL,
-  PPBE_SCENARIO_ANALYST_AGENT_ID,
-  scenarioWorkflowStep,
   type ScenarioAnalysisInput,
-  type ScenarioOutcome,
 } from "./ppbe-scenario-analyst";
 import { createSyntheticApexDataAdapter } from "./apex-data-adapter";
-import { readAnthropicKey } from "./anthropic-key";
 import type { PPBEDashboardInputs } from "./ppbe-dashboard";
+import { usePPBEEvidenceSynthesis } from "./usePPBEEvidenceSynthesis";
+import { usePPBEScenarioAnalysis } from "./usePPBEScenarioAnalysis";
 
-import evidencePromptRaw from "../../ppbe/prompts/evidence_synthesis_system.md?raw";
-import scenarioPromptRaw from "../../ppbe/prompts/scenario_analysis_system.md?raw";
-
-const EVIDENCE_SYSTEM_PROMPT = evidencePromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
-const SCENARIO_SYSTEM_PROMPT = scenarioPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
 const FISCAL_CONTEXT = "FY 2026 Q3 — Execution Monitoring";
-
-type AgentStatus = "idle" | "running" | "done";
 
 export interface PPBEAgentsPanelProps {
   ctx: SovereignShellContext;
   inputs: PPBEDashboardInputs;
 }
 
-function makeComplete(): (messages: SovereignMessage[], reqCtx: SovereignRequestContext) => Promise<SovereignLLMResponse> {
-  return async (messages, reqCtx) => {
-    const client = createSovereignClient({ tier: "standard" }, { api_key_anthropic: readAnthropicKey() });
-    return client.complete(messages, reqCtx);
-  };
-}
-
-export function PPBEAgentsPanel({ ctx: _ctx, inputs }: PPBEAgentsPanelProps): JSX.Element {
+export function PPBEAgentsPanel({ ctx, inputs }: PPBEAgentsPanelProps): JSX.Element {
   const apexPrograms = createSyntheticApexDataAdapter().listPrograms();
 
-  const [synthStatus, setSynthStatus] = useState<AgentStatus>("idle");
-  const [synthOutcome, setSynthOutcome] = useState<SynthesisOutcome | null>(null);
+  const { status: synthStatus, outcome: synthOutcome, error: synthError, run: runSynthesisHook } = usePPBEEvidenceSynthesis(ctx);
+  const { status: scenStatus, outcome: scenOutcome, error: scenError, run: runScenarioHook } = usePPBEScenarioAnalysis(ctx);
 
-  const [scenStatus, setScenStatus] = useState<AgentStatus>("idle");
-  const [scenOutcome, setScenOutcome] = useState<ScenarioOutcome | null>(null);
-
-  async function runSynthesis(): Promise<void> {
-    setSynthStatus("running");
-    try {
-      const evidenceInput: EvidenceSynthesisInput = {
-        findings: inputs.findings,
-        programs: apexPrograms,
-        fiscal_context: FISCAL_CONTEXT,
-      };
-      const wsid = synthesisWorkflowStep(evidenceInput);
-      const reqCtx: SovereignRequestContext = {
-        workflow_step_id: wsid,
-        product: "APEX",
-        agent_id: PPBE_EVIDENCE_SYNTHESIZER_AGENT_ID,
-        tier: "standard",
-      };
-      const outcome = await runEvidenceSynthesis(evidenceInput, EVIDENCE_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
-      setSynthOutcome(outcome);
-      setSynthStatus("done");
-    } catch {
-      setSynthStatus("idle");
-    }
+  function runSynthesis(): void {
+    const evidenceInput: EvidenceSynthesisInput = {
+      findings: inputs.findings,
+      programs: apexPrograms,
+      fiscal_context: FISCAL_CONTEXT,
+    };
+    void runSynthesisHook(evidenceInput);
   }
 
-  async function runScenario(): Promise<void> {
-    setScenStatus("running");
-    try {
-      const scenInput: ScenarioAnalysisInput = {
-        programs: inputs.programs,
-        fiscal_context: FISCAL_CONTEXT,
-      };
-      const wsid = scenarioWorkflowStep(scenInput);
-      const reqCtx: SovereignRequestContext = {
-        workflow_step_id: wsid,
-        product: "APEX",
-        agent_id: PPBE_SCENARIO_ANALYST_AGENT_ID,
-        tier: "standard",
-      };
-      const outcome = await runScenarioAnalysis(scenInput, SCENARIO_SYSTEM_PROMPT, reqCtx, { complete: makeComplete() });
-      setScenOutcome(outcome);
-      setScenStatus("done");
-    } catch {
-      setScenStatus("idle");
-    }
+  function runScenario(): void {
+    const scenInput: ScenarioAnalysisInput = {
+      programs: inputs.programs,
+      fiscal_context: FISCAL_CONTEXT,
+    };
+    void runScenarioHook(scenInput);
   }
 
   return (
@@ -149,6 +94,8 @@ export function PPBEAgentsPanel({ ctx: _ctx, inputs }: PPBEAgentsPanelProps): JS
         >
           {synthStatus === "running" ? "Running…" : "Run Evidence Synthesis"}
         </button>
+
+        {synthError && <p style={errorStyle}>{synthError}</p>}
 
         {synthOutcome && (
           <div style={outputStyle} data-testid="ppbe-evidence-synthesis-output">
@@ -185,6 +132,8 @@ export function PPBEAgentsPanel({ ctx: _ctx, inputs }: PPBEAgentsPanelProps): JS
         >
           {scenStatus === "running" ? "Running…" : "Run Scenario Analysis"}
         </button>
+
+        {scenError && <p style={errorStyle}>{scenError}</p>}
 
         {scenOutcome && (
           <div style={outputStyle} data-testid="ppbe-scenario-analysis-output">
@@ -238,6 +187,10 @@ const advisoryStyle: CSSProperties = {
 };
 const staticNoteStyle: CSSProperties = {
   margin: "6px 0 0", padding: "6px 8px", background: "#fef2f2", borderRadius: 4,
+  fontSize: 11, color: "#7f1d1d", border: "1px solid #fecaca",
+};
+const errorStyle: CSSProperties = {
+  margin: "8px 0 0", padding: "6px 8px", background: "#fef2f2", borderRadius: 4,
   fontSize: 11, color: "#7f1d1d", border: "1px solid #fecaca",
 };
 const btnStyle: CSSProperties = {

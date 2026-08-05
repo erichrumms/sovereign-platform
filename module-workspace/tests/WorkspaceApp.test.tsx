@@ -441,13 +441,13 @@ describe("WorkspaceApp Cost Dashboard (GD-32 / docs/32)", () => {
     expect(disclosure).toHaveTextContent(/in-memory/i);
   });
 
-  it("shows the GD-31 coverage disclosure grounded in actual facts (10 in-scope sites, 5 excluded)", () => {
+  it("shows the GD-31/GD-35 coverage disclosure grounded in actual facts (14 in-scope sites, 5 excluded)", () => {
     render(<WorkspaceApp ctx={makeCtx({ role: "SYSTEM_ADMIN" })} />);
     fireEvent.click(tab(/Cost Dashboard/));
     const coverage = screen.getByTestId("cost-coverage-disclosure");
     expect(coverage).toBeInTheDocument();
     expect(coverage).toHaveTextContent(/GD-31/);
-    expect(coverage).toHaveTextContent(/10 in-scope/);
+    expect(coverage).toHaveTextContent(/14 in-scope/);
   });
 
   it("shows honest empty state when no agent steps have been recorded this session", () => {

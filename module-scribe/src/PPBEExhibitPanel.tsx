@@ -18,10 +18,7 @@
  * Version: 1.0 · Session 38 · July 16, 2026
  */
 
-import { useState, useRef, type CSSProperties, type JSX } from "react";
-
-import { createSovereignClient } from "@sovereign/api-client";
-import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
+import { useState, type CSSProperties, type JSX } from "react";
 
 import { SYNTH_PPBE_PROGRAMS, SYNTH_PPBE_OBLIGATIONS, SYNTH_PPBE_FINDINGS } from "@sovereign/data";
 import type { ObligationRecord } from "@sovereign/data";
@@ -29,24 +26,14 @@ import type { SovereignShellContext } from "../../sovereign-shell/shell-contract
 import { formatCurrency } from "../../sovereign-shell/src/format-currency";
 
 import {
-  runExhibitDraft,
-  exhibitWorkflowStepId,
   type ExhibitDraftInput,
-  type ExhibitDraftOutcome,
 } from "./ppbe-exhibit-engine";
 import {
   PPBE_DOCUMENT_MODES,
   PPBE_DOCUMENT_MODE_NAMES,
-  PPBE_EXHIBIT_DRAFTER,
   type PPBEDocumentMode,
 } from "./ppbe-exhibit-contract";
-import { readAnthropicKey } from "./anthropic-key";
-
-import exhibitPromptRaw from "../../ppbe/prompts/exhibit_drafting_system.md?raw";
-
-const EXHIBIT_SYSTEM_PROMPT = exhibitPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
-
-type AgentStatus = "idle" | "running" | "done";
+import { usePPBEExhibitDraft } from "./usePPBEExhibitDraft";
 
 // ─── Cost-code aggregation (D2b — WH-15) ────────────────────────────────────
 
@@ -140,46 +127,22 @@ export interface PPBEExhibitPanelProps {
   ctx: SovereignShellContext;
 }
 
-export function PPBEExhibitPanel({ ctx: _ctx }: PPBEExhibitPanelProps): JSX.Element {
+export function PPBEExhibitPanel({ ctx }: PPBEExhibitPanelProps): JSX.Element {
   const [mode, setMode] = useState<PPBEDocumentMode>("BUDGET_EXHIBIT");
-  const [status, setStatus] = useState<AgentStatus>("idle");
-  const [outcome, setOutcome] = useState<ExhibitDraftOutcome | null>(null);
-
-  const cacheRef = useRef(new Map<string, ExhibitDraftOutcome["draft"]>());
+  const { status, outcome, error, run } = usePPBEExhibitDraft(ctx);
 
   if (!DEMO_PROGRAM) {
     return <p style={mutedStyle}>No seeded PPBE programs available.</p>;
   }
 
-  async function runDraft(): Promise<void> {
-    setStatus("running");
-    setOutcome(null);
-
+  function runDraft(): void {
     const input: ExhibitDraftInput = {
       mode,
       program: DEMO_PROGRAM,
       obligations: DEMO_OBLIGATIONS,
       findings: mode === "EVALUATION_REPORT" ? DEMO_FINDINGS : [],
     };
-    const wsid = exhibitWorkflowStepId(input);
-    const reqCtx: SovereignRequestContext = {
-      workflow_step_id: wsid,
-      product: "SCRIBE",
-      agent_id: PPBE_EXHIBIT_DRAFTER,
-      tier: "standard",
-    };
-    const complete = (messages: SovereignMessage[], rc: SovereignRequestContext): Promise<SovereignLLMResponse> => {
-      const client = createSovereignClient({ tier: "standard" }, { api_key_anthropic: readAnthropicKey() });
-      return client.complete(messages, rc);
-    };
-
-    const result = await runExhibitDraft(input, EXHIBIT_SYSTEM_PROMPT, reqCtx, {
-      complete,
-      cacheGet: (key) => cacheRef.current.get(key) ?? null,
-      cacheSet: (key, value) => { cacheRef.current.set(key, value); },
-    });
-    setOutcome(result);
-    setStatus("done");
+    void run(input);
   }
 
   return (
@@ -220,6 +183,8 @@ export function PPBEExhibitPanel({ ctx: _ctx }: PPBEExhibitPanelProps): JSX.Elem
         {DEMO_OBLIGATIONS.length} obligation{DEMO_OBLIGATIONS.length !== 1 ? "s" : ""} ·{" "}
         {DEMO_FINDINGS.length} finding{DEMO_FINDINGS.length !== 1 ? "s" : ""}
       </p>
+
+      {error && <p style={errorStyle}>{error}</p>}
 
       {outcome && (
         <div style={outputStyle} data-testid="ppbe-exhibit-draft-output">
@@ -313,6 +278,7 @@ const figTdStyle: CSSProperties = {
   fontSize: 12,
 };
 const mutedStyle: CSSProperties = { margin: 0, fontSize: 13, color: "#64748b" };
+const errorStyle: CSSProperties = { margin: "8px 0 0", padding: "6px 8px", background: "#fef2f2", borderRadius: 4, fontSize: 11, color: "#7f1d1d", border: "1px solid #fecaca" };
 const btnStyle: CSSProperties = {
   padding: "6px 14px", borderRadius: 6, border: "1px solid #0c4a6e",
   background: "#0c4a6e", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600,

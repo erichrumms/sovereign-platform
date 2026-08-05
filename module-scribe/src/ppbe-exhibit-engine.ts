@@ -65,6 +65,11 @@ export interface ExhibitDraftOutcome {
   tier: PPBEExhibitTier;
   /** Why a fallback tier was used, when applicable (for the Logger payload). */
   detail?: string;
+  /** GD-35 (F5) — live-tier fields forwarded to the hook for Logger token_usage emission. */
+  usage?: { input_tokens: number; output_tokens: number };
+  duration_ms?: number;
+  stop_reason?: string;
+  responded_at?: string;
 }
 
 /** Injected dependencies — the hook wires these to sovereign-api-client + a session cache. */
@@ -245,7 +250,7 @@ export async function runExhibitDraft(
       const parsed = parseExhibitDraft(response.content, input.mode, refs);
       if (parsed) {
         deps.cacheSet(key, parsed);
-        return { draft: parsed, tier: "live" };
+        return { draft: parsed, tier: "live", usage: response.usage, duration_ms: response.duration_ms, stop_reason: response.stop_reason, responded_at: response.sovereign_metadata?.responded_at };
       }
       detail = "live_response_failed_draft_validation";
     } else {

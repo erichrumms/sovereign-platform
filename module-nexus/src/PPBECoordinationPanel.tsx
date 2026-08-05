@@ -20,29 +20,17 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 
-import { createSovereignClient } from "@sovereign/api-client";
-import type { SovereignLLMResponse, SovereignMessage, SovereignRequestContext } from "@sovereign/api-client";
-
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  runCoordinationTracking,
   detectCoordinationFailures,
-  PPBE_COORDINATION_ASSISTANT_AGENT_ID,
   PPBE_COORDINATION_ADVISORY_LABEL,
-  type CoordinationOutcome,
 } from "./ppbe-coordination-assistant";
 import {
   SYNTH_PPBE_COORDINATION_ITEMS,
   SYNTH_PPBE_MEETING_NOTES,
 } from "./ppbe-synthetic-coordination";
-import { readAnthropicKey } from "../../module-scribe/src/anthropic-key";
-
-import coordinationPromptRaw from "../../ppbe/prompts/coordination_system.md?raw";
+import { usePPBECoordinationTracking } from "./usePPBECoordinationTracking";
 import { publishNexusWorkQueues } from "./nexus-work-queue-publisher";
-
-const COORDINATION_SYSTEM_PROMPT = coordinationPromptRaw.replace(/^<!--[\s\S]*?-->\s*/, "");
-
-type AgentStatus = "idle" | "running" | "done";
 
 export interface PPBECoordinationPanelProps {
   ctx: SovereignShellContext;
@@ -50,8 +38,7 @@ export interface PPBECoordinationPanelProps {
 
 export function PPBECoordinationPanel({ ctx }: PPBECoordinationPanelProps): JSX.Element {
   const [notes, setNotes] = useState(SYNTH_PPBE_MEETING_NOTES.trim());
-  const [status, setStatus] = useState<AgentStatus>("idle");
-  const [outcome, setOutcome] = useState<CoordinationOutcome | null>(null);
+  const { status, outcome, error, run } = usePPBECoordinationTracking(ctx);
 
   const asOfIso = "2026-07-16T12:00:00Z";
   const overdueCount = detectCoordinationFailures(SYNTH_PPBE_COORDINATION_ITEMS, asOfIso).length;
@@ -64,29 +51,8 @@ export function PPBECoordinationPanel({ ctx }: PPBECoordinationPanelProps): JSX.
     publishNexusWorkQueues(openItemCount, workQueueSurface, new Date().toISOString());
   }, [workQueueSurface, openItemCount]);
 
-  async function runTracking(): Promise<void> {
-    setStatus("running");
-    setOutcome(null);
-    const wsid = `ppbe-coordination-digest-${SYNTH_PPBE_COORDINATION_ITEMS.length}-items`;
-    const reqCtx: SovereignRequestContext = {
-      workflow_step_id: wsid,
-      product: "NEXUS",
-      agent_id: PPBE_COORDINATION_ASSISTANT_AGENT_ID,
-      tier: "standard",
-    };
-    const complete = (messages: SovereignMessage[], rc: SovereignRequestContext): Promise<SovereignLLMResponse> => {
-      const client = createSovereignClient({ tier: "standard" }, { api_key_anthropic: readAnthropicKey() });
-      return client.complete(messages, rc);
-    };
-    const result = await runCoordinationTracking(
-      { items: [...SYNTH_PPBE_COORDINATION_ITEMS], notes },
-      asOfIso,
-      COORDINATION_SYSTEM_PROMPT,
-      reqCtx,
-      { complete }
-    );
-    setOutcome(result);
-    setStatus("done");
+  function runTracking(): void {
+    void run({ items: [...SYNTH_PPBE_COORDINATION_ITEMS], notes }, asOfIso);
   }
 
   return (
@@ -140,6 +106,8 @@ export function PPBECoordinationPanel({ ctx }: PPBECoordinationPanelProps): JSX.
       >
         {status === "running" ? "Running…" : "Run Coordination Tracking"}
       </button>
+
+      {error && <p style={errorStyle}>{error}</p>}
 
       {outcome && (
         <div style={outputStyle} data-testid="ppbe-coordination-output">
@@ -219,6 +187,7 @@ const btnStyle: CSSProperties = {
   background: "#0c4a6e", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600,
 };
 const btnDisabledStyle: CSSProperties = { ...btnStyle, background: "#e2e8f0", borderColor: "#cbd5e1", color: "#94a3b8", cursor: "not-allowed" };
+const errorStyle: CSSProperties = { margin: "8px 0 0", padding: "6px 8px", background: "#fef2f2", borderRadius: 4, fontSize: 11, color: "#7f1d1d", border: "1px solid #fecaca" };
 
 function tierBadgeStyle(tier: string): CSSProperties {
   if (tier === "live") return { fontSize: 10, fontWeight: 700, color: "#065f46", padding: "2px 6px", borderRadius: 999, background: "#d1fae5" };
