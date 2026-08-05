@@ -321,7 +321,7 @@ export function generateStaffData(seed: number): StaffDataOutput {
       employee_id: team.supervisorId,
       name: SUPERVISOR_NAMES[i],
       org_unit: team.memberOrgUnit,
-      role: 'INDEPENDENT_REVIEWER',
+      role: 'SUPERVISOR',
       clearance_level: 'SECRET',
       cost_code_assignments: [...team.memberCostCodes],
       reports_to: SYNTH_PROJECT_PRINCIPAL_ID,

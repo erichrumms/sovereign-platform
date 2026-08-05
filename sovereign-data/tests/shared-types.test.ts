@@ -11,9 +11,11 @@ import {
 } from "../src/index";
 
 describe("runtime enum mirrors", () => {
-  it("SOVEREIGN_ROLES includes PLATFORM_ADMIN (GD-5) and has 8 members", () => {
+  it("SOVEREIGN_ROLES includes PLATFORM_ADMIN (GD-5), SUPERVISOR (docs/34 Phase 3), and has 9 members", () => {
     expect(SOVEREIGN_ROLES).toContain("PLATFORM_ADMIN");
-    expect(SOVEREIGN_ROLES).toHaveLength(8);
+    // docs/34 Phase 3, shell-contract v1.28 (Session 91) — SUPERVISOR added.
+    expect(SOVEREIGN_ROLES).toContain("SUPERVISOR");
+    expect(SOVEREIGN_ROLES).toHaveLength(9);
   });
 
   it("CLEARANCE_LEVELS has the four canonical levels in order", () => {

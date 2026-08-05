@@ -115,6 +115,18 @@ describe('staff-seed — supervisor structure', () => {
       expect(emp.reports_to).toMatch(/^SYNTH-E-4/);
     }
   });
+
+  it('all 8 supervisors carry role SUPERVISOR (docs/34 Phase 3, Session 91)', () => {
+    // Session 79 / GD-33 used INDEPENDENT_REVIEWER as a placeholder because SUPERVISOR
+    // did not exist in SovereignRole. Session 91 adds the role and reassigns here.
+    const supervisorEmployees = SYNTH_STAFF_EMPLOYEES.filter(
+      (e) => e.reports_to === SYNTH_PROJECT_PRINCIPAL_ID
+    );
+    expect(supervisorEmployees).toHaveLength(8);
+    for (const sup of supervisorEmployees) {
+      expect(sup.role).toBe('SUPERVISOR');
+    }
+  });
 });
 
 // ── Entity validation (DC-5) ──────────────────────────────────────────────────
