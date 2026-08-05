@@ -220,6 +220,19 @@ describe("auth header injection", () => {
     expect(headers["Content-Type"]).toBe("application/json");
   });
 
+  test("includes anthropic-dangerous-direct-browser-access header set to 'true' on every live request", async () => {
+    // Without this header Anthropic's API returns 400 on browser-originated CORS preflights.
+    // Confirmed absent from the codebase prior to Session 84; confirmed required by live
+    // browser diagnostics (Status code: 400 on preflight to api.anthropic.com/v1/messages).
+    mockFetchSuccess("ok");
+    const client = new AnthropicClient(BASE_CONFIG);
+    await client.complete(BASE_MESSAGES, BASE_CONTEXT);
+
+    const [, init] = (global.fetch as FetchMock).mock.calls[0];
+    const headers = init?.headers as Record<string, string>;
+    expect(headers["anthropic-dangerous-direct-browser-access"]).toBe("true");
+  });
+
   test("calls the correct Anthropic API URL", async () => {
     mockFetchSuccess("ok");
     const client = new AnthropicClient(BASE_CONFIG);

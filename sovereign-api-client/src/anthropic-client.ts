@@ -240,6 +240,13 @@ export class AnthropicClient extends BaseSovereignClient {
       "Content-Type": "application/json",
       "x-api-key": this.api_key,
       "anthropic-version": ANTHROPIC_API_VERSION,
+      // Required for browser-originated requests: Anthropic's API refuses any direct
+      // browser fetch without this header (400 CORS preflight failure). Trade-off: the
+      // x-api-key value above is visible to anyone who inspects the browser's Network
+      // panel. That is an accepted, deliberate risk for this local dev/demo environment.
+      // A real production deployment MUST NOT call Anthropic directly from the browser —
+      // route LLM calls through a backend proxy that holds the key server-side instead.
+      "anthropic-dangerous-direct-browser-access": "true",
     };
   }
 
