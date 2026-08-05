@@ -181,3 +181,29 @@ surface remains explicitly out of scope by direct decision, not an oversight.
 ---
 
 *docs/23 · July 30, 2026 append*
+
+---
+
+## Update — August 5, 2026: Section Count Correction (F3, Session 90)
+
+**The July 30 append above records six sections; the module has seven.** The July 30 account is accurate through Session 63 (five panels) and Session 58 (Activity & Decisions = six). What it could not anticipate: GD-32 (docs/32, Session 87) added the **Cost Dashboard** tab — a seventh section, gated to PLATFORM_ADMIN / SYSTEM_ADMIN, displaying token cost telemetry from GD-31/GD-34. The design principle held identically: a real, working component embedded directly, per-section role gating, no new governance mechanism.
+
+Current section inventory (seven, as of August 5, 2026):
+
+| Section | Source module | Decision component |
+|---|---|---|
+| VIGIL Approvals | VIGIL | `ApprovalDetail` |
+| ARIA Certifications | ARIA | `ClearCertificationQueue` |
+| SCRIBE T&T Reviews | SCRIBE | `TTManagerReview` |
+| NEXUS Travel | NEXUS | `TravelQueueRow` (WH-19, Session 63) |
+| FLOWPATH Review | FLOWPATH | `WorkflowArtifactReview` (WH-19, Session 63) |
+| Cost Dashboard | — (reads `ctx.logger`) | Cost telemetry display (GD-32, Session 87) |
+| Activity & Decisions | — (reads `ctx.logger`) | Decision history display (GD-28, Session 58) |
+
+**Verification:** Session 89 (August 5, 2026) confirmed the full seven-tab publish/remove contract working end to end (F1 finding). A permanent e2e convergence test for NEXUS Travel and FLOWPATH Review was added in Session 90 (F1 build).
+
+**Coverage gap (F1, Session 89) — now closed:** NEXUS Travel and FLOWPATH Review had no standing test coverage as of Session 89. The Session 90 F1 build adds `e2e/tests/nexus-flowpath-workspace-convergence.test.tsx` covering the six-check publish/remove/render/decision contract.
+
+---
+
+*docs/23 · August 5, 2026 append (F3, Session 90)*
