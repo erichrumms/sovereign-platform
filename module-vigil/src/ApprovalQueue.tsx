@@ -100,7 +100,7 @@ function RequestCard({
   // this is urgently near expiry regardless of risk class).
   const nearDeadline = !expired && remaining <= 15;
   return (
-    <li>
+    <li data-testid={`vigil-queue-request-${request.request_id}`}>
       <button
         type="button"
         onClick={() => onSelect(request.request_id)}
