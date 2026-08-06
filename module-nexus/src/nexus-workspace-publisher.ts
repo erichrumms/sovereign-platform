@@ -26,25 +26,25 @@ import type { SubmittedTravelItem } from "./useTTIntake";
 export const NEXUS_WORKSPACE_MODULE_ID = "nexus";
 
 /**
- * Publish the current set of pending travel items to the ReviewerWorkspaceSurface.
- * "Pending" = ROUTED (awaiting current-authority decision) or ESCALATED (sent to
- * senior authority, final APPROVED/DENIED not yet recorded). Both statuses represent
- * an open final outcome — this single computation drives the Workspace badge count and
- * the NEXUS Travel section together (Rule 11: one computation, reused).
- * Items that have reached a final outcome (APPROVED or DENIED) are reconciled out.
+ * Publish the current set of routed travel items to the ReviewerWorkspaceSurface.
+ * "Routed" = ROUTED only — items awaiting the current reviewer's APPROVE/DENY/ESCALATE
+ * decision. ESCALATED items are pending senior authority and carry no actionable path
+ * for the current reviewer (TravelQueueRow.decidable = request.status === "ROUTED" only).
+ * This single filter is the one computation that drives both the Workspace badge count and
+ * the rendered item set (Rule 11: one computation, reused). Items that have been decided
+ * (APPROVED, DENIED, ESCALATED) are reconciled out.
  */
 export function publishNexusTravelItems(
   items: readonly SubmittedTravelItem[],
   surface: ReviewerWorkspaceSurface,
   timestamp: string
 ): void {
-  // ROUTED = awaiting current-authority decision; ESCALATED = pending senior-authority
-  // decision. Both appear as "pending a final outcome" in NEXUS's own Travel queue.
-  const pending = items.filter(
-    (i) => i.request.status === "ROUTED" || i.request.status === "ESCALATED"
-  );
+  // Only ROUTED items are actionable by the current reviewer. ESCALATED items transfer
+  // to senior authority — they are visible in NEXUS's own queue but must not inflate
+  // the workspace badge or render as workspace items.
+  const routed = items.filter((i) => i.request.status === "ROUTED");
 
-  for (const item of pending) {
+  for (const item of routed) {
     surface.publish({
       module_id: NEXUS_WORKSPACE_MODULE_ID,
       item_id: item.request.request_id,
@@ -53,10 +53,10 @@ export function publishNexusTravelItems(
     });
   }
 
-  // Reconcile: remove anything published under "nexus" that is no longer pending.
-  const pendingIds = new Set(pending.map((i) => i.request.request_id));
+  // Reconcile: remove anything published under "nexus" that is no longer routed.
+  const routedIds = new Set(routed.map((i) => i.request.request_id));
   for (const existing of surface.listForModule(NEXUS_WORKSPACE_MODULE_ID)) {
-    if (!pendingIds.has(existing.item_id)) {
+    if (!routedIds.has(existing.item_id)) {
       surface.remove(NEXUS_WORKSPACE_MODULE_ID, existing.item_id);
     }
   }

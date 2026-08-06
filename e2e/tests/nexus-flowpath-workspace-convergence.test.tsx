@@ -6,12 +6,13 @@
  * (NEXUS Travel and FLOWPATH Review) — same structure as
  * reviewer-workspace-convergence.test.tsx (GD-25 / Session 50).
  *
- * Six checks, matching the temporary session89-seven-tab-verification.test.tsx
- * that proved these links on August 5, 2026, then was deleted (Session 89 §Part 3):
+ * Seven checks (Check 7 added in Session 92 — permanent badge-count / rendered-item
+ * parity check closing the gap the Session 92 defect exposed):
  *
- *   1. Startup publication lands every pending (ROUTED/ESCALATED) NEXUS travel
- *      item on the surface with the FULL SubmittedTravelItem payload — request,
- *      finding, and workflow_step_id all intact.
+ *   1. Startup publication lands every ROUTED NEXUS travel item on the surface with
+ *      the FULL SubmittedTravelItem payload — request, finding, and workflow_step_id
+ *      all intact. (Session 92: filter is ROUTED-only; the WH-43 ROUTED||ESCALATED
+ *      expansion that over-counted the badge by 1 is reverted.)
  *   2. Republishing with a final-outcome (APPROVED) item reconciles it OUT of
  *      the surface — the remove contract.
  *   3. An active FLOWPATH bundle publishes with the real FlowpathMapperOutput
@@ -23,6 +24,8 @@
  *   6. Approving a ROUTED travel item inside the Workspace removes it from the
  *      surface and logs HUMAN_DECISION with decision_type TRAVEL_APPROVAL
  *      carrying the correct workflow_step_id.
+ *   7. Badge count, surface count, and rendered TravelQueueRow count are all equal;
+ *      surface contains only ROUTED items (no ESCALATED status inflates the badge).
  *
  * Follows the GD-23/GD-24/GD-25 convergence style: makeCtx() once, real publish
  * functions, real data sources. No mocks past the point that matters (the key-less
@@ -71,16 +74,17 @@ describe("NEXUS Travel + FLOWPATH Review Workspace convergence — WH-19 (Sessio
   });
 
   // ── Check 1: NEXUS travel startup publication ──────────────────────────────
-  it("startup publication lands every pending NEXUS travel item on the surface with the full SubmittedTravelItem payload", () => {
+  it("startup publication lands every ROUTED NEXUS travel item on the surface with the full SubmittedTravelItem payload", () => {
     const ctx = makeCtx([]);
     publishNexusTravelItems(buildStartupTravelItems(), ctx.reviewerWorkspaceSurface, TS);
 
-    // Only ROUTED or ESCALATED requests are "pending" — the filter publishNexusTravelItems applies.
+    // Only ROUTED requests are actionable by the current reviewer (Session 92 fix:
+    // ESCALATED items are pending senior authority, must not inflate the workspace badge).
     const expectedIds = SYNTH_TT_TRAVEL_REQUESTS
-      .filter((r) => r.status === "ROUTED" || r.status === "ESCALATED")
+      .filter((r) => r.status === "ROUTED")
       .map((r) => r.request_id)
       .sort();
-    expect(expectedIds.length).toBeGreaterThan(0); // guard: seed must have pending requests
+    expect(expectedIds.length).toBeGreaterThan(0); // guard: seed must have routed requests
 
     const published = ctx.reviewerWorkspaceSurface.listForModule("nexus");
     expect(published.map((i) => i.item_id).sort()).toEqual(expectedIds);
@@ -204,6 +208,7 @@ describe("NEXUS Travel + FLOWPATH Review Workspace convergence — WH-19 (Sessio
   });
 
   // ── Check 6: In-Workspace TRAVEL_APPROVAL removes the item and logs the event ──
+  // (Unchanged — APPROVED outcome still removes the item from the surface.)
   it("approving a ROUTED travel item inside the Workspace removes it from the surface and logs HUMAN_DECISION / TRAVEL_APPROVAL", () => {
     const logged: SovereignLogEvent[] = [];
     const ctx = makeCtx(logged);
@@ -241,5 +246,44 @@ describe("NEXUS Travel + FLOWPATH Review Workspace convergence — WH-19 (Sessio
       decision_type: "TRAVEL_APPROVAL",
       workflow_step_id: travelWorkflowStep(requestId),
     });
+  });
+
+  // ── Check 7: Badge-count / rendered-item parity (Session 92 — permanent cross-surface check) ──
+  //
+  // Root of the Session 92 defect: publishNexusTravelItems (WH-43 fix) included ESCALATED
+  // items in the surface, inflating the badge by 1 relative to the 4 actionable (ROUTED)
+  // items in both UIs. This test permanently asserts three parity invariants:
+  //   (a) every item on the surface is ROUTED — no non-actionable status inflates the badge;
+  //   (b) badge text === surface item count (one computation drives both);
+  //   (c) surface item count === rendered TravelQueueRow count (every surface item renders one row).
+  it("NEXUS Travel badge, workspace surface count, and rendered TravelQueueRow count are all equal and surface contains only ROUTED items", () => {
+    const logged: SovereignLogEvent[] = [];
+    const ctx = makeCtx(logged);
+    publishModuleSurfacesAtStartup(ctx);
+
+    render(<WorkspaceApp ctx={ctx} />);
+
+    const surfaceItems = ctx.reviewerWorkspaceSurface.listForModule("nexus");
+    expect(surfaceItems.length).toBeGreaterThan(0); // guard: seed must publish routed requests
+
+    // (a) Every surface item must be ROUTED — ESCALATED/APPROVED/DENIED must not appear.
+    for (const item of surfaceItems) {
+      expect((item.payload as SubmittedTravelItem).request.status).toBe("ROUTED");
+    }
+
+    // Click the NEXUS Travel tab to mount the section.
+    fireEvent.click(screen.getByRole("tab", { name: /NEXUS Travel/ }));
+    expect(screen.getByTestId("workspace-nexus-section")).toBeInTheDocument();
+
+    // (c) Every surface item renders exactly one TravelQueueRow card.
+    const nexusSection = screen.getByTestId("workspace-nexus-section");
+    const renderedCards = nexusSection.querySelectorAll('[data-testid^="tt-queue-travel-"]');
+    expect(renderedCards.length).toBe(surfaceItems.length);
+
+    // (b) Badge text matches the surface count (both driven by the same single filter).
+    const tabs = screen.getAllByRole("tab");
+    const nexusTab = tabs.find((t) => /NEXUS Travel/.test(t.textContent ?? ""))!;
+    const badgeText = nexusTab.querySelector("span")?.textContent ?? "0";
+    expect(parseInt(badgeText, 10)).toBe(surfaceItems.length);
   });
 });
