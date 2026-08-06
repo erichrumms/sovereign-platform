@@ -1,6 +1,6 @@
 # SOVEREIGN Platform — Session 95 Handoff
 **Date:** August 5, 2026
-**Session type:** Governance rule formalization — documentation only, no code changes
+**Session type:** Governance rule formalization + pre-existing test-data drift fix
 **Branch:** main
 **Shell-contract version:** v1.28 (unchanged)
 
@@ -30,7 +30,7 @@ to final rule numbers; add Session 95 resolution note to docs/36 §1:** ✅ Comp
 **D5 — Search all repo files for the old "Rule 11" (shell-contract-bump) meaning and
 update non-historical documents; note historical-document citations in this Handoff:** ✅ Complete
 
-**D6 — Test suite run, tsc clean on all 15 workspaces, verify no regression:** ✅ Complete
+**D6 — Test suite run, tsc clean on all 15 workspaces, verify no regression:** ✅ Complete — 2050 passing, 0 failed (all 15 workspaces green after test-data drift fix)
 
 **D7 — SBOM update, Handoff written and committed, both copied to ~/Desktop/:** ✅ Complete (at close)
 
@@ -161,16 +161,18 @@ the Session 93 documents, which used "Rule 11" to mean the shell-contract-bump r
 | module-lens | 63 | 0 | 63 |
 | module-cpmi | 62 | 0 | 62 |
 | module-agentos | 89 | 0 | 89 |
-| **module-nexus** | **171** | **1 (pre-existing)** | **172** |
+| **module-nexus** | **172** | **0** | **172** |
 | module-apex | 234 | 0 | 234 |
 | module-flowpath | 153 | 0 | 153 |
 | module-aria | 150 | 0 | 150 |
 | module-workspace | 33 | 0 | 33 |
 | e2e | 160 (4 skipped) | 0 | 164 |
-| **JS/TS total** | **2049** | **1** | **2050** |
+| **JS/TS total** | **2050** | **0** | **2054** |
 
-**Pre-existing failure (not introduced this session):**
-`module-nexus/tests/useTTIntake.test.tsx` — `expect(item.finding.routing_tier).toBe("STANDARD")` receives `"FLAGGED"`. Confirmed pre-existing by stashing Session 95 changes and re-running — identical failure. No code was changed this session; this failure predates Session 95.
+Note: e2e Total column (164) includes 4 skipped; grand total row (2054) includes skipped.
+
+The pre-existing `useTTIntake.test.tsx` failure was investigated and resolved this session.
+See the Committee Review Standard finding below for the full root-cause record.
 
 ### Python
 
@@ -202,10 +204,12 @@ It now correctly cites Rule 13.
 | `AGENT_REFERENCE_Addendum_20260730.md` | Rule 17 widened to cover monitoring-agent safeguards and anomaly-detector thresholds |
 | `docs/36_Router_Inspection_Audit_Process.md` | Citations updated throughout; Session 94 note updated (past tense); Session 95 resolution note added; Status paragraph updated |
 | `Router_Inspection_Audit_Process.md` | Same citation corrections as docs/36 (root-level draft copy) |
+| `module-nexus/src/useTTIntake.ts` | `nowIsoFn?: () => string` added to `TTIntakePorts` interface. `nowIso` constant derived from port (falls back to `new Date().toISOString()`). Three call sites updated from literal `new Date().toISOString()` to `nowIso()`. |
+| `module-nexus/tests/useTTIntake.test.tsx` | `ports()` helper updated to inject `nowIsoFn: () => "2026-07-01T00:00:00.000Z"`, making lead-time calculation deterministic at 50 days ahead of the fixed `travel_start_date: "2026-08-20"`. |
 | `SOVEREIGN_Session95_Handoff.md` | Created (this file) |
 | `SBOM_Session95_Update.md` | Created |
 
-**No code files were changed. Shell-contract unchanged. No new production dependencies.**
+**Shell-contract unchanged at v1.28. No new production dependencies.**
 
 ---
 
@@ -214,38 +218,70 @@ It now correctly cites Rule 13.
 | Commit | Message |
 |---|---|
 | 602a98c | docs(reference): formalize Rules 11-14 — Session 94 findings resolved (Session 95) |
-| (close commit) | build: Session 95 close — handoff + SBOM v1.62 (Rule formalization, no code changes) |
+| c394716 | fix(nexus): resolve pre-existing useTTIntake test-data drift via nowIsoFn injectable |
+| (close commit) | build: Session 95 close — handoff + SBOM v1.62 (rule formalization + test-data drift fix) |
+
+---
+
+## Committee Review Standard Finding — Pre-existing useTTIntake.test.tsx Failure
+
+### Finding
+
+The test `useTTIntake.test.tsx` (module-nexus) — `expect(item.finding.routing_tier).toBe("STANDARD")` receiving `"FLAGGED"` — was pure test-data drift. The test was authored with a fixed `travel_start_date: "2026-08-20"` that was safely in the future on the date of authoring. As real wall-clock time advanced past that date, the compliance engine's lead-time calculation (`floor((start - now) / MS_PER_DAY)`) dropped below the 14-day `advance_booking_standard_days` threshold, triggering the advance-booking soft flag and routing the submission to `"FLAGGED"`. No regression in engine logic occurred.
+
+### Evidence
+
+- **Root-cause commit:** `859c796` (Session 29, July 12, 2026). Test authored with `travel_start_date: "2026-08-20"` — then ~39 days in the future.
+- **Failure onset:** Between approximately July 31 and August 6, 2026 UTC, when `floor((2026-08-20 - now) / 86400000)` crossed below 14.
+- **Verification:** Session 95 computed `floor((2026-08-20T00:00:00Z - 2026-08-05T12:00:00Z) / 86400000) = 14` (borderline) and `floor(... - 2026-08-06T12:00:00Z) = 13` (fails threshold). Confirmed by stashing Session 95 changes, re-running module-nexus — identical failure before any edits.
+- **Engine path:** `useTTIntake.ts → previewTravel → computeLeadTimeDays(request, policy)` → `floor((travel_start_date - submitted_at) / MS_PER_DAY)`. `submitted_at` defaults to `new Date().toISOString()` when not provided; the test never injected a fixed `submitted_at`, so it relied on real wall-clock time.
+- **Policy value:** `SYNTH_TT_TRAVEL_POLICY.soft_flags.advance_booking_standard_days = 14`.
+
+### Constraints Implicated
+
+- CLAUDE.md Rule 6 (verify, don't assume): three sessions confirmed "pre-existing failure" without tracing the cause.
+- Rule 12 (root-cause search): once the root cause was found (time-dependent `submitted_at`), a search for other time-dependent test assumptions was required. No other tests in the suite use a time-dependent value without injection.
+
+### Options Considered
+
+1. **Advance the fixed `travel_start_date`** (e.g., to "2027-08-20") — defers the same problem by one year. Rejected: the test would fail again without warning.
+2. **Injectable clock on `TTIntakePorts` (`nowIsoFn`)** — makes the time source explicit and testable. Production falls back to `new Date().toISOString()`. Tests inject a stable reference date. Accepted.
+3. **Mock `Date` globally in the test file** — intrusive, affects all timing in the test; harder to reason about. Rejected.
+
+### Resolution
+
+Added `nowIsoFn?: () => string` to `TTIntakePorts` in `useTTIntake.ts`. Derived `nowIso` from the port at hook initialization, with `new Date().toISOString()` as the production fallback. Replaced three direct `new Date().toISOString()` calls (`submitTravel`, `previewTravel`, `submitTime`) with `nowIso()`. Updated `ports()` helper in `useTTIntake.test.tsx` to inject `nowIsoFn: () => "2026-07-01T00:00:00.000Z"`, giving 50 days of lead time to `"2026-08-20"` — permanently above the 14-day threshold regardless of when the test runs.
+
+Commit: `c394716`
+
+### Justification
+
+This was the minimally-invasive fix that removes the wall-clock dependency without changing engine logic or test assertions. The injectable-port pattern is already established in `TTIntakePorts` for other concerns (storage, policy, auth). No production behavior changed: `nowIsoFn` is not set by any call site outside tests, so production always calls `new Date().toISOString()` as before. tsc exits 0 on module-nexus. Full suite: 2050 passing / 0 failed.
 
 ---
 
 ## Open Items for Governance Agent / Project Principal
 
-1. **The pre-existing `useTTIntake.test.tsx` failure** (module-nexus): `routing_tier`
-   expected "STANDARD" but received "FLAGGED". This predates Session 95. The Governance
-   Agent should determine whether this is a test-data drift issue or a regression from
-   an earlier session's routing-engine change, and assign it to the appropriate build
-   session.
-
-2. **AGENT_REFERENCE.md lessons gap (Lessons 13-23)**: the document itself notes this
+1. **AGENT_REFERENCE.md lessons gap (Lessons 13-23)**: the document itself notes this
    gap (line ~1424, "A structural gap, found and flagged July 21, 2026"). Lessons 13-23
    exist only in older Integration Brief "Key Lessons" sections and have never been
    backfilled into the canonical document. Still open.
 
-3. **Session 93 Handoff and SBOM_Session93_Update.md** cite "Rule 11" to mean the
+2. **Session 93 Handoff and SBOM_Session93_Update.md** cite "Rule 11" to mean the
    shell-contract-bump parity-reporting rule (now Rule 13). These are historical
    documents and were not modified per standing practice. Governance Agent may wish
    to note this in the Integration Brief or next new-conversation handoff so future
    sessions don't misread the Session 93 "Rule 11" citations.
 
-4. **SOVEREIGN_Agent_to_Agent_Briefing.md** and **SOVEREIGN_Platform_Integration_Brief_v1.57.md**
+3. **SOVEREIGN_Agent_to_Agent_Briefing.md** and **SOVEREIGN_Platform_Integration_Brief_v1.57.md**
    cite "Rule 12" (root-cause search) — these are now retrospectively correct but are
    governance documents. The Governance Agent may wish to confirm their currency in the
    next update cycle.
 
-5. **Rule 14** is explicitly unassigned. Whether to assign it or leave it open is a
+4. **Rule 14** is explicitly unassigned. Whether to assign it or leave it open is a
    Project Principal decision.
 
 ---
 
 *SOVEREIGN_Session95_Handoff.md · August 5, 2026 · Build Agent*
-*Session type: governance rule formalization — no production code changed*
+*Session type: governance rule formalization + pre-existing test-data drift fix*
