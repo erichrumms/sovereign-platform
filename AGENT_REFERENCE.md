@@ -1570,6 +1570,43 @@ route around it rather than trying it again unchanged.
 
 ---
 
+### Rule 11 — Any session that bumps the shell-contract version must explicitly run and report the Workspace parity-test suite
+
+A shell-contract version bump (v1.N → v1.N+1) is the single highest-risk
+moment for the cross-surface badge-parity class of defect that WH-43
+exemplified. The root cause of WH-43 was not a bug in the routing agent
+itself (`tt.travel-router`'s decision was correct) — it was a second,
+independently-computed display of that decision (the Reviewer's Workspace
+badge) that applied a different filter than the publisher. A contract change
+is exactly the moment when a `ProgramStatusSnapshot`-style version increment
+can silently break a downstream count without touching the router.
+
+**The standing requirement**: any session that increments the shell-contract
+version — regardless of what was changed — must include in its Handoff an
+explicit record of:
+
+1. The Workspace parity-test suite result (test file `workspace-badge-parity.test.tsx`
+   plus Check 7 in `nexus-flowpath-workspace-convergence.test.tsx`), with pass/fail
+   count, **not** just "tests passed" referring to the full suite.
+2. Which Workspace tabs were covered and which were not (with an honest reason
+   for any gap — this is what `workspace-badge-parity.test.tsx`'s coverage map
+   documents).
+3. The shell-contract version before and after, and the new SHA-256 hash.
+
+This requirement does NOT add a new test run: the parity tests already run in
+every `npm test` invocation. What it adds is explicit citation in the Handoff
+rather than treating parity results as implicit in "all tests passed." The
+distinction matters because a reviewer scanning the Handoff after a contract
+change needs to confirm the right tests ran cleanly, not infer it.
+
+This rule pairs with Rule 2 (the SHA-256 must match at session open) and the
+Known Codebase Fact about derived-value defects (Rule 11/12 from Part I).
+Both rules address the same risk class — a contract change making a display
+surface diverge from the source of truth — but at different phases: Rule 2
+catches it at session open; this rule catches it at session close.
+
+---
+
 ## Detecting Drift, Duplication, and Staleness
 
 Two categories of project artifact are structurally prone to silently going wrong, independent of how careful any single agent is:
