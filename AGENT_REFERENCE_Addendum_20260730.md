@@ -38,15 +38,38 @@ this rule names explicitly.
 
 ## New Rule — Rule 17
 
-**A governance tool's continued existence is not evidence of its continued use — check
-whether it's actually being touched, not just whether it's still on disk.**
-`DOCUMENT_MANIFEST.tsv` is designed to be the authoritative record of what document
-version is current where, with an explicit rule that it overrides chat if the two
-disagree. It fell out of use once before (last updated July 18, silently abandoned,
-rebuilt July 24) and did so again immediately after being rebuilt — no placement across
-Sessions 62 through 76 touched it. A tool this authoritative-sounding, sitting unused
-for six days of otherwise thorough work, is a more dangerous failure mode than a tool
-that was never built at all, because it still looks trustworthy on inspection.
+**A tool's or safeguard's continued existence is not evidence of its continued use —
+check whether it's actually active, not just whether it's still listed.**
+
+This rule covers two application domains that share the same underlying failure mode
+(a visible, well-documented artifact creates a false impression of active protection)
+but require different verification actions:
+
+**Governance documents and tooling:** `DOCUMENT_MANIFEST.tsv` is designed to be the
+authoritative record of what document version is current where, with an explicit rule
+that it overrides chat if the two disagree. It fell out of use once before (last
+updated July 18, silently abandoned, rebuilt July 24) and did so again immediately
+after being rebuilt — no placement across Sessions 62 through 76 touched it. A tool
+this authoritative-sounding, sitting unused for six days of otherwise thorough work,
+is a more dangerous failure mode than a tool that was never built at all, because it
+still looks trustworthy on inspection. *Verification action for this domain: check
+whether the file was recently written, not just whether it exists.*
+
+**Monitoring agents and anomaly-detector thresholds:** an agent registered in
+`Agent_Identity_Standard.md` with a monitoring scope and anomaly thresholds listed
+is not evidence that those thresholds are still in force in the live configuration.
+A safeguard can be silently deregistered, its threshold changed, or its check-cycle
+disabled while still appearing in the Standard as-registered. *Verification action
+for this domain: query the Agent Identity Standard for the registered threshold,
+then confirm the live configuration uses the same value — not just that an entry
+exists. A mismatch between the Standard and the live config is itself an anomaly.*
+
+**August 5, 2026 scope widening — Session 95 (Governance Agent authorization):**
+the original rule (July 30, 2026) covered governance documents only. Scope extended
+to monitoring agents and anomaly-detector thresholds per the Session 94 findings
+(Finding C in SOVEREIGN_Session94_Handoff.md), which identified docs/36's informal
+"Rule 13" citation as pointing at this principle applied to the monitoring-agent case.
+No content from the original governance-document application was changed.
 
 ---
 

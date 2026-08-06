@@ -8,7 +8,7 @@ existing rules, and the platform's own open items — not a generic checklist pa
 **Relationship to existing documents:** This does not replace anything. It packages
 practices that already exist separately — the Agent Identity Standard's scope
 constraints, the Logger event schema, the Committee Review Standard, the Anomaly
-Response Process, and AGENT_REFERENCE Rules 11-14 — into one process aimed
+Response Process, and AGENT_REFERENCE Rules 11, 12, and 17 — into one process aimed
 specifically at routing behavior. If adopted, it should live alongside
 `AGENT_REFERENCE.md` and be referenced from the Integration Brief §13, not duplicated
 into either.
@@ -136,7 +136,7 @@ applies as written. Add:
    logic.
 4. **Run classification, parameter, adversarial, and fallback tests** per §3.
 5. **Check monitoring tier and anomaly-detector thresholds** are still what the Agent
-   Identity Standard states (Rule 13 — a safeguard's presence isn't evidence it's
+   Identity Standard states (Rule 17 — a safeguard's presence isn't evidence it's
    still active; confirm rather than assume).
 6. **Document findings in Committee Review Standard format** — Finding, Evidence,
    Constraints Implicated, Options Considered, Recommended Resolution, Justification.
@@ -146,11 +146,12 @@ applies as written. Add:
    (Isolate → Investigate → Root cause → Remediate → Re-authorize → Document) rather
    than an ad hoc fix — this keeps router incidents in the same audit trail as any
    other agent anomaly.
-8. **Re-audit on a real cadence, not just after an incident.** Rule 13's own logic
+8. **Re-audit on a real cadence, not just after an incident.** Rule 17's own logic
    applies here directly: a router that passed its last audit is not evidence it's
    routing correctly today, especially after any shell-contract version bump (a
    `ProgramStatusSnapshot`-style change, v1.23→v1.24, is exactly the kind of change
-   that can silently break a downstream count without touching the router itself).
+   that can silently break a downstream count without touching the router itself —
+   and is also when Rule 13 requires explicit parity-test reporting).
 
 ---
 
@@ -173,8 +174,8 @@ fresh ad hoc investigation.
 - It does not propose new agents, new infrastructure, or new dependencies — everything
   it uses already exists on the platform.
 - It does not replace the Committee Review Standard, the Anomaly Response Process, or
-  Rules 11-14 — it applies them specifically to routing behavior, which none of them
-  currently do by name.
+  Rules 11, 12, and 17 — it applies them specifically to routing behavior, which none
+  of them currently do by name.
 - It is a proposed practice. Adoption, and any resulting rule numbering (e.g., whether
   this becomes a named addition to `AGENT_REFERENCE.md`), is a Project Principal
   decision, not assumed here.

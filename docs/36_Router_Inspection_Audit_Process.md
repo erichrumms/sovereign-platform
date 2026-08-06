@@ -4,17 +4,19 @@
 **Status:** Proposed practice, not yet a Governance Decision. Partially implemented in Session 93:
 §3 cross-surface parity tests added for 5 of 7 Reviewer's Workspace tabs
 (workspace-badge-parity.test.tsx); §4 cross-surface parity rate metric made standing via
-AGENT_REFERENCE.md Rule 11 (shell-contract-bump trigger); §6 step 8 cadence anchor added to
-Rule 11; §7 WH-43 first-instance framing made operational via workspace-badge-parity.test.tsx
-Check 4 (FLOWPATH) and extended NEXUS Check 7 parity model. Adoption as a Governance Decision
-and rule numbering remain Project Principal decisions. Built from the generic
-router-audit framework, applied specifically to SOVEREIGN's actual routing agents,
-existing rules, and the platform's own open items — not a generic checklist pasted in.
+AGENT_REFERENCE.md Rule 13 (shell-contract-bump trigger, formerly Rule 11 before Session 95
+renumbering); §6 step 8 cadence anchor added to Rule 13; §7 WH-43 first-instance framing made
+operational via workspace-badge-parity.test.tsx Check 4 (FLOWPATH) and extended NEXUS Check 7
+parity model. Rule citations throughout this document updated to final numbers in Session 95 (see
+§1 Session 95 resolution note). Adoption as a Governance Decision remains a Project Principal
+decision. Built from the generic router-audit framework, applied specifically to SOVEREIGN's
+actual routing agents, existing rules, and the platform's own open items — not a generic
+checklist pasted in.
 
 **Relationship to existing documents:** This does not replace anything. It packages
 practices that already exist separately — the Agent Identity Standard's scope
 constraints, the Logger event schema, the Committee Review Standard, the Anomaly
-Response Process, and AGENT_REFERENCE Rules 11-14 — into one process aimed
+Response Process, and AGENT_REFERENCE Rules 11, 12, and 17 — into one process aimed
 specifically at routing behavior. If adopted, it should live alongside
 `AGENT_REFERENCE.md` and be referenced from the Integration Brief §13, not duplicated
 into either.
@@ -65,24 +67,33 @@ citations throughout this document — "Rule 11 (single computation)" in §1, §
 "Rule 12 (search for the same root cause elsewhere)" in §5; "Rule 13 (a safeguard's
 presence isn't evidence it's active)" in §6 steps 5 and 8; and "AGENT_REFERENCE Rules
 11-14" as a group in §1 (Relationship section) and §8 — were verified by direct grep
-of the full repository. **Result: Rules 12, 13, and 14 do not exist as formally
-defined numbered rules in AGENT_REFERENCE.md or any other governance document.** The
-three underlying principles — single computation for one fact, root-cause search for
-the same pattern elsewhere, and safeguard existence ≠ evidence of continued activity —
-are real, consistently-followed conventions evidenced by session handoffs through
-Session 93, but have never been formally written into AGENT_REFERENCE.md as numbered
-rules. The current AGENT_REFERENCE.md Rule 11 (added Session 93) is the
-shell-contract-bump parity-reporting requirement; the "Rule 11 (single computation)"
-citations in this document refer to an earlier informal use of that number, before
-Session 93 claimed it for a different purpose. Rule 17 in
-AGENT_REFERENCE_Addendum_20260730.md ("a governance tool's continued existence is not
-evidence of its continued use") covers the same underlying insight as this document's
-"Rule 13," but is specifically scoped to governance documents on disk — not to
-monitoring agent safeguards and anomaly-detector thresholds. No inline citations have
-been rewritten, because no confirmed replacement rule numbers exist. Session 94 Handoff
-(SOVEREIGN_Session94_Handoff.md) documents Committee Review Standard findings for all
-three principles and recommends formalization as a Governance Agent / Project Principal
-decision.
+of the full repository. **Result: Rules 12, 13, and 14 did not exist as formally
+defined numbered rules in AGENT_REFERENCE.md or any other governance document at the
+time of this session.** The three underlying principles — single computation for one
+fact, root-cause search for the same pattern elsewhere, and safeguard existence ≠
+evidence of continued activity — were real, consistently-followed conventions evidenced
+by session handoffs through Session 93, but had never been formally written into
+AGENT_REFERENCE.md as numbered rules. Session 94 Handoff (SOVEREIGN_Session94_Handoff.md)
+documents Committee Review Standard findings for all three principles and recommends
+formalization as a Governance Agent / Project Principal decision. That decision was
+made; see the Session 95 resolution note below.
+
+**August 5, 2026 resolution — Session 95 (Governance Agent authorization, Build Agent
+implementation):** The three principles were formalized in AGENT_REFERENCE.md v3.4 and
+the addendum. Rule 11 is now formally the single-computation principle (one fact, one
+computation). Rule 12 is now formally the root-cause-search-elsewhere principle. The
+former Rule 11 (shell-contract-bump parity reporting, added Session 93) is renumbered
+to Rule 13; its content is unchanged. Rule 14 is recorded as explicitly unassigned —
+no fourth principle was found in any repository document. The former informal "Rule 13"
+(safeguard existence ≠ evidence of continued activity) now formally resolves to Rule 17,
+whose scope was widened in the addendum to cover monitoring-agent safeguards and
+anomaly-detector thresholds in addition to governance documents. All citations in this
+document have been updated: "Rule 13" in §6 steps 5 and 8 now reads "Rule 17"; "Rules
+11-14" group references in §1 (Relationship section) and §8 now read "Rules 11, 12,
+and 17"; "Rule 11" in the Status section's Session 93 summary now reads "Rule 13" to
+reflect its new number. Citations to Rule 11 (single computation) and Rule 12 (root
+cause search) in §1 Category C, §4, and §5 were already correct under the new numbering
+and were not changed. See SOVEREIGN_Session95_Handoff.md for the full record.
 
 ---
 
@@ -166,7 +177,7 @@ applies as written. Add:
    logic.
 4. **Run classification, parameter, adversarial, and fallback tests** per §3.
 5. **Check monitoring tier and anomaly-detector thresholds** are still what the Agent
-   Identity Standard states (Rule 13 — a safeguard's presence isn't evidence it's
+   Identity Standard states (Rule 17 — a safeguard's presence isn't evidence it's
    still active; confirm rather than assume).
 6. **Document findings in Committee Review Standard format** — Finding, Evidence,
    Constraints Implicated, Options Considered, Recommended Resolution, Justification.
@@ -176,11 +187,12 @@ applies as written. Add:
    (Isolate → Investigate → Root cause → Remediate → Re-authorize → Document) rather
    than an ad hoc fix — this keeps router incidents in the same audit trail as any
    other agent anomaly.
-8. **Re-audit on a real cadence, not just after an incident.** Rule 13's own logic
+8. **Re-audit on a real cadence, not just after an incident.** Rule 17's own logic
    applies here directly: a router that passed its last audit is not evidence it's
    routing correctly today, especially after any shell-contract version bump (a
    `ProgramStatusSnapshot`-style change, v1.23→v1.24, is exactly the kind of change
-   that can silently break a downstream count without touching the router itself).
+   that can silently break a downstream count without touching the router itself —
+   and is also when Rule 13 requires explicit parity-test reporting).
 
 ---
 
@@ -203,8 +215,8 @@ fresh ad hoc investigation.
 - It does not propose new agents, new infrastructure, or new dependencies — everything
   it uses already exists on the platform.
 - It does not replace the Committee Review Standard, the Anomaly Response Process, or
-  Rules 11-14 — it applies them specifically to routing behavior, which none of them
-  currently do by name.
+  Rules 11, 12, and 17 — it applies them specifically to routing behavior, which none
+  of them currently do by name.
 - It is a proposed practice. Adoption, and any resulting rule numbering (e.g., whether
   this becomes a named addition to `AGENT_REFERENCE.md`), is a Project Principal
   decision, not assumed here.

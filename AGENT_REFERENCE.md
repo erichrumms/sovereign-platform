@@ -1,7 +1,7 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.3 — July 24, 2026**
+**Version: 3.4 — August 5, 2026**
 **Supersedes:** v3.2 (July 22, 2026), which itself was one addition on top of
 v3.1 (July 19, 2026) — itself one addition on top of v3.0 (July 18, 2026) —
 the merge of BOTH prior lineages: the repo copy (1014 lines, last committed
@@ -25,6 +25,16 @@ platform pattern rather than five/six independent hand-rolled copies.
 Nothing else in v3.2 changed. The v3.0/v3.1/v3.2/v3.3 counter still continues from the stated v2.0
 assumption noted below — the true pre-June-26 original counter value
 remains unrecovered.
+**v3.4 change:** Rule formalization, authorized by the Governance Agent (Session 94
+findings, Session 95 implementation). Rules 11 and 12 are now formally the
+single-computation principle and the root-cause-search-elsewhere principle,
+preserving 20+ sessions of informal usage since Session 71. The former Rule 11
+(shell-contract-bump parity reporting, added Session 93) is renumbered to Rule 13;
+its content is unchanged. Rule 14 is recorded as deliberately unassigned — no
+fourth principle was found in the repository. The phantom cross-reference in the
+former Rule 11's closing paragraph ("Known Codebase Fact about derived-value
+defects (Rule 11/12 from Part I)") is removed; no such fact exists in Part I. Nothing
+else in v3.3 changed.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -1570,7 +1580,36 @@ route around it rather than trying it again unchanged.
 
 ---
 
-### Rule 11 — Any session that bumps the shell-contract version must explicitly run and report the Workspace parity-test suite
+### Rule 11 — One fact, one computation
+
+One fact, one computation. When a derived value (a count, a badge, a status) must be
+displayed on more than one surface, the single computation that produces it must be
+shared — not independently reimplemented.
+
+The failure this rule exists to prevent: a routing agent's decision is correct, but
+a second, independent computation of the same derived state (a Reviewer's Workspace
+badge built from a different filter) produces a different answer — and both continue
+running without either knowing the other disagrees. WH-43 was exactly this failure;
+the root cause was not in the router but in the independent reimplementation of its
+output. This principle has been applied informally under this name since Session 71.
+
+---
+
+### Rule 12 — When a root cause is confirmed, search the codebase for the same pattern everywhere
+
+When a root cause is confirmed, search the codebase for every other instance of the
+same pattern before considering it closed. A fix that addresses only the presenting
+instance may leave the same defect latent in features added after the original fix.
+
+The check is not optional: "Rule 12 discipline" and "Rule 12 check" appear in session
+handoffs and walkthrough logs because this pass is explicitly performed and its result
+is recorded — whether or not another instance was found. A negative result ("same root
+cause not present in FLOWPATH — checked and cleared") is as important to record as a
+positive one, because it becomes evidence in the next session that reviews the same area.
+
+---
+
+### Rule 13 — Any session that bumps the shell-contract version must explicitly run and report the Workspace parity-test suite
 
 A shell-contract version bump (v1.N → v1.N+1) is the single highest-risk
 moment for the cross-surface badge-parity class of defect that WH-43
@@ -1599,11 +1638,20 @@ rather than treating parity results as implicit in "all tests passed." The
 distinction matters because a reviewer scanning the Handoff after a contract
 change needs to confirm the right tests ran cleanly, not infer it.
 
-This rule pairs with Rule 2 (the SHA-256 must match at session open) and the
-Known Codebase Fact about derived-value defects (Rule 11/12 from Part I).
-Both rules address the same risk class — a contract change making a display
-surface diverge from the source of truth — but at different phases: Rule 2
-catches it at session open; this rule catches it at session close.
+This rule pairs with Rule 2 (the SHA-256 must match at session open) and Rule 11
+(one fact, one computation). Both rules address the same risk class — a contract
+change making a display surface diverge from the source of truth — but at different
+phases: Rule 2 catches it at session open; this rule catches it at session close.
+
+---
+
+### Rule 14 — [Deliberately unassigned]
+
+Rule 14 is reserved as explicitly unassigned. Session 94 confirmed that "Rule 14"
+appeared only as the silent fourth member of a "Rules 11-14" group reference in
+docs/36 and had no individual citation, definition, or description anywhere in the
+repository. No fourth principle was identified. This number is held open rather than
+filled, pending a Governance Agent / Project Principal decision to assign it.
 
 ---
 
