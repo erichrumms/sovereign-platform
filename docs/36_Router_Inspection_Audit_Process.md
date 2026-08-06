@@ -60,6 +60,30 @@ retroactively — the category-C insight (derived-value defects, not router-logi
 defects, are the platform's real risk) held even though the specific WH-43 diagnosis
 it was built on needed a second correction.
 
+**August 5, 2026 citation-accuracy note — Session 94 (Build Agent):** Rule number
+citations throughout this document — "Rule 11 (single computation)" in §1, §4, and §5;
+"Rule 12 (search for the same root cause elsewhere)" in §5; "Rule 13 (a safeguard's
+presence isn't evidence it's active)" in §6 steps 5 and 8; and "AGENT_REFERENCE Rules
+11-14" as a group in §1 (Relationship section) and §8 — were verified by direct grep
+of the full repository. **Result: Rules 12, 13, and 14 do not exist as formally
+defined numbered rules in AGENT_REFERENCE.md or any other governance document.** The
+three underlying principles — single computation for one fact, root-cause search for
+the same pattern elsewhere, and safeguard existence ≠ evidence of continued activity —
+are real, consistently-followed conventions evidenced by session handoffs through
+Session 93, but have never been formally written into AGENT_REFERENCE.md as numbered
+rules. The current AGENT_REFERENCE.md Rule 11 (added Session 93) is the
+shell-contract-bump parity-reporting requirement; the "Rule 11 (single computation)"
+citations in this document refer to an earlier informal use of that number, before
+Session 93 claimed it for a different purpose. Rule 17 in
+AGENT_REFERENCE_Addendum_20260730.md ("a governance tool's continued existence is not
+evidence of its continued use") covers the same underlying insight as this document's
+"Rule 13," but is specifically scoped to governance documents on disk — not to
+monitoring agent safeguards and anomaly-detector thresholds. No inline citations have
+been rewritten, because no confirmed replacement rule numbers exist. Session 94 Handoff
+(SOVEREIGN_Session94_Handoff.md) documents Committee Review Standard findings for all
+three principles and recommends formalization as a Governance Agent / Project Principal
+decision.
+
 ---
 
 ## 2 — Evidence to inspect, mapped to what SOVEREIGN already produces
