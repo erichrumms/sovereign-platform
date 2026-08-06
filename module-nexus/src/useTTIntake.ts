@@ -129,6 +129,14 @@ export interface TTIntakePorts {
    * tests keep isolated state.
    */
   sessionStore?: boolean;
+  /**
+   * Injectable "current time" source — used wherever the hook needs an ISO
+   * timestamp for submitted_at. Production code omits this field; the hook
+   * falls back to new Date().toISOString(). Tests inject a fixed function so
+   * lead-time calculations in the compliance engine are deterministic
+   * regardless of when the test runs.
+   */
+  nowIsoFn?: () => string;
 }
 
 /** One submitted travel request with its engine finding, held in the authority queue. */
@@ -248,12 +256,13 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
   const timeIdRef = useRef(0);
 
   const actorId = ctx.auth.user.employee_id;
+  const nowIso = ports.nowIsoFn ?? (() => new Date().toISOString());
 
   const submitTravel = useCallback(
     (form: TravelIntakeForm): void => {
       setError(null);
       const requestId = `TR-${(travelIdRef.current += 1)}`;
-      const built = buildTravelRequest(form, requestId, actorId, new Date().toISOString());
+      const built = buildTravelRequest(form, requestId, actorId, nowIso());
       if (!built.ok) {
         travelIdRef.current -= 1; // id not consumed by an invalid form
         setError(built.errors.join(" · "));
@@ -287,7 +296,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
 
   const previewTravel = useCallback(
     (form: TravelIntakeForm): TravelComplianceFinding | null => {
-      const built = buildTravelRequest(form, "PREVIEW", actorId, new Date().toISOString());
+      const built = buildTravelRequest(form, "PREVIEW", actorId, nowIso());
       if (!built.ok) return null;
       return evaluateTravelRequest(built.value, ports.travelPolicy, ports.travelContext ?? {});
     },
@@ -357,7 +366,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
     (form: TimeIntakeForm): void => {
       setError(null);
       const recordId = `TM-${(timeIdRef.current += 1)}`;
-      const built = buildTimeRecord(form, recordId, actorId, new Date().toISOString());
+      const built = buildTimeRecord(form, recordId, actorId, nowIso());
       if (!built.ok) {
         timeIdRef.current -= 1;
         setError(built.errors.join(" · "));

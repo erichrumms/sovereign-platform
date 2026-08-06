@@ -67,7 +67,16 @@ function fakeFlag(recordRef: string): ComplianceFlag {
 }
 
 function ports(over: Partial<TTIntakePorts> = {}): TTIntakePorts {
-  return { travelPolicy: SYNTH_TT_TRAVEL_POLICY, ...over };
+  // Fixed nowIso makes lead-time calculations deterministic. "2026-07-01" gives
+  // 50 days of lead time to the test's travel_start_date "2026-08-20" — well
+  // above the 14-day advance_booking_standard_days threshold. Without this, the
+  // test depends on real wall-clock time and fails as the fixed travel date
+  // approaches (Session 95 root-cause finding).
+  return {
+    travelPolicy: SYNTH_TT_TRAVEL_POLICY,
+    nowIsoFn: () => "2026-07-01T00:00:00.000Z",
+    ...over,
+  };
 }
 
 describe("useTTIntake — travel path", () => {
