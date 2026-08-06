@@ -776,6 +776,18 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
         excluded until R7 resolves — the GovCloud provider always serves the static fallback tier.
       </div>
 
+      {/* Workspace parity-test audit status — Session 93 (docs/36 §4). */}
+      <div style={parityAuditStyle} data-testid="parity-audit-disclosure">
+        <strong>Reviewer&apos;s Workspace cross-surface parity coverage</strong> (badge count
+        === ReviewerWorkspaceSurface count === rendered card count, per{" "}
+        workspace-badge-parity.test.tsx + nexus-flowpath-workspace-convergence Check 7):
+        {" "}5 of 7 tabs covered — VIGIL Approvals, ARIA Certifications, SCRIBE T&amp;T Reviews,
+        NEXUS Travel, FLOWPATH Review. Not applicable for 2 tabs: Cost Dashboard and
+        Activity &amp; Decisions read directly from ctx.logger.getEntries() with no
+        ReviewerWorkspaceSurface intermediary — no badge/surface split exists that could
+        diverge. Last verified: Session 93 (August 5, 2026).
+      </div>
+
       {stepEvents.length === 0 && fallbackCount === 0 ? (
         <div style={emptyStyle} data-testid="cost-empty">
           No agent steps recorded this session. Token usage data appears here as agent
@@ -1036,6 +1048,11 @@ const activityOutcomeStyle: CSSProperties = { marginLeft: "auto", color: "#47556
 const costCoverageStyle: CSSProperties = {
   padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8,
   color: "#166534", fontSize: 13, marginBottom: 16, maxWidth: 720,
+};
+// Parity audit status banner (Session 93, docs/36 §4) — same honest-static style as costCoverageStyle.
+const parityAuditStyle: CSSProperties = {
+  padding: "10px 14px", background: "#faf5ff", border: "1px solid #d8b4fe", borderRadius: 8,
+  color: "#581c87", fontSize: 13, marginBottom: 16, maxWidth: 720,
 };
 const costBlockStyle: CSSProperties = { marginBottom: 20, maxWidth: 720 };
 const costHeadingStyle: CSSProperties = { margin: "0 0 8px", fontSize: 14, fontWeight: 700, color: "#0f172a" };
