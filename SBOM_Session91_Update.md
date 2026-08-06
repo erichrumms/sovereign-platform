@@ -1,7 +1,7 @@
 # SOVEREIGN Platform — SBOM Update
-## Version 1.57 · August 5, 2026
+## Version 1.58 · August 5, 2026
 
-**Supersedes:** v1.56 (Session 90 — F1 convergence test + F3 docs/23 section-count correction)
+**Supersedes:** v1.57 (Session 90b — stale test-name label fix in startup-publish-convergence.test.ts)
 **Adds:** Session 91 — docs/34 Phase 3: SUPERVISOR role added to SovereignRole (shell-contract v1.28);
 8 synthetic supervisor employees reassigned from INDEPENDENT_REVIEWER placeholder to SUPERVISOR;
 FLOWPATH access granted to SUPERVISOR (minimumRole). Zero new production dependencies.

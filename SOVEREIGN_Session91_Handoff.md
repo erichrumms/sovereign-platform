@@ -129,7 +129,7 @@ LENS (and any other modules) in that follow-on session.
 
 ## SBOM
 
-`SBOM_Session91_Update.md` — v1.57. Zero new production dependencies.
+`SBOM_Session91_Update.md` — v1.58. Zero new production dependencies.
 Shell-contract SHA-256: `c99355cea43b63672615e76551aa835c3eb73a2f6435fbc43665f67d50ec681b`
 
 ---
