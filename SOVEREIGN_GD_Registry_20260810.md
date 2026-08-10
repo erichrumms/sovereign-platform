@@ -8,14 +8,17 @@ via direct Governance Agent / Project Principal interview (Session 99 — govern
 recording; no Build Agent code session). All six are now confirmed governance
 decisions. Two notes on the approvals:
 
-1. **GD-40's approved decision text is not the proposed text.** The proposed GD-40
-   subject was MCP registry serving and persistent-service precedent. Following a
-   direct review of `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md`
-   and the actual codebase, the Project Principal re-scoped GD-40 to address entity
-   resolution for the two program datasets — the constraint most at risk of silent
-   violation in early Layer 2 work. The MCP-serving question (originally GD-40's
-   proposed subject) was not approved as part of this session; it remains open and
-   will require its own governance decision before Phase 3 begins.
+1. **GD-40's subject — entity resolution for the two program datasets — was
+   unchanged from its first proposal.** Session 98 draft documents (including
+   `SOVEREIGN_GD_Registry_20260809.md`) mislabeled GD-40 as covering MCP registry
+   serving; that was an error in those drafts, not a description of GD-40's intended
+   subject. What changed following direct review of
+   `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md` was the reasoning:
+   the approved text treats the PPBE-native / World Model separation as a current
+   historical artifact requiring domain-expert confirmation to resolve, not a permanent
+   semantic distinction. The MCP-serving / persistent-service question is a separate
+   concern, not addressed by GD-40. It remains open and will require its own
+   governance decision before Phase 3 begins.
 
 2. **GD-38's approval authorizes the mechanism, not the shell-contract change.**
    Approval establishes `SCHEMA_APPROVAL` as the future `HumanDecisionType` addition
@@ -49,7 +52,7 @@ GD) is maintained throughout — per the discipline established at the time of R
 | **GD-37** | **Deliberate end of the zero-new-production-dependencies streak** | **Approved** | **August 10, 2026. No shell-contract change. Streak ends by decision with Phase 2; each new dependency reviewed before addition.** |
 | **GD-38** | **STRATA schema review gate — `ReviewerWorkspaceSurface` pattern; `SCHEMA_APPROVAL` decision type authorized as eventual mechanism** | **Approved** | **August 10, 2026. Shell-contract change (SCHEMA_APPROVAL addition) deferred to Phase 3+ — not authorized for the demo period. FLOWPATH gate confirmed structurally incompatible (Phase 0).** |
 | **GD-39** | **Object schema registry as Layer 4 binding surface** | **Approved** | **August 10, 2026. Shell-contract impact to be determined pending schema-authority resolution (registry vs. shell contract as canonical for shared entity structure).** |
-| **GD-40** | **Entity resolution — PPBE-native and World Model program datasets** | **Approved** | **August 10, 2026. No shell-contract change. Approved text differs from proposed (originally MCP serving — see note above). MCP serving remains an open question requiring its own future GD.** |
+| **GD-40** | **Entity resolution — PPBE-native and World Model program datasets** | **Approved** | **August 10, 2026. No shell-contract change. Subject was always entity resolution — Session 98 draft mislabel corrected. MCP serving is a separate open question requiring its own future GD.** |
 | **GD-41** | **Layer 1 connector for SOVEREIGN log events** | **Approved** | **August 10, 2026. No shell-contract change. `ctx.logger.getEntries()` already authorized by GD-28. Whether the connector resolves Stage 2 persistence is an explicit separate decision.** |
 
 **Related but not a GD:** the `SUPERVISOR` role addition (Session 91, shell contract
@@ -129,7 +132,7 @@ relevant GDs are recorded — which they now are, for all six.
 | Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | STRATA Layer 2 entity resolution must not silently merge PPBE-native programs (`SYNTH-PRG-ALPHA` series) and World Model programs (`P-100` series). The basis for keeping them separate is that they are currently un-cross-referenced artifacts of separate development history — not that they are semantically distinct entity types. The two schemas capture different aspects of the same real-world programs (financial obligation tracking vs. governance/risk/milestone tracking) and in principle represent the same entities viewed from different angles. Establishing the cross-reference between the two ID schemes is genuine near-term Layer 3 modeling work: a subject-matter expert — specifically, a real Program Manager who knows which PPBE programs correspond to which World Model programs — must confirm the record correspondence before entity resolution proceeds. This work is not deferred indefinitely and the separation is not treated as permanent. Until the cross-reference is established and confirmed by a domain expert, entity resolution must be explicitly configured to leave the two datasets separate rather than merging by structural similarity alone. |
 | Shell contract impact | None — entity resolution configuration is a STRATA Layer 2 concern |
-| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. **Note: this GD's approved text differs from its proposed text.** The proposed GD-40 subject was MCP registry serving and persistent-service precedent. Following review of `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md` and direct codebase analysis, the Project Principal re-scoped this GD to the entity resolution constraint. The MCP-serving question (original proposed subject) remains open and requires its own future governance decision before Phase 3 begins. |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. GD-40's subject — entity resolution for the two program datasets — was unchanged from its first proposal. Session 98 draft documents mislabeled GD-40 as covering MCP registry serving; that error is corrected here. What changed following review of `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md` was the reasoning: the approved text treats the PPBE-native / World Model separation as a historical artifact of separate development history, not a permanent semantic distinction, and names the cross-reference work as genuine near-term Layer 3 modeling work requiring domain-expert confirmation. |
 | Source | `docs/38` §2; `docs/39` §8 R3; `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md` |
 
 ---
@@ -157,8 +160,8 @@ process and remain unresolved:
 2. **MCP-serving question** — the STRATA object registry will expose types over MCP,
    making it the platform's first persistent out-of-browser service. Deployment
    target, credential management, monitoring, backup, and retention governance must
-   be decided before Phase 3 begins. This was originally proposed as GD-40 and was
-   not approved in that form. It will require its own governance decision.
+   be decided before Phase 3 begins. This is a distinct open concern, separate from
+   GD-40 (entity resolution). It will require its own governance decision.
 3. **Intelligence Layer pipeline-position disagreement** — `docs/13` and `docs/15`
    place it between FLOWPATH and CPMI; `docs/16` places it after ARIA Suite. Surfaced
    in `docs/37` §1.1 for Governance Agent reconciliation; not resolved here.

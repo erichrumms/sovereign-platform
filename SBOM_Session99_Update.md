@@ -45,9 +45,10 @@ Next available: GD-42.
 
 Two notes on the approvals (carried forward from the GD Registry):
 
-1. GD-40's approved text differs from its proposed text — subject changed from MCP
-   serving to entity resolution for the two program datasets. MCP serving is an open
-   question requiring its own future GD.
+1. GD-40's subject was always entity resolution for the two program datasets. Session 98
+   draft documents mislabeled it as MCP registry serving; that error is corrected in
+   `SOVEREIGN_GD_Registry_20260810.md`. MCP serving is a separate open concern requiring
+   its own future GD.
 
 2. GD-38's approval authorizes the `SCHEMA_APPROVAL` mechanism; the actual
    shell-contract change is deferred to Phase 3+.

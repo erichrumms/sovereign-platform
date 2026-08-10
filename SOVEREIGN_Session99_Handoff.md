@@ -30,12 +30,15 @@ Zero shell-contract changes were made in this session.
 
 Two notes on these approvals:
 
-1. **GD-40's approved text differs from its proposed text.** The proposed subject was
-   MCP registry serving and persistent-service precedent. Following direct review of
-   `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md`, the Project
-   Principal re-scoped GD-40 to the entity resolution constraint — the risk most at
-   risk of silent violation in early Layer 2 work. The MCP-serving question remains
-   open and requires its own future governance decision.
+1. **GD-40's subject — entity resolution for the two program datasets — was unchanged
+   from its first proposal.** Session 98 draft documents mislabeled it as MCP registry
+   serving; that error is corrected in `SOVEREIGN_GD_Registry_20260810.md`. What
+   changed following direct review of
+   `docs/SOVEREIGN_Two_Program_Datasets_Clarification_20260730.md` was the reasoning:
+   the approved text treats the PPBE-native / World Model separation as a historical
+   artifact requiring domain-expert confirmation to resolve, not a permanent semantic
+   distinction. The MCP-serving / persistent-service question is a separate open
+   concern requiring its own future governance decision.
 
 2. **GD-38's approval authorizes the mechanism, not the shell-contract change.**
    `SCHEMA_APPROVAL` is established as the future `HumanDecisionType` addition. The
@@ -64,8 +67,8 @@ Two notes on these approvals:
    for shared entity structure? GD-39 names this as blocking Phase 3. Requires its own
    governance decision.
 
-2. **MCP-serving question** — the original proposed GD-40 subject. Not approved in this
-   session. Requires its own future governance decision before Phase 3 begins.
+2. **MCP-serving question** — a distinct open concern, separate from GD-40 (entity
+   resolution). Requires its own future governance decision before Phase 3 begins.
 
 3. **Intelligence Layer pipeline-position disagreement** — `docs/13` and `docs/15` place
    it between FLOWPATH and CPMI; `docs/16` places it after ARIA Suite. Surfaced in

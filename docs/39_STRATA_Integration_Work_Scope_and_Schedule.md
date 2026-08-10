@@ -251,9 +251,9 @@ approved language.
 |---|---|
 | Authority | Project Principal |
 | Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
-| Decision | **(Proposed text retained as record — approved text differs. See `SOVEREIGN_GD_Registry_20260810.md` for authoritative approved language.)** The STRATA object registry exposes approved types over the Model Context Protocol. This introduces the platform's first persistent, out-of-browser service — requiring decisions on deployment target, credential management, monitoring, backup, and retention governance. These are scoped explicitly before Phase 3 begins |
+| Decision | STRATA Layer 2 entity resolution must not silently merge PPBE-native programs (`SYNTH-PRG-ALPHA` series) and World Model programs (`P-100` series). The basis for keeping them separate is that they are currently un-cross-referenced artifacts of separate development history — not that they are semantically distinct entity types. Establishing the cross-reference is genuine near-term Layer 3 modeling work requiring domain-expert confirmation. This work is not deferred indefinitely. See `SOVEREIGN_GD_Registry_20260810.md` for the full approved decision text. |
 | Shell contract impact | None — entity resolution configuration is a STRATA Layer 2 concern |
-| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. **GD-40 approved text differs from proposed text**: the approved subject is entity resolution for the two program datasets (PPBE-native SYNTH-PRG-ALPHA series and World Model P-100 series), not MCP serving. MCP serving remains open and requires its own future governance decision before Phase 3 begins. |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. GD-40's subject was always entity resolution for the two program datasets. Session 98 draft documents mislabeled it as MCP registry serving; that error is corrected in `SOVEREIGN_GD_Registry_20260810.md`. |
 
 **GD-41 — Layer 1 connector for SOVEREIGN log events**
 
