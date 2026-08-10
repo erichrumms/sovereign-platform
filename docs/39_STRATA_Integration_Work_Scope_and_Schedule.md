@@ -68,17 +68,115 @@ per-element review UI work has been completed in Phase 5/6. Phase 0 (Concern 1)
 confirmed that the review UI has no platform precedent. If Phase 7 absorbs that
 work, its estimate does not hold.
 
+**Total estimated build:** roughly 27-45 sessions across all nine post-Phase 0
+phases. Phases 2-7 and Phases 8-9 can run in parallel after Phase 1 completes.
+
+### Phase rationale
+
+**Phase 3 (registry before builder):** The builder produces drafts; without a
+registry those drafts have nowhere to go. Reversing this order is the most likely
+sequencing error in this plan. The registry must be buildable by hand and queryable
+by a Layer 4 consumer before the AI tool is added.
+
+**Phase 3 is also the first thing that produces real value.** An object type defined
+by hand, promoted with a complete governance record, and queried by an MCP agent is
+a complete, demonstrable capability — and it uses a read surface already authorized
+by GD-28.
+
+**Phase 4 explicitly out of scope for Phase 2:** Workspace entry and package.json.
+No cross-system entity resolution. One stream, no identity matching yet.
+
+**Phase 5/6 (per-element UI):** The largest and least predictable phases. Moved
+explicitly to Phase 5/6 by Phase 0's finding: accept/reject/modify at single-property
+granularity has no precedent anywhere in the platform. Every existing review surface
+is whole-item-with-note. This is real design work, not connection work. Re-scope
+after Phase 3 completes.
+
+**Phase 7 should be small — and Phase 0 makes that honest rather than hopeful.**
+This is the same publisher-plus-component shape five modules have already executed.
+If it is not small, the review UI was under-scoped in Phase 5/6 — stop and re-scope
+rather than pushing through.
+
+**Phase 8 (first Layer 1 connector):** Scoped to a single connector — SOVEREIGN's
+own event stream, which uses a read surface already under our control (`ctx.logger.getEntries()`,
+GD-28) and requires no external system credentials. Additional sources are separate,
+later decisions. Scope creep from one connector to many is one of the most likely
+execution risks (R10).
+
 ---
 
-## 3 — What must happen in Phase 1 before any code is written
+## 3 — Phase 0 — Repo-review pass (complete)
+
+**Ran August 9, 2026, as a deliberately non-standard session** (read-only against
+the repository; all deliverables to `~/Downloads/`; no commit, no push, no Handoff,
+no SBOM entry — stated plainly so it is not mistaken for an incomplete session).
+All seven questions now have real answers:
+
+1. ~~Is FLOWPATH's gate model general enough to accept a new artifact type?~~
+   **Answered: No — and the plan improves because of it.** FLOWPATH's gate is
+   hard-wired to workflow artifacts (closed four-member type union; the
+   Five-Question Gate evaluates workflow-step semantics; whole-artifact-only
+   review granularity). The extensible mechanism is the shell contract's
+   `ReviewerWorkspaceSurface` (GD-25) — deliberately type-agnostic, with five
+   modules already publishing through it. The gate connection becomes "write a
+   publisher and a review component, plus one governance-gated `SCHEMA_APPROVAL`
+   decision-type addition to the shell contract." Full evidence in the Phase 0
+   report; design consequences in Build Spec §5.
+
+2. ~~Does anything in `docs/` already define the Intelligence Layer's intent?~~
+   **Answered: Yes, substantively** — five named components (`docs/06` §7.2), a
+   "seventh product" identity (`docs/07` §5), named training-signal sources
+   (`docs/14`, `docs/15`, `docs/22`). No collision with the STRATA boundary, but
+   one directional claim in the Architecture Overview was backwards
+   (`deployment_feedback` is the Intelligence Layer's *input*, not its output) —
+   corrected in Architecture Overview v0.3 §1.1. The docs are also internally
+   inconsistent about the Intelligence Layer's pipeline position; surfaced to the
+   Governance Agent in the Phase 0 report (see Architecture Overview §1.1).
+
+3. ~~What is the real current shell contract version and hash?~~ **Answered:
+   v1.28, hash `c99355ce...`** (re-confirmed this pass at HEAD `d696c88`).
+
+4. ~~What are the next real `docs/` and GD numbers?~~ **Answered in full.** GD:
+   **GD-36**. `docs/`: highest in use is **36**; next available is **docs/37**
+   (the three STRATA documents placed as 37-39). Note: no `docs/33` exists — a
+   real numbering gap — and numbered specs 01/02/04 live at repo root, not in
+   `docs/`.
+
+5. ~~What does the real dependency graph across the 15 workspaces look like?~~
+   **Answered.** Declared dependencies are uniform and shallow (every UI module →
+   `@sovereign/api-client` + `@sovereign/data`; those two have zero runtime
+   dependencies), but the real graph adds ~118 relative-path shell-contract
+   imports and ~41 undeclared lateral module-to-module source imports. Two
+   findings matter for STRATA: **(a)** a non-UI substrate workspace enters the
+   monorepo the way `sovereign-data` did — one `workspaces` array entry, no
+   module registration, no shell-contract change (the governance-gated
+   "eleven canonical modules" path applies only to shell-mounted UI modules);
+   **(b)** the lateral-import culture means the one-way dependency rule must be
+   CI-enforced, exactly as GD-36 specifies.
+
+6. ~~Confirm the cost-tracking coverage gap directly.~~ **Answered: 14 of 19 real
+   live-call sites, 5 named uninstrumented** (three COUNSEL `REASONING_STEP_*`
+   hooks, FLOWPATH's `useFlowpathElicitation`, APEX's `useApexAnalysis`) —
+   re-confirmed against the five real files this pass.
+
+7. ~~Reconcile the "14 of 14" vs "14 of 18" discrepancy.~~ **Answered: neither was
+   correct. The real figure is 14 of 19** (see #6).
+
+**Deliverable:** the Phase 0 verification and feedback report, plus v0.3 of all
+three STRATA documents with repo-verified corrections applied. Where the drafts
+disagreed with the repo, the repo won.
+
+---
+
+## 4 — What must happen in Phase 1 before any code is written
 
 Phase 1 is governance-only. No STRATA implementation begins until these are done:
 
 1. GD-36 through GD-41 formally recorded in the GD Registry by the Governance Agent
-   (proposed entries in §4.2 below — these are proposals, not decisions).
-2. The shell-contract authority question resolved (§4.2, Decision #3): is the
+   (proposed entries in §5.2 below — these are proposals, not decisions).
+2. The shell-contract authority question resolved (§5.2, GD-39): is the
    object schema registry or the shell contract canonical for shared entity structure?
-3. The MCP server deployment question scoped (§4.2, Decision #6): where does a
+3. The MCP server deployment question scoped (§5.2, GD-40): where does a
    persistent registry server run?
 
 Phase 2 can begin once GD-36 (workspace placement + dependency rule) and GD-37
@@ -87,19 +185,19 @@ additionally. Phase 5/6 requires GD-38 and GD-39 additionally.
 
 ---
 
-## 4 — Governance decisions
+## 5 — Governance decisions
 
-### 4.1 — Decision-recording authority
+### 5.1 — Decision-recording authority
 
 Governance decisions are recorded by the Governance Agent before the work they
 govern. The Build Agent does not approve GDs — it proposes them, implements the work
 once they are recorded, and records completion evidence.
 
-All six GDs in §4.2 are **PROPOSED — pending Project Principal decision**. None
+All six GDs in §5.2 are **PROPOSED — pending Project Principal decision**. None
 has been approved. This document presents them as structured proposals so the
 Governance Agent has a complete, accurate input for recording.
 
-### 4.2 — Proposed GD table (GD-36 through GD-41)
+### 5.2 — Proposed GD table (GD-36 through GD-41)
 
 **GD-36 — STRATA workspace placement and one-way dependency rule**
 
@@ -163,7 +261,7 @@ Governance Agent has a complete, accurate input for recording.
 
 ---
 
-## 5 — Dependency graph
+## 6 — Dependency graph
 
 ```
 Phase 0 (complete)
@@ -182,7 +280,7 @@ relevant GDs are recorded.
 
 ---
 
-## 6 — Phase 5/6 scope note: per-element review UI
+## 7 — Phase 5/6 scope note: per-element review UI
 
 Phase 0 (Concern 1) confirmed that per-element accept/reject/modify review UI has
 no platform precedent. Every existing Reviewer's Workspace tab operates at whole-
@@ -203,25 +301,52 @@ is only honest if this work is done before Phase 7 begins.
 
 ---
 
-## 7 — Risk register
+## 8 — Risk register
 
 | ID | Risk | Likelihood | Impact | Owner | Mitigation |
 |---|---|---|---|---|---|
-| R1 | Phase 1 GDs take longer than one session | Medium | Low | Governance Agent | Structure proposals (§4.2) reduce decision time |
+| R1 | Phase 1 GDs take longer than one session | Medium | Low | Governance Agent | Structure proposals (§5.2) reduce decision time |
 | R2 | Dependency choice for Layer 1 ingestion library introduces a large transitive dependency tree | Medium | Medium | Build Agent | Evaluate dependency cost explicitly before selection; prefer libraries with minimal transitive deps |
 | R3 | Entity resolution silently reverses the two-program-dataset architectural decision | High | High | Build Agent | Configure entity resolution explicitly before Layer 2 begins; document the constraint |
-| R4 | Phase 7 "should be small" assumption holds only if Phase 5/6 scope is fully delivered | High | Medium | Build Agent | Scope Phase 5/6 explicitly (§6); do not let per-element UI work drift into Phase 7 |
+| R4 | Phase 7 "should be small" assumption holds only if Phase 5/6 scope is fully delivered | High | Medium | Build Agent | Scope Phase 5/6 explicitly (§7); do not let per-element UI work drift into Phase 7 |
 | R5 | `SCHEMA_APPROVAL` type sync missed in Python logger (Constraint #11) | Medium | Medium | Build Agent | Include logger sync as a Phase 7 completion condition; add to Rule 13 parity report |
 | R6 | MCP server deployment introduces credential/persistence complexity not scoped in Phase 3 | High | Medium | Project Principal | GD-40 scopes this explicitly before Phase 3 |
 | R7 | Zero-production-dependency streak ends without explicit decision | Low | Low | Build Agent | GD-37 makes it explicit; SBOM entry records the decision |
 | R8 | Cost tracking missed on taxonomy builder inference calls | Medium | Medium | Build Agent | No uninstrumented inference calls; parity report at Phase 4 completion |
-| R9 | Per-element review UI requires non-trivial STRATA-internal state management beyond what any existing Workspace module does | Medium | High | Build Agent | Scoped explicitly (§6); Phase 5/6 estimate includes design time |
-| R10 | Layer 3 registry and shell contract diverge on shared entity structure | High | High | Governance Agent | GD-39 authority question must be resolved before Phase 3 |
+| R9 | Per-element review UI requires non-trivial STRATA-internal state management beyond what any existing Workspace module does | Medium | High | Build Agent | Scoped explicitly (§7); Phase 5/6 estimate includes design time |
+| R10 | **Scope creep from one connector to many** — Phase 8 scoped to a single connector; additional sources are separate later decisions; the platform's recent history includes meaningful feature additions that started small | High | Medium | Build Agent | Explicit Phase 8 scope boundary; additional connectors each require their own scoping and GD; stop and re-scope if Phase 8 expands |
 | R11 | STRATA workspace accidentally imports `@sovereign/*` | Medium | High | Build Agent | CI enforcement per GD-36; no `../` escaping, no `@sovereign/*` in package.json |
 | R12 | Stage 2 persistence question remains open even if Layer 1 connector is built | Medium | Medium | Project Principal | GD-41 requires explicit decision — the connector may resolve Stage 2, but does not automatically close the question |
-| R13 | Intelligence Layer pipeline-position disagreement (docs/13/docs/15 vs docs/16) unresolved before STRATA builds out Layer 4 interfaces | Medium | Medium | Governance Agent | Surfaced for Governance Agent reconciliation in the Architecture Overview (docs/37 §1.1); flagged here for tracking |
+| R13 | **Technical currency assumptions may be stale** — open-table-format tooling and semantic-layer tooling moved quickly through 2024-2025; the architectural principles in these documents are stable, but specific tool names and library choices should be verified fresh before Phase 2 begins | Medium | Low | Build Agent | Verify specific tool choices at Phase 2 start; do not treat any tool name in these documents as a confirmed selection |
 | R14 | **[New v0.3]** **The per-element review UI is under-scoped** — it is net-new design and implementation work with no platform precedent, and may be absorbed silently into Phase 5's estimate without a visible estimate increase. If it is, Phase 7's "1-2 sessions" assumption breaks | High | Medium | Build Agent | Treat Phase 5 (Workspace publisher + review component) and Phase 6 (per-element UI) as separately estimated, even if executed together |
 | R15 | **[New v0.3]** **The MCP-served registry becomes the platform's first persistent out-of-browser service by accident rather than decision** — deployment target, credentials, monitoring, backup, and retention are not current-platform concerns; they would be new categories of operational obligation. If introduced without a governance decision, the scope expands silently | High | High | Project Principal | GD-40 (proposed) gates Phase 3 on an explicit decision; the decision must happen before any persistent server is introduced |
+| R16 | Layer 3 registry and shell contract diverge on shared entity structure | High | High | Governance Agent | GD-39 authority question must be resolved before Phase 3 |
+| R17 | Intelligence Layer pipeline-position disagreement (docs/13/docs/15 vs docs/16) unresolved before STRATA builds out Layer 4 interfaces | Medium | Medium | Governance Agent | Surfaced for Governance Agent reconciliation in the Architecture Overview (docs/37 §1.1); flagged here for tracking |
+
+---
+
+## 9 — Standing conventions applying to every phase
+
+**STRATA is built using the same methodology as SOVEREIGN — Project Principal,
+Governance Agent, Build Agent — at every layer. There is no low-code build path.**
+
+The session estimates in §2 are more reliable than they would be for an unfamiliar
+process: these are ordinary Build Agent sessions, scoped and closed the same way
+every prior session was. There is no separate tooling track to stand up — no visual
+pipeline builder, no application assembly environment — which removes a category of
+work the generic source documents assumed.
+
+Otherwise unchanged from existing practice:
+
+- "Governance Agent" and "Build Agent" only — no model or product names, anywhere.
+- A session is not closed until real `git push` output is shown.
+- Handoff and SBOM committed to repo root **and** copied to `~/Desktop/`.
+- Rule 13 — any session bumping the shell contract reports Workspace parity-test
+  results explicitly. The `SCHEMA_APPROVAL` addition in Phase 7 will trigger
+  exactly this.
+- Verify rather than trust the recap. Check real `git log`/`git diff` output against
+  what a session claims — the v0.3 corrections to this very document are that
+  discipline applied to these drafts themselves.
 
 ---
 
