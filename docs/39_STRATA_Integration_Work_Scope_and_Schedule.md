@@ -29,16 +29,16 @@ required to integrate STRATA (Layers 1-4) beneath and alongside the SOVEREIGN
 platform, using SOVEREIGN's existing build conventions (Project Principal / Governance
 Agent / Build Agent), starting from the current platform state.
 
-**The current platform state, confirmed against the repository:**
+**The current platform state, per Integration Brief v1.58 and the GD Registry:**
 
-- SOVEREIGN is running with seven products: the six named products (COUNSEL, SCRIBE,
-  VIGIL, LENS, CPMI, AgentOS) plus NEXUS (shipping in the next planned release),
-  and the Reviewer's Workspace as a standalone module.
-- The shell contract is at v1.28. The most recent governance decision was GD-35
-  (Addendum merge tracking).
-- The next available GD number is GD-36, confirmed.
-- The platform has one test suite with 2,245 tests and an unbroken production-
-  dependencies streak tracked in the SBOM.
+- SOVEREIGN comprises six products (COUNSEL, SCRIBE, VIGIL, LENS, CPMI, AgentOS),
+  four companion modules (NEXUS, APEX, FLOWPATH, ARIA Suite), the Reviewer's
+  Workspace, and two governed workflow layers — all currently operational.
+- The shell contract is at v1.28. GD-35 (PPBE Advisory Panels instrumentation,
+  Session 88) is the most recently approved decision; GD-36 through GD-41 are
+  proposed in this session and remain pending Project Principal decision.
+- The platform has one test suite with 2,245 tests (2,050 JS/TS + 195 Python) and
+  an unbroken production-dependencies streak tracked in the SBOM.
 - **No STRATA code exists.** This work scope starts from zero lines of STRATA
   implementation.
 
