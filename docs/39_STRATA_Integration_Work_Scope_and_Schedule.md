@@ -36,7 +36,7 @@ Agent / Build Agent), starting from the current platform state.
   Workspace, and two governed workflow layers — all currently operational.
 - The shell contract is at v1.28. GD-35 (PPBE Advisory Panels instrumentation,
   Session 88) is the most recently approved decision; GD-36 through GD-41 are
-  proposed in this session and remain pending Project Principal decision.
+  **approved August 10, 2026 · Project Principal** (Session 99 — governance recording).
 - The platform has one test suite with 2,245 tests (2,050 JS/TS + 195 Python) and
   an unbroken production-dependencies streak tracked in the SBOM.
 - **No STRATA code exists.** This work scope starts from zero lines of STRATA
@@ -173,11 +173,14 @@ disagreed with the repo, the repo won.
 Phase 1 is governance-only. No STRATA implementation begins until these are done:
 
 1. GD-36 through GD-41 formally recorded in the GD Registry by the Governance Agent
-   (proposed entries in §5.2 below — these are proposals, not decisions).
+   — **done: all six approved August 10, 2026 · Project Principal (Session 99).**
 2. The shell-contract authority question resolved (§5.2, GD-39): is the
    object schema registry or the shell contract canonical for shared entity structure?
-3. The MCP server deployment question scoped (§5.2, GD-40): where does a
-   persistent registry server run?
+   — **open: GD-39 approved the binding-surface principle; the authority question
+   remains open and blocks Phase 3.**
+3. The MCP server deployment question scoped: where does a persistent registry server
+   run? — **open: the original proposed GD-40 on this subject was not approved in
+   that form; this question requires its own future governance decision before Phase 3.**
 
 Phase 2 can begin once GD-36 (workspace placement + dependency rule) and GD-37
 (dependency-free streak management) are recorded. Phase 3 requires GD-38
@@ -193,71 +196,74 @@ Governance decisions are recorded by the Governance Agent before the work they
 govern. The Build Agent does not approve GDs — it proposes them, implements the work
 once they are recorded, and records completion evidence.
 
-All six GDs in §5.2 are **PROPOSED — pending Project Principal decision**. None
-has been approved. This document presents them as structured proposals so the
-Governance Agent has a complete, accurate input for recording.
+All six GDs in §5.2 are **APPROVED — August 10, 2026 · Project Principal** (Session 99
+— governance recording via direct interview, not a Build Agent code session). This
+section retains the original proposal text as the record of what was decided; the
+authoritative approved entries are in `SOVEREIGN_GD_Registry_20260810.md`. Note that
+GD-40's approved text differs from its proposed text — see the GD Registry for the
+approved language.
 
-### 5.2 — Proposed GD table (GD-36 through GD-41)
+### 5.2 — GD table (GD-36 through GD-41) — all approved August 10, 2026
 
 **GD-36 — STRATA workspace placement and one-way dependency rule**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | Own workspace in the monorepo at the substrate tier (the `sovereign-data` pattern — no shell-contract change required); SOVEREIGN may import from STRATA; STRATA imports nothing from SOVEREIGN; **the one-way rule is CI-enforced, not conventional**: no `../` imports may escape the STRATA workspace boundary, and no `@sovereign/*` package may appear in STRATA's `package.json` — these two rules make the dependency boundary as hard as a package boundary (Phase 0 finding #5b) |
 | Shell contract impact | None — substrate tier entry, not a UI module |
-| Authorized session | Pending |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. |
 
 **GD-37 — Deliberate first new production dependency**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | The platform's zero-new-production-dependencies streak (SBOM-tracked since Session 62) ends by explicit decision with STRATA Phase 2. Dependency choices for the Layer 1 connector (ingestion library) and Layer 3 registry (schema store) are reviewed and approved before they are added, not discovered post-hoc |
 | Shell contract impact | None |
-| Authorized session | Pending |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. |
 
 **GD-38 — STRATA schema review gate mechanism**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | The STRATA Layer 3 schema review gate uses the `ReviewerWorkspaceSurface` pattern (GD-25) — not FLOWPATH's Five-Question Gate, which is structurally incompatible (closed `WorkflowType` union, wrong gate semantics, whole-artifact-only approval granularity — confirmed by Phase 0 code review). A SOVEREIGN-side schema-review component publishes draft schema elements to the Reviewer's Workspace under its own module id and provides per-element accept/reject/modify UI. On steward decision, it emits a `HUMAN_DECISION` event of type `SCHEMA_APPROVAL`. STRATA does not import from SOVEREIGN; the dependency direction is preserved |
-| Shell contract impact | New `SCHEMA_APPROVAL` member in `HumanDecisionType` — GD required, version bump, type sync to `sovereign-data/src/shared-types.ts` and Python logger per Constraint #11, Rule 13 parity-test report |
-| Authorized session | Pending |
+| Shell contract impact | `SCHEMA_APPROVAL` authorized as the eventual `HumanDecisionType` addition. **Shell-contract change deferred to Phase 3+ build work — not authorized for the current demo period.** |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. Shell-contract change requires a separate authorized Build Agent session in Phase 3+. |
 
 **GD-39 — Object schema registry as Layer 4 binding surface**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | Layer 4 applications bind to STRATA registry object types by reference rather than reaching into Layer 2 datasets directly. Schema authority question must be resolved: is the object registry or the shell contract canonical for shared entity structure? (Raised explicitly — not resolved in this document) |
 | Shell contract impact | To be determined pending authority question resolution |
-| Authorized session | Pending |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. Schema authority question remains open and blocks Phase 3 — requires its own future governance decision. |
 
-**GD-40 — MCP registry serving and persistent service precedent**
+**GD-40 — Entity resolution — PPBE-native and World Model program datasets**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
-| Decision | The STRATA object registry exposes approved types over the Model Context Protocol. This introduces the platform's first persistent, out-of-browser service — requiring decisions on deployment target, credential management, monitoring, backup, and retention governance. These are scoped explicitly before Phase 3 begins |
-| Shell contract impact | None directly — MCP serving is a STRATA internal concern |
-| Authorized session | Pending |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
+| Decision | **(Proposed text retained as record — approved text differs. See `SOVEREIGN_GD_Registry_20260810.md` for authoritative approved language.)** The STRATA object registry exposes approved types over the Model Context Protocol. This introduces the platform's first persistent, out-of-browser service — requiring decisions on deployment target, credential management, monitoring, backup, and retention governance. These are scoped explicitly before Phase 3 begins |
+| Shell contract impact | None — entity resolution configuration is a STRATA Layer 2 concern |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. **GD-40 approved text differs from proposed text**: the approved subject is entity resolution for the two program datasets (PPBE-native SYNTH-PRG-ALPHA series and World Model P-100 series), not MCP serving. MCP serving remains open and requires its own future governance decision before Phase 3 begins. |
 
 **GD-41 — Layer 1 connector for SOVEREIGN log events**
 
 | Field | Value |
 |---|---|
 | Authority | Project Principal |
-| Status | PROPOSED — pending Project Principal decision |
+| Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
 | Decision | The first STRATA Layer 1 connector ingests the SOVEREIGN `SovereignLogEvent` stream into persistent Layer 1 storage, using `ctx.logger.getEntries()` (GD-28, shell-contract v1.23) as the read surface. This may constitute the answer to the long-open Stage 2 persistence question (`docs/28`). Whether it does — and whether that question is considered closed by it — is a decision to be made explicitly, not by default |
 | Shell contract impact | None — `ctx.logger.getEntries()` already authorized by GD-28 |
-| Authorized session | Pending |
+| Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. |
 
 ---
 
@@ -265,7 +271,7 @@ Governance Agent has a complete, accurate input for recording.
 
 ```
 Phase 0 (complete)
-    └── Phase 1: GD-36 – GD-41 recorded
+    └── Phase 1: GD-36 – GD-41 recorded (complete — August 10, 2026)
             ├── Phase 2: STRATA workspace (requires GD-36, GD-37)
             │       └── Phase 3: Layer 3 registry (requires GD-36, GD-38)
             │               └── Phase 4: Taxonomy builder
@@ -310,7 +316,7 @@ is only honest if this work is done before Phase 7 begins.
 | R3 | Entity resolution silently reverses the two-program-dataset architectural decision | High | High | Build Agent | Configure entity resolution explicitly before Layer 2 begins; document the constraint |
 | R4 | Phase 7 "should be small" assumption holds only if Phase 5/6 scope is fully delivered | High | Medium | Build Agent | Scope Phase 5/6 explicitly (§7); do not let per-element UI work drift into Phase 7 |
 | R5 | `SCHEMA_APPROVAL` type sync missed in Python logger (Constraint #11) | Medium | Medium | Build Agent | Include logger sync as a Phase 7 completion condition; add to Rule 13 parity report |
-| R6 | MCP server deployment introduces credential/persistence complexity not scoped in Phase 3 | High | Medium | Project Principal | GD-40 scopes this explicitly before Phase 3 |
+| R6 | MCP server deployment introduces credential/persistence complexity not scoped in Phase 3 | High | Medium | Project Principal | GD-40 was re-scoped to entity resolution (approved August 10, 2026) — MCP serving was not approved in this session. MCP serving requires its own future governance decision before Phase 3 begins. **Risk remains open.** |
 | R7 | Zero-production-dependency streak ends without explicit decision | Low | Low | Build Agent | GD-37 makes it explicit; SBOM entry records the decision |
 | R8 | Cost tracking missed on taxonomy builder inference calls | Medium | Medium | Build Agent | No uninstrumented inference calls; parity report at Phase 4 completion |
 | R9 | Per-element review UI requires non-trivial STRATA-internal state management beyond what any existing Workspace module does | Medium | High | Build Agent | Scoped explicitly (§7); Phase 5/6 estimate includes design time |
@@ -319,7 +325,7 @@ is only honest if this work is done before Phase 7 begins.
 | R12 | Stage 2 persistence question remains open even if Layer 1 connector is built | Medium | Medium | Project Principal | GD-41 requires explicit decision — the connector may resolve Stage 2, but does not automatically close the question |
 | R13 | **Technical currency assumptions may be stale** — open-table-format tooling and semantic-layer tooling moved quickly through 2024-2025; the architectural principles in these documents are stable, but specific tool names and library choices should be verified fresh before Phase 2 begins | Medium | Low | Build Agent | Verify specific tool choices at Phase 2 start; do not treat any tool name in these documents as a confirmed selection |
 | R14 | **[New v0.3]** **The per-element review UI is under-scoped** — it is net-new design and implementation work with no platform precedent, and may be absorbed silently into Phase 5's estimate without a visible estimate increase. If it is, Phase 7's "1-2 sessions" assumption breaks | High | Medium | Build Agent | Treat Phase 5 (Workspace publisher + review component) and Phase 6 (per-element UI) as separately estimated, even if executed together |
-| R15 | **[New v0.3]** **The MCP-served registry becomes the platform's first persistent out-of-browser service by accident rather than decision** — deployment target, credentials, monitoring, backup, and retention are not current-platform concerns; they would be new categories of operational obligation. If introduced without a governance decision, the scope expands silently | High | High | Project Principal | GD-40 (proposed) gates Phase 3 on an explicit decision; the decision must happen before any persistent server is introduced |
+| R15 | **[New v0.3]** **The MCP-served registry becomes the platform's first persistent out-of-browser service by accident rather than decision** — deployment target, credentials, monitoring, backup, and retention are not current-platform concerns; they would be new categories of operational obligation. If introduced without a governance decision, the scope expands silently | High | High | Project Principal | GD-40 was re-scoped to entity resolution (approved August 10, 2026) — MCP serving requires its own future governance decision before Phase 3 begins. This risk remains open and unmitigated until that decision is recorded. |
 | R16 | Layer 3 registry and shell contract diverge on shared entity structure | High | High | Governance Agent | GD-39 authority question must be resolved before Phase 3 |
 | R17 | Intelligence Layer pipeline-position disagreement (docs/13/docs/15 vs docs/16) unresolved before STRATA builds out Layer 4 interfaces | Medium | Medium | Governance Agent | Surfaced for Governance Agent reconciliation in the Architecture Overview (docs/37 §1.1); flagged here for tracking |
 
@@ -352,5 +358,5 @@ Otherwise unchanged from existing practice:
 
 *STRATA — Integration Work Scope and Schedule · DRAFT v0.4 · August 9, 2026*
 *Phase 0 verification applied (v0.3); follow-up addendum incorporated (v0.4)*
-*Placed as draft — Phase 1 governance decisions pending before any implementation begins*
+*Phase 1 governance decisions recorded August 10, 2026 — GD-36 through GD-41 approved by Project Principal (Session 99). This document remains DRAFT v0.4 pending formal adoption.*
 *Pre-Decisional · Internal Working Document*

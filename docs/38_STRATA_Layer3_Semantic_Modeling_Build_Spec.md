@@ -21,7 +21,7 @@ outside its scope.
 
 **A preliminary note on coverage and commitment.** This document provides
 architecture and design guidance for Phase 3 forward. Implementation will not begin
-until GD-36 and GD-38 are formally recorded (Phase 1 of the Work Scope). The
+until GD-36 and GD-38 are formally recorded (Phase 1 of the Work Scope) — both are now recorded, approved August 10, 2026 · Project Principal (Session 99). The
 specifications in §5 and beyond are close enough to drive design decisions, but
 they are not production contracts — expect them to change as implementation begins.
 
@@ -662,13 +662,13 @@ technical pre-conditions visible alongside the specification.
 
 | # | Item | Type |
 |---|---|---|
-| 1 | GD-38: formally authorize the `ReviewerWorkspaceSurface` pattern with `SCHEMA_APPROVAL` | Decision (GD required) |
-| 2 | GD-36: formally authorize the one-way dependency rule with CI enforcement | Decision (GD required) |
-| 3 | Schema authority: registry or shell contract canonical for shared entity structure? | Decision (affects design) |
+| 1 | GD-38: formally authorize the `ReviewerWorkspaceSurface` pattern with `SCHEMA_APPROVAL` | **Resolved — GD-38 approved August 10, 2026 · Project Principal. Shell-contract change deferred to Phase 3+.** |
+| 2 | GD-36: formally authorize the one-way dependency rule with CI enforcement | **Resolved — GD-36 approved August 10, 2026 · Project Principal.** |
+| 3 | Schema authority: registry or shell contract canonical for shared entity structure? | Decision (affects design) — open; named in GD-39 as blocking Phase 3 |
 | 4 | "Partial approval" semantics: what does it mean for an object type when some properties are approved and others are pending? | Design decision |
 | 5 | Per-element `HUMAN_DECISION` vs. batched: how many events per review session? | Design decision (affects `SCHEMA_APPROVAL` payload design) |
-| 6 | MCP server deployment target: where does a persistent registry server run? | Decision (affects scope of Phase 7) |
-| 7 | Entity resolution's treatment of the two program datasets | Design constraint — must be explicitly configured before Layer 2 begins |
+| 6 | MCP server deployment target: where does a persistent registry server run? | Decision (affects scope of Phase 7) — open; requires its own future GD before Phase 3 |
+| 7 | Entity resolution's treatment of the two program datasets | **Resolved — GD-40 approved August 10, 2026. Cross-reference between the two ID schemes is named as near-term Layer 3 modeling work; not a permanent separation.** |
 
 ---
 
@@ -685,5 +685,5 @@ Build it to make disagreement visible, not to make decisions disappear.
 
 *STRATA — Layer 3 Semantic Modeling Build Spec · DRAFT v0.4 · August 9, 2026*
 *Phase 0 verification applied (v0.3); follow-up addendum incorporated (v0.4)*
-*Placed as draft — not authoritative until GD-36 and GD-38 are formally recorded*
+*GD-36 and GD-38 recorded August 10, 2026 — approved by Project Principal (Session 99). This document remains DRAFT v0.4 pending formal adoption.*
 *Pre-Decisional · Internal Working Document*

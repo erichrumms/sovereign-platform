@@ -25,7 +25,7 @@ draft; it is not being declared final or authoritative tonight.
 |---|---|
 | Shell-contract current version and hash | **Confirmed** — v1.28, hash `c99355ce...` |
 | Cost-tracking coverage (cited where relevant) | **Confirmed** — 14 of 19 real live-call sites, 5 named uninstrumented |
-| Next available GD number | **Confirmed at Phase 0** — GD-36; GD-36 through GD-41 proposed in Session 98 (same day), pending Project Principal decision |
+| Next available GD number | **Confirmed at Phase 0** — GD-36; GD-36 through GD-41 **approved August 10, 2026 · Project Principal** (Session 99 — governance recording) |
 | Rules 11, 13, 14 | **Confirmed** in main `AGENT_REFERENCE.md` |
 | Rules 15, 16, 17 (cited below) | **Real, but currently live only in `AGENT_REFERENCE_Addendum_20260730.md`** — re-confirmed this pass: Session 95 widened Rule 17 within the addendum but did not merge; the formal merge remains a separate, tracked open item |
 | FLOWPATH's gate extensibility | **Verified** — FLOWPATH's own gate is NOT extensible; the shell contract's Workspace review pattern IS, with five working precedents. See §6.1 |
@@ -557,5 +557,5 @@ decision, with its reasoning preserved — which is the part that is genuinely o
 
 *STRATA — Architecture Overview · DRAFT v0.4 · August 9, 2026*
 *Phase 0 verification applied (v0.3); follow-up addendum incorporated (v0.4)*
-*Placed as draft — not authoritative until governance decisions in §8 are recorded*
+*Governance decisions in §8 recorded August 10, 2026 — GD-36 through GD-41 approved by Project Principal (Session 99). This document remains DRAFT v0.4 pending formal adoption.*
 *Pre-Decisional · Internal Working Document*
