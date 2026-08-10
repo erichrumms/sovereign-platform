@@ -1,9 +1,10 @@
 # SOVEREIGN Platform — SBOM Update
-## Version 1.65 · August 9, 2026
+## Version 1.66 · August 9, 2026
 
-**Supersedes:** v1.64 (Session 97 — governance document placement, WH-43 duration
-and cost-site count pre-placement corrections)
-**Adds:** Session 98 — STRATA v0.4 draft placement and proposed GD-36 through GD-41.
+**Supersedes:** v1.65 (Session 98 initial placement — STRATA v0.4 drafts and
+proposed GD-36 through GD-41)
+**Adds:** Session 98 post-placement corrections — content restoration, platform-
+composition fix, and three integrity check fixes to docs/37 and docs/38.
 No product code changes, no test changes, no shell-contract changes.
 
 ---
@@ -73,6 +74,38 @@ the verified source.
 | `docs/38_STRATA_Layer3_Semantic_Modeling_Build_Spec.md` | Placed as DRAFT v0.4 — "eight days"; FLOWPATH gate verified incompatible |
 | `docs/39_STRATA_Integration_Work_Scope_and_Schedule.md` | Placed as DRAFT v0.4 — GD-36 CI rules explicit |
 | `SOVEREIGN_GD_Registry_20260809.md` | Placed — GD-36 through GD-41 proposed; supersedes 20260806 |
+
+---
+
+---
+
+## Session 98 Corrections Addendum
+
+This section documents changes made after the initial placement commit (`82a284d`).
+The underlying metrics (test count, shell-contract version, dependency streak) are
+unchanged; no new files were added; only documentation corrections were made.
+
+### Correction 1 — Content restoration (commit `833a0ac`)
+
+| File | Change |
+|---|---|
+| `docs/38_STRATA_Layer3_Semantic_Modeling_Build_Spec.md` | Restored dropped v0.3 content: YAML entry schema (§3.1), governance record requirements (§3.2), registry acceptance criteria (§3.5), builder inputs with "Known-decided separations" (§4.3), nine core builder functions (§4.4), process pipeline ASCII diagram (§4.5), human-in-the-loop requirements (§4.6), NFRs (§4.7), builder acceptance criteria (§4.8), Rules 15 and 17 as body text (§2), §5.5 FLOWPATH cost-tracking note. Size: 20,341 → 36,177 bytes. |
+| `docs/39_STRATA_Integration_Work_Scope_and_Schedule.md` | Restored dropped v0.3 content: Phase 0 Q&A answers for all seven questions with evidence (§3), per-phase rationale (§2), scope creep risk R10, technical currency risk R13, standing conventions (§9). Size: 15,925 → 23,682 bytes. |
+| `PLACEMENT_LOG.tsv` | SHA entries for docs/38 and docs/39 updated to restored-version hashes. |
+
+### Correction 2 — Platform-composition fix (commit `6e86072`)
+
+| File | Change |
+|---|---|
+| `docs/39_STRATA_Integration_Work_Scope_and_Schedule.md` | §1 "current platform state" block: corrected two false claims (NEXUS described as "shipping in next planned release" — NEXUS is operational; GD-35 subject wrong — real subject is PPBE Advisory Panels instrumentation, F5, Session 88). Section header changed from "confirmed against the repository" to "per Integration Brief v1.58 and the GD Registry." |
+| `docs/37_STRATA_Architecture_Overview.md` | Reconciliation table GD row: removed self-contradicting "next available GD is GD-36" framing; added notation that GD-36 through GD-41 are proposed in Session 98. |
+
+### Correction 3 — Integrity check fixes (this pass)
+
+| File | Change |
+|---|---|
+| `docs/38_STRATA_Layer3_Semantic_Modeling_Build_Spec.md` | Verification table: `WorkerWorkspaceSurface` corrected to `ReviewerWorkspaceSurface` in Status cell. §2 Rule 11 passage: wrong cross-reference `docs/39` corrected to `docs/36` §5 (the actual source of the WH-43 nine-day detection figure); misleading phrasing aligned with docs/37 §5.3. |
+| `docs/37_STRATA_Architecture_Overview.md` | Reconciliation table `docs/` numbering row: "next available docs/37" updated to "docs/37–39 placed in Session 98 (this document is docs/37)" — stale since all three were placed this session. |
 
 ---
 

@@ -29,7 +29,7 @@ draft; it is not being declared final or authoritative tonight.
 | Rules 11, 13, 14 | **Confirmed** in main `AGENT_REFERENCE.md` |
 | Rules 15, 16, 17 (cited below) | **Real, but currently live only in `AGENT_REFERENCE_Addendum_20260730.md`** — re-confirmed this pass: Session 95 widened Rule 17 within the addendum but did not merge; the formal merge remains a separate, tracked open item |
 | FLOWPATH's gate extensibility | **Verified** — FLOWPATH's own gate is NOT extensible; the shell contract's Workspace review pattern IS, with five working precedents. See §6.1 |
-| `docs/` numbering | **Verified** — highest is docs/36; next available docs/37 (no docs/33 exists — a real gap in the sequence) |
+| `docs/` numbering | **Verified at Phase 0** — highest was docs/36; docs/37–39 placed in Session 98 (this document is docs/37; no docs/33 exists — a real gap in the sequence) |
 | Existing Intelligence Layer content in `docs/` | **Verified** — substantive definitions exist in at least five documents; §1.1 corrected accordingly |
 | Cross-workspace dependency graph | **Verified** — see §6; the substrate placement is cheaper than v0.2 assumed |
 

@@ -29,7 +29,7 @@ they are not production contracts — expect them to change as implementation be
 
 | Claim | Status |
 |---|---|
-| `ReviewerWorkspaceSurface` interface definition and members | **Confirmed** — GD-25, v1.20 `shell-contract.ts` (`WorkerWorkspaceSurface`: `publish`, `remove`, `listForModule`, `list`, `subscribe`) |
+| `ReviewerWorkspaceSurface` interface definition and members | **Confirmed** — GD-25, v1.20 `shell-contract.ts` (`ReviewerWorkspaceSurface`: `publish`, `remove`, `listForModule`, `list`, `subscribe`) |
 | Five existing modules publishing to the Workspace | **Confirmed** — VIGIL, ARIA, SCRIBE, NEXUS, FLOWPATH |
 | `WorkflowType` four-member union | **Confirmed** — `shell-contract.ts:892` |
 | `evaluateFiveQuestionGate` signature | **Confirmed** — `FLOWPATH/src/utils/gating.ts` |
@@ -84,8 +84,9 @@ data-platform scale is the same failure mode as WH-43: two sources of truth
 diverge, and the divergence goes undetected because both implementations are
 individually plausible. **[Corrected v0.3, re-verified with commit evidence]** The
 platform document establishing Rule 11 as mandatory (`AGENT_REFERENCE.md:1592`)
-cites WH-43 by name, and the Work Scope (`docs/39`) confirms the detection timeline:
-**nine days** from shipping a broken fix to discovering it. The arc had two acts:
+cites WH-43 by name; `docs/36` §5 puts the original detection window at **nine days**
+("the metric that would have caught WH-43 the day it shipped rather than nine days
+later"). The arc had two acts:
 detection and fix July 28, 2026 (`0ab1610`, Session 71); that fix found wrong by a
 live check and reverted August 5, 2026 — **eight days** later (`4f93aea`, Session
 92). The "eight days" figure is sourced from the Phase 0 follow-up addendum (§B2),

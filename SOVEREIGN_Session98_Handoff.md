@@ -3,7 +3,7 @@
 **Session type:** Placement — STRATA v0.4 draft documents placed; GD-36 through
 GD-41 proposed (not approved)
 **Date:** August 9, 2026
-**SBOM version advanced to:** v1.65
+**SBOM version advanced to:** v1.66
 
 ---
 
@@ -96,6 +96,68 @@ between FLOWPATH and CPMI; docs/16 places it after ARIA Suite) is flagged in
 - tsc: all 15 workspaces clean (no change)
 - Next session: Governance Agent records decisions on GD-36 through GD-41;
   Phase 1 of the STRATA Work Scope
+
+---
+
+---
+
+## Post-placement corrections (appended)
+
+After the initial placement commit (`82a284d`), three rounds of corrections were
+made before session close.
+
+### Correction 1 — Content restoration (commit `833a0ac`)
+
+docs/38 and docs/39 had been written from scratch rather than amending v0.3. Both
+shrank materially: docs/38 from 20,341 to 36,177 bytes; docs/39 from 15,925 to
+23,682 bytes. Content restored:
+
+- **docs/38** — YAML entry schema with all field names (§3.1), governance record
+  requirements (§3.2), registry acceptance criteria (§3.5), builder inputs with
+  "Known-decided separations" (§4.3), nine core builder functions (§4.4), process
+  pipeline ASCII diagram (§4.5), human-in-the-loop requirements (§4.6), NFRs (§4.7),
+  builder acceptance criteria (§4.8), Rules 15 and 17 as body text (§2), §5.5
+  FLOWPATH cost-tracking note.
+- **docs/39** — Phase 0 Q&A answers for all seven questions with evidence (§3),
+  per-phase rationale (§2), scope creep risk R10, technical currency risk R13,
+  standing conventions (§9).
+
+PLACEMENT_LOG.tsv SHA entries for docs/38 and docs/39 updated to the restored
+versions.
+
+### Correction 2 — Platform-composition fix (commit `6e86072`)
+
+docs/39 §1 "current platform state" block contained two false claims under a heading
+that said "confirmed against the repository" — neither was confirmed:
+
+1. NEXUS described as "shipping in the next planned release" — false; NEXUS is an
+   existing operational companion module per Integration Brief v1.58.
+2. GD-35 described as "Addendum merge tracking" — false; GD-35's real subject is
+   PPBE Advisory Panels instrumentation, F5, Session 88.
+
+Fix: corrected platform composition against Integration Brief v1.58 and the real GD
+Registry; changed header from "confirmed against the repository" to "per Integration
+Brief v1.58 and the GD Registry." Also updated docs/37 reconciliation table GD
+entry: removed the self-contradicting "next available GD is GD-36" framing; added
+notation that GD-36 through GD-41 are proposed in Session 98.
+
+### Correction 3 — Integrity check fixes (this pass)
+
+Step 2 (GD-36 "next available" search across docs/37, 38, 39): no remaining stale
+instances found. The previous instance in docs/37 was already corrected in `6e86072`.
+
+Step 3 (full integrity check of docs/37 and docs/38) produced three further fixes:
+
+- **docs/38 verification table** — typo in Status cell: `WorkerWorkspaceSurface`
+  corrected to `ReviewerWorkspaceSurface` (the correct interface name, GD-25).
+- **docs/38 §2** — wrong cross-reference: the sentence cited `docs/39` as
+  confirming the WH-43 nine-day detection window, but docs/39 (the STRATA work
+  scope) contains no such reference. Citation corrected to `docs/36` §5, which is
+  the source of that figure (as correctly cited in docs/37 §5.3). Phrasing aligned
+  with docs/37 §5.3.
+- **docs/37 reconciliation table** — `docs/` numbering row said "next available
+  docs/37" — stale once docs/37–39 were placed this session. Updated to "docs/37–39
+  placed in Session 98 (this document is docs/37)."
 
 ---
 
