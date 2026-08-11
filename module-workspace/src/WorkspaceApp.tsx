@@ -770,10 +770,13 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
         Coverage (GD-31 / GD-35): all 14 in-scope AGENT_STEP_COMPLETE emission sites are
         instrumented. The 4 PPBE advisory panels (ppbe-exhibit-drafter, ppbe-coordination-assistant,
         ppbe-evidence-synthesizer, ppbe-scenario-analyst) were added in GD-35 (Session 88).
-        The 5 excluded sites (tracer-integration, security-query, 2 NEXUS deterministic
-        engines, counsel REASONING_STEP_COMPLETE) do not call the model — they have no token
-        usage to report. This session total is complete. GovCloud live-call cost estimates are
-        excluded until R7 resolves — the GovCloud provider always serves the static fallback tier.
+        The 4 excluded non-model sites (tracer-integration, security-query, 2 NEXUS
+        deterministic engines) do not call the model and have no token usage to report.
+        The 3 COUNSEL hooks (useAnalysis, useCounterargument, usePreMortem) emit
+        REASONING_STEP_COMPLETE, not AGENT_STEP_COMPLETE — they make live model calls
+        whose cost is not captured here. This session total is complete.
+        GovCloud live-call cost estimates are excluded until R7 resolves — the GovCloud
+        provider always serves the static fallback tier.
       </div>
 
       {/* Workspace parity-test audit status — Session 93 (docs/36 §4). */}

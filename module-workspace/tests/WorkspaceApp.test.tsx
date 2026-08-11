@@ -441,7 +441,7 @@ describe("WorkspaceApp Cost Dashboard (GD-32 / docs/32)", () => {
     expect(disclosure).toHaveTextContent(/in-memory/i);
   });
 
-  it("shows the GD-31/GD-35 coverage disclosure grounded in actual facts (14 in-scope sites, 5 excluded)", () => {
+  it("shows the GD-31/GD-35 coverage disclosure grounded in actual facts (14 in-scope sites, 4 non-model + 3 COUNSEL excluded)", () => {
     render(<WorkspaceApp ctx={makeCtx({ role: "SYSTEM_ADMIN" })} />);
     fireEvent.click(tab(/Cost Dashboard/));
     const coverage = screen.getByTestId("cost-coverage-disclosure");
