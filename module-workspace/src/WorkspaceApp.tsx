@@ -654,8 +654,8 @@ function ActivitySection({
     <div data-testid="workspace-activity-section">
       <div style={activityDisclosureStyle} data-testid="activity-scope-disclosure">
         Session-scoped only: this buffer is in-memory and does not persist across page reloads
-        (Stage 1 / Decision 21). It is not a permanent audit record — consult the platform
-        audit log for historical decisions.
+        (Stage 1 / Decision 21). It is not a permanent audit record — no cross-session decision
+        history exists (Stage 2 persistence per docs/28 has not been built).
       </div>
       {isAdmin && (
         <label style={activityToggleLabelStyle} data-testid="activity-admin-toggle-label">
@@ -761,8 +761,8 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
       {/* Session-scope banner — same wording pattern as Activity & Decisions tab (docs/32 §4). */}
       <div style={activityDisclosureStyle} data-testid="cost-scope-disclosure">
         Session-scoped only: this buffer is in-memory and does not persist across page reloads
-        (Stage 1 / Decision 21). It is not a permanent cost record — consult the platform
-        audit log for historical spend.
+        (Stage 1 / Decision 21). It is not a permanent cost record — no cross-session cost
+        history exists (Stage 2 persistence per docs/28 has not been built).
       </div>
 
       {/* Coverage statement — grounded in GD-31 Build Session 1 actual facts. */}
