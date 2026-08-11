@@ -1,20 +1,19 @@
 # SOVEREIGN Platform — CTO Demonstration Script
-## Update — August 6, 2026 · Supersedes SOVEREIGN_CTO_Demonstration_Script_20260730.md
-## Corrected August 9, 2026 · Governance Agent — WH-43 duration fixed before placement (see note)
+## Update — August 10, 2026 · Supersedes SOVEREIGN_CTO_Demonstration_Script_20260806.md
 
-**Pre-placement correction note, not part of the demo itself:** the STRATA Phase 0
-verification pass (August 9, 2026) established, from real commit evidence, that the
-Session 71 fix's own over-count regression was caught in **eight days** (Session 71,
-July 28 → Session 92, August 5), not months. Screen 4 below said "months" twice in
-its original form. Both instances are corrected here, before this script is placed
-or rehearsed. Nothing else in this document was touched.
+**Status note:** the August 6 script (below, unchanged) was corrected and placed
+for real in Session 97 — WH-43's duration fixed to the real eight days before
+placement. **This update is checklist-only** — the live walkthrough that was
+incomplete when the script was placed has since been finished, all eight screens
+walked, and three real findings from that walkthrough are recorded below.
+Nothing in Screens 1-8 or the closing section changed.
 
 ---
 
-**What changed:** the original script had a live branch point at Screen 4 depending
-on whether WH-43 was confirmed before the demo. That's resolved now — the branch
-point is gone, replaced with the real, stronger story of how it resolved. A new
-screen (Cost Dashboard) is added, since that capability didn't exist when the
+**What changed August 6:** the original script had a live branch point at Screen 4
+depending on whether WH-43 was confirmed before the demo. That's resolved now — the
+branch point is gone, replaced with the real, stronger story of how it resolved. A
+new screen (Cost Dashboard) is added, since that capability didn't exist when the
 original script was written.
 
 ---
@@ -24,10 +23,46 @@ original script was written.
 - [x] WH-43 live-confirmed — **done, and the story is worth telling directly (see
       Screen 4 below), not just checked off**
 - [ ] Environment tested on the actual presentation machine, browser, and network
+      - [ ] **New — microphone access for SCRIBE's Smart Capture.** Live-tested
+            twice tonight and blocked both times ("Voice capture error: not
+            allowed") — consistent across two different drafting modes, which
+            points to a browser/OS permission block rather than an app bug.
+            Before the real demo: (1) confirm the presentation browser has
+            microphone access in the OS privacy settings, (2) confirm the
+            site-level permission for the app's URL is set to Allow, not Ask
+            or Block, (3) actually click "Start capture" and confirm a real
+            transcript comes back — settings can look right and still not
+            work. **First, confirm whether Smart Capture is even part of the
+            planned demo** — if it's not being used live, this doesn't block
+            anything, but should be a deliberate call, not an unchecked
+            assumption either way.
 - [ ] DEV persona toggle confirmed working, roles pre-identified for each screen —
-      **now includes SUPERVISOR as a real persona option**
+      **confirmed this arc: SUPERVISOR is a real, working persona option, along
+      with Platform Admin, System Admin, Program Manager, Analyst, Compliance
+      Officer, Agent Operator, Independent Reviewer, and Read Only.**
+      **New finding, worth knowing before demo day: switching personas silently
+      resets other screens' in-session state** (confirmed via a controlled
+      re-test — travel-request decisions and VIGIL's alert queue both appeared
+      to "reset" after a persona switch, with no warning to the operator). Not
+      a data-integrity bug — ruled out via direct comparison — but worth
+      knowing so a mid-demo persona switch doesn't visibly undo something
+      already shown.
 - [ ] A fresh browser session — no leftover Activity & Decisions or Cost Dashboard
       entries from rehearsal
+- [ ] **Live walkthrough — now complete for all eight screens.** Screen 4
+      confirmed live and holds (WH-43 parity, including a real ESCALATED item
+      correctly not inflating the count). Screens 1-3, 5, 6, and 8 walked this
+      arc — Screen 6 in particular confirmed the full live/static agent
+      inventory (VIGIL live; SCRIBE, APEX, NEXUS, and CPMI's PPBE-adjacent
+      paths static with honest degraded-mode disclosure; ARIA deterministic by
+      design). Screen 7's on-screen excluded-site text discrepancy (see below)
+      has since been investigated and fixed.
+- [ ] **Cost Dashboard disclosure text — fixed, worth re-confirming live before
+      the real demo.** The on-screen excluded-site text incorrectly claimed
+      three COUNSEL hooks "do not call the model at all" — they do; they're
+      excluded from this specific coverage metric because they emit a
+      different event type. Corrected in the repo; worth a quick visual
+      re-check on Screen 7 during rehearsal to confirm the fix reads clearly.
 
 ---
 
@@ -121,5 +156,8 @@ framework — both should now cite its real resolution instead.
 
 *SOVEREIGN Platform — CTO Demonstration Script · Update · August 6, 2026*
 *WH-43 duration corrected August 9, 2026 · Governance Agent*
+*Pre-demo checklist updated August 10, 2026 with walkthrough-completion status
+and two new findings (microphone access, persona-reset) — checklist-only,
+Screens 1-8 unchanged*
 *Pre-Decisional · Internal Working Document*
 *Companion to Strategic Plan v3.11*
