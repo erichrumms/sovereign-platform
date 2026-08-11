@@ -53,7 +53,7 @@ GD) is maintained throughout — per the discipline established at the time of R
 | **GD-38** | **STRATA schema review gate — `ReviewerWorkspaceSurface` pattern; `SCHEMA_APPROVAL` decision type authorized as eventual mechanism** | **Approved** | **August 10, 2026. Shell-contract change (SCHEMA_APPROVAL addition) deferred to Phase 3+ — not authorized for the demo period. FLOWPATH gate confirmed structurally incompatible (Phase 0).** |
 | **GD-39** | **Object schema registry as Layer 4 binding surface** | **Approved** | **August 10, 2026. Shell-contract impact to be determined pending schema-authority resolution (registry vs. shell contract as canonical for shared entity structure).** |
 | **GD-40** | **Entity resolution — PPBE-native and World Model program datasets** | **Approved** | **August 10, 2026. No shell-contract change. Subject was always entity resolution — Session 98 draft mislabel corrected. MCP serving is a separate open question requiring its own future GD.** |
-| **GD-41** | **Layer 1 connector for SOVEREIGN log events** | **Approved** | **August 10, 2026. No shell-contract change. `ctx.logger.getEntries()` already authorized by GD-28. Whether the connector resolves Stage 2 persistence is an explicit separate decision.** |
+| **GD-41** | **Layer 1 connector for SOVEREIGN log events** | **Approved** | **August 10, 2026. No shell-contract change. `ctx.logger.getEntries()` already authorized by GD-28. Building and operating the connector is the unconditional answer to Stage 2 persistence (`docs/28`) — resolved once built, no further separate decision required.** |
 
 **Related but not a GD:** the `SUPERVISOR` role addition (Session 91, shell contract
 v1.27 → v1.28) was authorized directly as part of `docs/34`'s original Phase 3 scope,
@@ -143,7 +143,7 @@ relevant GDs are recorded — which they now are, for all six.
 |---|---|
 | Authority | Project Principal |
 | Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
-| Decision | The first STRATA Layer 1 connector ingests the SOVEREIGN `SovereignLogEvent` stream into persistent Layer 1 storage, using `ctx.logger.getEntries()` (authorized by GD-28, shell-contract v1.23) as the read surface. This connector may constitute a real answer to the long-open Stage 2 persistence question (`docs/28`). Whether it does — and whether Stage 2 is considered closed by it — is a decision to be made explicitly, not by default behavior. |
+| Decision | The first STRATA Layer 1 connector ingests the SOVEREIGN `SovereignLogEvent` stream into persistent Layer 1 storage, using `ctx.logger.getEntries()` (authorized by GD-28, shell-contract v1.23) as the read surface. The connector's construction and operation constitutes the unconditional answer to Stage 2 persistence (`docs/28`) — resolved once built, without requiring a further separate decision. |
 | Shell contract impact | None — `ctx.logger.getEntries()` already authorized by GD-28 |
 | Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. |
 | Source | `docs/37` §5.1; `docs/39` §4.2, R12 |

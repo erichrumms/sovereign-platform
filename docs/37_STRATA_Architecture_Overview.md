@@ -535,7 +535,7 @@ implementation details. Left implicit, they will be relitigated repeatedly.
 | 3 | The schema review gate — **Phase 0 resolved the mechanism question** (the Workspace review pattern, not FLOWPATH's gate; see §6.1); what remains is the decision itself, including the `SCHEMA_APPROVAL` shell-contract addition | Determines Layer 3's review design and one shell-contract bump |
 | 4 | Formally ending the zero-new-production-dependencies streak | An ingestion platform cannot be built dependency-free; the streak is real and SBOM-tracked ("unbroken from Session 62") and should end by decision, not by discovery |
 | 5 | Entity resolution's treatment of the two program datasets | Default behavior would silently reverse an explicit prior architectural decision |
-| 6 | Whether STRATA Layer 1 constitutes the answer to Stage 2 persistence (`docs/28`) — and, related, that an MCP-served registry would be the platform's first persistent service (§5.3) | Stage 2 is a long-standing open decision that this work may resolve incidentally |
+| 6 | **Resolved by GD-41 (August 10, 2026):** whether STRATA Layer 1 constitutes the answer to Stage 2 persistence (`docs/28`) — building and operating the connector is the unconditional answer, no further separate decision required. The related MCP-serving question (§5.3) remains open and requires its own future GD. | Closed by GD-41 — no longer deferred |
 
 ---
 

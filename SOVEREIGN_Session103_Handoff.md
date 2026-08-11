@@ -11,8 +11,8 @@ they directed the user to "the platform audit log for historical [decisions/spen
 No such platform audit log exists. The remote sink (`SOVEREIGN_LOGGER_ENDPOINT`) is
 null in `sovereign_config.yaml`; Stage 2 persistence (`docs/28`) has never been built.
 GD-41 (approved August 10, 2026) authorizes a STRATA Layer 1 connector for log events
-but (a) that connector has not been built and (b) whether it resolves Stage 2 persistence
-is explicitly a future separate decision, not a default consequence of GD-41.
+but that connector has not been built. Once built and operating, Stage 2 persistence is
+resolved per GD-41 — no further separate decision is required after that point.
 
 **Before (Activity & Decisions banner):**
 > "…It is not a permanent audit record — consult the platform audit log for historical decisions."

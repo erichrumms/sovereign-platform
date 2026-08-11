@@ -44,7 +44,7 @@ Agent / Build Agent), starting from the current platform state.
 
 **What this scope does not include:** Layer 4 application development (building
 SOVEREIGN features that *consume* STRATA objects), the Intelligence Layer build, or
-Stage 2 persistence beyond the STRATA Layer 1 connector that may resolve it.
+Stage 2 persistence — resolved by the Layer 1 connector per GD-41 once built; no further persistence work beyond that connector is in scope.
 
 ---
 
@@ -60,7 +60,7 @@ Stage 2 persistence beyond the STRATA Layer 1 connector that may resolve it.
 | 5 | SOVEREIGN-side schema review: review component + Workspace publisher | 4-6 | Imports STRATA types; per-element review UI (net-new design work per Phase 0 Concern 1) |
 | 6 | Per-element review UI: accept/reject/modify at property granularity | 4-6 | Bundled with Phase 5 or sequenced after — scoped explicitly because Phase 0 confirmed this is net-new with no platform precedent; must not be silently absorbed into Phase 5's estimate |
 | 7 | Review-gate connection: publisher + `SCHEMA_APPROVAL` shell-contract change | 1-2 | **Should be small** — Phase 5/6 do the heavy lifting; Phase 7 is the formal wiring. Honest if Phase 5/6 are well-scoped |
-| 8 | Layer 1 connector: SOVEREIGN `SovereignLogEvent` → persistent storage | 3-5 | First Layer 1 connector; may resolve Stage 2 persistence |
+| 8 | Layer 1 connector: SOVEREIGN `SovereignLogEvent` → persistent storage | 3-5 | First Layer 1 connector; resolves Stage 2 persistence (`docs/28`) per GD-41 once built |
 | 9 | Layer 2 transformations: clean + standardize SOVEREIGN data | 4-6 | First transformation pipelines; entity resolution config must account for two-program-dataset constraint |
 
 **Phase 0 note on Phase 7:** The "1-2 sessions" estimate remains honest only if
@@ -261,7 +261,7 @@ approved language.
 |---|---|
 | Authority | Project Principal |
 | Status | **✅ APPROVED — August 10, 2026 · Project Principal** |
-| Decision | The first STRATA Layer 1 connector ingests the SOVEREIGN `SovereignLogEvent` stream into persistent Layer 1 storage, using `ctx.logger.getEntries()` (GD-28, shell-contract v1.23) as the read surface. This may constitute the answer to the long-open Stage 2 persistence question (`docs/28`). Whether it does — and whether that question is considered closed by it — is a decision to be made explicitly, not by default |
+| Decision | The first STRATA Layer 1 connector ingests the SOVEREIGN `SovereignLogEvent` stream into persistent Layer 1 storage, using `ctx.logger.getEntries()` (GD-28, shell-contract v1.23) as the read surface. The connector's construction and operation constitutes the unconditional answer to Stage 2 persistence (`docs/28`) — resolved once built, without requiring a further separate decision. |
 | Shell contract impact | None — `ctx.logger.getEntries()` already authorized by GD-28 |
 | Authorized session | Approved via direct Governance Agent / Project Principal interview, August 10, 2026. No Build Agent code session. |
 
@@ -322,7 +322,7 @@ is only honest if this work is done before Phase 7 begins.
 | R9 | Per-element review UI requires non-trivial STRATA-internal state management beyond what any existing Workspace module does | Medium | High | Build Agent | Scoped explicitly (§7); Phase 5/6 estimate includes design time |
 | R10 | **Scope creep from one connector to many** — Phase 8 scoped to a single connector; additional sources are separate later decisions; the platform's recent history includes meaningful feature additions that started small | High | Medium | Build Agent | Explicit Phase 8 scope boundary; additional connectors each require their own scoping and GD; stop and re-scope if Phase 8 expands |
 | R11 | STRATA workspace accidentally imports `@sovereign/*` | Medium | High | Build Agent | CI enforcement per GD-36; no `../` escaping, no `@sovereign/*` in package.json |
-| R12 | Stage 2 persistence question remains open even if Layer 1 connector is built | Medium | Medium | Project Principal | GD-41 requires explicit decision — the connector may resolve Stage 2, but does not automatically close the question |
+| R12 | Stage 2 persistence question remains open even if Layer 1 connector is built | Medium | Medium | Project Principal | **Resolved by GD-41** — building and operating the connector is the unconditional answer to Stage 2 persistence (`docs/28`). No further separate decision required. |
 | R13 | **Technical currency assumptions may be stale** — open-table-format tooling and semantic-layer tooling moved quickly through 2024-2025; the architectural principles in these documents are stable, but specific tool names and library choices should be verified fresh before Phase 2 begins | Medium | Low | Build Agent | Verify specific tool choices at Phase 2 start; do not treat any tool name in these documents as a confirmed selection |
 | R14 | **[New v0.3]** **The per-element review UI is under-scoped** — it is net-new design and implementation work with no platform precedent, and may be absorbed silently into Phase 5's estimate without a visible estimate increase. If it is, Phase 7's "1-2 sessions" assumption breaks | High | Medium | Build Agent | Treat Phase 5 (Workspace publisher + review component) and Phase 6 (per-element UI) as separately estimated, even if executed together |
 | R15 | **[New v0.3]** **The MCP-served registry becomes the platform's first persistent out-of-browser service by accident rather than decision** — deployment target, credentials, monitoring, backup, and retention are not current-platform concerns; they would be new categories of operational obligation. If introduced without a governance decision, the scope expands silently | High | High | Project Principal | GD-40 was re-scoped to entity resolution (approved August 10, 2026) — MCP serving requires its own future governance decision before Phase 3 begins. This risk remains open and unmitigated until that decision is recorded. |
