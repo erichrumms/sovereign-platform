@@ -51,9 +51,14 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # three addendum files but wrote the manifest as if those addenda had been fully merged
 # into their primary documents. The SHAs below for AGENT_REFERENCE.md and
 # Agent_Identity_Standard.md reflect the real merges performed August 11, 2026.
-# The July 31 manifest entries for these files (SHA 14aa83ad... for AGENT_REFERENCE,
-# SHA e317ab8e... for Agent_Identity_Standard) described file states that never existed.
-AGENT_REFERENCE.md|repo|5384ed243f74fb7d1f3f1f3181ed9bb9bb3e4f806559299a441e070be2db5af7|1899|v3.5 — corrected stale test figure at Level 1 Walkthrough Protocol bullet (934→"2,245 tests as of Session 106"); Session 107; also needs manual copy to iCloud root + project knowledge|2026-08-11
+# The July 31 manifest entry for AGENT_REFERENCE.md (SHA 14aa83ad...) described a
+# file state (AGENT_REFERENCE_v3.5.md, 1,993 lines) that was produced locally but
+# never committed to this repository — confirmed present in ~/Downloads, Session 108
+# (August 12, 2026). The original "never existed" claim in this note was incorrect
+# for AGENT_REFERENCE.md: the file existed outside git history; the merge was simply
+# never pushed. For Agent_Identity_Standard.md (SHA e317ab8e...), the original
+# "never existed" claim is unverified this session and stands as recorded.
+AGENT_REFERENCE.md|repo|a1d567d825a25d7ffb495e764ddfbf648cfd5e620eee1f0c51eb95439bfbddac|2006|v3.6 — Lessons 26-29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; Session 108; also needs manual copy to iCloud root + project knowledge|2026-08-12
 Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
@@ -87,6 +92,14 @@ SESSION_80_HANDOFF.md|repo|2f3a7ff7aa7ab928b4cd4571190bb3c77482a915088d0dc21509c
 
 # --- iCloud Governance/ ---
 SBOM_Registry_v1.42.md|icloud|ed6166b555ffdcb3b2109ec80dac413c0168b15774b45972cecdb49f15ceb8c3|138|v1.42 — merges Sessions 54-61; supersedes v1.41|2026-07-24
+
+# --- Repo root: Session 107 ---
+SOVEREIGN_Session107_Handoff.md|repo|129cdfc4751f7e9b7724888c22d11dcc8ddf8b656e87f229eb077c59fbdcb712|169|Session 107 Handoff — governance document currency correction|2026-08-11
+SBOM_Session107_Update.md|repo|a6465ba47eba2603d8e41b8a9cc36f5e1e4bd8aa089bfe9dc8f6454d88ce39f3|62|v1.75 — Session 107 documentation correction|2026-08-11
+
+# --- Repo root: Session 108 ---
+SOVEREIGN_Session108_Handoff.md|repo|72563f24df53bdc3a12fda5a70a7756385a360c0b73fdb08461866ba4ffa02b1|233|Session 108 Handoff — AGENT_REFERENCE.md v3.6 content recovery|2026-08-12
+SBOM_Session108_Update.md|repo|d2fa79a42fb8487641e6168b19584899c87cf11b30e7de4f5344063bd80a7d0e|81|v1.76 — Session 108 content recovery|2026-08-12
 
 # --- KNOWN GAP, deliberately recorded rather than left to be rediscovered ---
 # System Prompt v37 has no file on disk anywhere. It lives only in the Governance

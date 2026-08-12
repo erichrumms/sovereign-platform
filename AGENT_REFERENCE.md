@@ -1,13 +1,14 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.5 — August 11, 2026**
-**Supersedes:** v3.2 (July 22, 2026), which itself was one addition on top of
-v3.1 (July 19, 2026) — itself one addition on top of v3.0 (July 18, 2026) —
-the merge of BOTH prior lineages: the repo copy (1014 lines, last committed
-June 26, 2026, containing Lessons 1-12 and the SOVEREIGN-specific sections)
-and the project-knowledge copy v2.0 (530 lines, July 18, containing Rules
-1-10 through the July 15 incidents).
+**Version: 3.6 — August 12, 2026**
+**Supersedes:** v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
+which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
+superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
+1,014 lines, June 26, 2026, and the project-knowledge copy v2.0, 530 lines, July 18,
+2026). **Correction:** the Supersedes line in v3.5 read "v3.2 (July 22, 2026)" and
+skipped v3.3 and v3.4 entirely; those versions exist and their changes are recorded
+in the per-version changelog entries below.
 **Merge decision:** Project Principal, July 18, 2026 — one canonical
 document, placed identically in the repo, at the iCloud root, and in
 project knowledge.
@@ -36,13 +37,30 @@ former Rule 11's closing paragraph ("Known Codebase Fact about derived-value
 defects (Rule 11/12 from Part I)") is removed; no such fact exists in Part I. Nothing
 else in v3.3 changed.
 **v3.5 change:** Three real content additions, merged from addendum
-`AGENT_REFERENCE_Addendum_20260730.md` (committed July 31, 2026 but never spliced
-into this document until now — Session 105, August 11, 2026). Rules 15, 16, and 17
+`AGENT_REFERENCE_Addendum_20260730.md` (committed July 31, 2026; the merge was
+performed in Session 106, August 11, 2026 — commit 7824383). Rules 15, 16, and 17
 added to Part II's rule sequence after Rule 14. Lessons 30-38 added to Part I's
-lesson sequence after Lesson 25. Note: Lessons 26-29 are confirmed absent from this
+lesson sequence after Lesson 25. Footer updated from the stale "v3.0" to v3.5.
+**Correction (Session 108):** the original v3.5 entry read "Session 105, August 11,
+2026" for the merge; git history (commit 7824383 message) confirms Session 106.
+The original v3.5 entry also stated "Lessons 26-29 are confirmed absent from this
 document and from git history — no content for those numbers exists anywhere in the
-repository. The sequence moves directly from Lesson 25 to Lesson 30 as authored.
-Footer updated from the stale "v3.0" to v3.5.
+repository." That claim is retracted. The content exists — extracted from
+AGENT_REFERENCE_v3.5.md (SHA-256 14aa83ad…, 1,993 lines, present in project Downloads)
+and recovered into this document as v3.6 Block A below. The file was produced locally
+and never committed to the repository; it is not absent from the project.
+**v3.6 change:** Three content recoveries from the parallel lineage copy
+(AGENT_REFERENCE_v3.5.md, 1,993 lines, SHA-256 14aa83ad…), performed Session 108,
+August 12, 2026. Block A: Lessons 26-29 inserted between Lesson 25 and Lesson 30
+(content dated July 27, 2026; absent from the repo copy since the July 31 merge was
+never committed). Block B: Rule 10 amendment of July 26, 2026 (upstream timestamp
+check for shared staging locations) inserted after Rule 10's final paragraph. Block C:
+session-store pattern update (seventh instance arrived; extraction deferred past CTO
+demonstrations; decision recorded) replaces the stale "seventh instance" placeholder
+sentence. Rules 11-17 and Lessons 30-38 are unchanged from v3.5. The two parallel
+lineages are otherwise not merged — their Rules 13/14 divergence is an open item for
+the Project Principal (documented in Session 108 Handoff). Supersedes line corrected
+to show the full v3.0-v3.5 chain. Footer updated to v3.6.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -631,8 +649,31 @@ component remounts" question should default to "build a sixth-shape sibling
 of these," not a new pattern.** Per the same reasoning `docs/SOVEREIGN_Shell_Surface_Reference_20260721.md`
 already applies to *shell-owned* surfaces (extraction-worthy once a sixth
 hand-written copy appears) — this module-local family has now reached that
-same count. Worth a real governance conversation about extracting a shared
-helper the next time a seventh instance is needed, not before.
+same count. **Updated July 26, 2026 (Session 64/65):** the seventh instance arrived —
+`flowpath-elicitation-session.ts`, fixing WH-25 (FLOWPATH's elicitation
+session state was component-local and did not survive a remount). This
+crossed the threshold this fact already named for a real extraction
+conversation. **Decision: extraction deferred until after the CTO
+demonstrations**, for the same reasoning as D4-6 (the API-key architecture
+decision) — real, valuable work that touches multiple already-working,
+already-tested stores, for a benefit that's about long-term maintainability
+rather than anything the demonstrations themselves require, with continued
+development beyond the demonstrations not yet confirmed. This is a decision,
+not a further deferral of one — revisit specifically once continued
+investment in the platform is confirmed, not by default on some later
+session's own initiative.
+
+**A related, smaller decision from the same review:** FLOWPATH's
+`activeBundle` (the produced-but-not-yet-approved workflow artifact) was
+found to have the identical resurrection exposure — component-local state,
+lost on remount. **This did not become an eighth session store.** The
+Reviewer's Workspace surface (`flowpath-workspace-publisher.ts`) already
+publishes the complete bundle the moment it's produced; `FlowpathApp`
+reconstructs `activeBundle` from that existing surface on mount instead of
+maintaining a second durable copy of the same data. Worth naming as the
+first deliberate application of Rule 11 (below) to a real architecture
+choice: the existing computation/storage was found and reused, not
+re-derived a second time.
 
 ---
 
@@ -1151,10 +1192,62 @@ author, edit, or restructure any `docs/NN` spec file, or this document.**
 Reconciliations between a spec and what was actually built belong in the
 session's Handoff, never in the spec itself.
 
-*Note: Lessons 26-29 are not present in this document. No content for those
-numbers was found anywhere in the repository or in git history. The sequence
-moves directly from Lesson 25 to Lesson 30 as authored by the Governance Agent
-(July 30, 2026, merged August 11, 2026).*
+### Lesson 26: A session's own "process finding" needs the same verification as its code claims
+
+Established across Sessions 60 and 61, twice: Session 60's Handoff and its
+own report both repeated a claim about two files' tracked/untracked status
+that was checked and found wrong; Session 61's Handoff then made a
+*different* wrong claim about the same two files. Neither was a code
+defect — both were findings *about* the repository's state, written with
+the same confidence as a verified code claim, but never actually re-checked
+against `git status` before being written down. The fix isn't more scrutiny
+of code specifically — it's treating every claim a session makes about the
+state of the world, not just the state of the code, as needing the same
+direct verification. *(Added to this document July 27, 2026 — the
+Integration Brief cited this lesson from July 24 onward; it had not
+previously been transcribed here, its canonical home.)*
+
+### Lesson 27: An ordering dependency between two fixes can be real and load-bearing even when each fix looks complete on its own
+
+Session 60's assessment found four more instances of a known bug pattern,
+and separately found that a completely different, seemingly-unrelated
+navigation fix (Home-return) had a latent dependency on the *first* bug
+pattern being fixed correctly first — not because the code shared a file or
+a type, but because one fix's correctness had been silently relying on a
+constraint (single-module-mount) the other fix would remove. Session 61
+confirmed this held exactly as predicted. Worth asking, for any two
+findings that touch the same subsystem even loosely: does fixing one
+change an assumption the other was quietly depending on? — not just "are
+these two independent items I can schedule in either order." *(Added to
+this document July 27, 2026, same basis as Lesson 26.)*
+
+### Lesson 28: A documented, well-evidenced rule is not the same as a checked one, and the gap between them can recur in the very session the rule was written
+
+`AGENT_REFERENCE.md` named the module-local session-store pattern
+explicitly, with six real prior instances, and said any future "does this
+reset on remount" question should default to it. The seventh instance
+(FLOWPATH's elicitation state, Session 63/64) shipped as plain `useState`
+anyway, in the same arc this exact rule was being actively referenced. The
+fix isn't a better-written rule — it's treating "does this need the
+pattern" as a checklist item in a session's own acceptance criteria, not a
+fact sitting in a reference document waiting to be remembered.
+
+### Lesson 29: A genuine data-integrity finding can surface as a side effect of unrelated work, and the right response is to flag it precisely, not fix it quietly or ignore it
+
+WH-33 — ECHO's obligation ceiling sitting below its real obligated total
+since before this arc — was found while building a multi-year PPBE data
+expansion (WG-6), not by anyone looking for it. It had never been
+displayed or computed against by anything in the UI. The Build Agent named
+it exactly, with the real numbers, and left the actual resolution to a
+governance decision rather than picking a plausible number on its own
+authority. Worth naming as the behavior to reproduce, not just this one
+instance of it.
+
+*(Lessons 26-29 recovered in Session 108, August 12, 2026, from AGENT_REFERENCE_v3.5.md,
+SHA-256 14aa83ad…, 1,993 lines — a local file present in project Downloads that was
+produced during the July 26-27, 2026 work but never committed to this repository.
+The v3.5 claim that these lessons "do not exist anywhere in the repository or git
+history" was accurate about git history; the file itself was not absent from the project.)*
 
 ### Lesson 30: A comprehensive audit's clean result is a point-in-time claim, not a permanent property
 
@@ -1646,6 +1739,19 @@ whole file. This isn't just a fallback of last resort; once a transfer
 channel has proven unreliable twice, assume it may fail a third time and
 route around it rather than trying it again unchanged.
 
+**Amendment, added July 26, 2026:** the fix above — verify content before
+`git add` — remains correct and sufficient for the transfer step it covers.
+A recurrence of this exact incident shape happened one step earlier: a
+shared staging location (a Downloads folder) already held same-named files
+from unrelated prior work, and a bulk move executed against whatever was
+already sitting there before the intended new download had actually
+completed. **Extend the check upstream:** before moving any batch of files
+out of a shared download location into a project's staging area, verify
+each file's modification timestamp is recent — from *this* transfer, not
+an earlier one — not just that a checksum matches an expected value, since
+a checksum computed against the wrong reference set will pass cleanly and
+prove nothing.
+
 ---
 
 ### Rule 11 — One fact, one computation
@@ -1893,7 +1999,8 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 ---
 
-*Agent Reference Document — Unified v3.5 · August 11, 2026*
+*Agent Reference Document — Unified v3.6 · August 12, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
 *Lessons 13+ continue in the Integration Brief lineage*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
+*v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
