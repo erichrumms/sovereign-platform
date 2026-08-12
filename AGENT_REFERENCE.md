@@ -1,14 +1,20 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.7 — August 12, 2026**
-**Supersedes:** v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
+**Version: 3.8 — August 12, 2026**
+**Supersedes:** v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
+which superseded v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
 1,014 lines, June 26, 2026, and the project-knowledge copy v2.0, 530 lines, July 18,
 2026). **Correction:** the Supersedes line in v3.5 read "v3.2 (July 22, 2026)" and
 skipped v3.3 and v3.4 entirely; those versions exist and their changes are recorded
-in the per-version changelog entries below.
+in the per-version changelog entries below. **Correction (Session 110):** the Supersedes
+line in v3.7 read "v3.5 (August 11, 2026), which superseded v3.4..." — skipping v3.6
+entirely. v3.6 exists (August 12, 2026); its changes are in the changelog entry below.
+This is the second consecutive skip-a-version defect in this line; v3.7 is also the
+version that added Lesson 39 (finality language as a prompt to re-verify), making this
+a live instance of that lesson inside the document that contains it.
 **Merge decision:** Project Principal, July 18, 2026 — one canonical
 document, placed identically in the repo, at the iCloud root, and in
 project knowledge.
@@ -71,6 +77,20 @@ by Project Principal decision; Rule 14 remains deliberately and permanently unas
 D2: citation guidance for the intentional Rule 1–3 duplication across Part I and
 Part II added to the "How to read" section — this finding existed in no file before
 this note. Rules 11–16 and Lessons 1–38 byte-identical to v3.6. Footer updated to v3.7.
+**v3.8 change:** Two corrections and one convention change, Session 110, August 12,
+2026. (1) Supersedes line corrected — v3.7 skipped v3.6, repeating the defect v3.5
+introduced and Session 108 corrected; v3.7 is also the session that added Lesson 39
+(finality language as a prompt to re-verify), making this a live instance of that
+lesson in the document that contains it. (2) Handoff close-table convention changed:
+the "HEAD after push" value is no longer recorded in the handoff — it cannot be
+accurate when written, because further commits always follow; Sessions 108 and 109
+both recorded wrong values attempting it. Terminal HEAD is now the responsibility of
+DOCUMENT_MANIFEST.tsv (updated after push), not the handoff. Both §Session Handoff
+Document sections updated. (3) D1 inventory finding recorded: SOVEREIGN_System_Prompt_v37.md
+exists in ~/Downloads (SHA 398fb8b4…, 179 lines, July 24, 2026); DOCUMENT_MANIFEST.tsv's
+"KNOWN GAP" claim of "no file on disk" is factually wrong. SOVEREIGN_System_Prompt_v38.md
+also exists (SHA eb604959…, 323 lines, July 27, 2026), not tracked in manifest.
+Rules 11–17 and Lessons 1–39 byte-identical to v3.7. Footer corrected from stale v3.6 header.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -179,11 +199,17 @@ Agent accurate inputs for updating the Brief.
 **What must be correct:**
 - Done-condition traceability (proof each criterion was met)
 - Shell-contract hash of record (new hash if contract changed)
-- Exact commit hashes
+- Exact commit hashes for each change made this session
 - Test counts (JS and Python separately, and total)
 - Update flags for the Integration Brief
 - Spec reconciliations — any place Claude Code adapted from the spec to reality
 - Blockers and findings — anything Claude Code surfaced but did not act on
+
+**Convention (Session 110):** The handoff close table does not carry a "HEAD after push"
+value. This value cannot be accurate when written — further commits (SBOM, manifest
+updates) always follow the handoff; Sessions 108 and 109 both recorded wrong values
+attempting it. The session's terminal HEAD is recorded in the DOCUMENT_MANIFEST.tsv row
+added at close, not in the handoff itself.
 
 **Who writes it:** Build Agent at session close. Commits and pushes to repo root.
 
@@ -212,6 +238,15 @@ prompts, shell-contract versions, VRS certificates, and model registry entries.
 
 **Who writes it:** Build Agent produces a session update file. Governance Agent
 merges it into the cumulative registry.
+
+**Version-numbering convention (established D4, Session 110):** Per-session update
+files and merged registry files share one number space — they do not run independent
+sequences. Each document takes the next available number regardless of type. The
+merged registry v1.44 (July 30, 2026, through Session 76) was followed by per-session
+update v1.45 (Session 77); both sequences draw from the same counter. As of Session 109,
+the last number used is v1.77. The next available number is **v1.78**. Assigning v1.74
+or v1.75 to a new merged registry would collide with per-session updates already committed
+at those numbers (Session 106 = v1.74, Session 107 = v1.75 — confirmed in real files).
 
 **Project Principal action:** Downloads the merged registry and places in iCloud
 `Companion Suite/Governance/`.
@@ -1442,9 +1477,15 @@ The **Project Principal** is the only human in the loop and the bridge between e
 
 **What must be correct:**
 - Done-condition traceability (proof each criterion was met)
-- Exact commit hashes
+- Exact commit hashes for each change made this session
 - Test counts
 - Update flags for the Integration Brief
+
+**Convention (Session 110):** The handoff close table does not carry a "HEAD after push"
+value — this value cannot be accurate when written, because further commits always follow
+the handoff. Sessions 108 and 109 both recorded wrong values attempting it. The session's
+terminal HEAD is recorded in the DOCUMENT_MANIFEST.tsv row added at close, not in the
+handoff itself.
 
 **Who writes it:** Build Agent at session close. Commits and pushes it to the repository.
 
@@ -1477,6 +1518,10 @@ forward-references whenever a renumbering happens, not assume none exist.
 - Test count totals
 
 **Who writes it:** Build Agent produces a session update file. Governance Agent merges it into the cumulative registry and produces the next full version. Neither agent modifies the cumulative registry directly.
+
+**Version-numbering convention (established D4, Session 110):** Per-session update
+files and merged registry files share one number space. Next available number as of
+Session 109: **v1.78**. See Part I §3 for the full convention record.
 
 **Project Principal action:** Downloads the merged registry and archives it. This is primarily a compliance artifact — does not need to be read in detail each session.
 
@@ -1930,11 +1975,13 @@ No content from the original governance-document application was changed.
 a commit-attribution suppression setting in `.claude/settings.json`, correctly configured,
 non-functional for seven consecutive sessions before anyone checked actual commit output
 rather than the settings file that was supposed to control it — shares the same failure
-pattern as an open backlog item in this repository: `git config user.name` and `user.email`
-are not set, so `git log` records `developmentsystem@Erichs-Mac-mini.local` (the machine
-hostname) as the author email on every commit, confirmed by direct check at Session 109
-open. Both the suppression setting and the git configuration look correct until someone
-checks what actual output contains. The second — `place_governance_doc.sh` and its
+pattern as a deliberately accepted state in this repository: `git config user.name` and
+`user.email` are not set; `git log` records `developmentsystem@Erichs-Mac-mini.local` (the
+machine hostname) as the author email on every commit. **Project Principal decision,
+August 12, 2026: this attribution is deliberately left as is — not an open defect, not
+an item to remediate.** Both the suppression setting and the git configuration look correct
+until someone checks what actual output contains — the principle stands regardless of
+whether the example represents a live gap or a settled decision. The second — `place_governance_doc.sh` and its
 verification manifest `DOCUMENT_MANIFEST.tsv` went unused for roughly twenty sessions
 after being rebuilt July 24, 2026, silently drifting out of sync with the real files
 they exist to check, with no announcement of the lapse. D5 of Session 109 exists because
@@ -2053,9 +2100,10 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 ---
 
-*Agent Reference Document — Unified v3.6 · August 12, 2026*
+*Agent Reference Document — Unified v3.8 · August 12, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
 *Lessons 13+ continue in the Integration Brief lineage*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
 *v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*
+*v3.8 — August 12, 2026: Supersedes line corrected (v3.7 skipped v3.6); handoff close-table HEAD convention changed (no longer recorded in handoff); D1 inventory System Prompt findings recorded; footer v3.6 header corrected*

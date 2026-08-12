@@ -63,7 +63,7 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # committed to the repository. The repo's current Agent_Identity_Standard.md (SHA 4bd67a3a...)
 # reflects the later v1.1 merge performed in Session 107. The "never existed" claim is
 # retracted — the file exists in ~/Downloads but was never pushed to git.
-AGENT_REFERENCE.md|repo|2d3f02ca591b548ec68f1a5d9919bc446e328b59553cb74770993933c46fb842|2061|v3.7 — Block D (Rule 13 incidents) added to Rule 17; Lesson 39 (parallel Rule 14) added; citation guidance for Part I/II Rule duplication; Rule 14 permanently unassigned; Session 109; also needs manual copy to iCloud root + project knowledge|2026-08-12
+AGENT_REFERENCE.md|repo|f6a1aebafec8050dbe4f182800127b5f5ee8f83fa12875f9cede73913d45b09f|2109|v3.8 — D2: Supersedes line corrected (v3.7 skipped v3.6); handoff HEAD convention changed; D4: SBOM version-numbering convention added; D5b: Rule 17 git-attribution framing updated; D1 finding recorded; Session 110; also needs manual copy to iCloud root + project knowledge|2026-08-12
 Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
@@ -110,16 +110,16 @@ SBOM_Session108_Update.md|repo|d2fa79a42fb8487641e6168b19584899c87cf11b30e7de4f5
 SOVEREIGN_Session109_Handoff.md|repo|5d218267649fdc80a81aeb12e266f803249e0e53cbbf53142b7b219c47ed56d9|250|Session 109 Handoff — D1-D5 governance resolution; Rules 13/14 conflict resolved; Lesson 39; manifest remediation; HEAD corrected to ebd72fe in close commit|2026-08-12
 SBOM_Session109_Update.md|repo|e2c6215cbc8890bf58711971f59eec26aeb30867ec5212261cf94cf80bff87d2|113|v1.77 — Session 109 governance resolution|2026-08-12
 
-# --- Sessions 81-106: PLACEMENT_LOG-evidenced governance documents ---
-# Evidence source: PLACEMENT_LOG.tsv rows 15-33. SHAs below are current disk state;
-# PLACEMENT_LOG has point-in-time placement SHAs which may differ for corrected files.
-# NOTE: SOVEREIGN_CTO_Demonstration_Script_20260806.md (PLACEMENT_LOG row 17) is not
-# on disk — superseded by 20260810 version; 20260810 row added below.
-# BOUNDED GAP: Session handoffs and SBOM updates for Sessions 81-86, 87-98, 101-106
-# exist in git (confirmed by direct ls) but have no PLACEMENT_LOG entries. Individual
-# rows are a bounded follow-up task — volume exceeds one session's remediation scope.
-# D5b reached through PLACEMENT_LOG rows 15-33 only; Sessions 81-86/88-98/101-106
-# handoffs and SBOMs remain without manifest rows until that follow-up session.
+# --- Repo root: Session 110 ---
+SOVEREIGN_Session110_Handoff.md|repo|7499b1c4b4a1a3222e0dc69b85abb5b243246760566d85e0f341a9e2fbc63448|157|Session 110 Handoff — D1-D5 governance resolution; AGENT_REFERENCE.md v3.8; D5a 47 rows; D4 SBOM convention|2026-08-12
+SBOM_Session110_Update.md|repo|2416e5b31e9f185b5d465bec1a96ee8d36fd3e064da860f411aa0fca1f83da73|100|v1.78 — Session 110 governance resolution|2026-08-12
+
+# --- Sessions 81-106: governance documents ---
+# Evidence source for governance documents below: PLACEMENT_LOG.tsv rows 15-33.
+# SHAs reflect current disk state. NOTE: SOVEREIGN_CTO_Demonstration_Script_20260806.md
+# (PLACEMENT_LOG row 17) is not on disk — superseded by 20260810 version; 20260810 row
+# added below. Evidence source for session handoffs and SBOM updates (Sessions 81-98,
+# 101-106): git history per `git log --all -1 -- <file>`. D5a, Session 110.
 SOVEREIGN_GD_Registry_20260806.md|repo|cefab8a97c52e394209b815b0f7ae680285187e6b62824c374b6d36bab2aad30|59|GD-34 and GD-35 added; PLACEMENT_LOG row 16|2026-08-06
 SOVEREIGN_CTO_Demonstration_Script_20260810.md|repo|ba7a7bec910e0dbb9d47682ee245e2baa0d182c536be3c771b50bce9a5e2c865|163|supersedes 20260806 (not on disk); PLACEMENT_LOG rows 17/ref|2026-08-10
 SOVEREIGN_Remaining_Build_Backlog_v3_20260806.md|repo|bebecb30f1ab79f990de9c78b3d4ceb7048d6b5787c8eae7cab18501d7eb1966|79|v3 — WH-43 closed; GD-31–35 closed; PLACEMENT_LOG row 19|2026-08-09
@@ -133,7 +133,59 @@ SBOM_Session99_Update.md|repo|a2662e2408ea0d9446298ace7ed4958af190223f53daa6ab55
 SOVEREIGN_Session100_Handoff.md|repo|24b47db2bbff9210084a9a467e10fa46d6b3b8c6f0da28d97b1a905d7776c3d8|71|Session 100 Handoff — record correction; PLACEMENT_LOG row 32|2026-08-10
 SBOM_Session100_Update.md|repo|ca9e87f95ea290841c3b8793715fd3260d5730109ad1276bc4584300a216223a|50|v1.68 — Session 100 record correction; PLACEMENT_LOG row 33|2026-08-10
 
-# --- KNOWN GAP, deliberately recorded rather than left to be rediscovered ---
-# System Prompt v37 has no file on disk anywhere. It lives only in the Governance
-# Agent's project settings. It needs a row here and an iCloud copy, matching the
-# v29/v31 precedent this manifest used to carry.
+# --- Session 81-106 handoffs and SBOM updates (D5a, Session 110) ---
+SESSION_81_HANDOFF.md|repo|cee2ced954a1fa8d33a2aa2e9006e8ddcb683e7db4bfef8408e715be68692b74|276|Session 81 Handoff — non-standard filename; commit f5456f7|2026-08-04
+SBOM_Session81_Update.md|repo|8547fbcd016e10ade65683723d2d4176764ff0e428a96423b2b4b59c05b7375c|96|v1.49 — Session 81; supersedes v1.48|2026-08-04
+SESSION_82_HANDOFF.md|repo|ae5af562768d4a7937ed8ed9c7c11dcb1ee1d7706bb7efe6ba6c4a4607818f21|289|Session 82 Handoff — non-standard filename; commit 79d73ec|2026-08-04
+SBOM_Session82_Update.md|repo|fc7aa106f35ac23be82be02d5c6be0f0584771a9ca4c4b6a9b4723d8ce316f1b|105|v1.50 — Session 82; supersedes v1.49|2026-08-04
+SESSION_83_HANDOFF.md|repo|d8e34a1ed4e55cad31b0484ff3ef8e8bdf32057ad69cb9dac4d42ac1af0c3016|271|Session 83 Handoff — non-standard filename; commit adc6d7e|2026-08-04
+SBOM_Session83_Update.md|repo|13dd4571736639be4f266ab2a6e433d69ecec73c4104fd16d8949560d8c23dbf|79|v1.51 — Session 83; supersedes v1.50|2026-08-04
+SOVEREIGN_Session84_Handoff.md|repo|8ea1ece3fc282a6eaaba229325c30be1d56287884f78ef3d55f3788f143f55ae|119|Session 84 Handoff; commit a1f08f2|2026-08-04
+SBOM_Session84_Update.md|repo|e2288331e648bc9a20dd5c7c1375ec60082ae9b9ccfe0fab719327c2158151b8|77|v1.52 — Session 84; supersedes v1.51|2026-08-04
+SOVEREIGN_Session85_Handoff.md|repo|979c11521c29c4e4d203ac5a1ffec2f60b7aaddaaa4055d8dece872bc79b0500|147|Session 85 Handoff; commit d045895|2026-08-04
+SBOM_Session85_Update.md|repo|a7a38035091d6355c6d76021050e5e50bd252070eb87d45e49f7be4a5d3260ba|73|v1.53 — Session 85; supersedes v1.52|2026-08-04
+SESSION_86_COST_TRACKING_REFLECTION.md|repo|4c24a55052c2c7e46f0177cb6054f6de9d1abb826017d6ad53b92b5153de9e97|292|Session 86 reflection doc — no SBOM; non-standard filename; commit e6ad703|2026-08-04
+SOVEREIGN_Session87_Handoff.md|repo|2a4372e390e567ebaad64528904ec94f46dd47085645507a974898169d829f7c|174|Session 87 Handoff; commit 9a3acda|2026-08-04
+SBOM_Session87_Update.md|repo|c8d010d938adf02e271a408e0b225b2a92a6aeff2e6d9d643edfe8907b881595|90|v1.54 — Session 87; supersedes v1.53|2026-08-04
+SOVEREIGN_Session88_Handoff.md|repo|ab2c5208bbb33014be5d78aaac6858399d3324ec7f4a96079fef588e6729c291|119|Session 88 Handoff; commit 84141aa|2026-08-05
+SBOM_Session88_Update.md|repo|c1aab112ff2b9dc3a87f255e21ab9b1d9fc32abb4ace64bd0249ac82d435efc1|81|v1.55 — Session 88; supersedes v1.54|2026-08-05
+SESSION_89_REGRESSION_VERIFICATION.md|repo|2e62b7724b0fee4a37974f374ca27a71a3b451d555e52388789800a0fdfbd8c4|216|Session 89 regression verification — no SBOM; non-standard filename; commit d4b7322|2026-08-05
+SOVEREIGN_Session90_Handoff.md|repo|9a4def47f535f261c5227ba0bddde29a2be23f976dbcd2c799d972b32445d68b|157|Session 90 Handoff; commit ffeeb95|2026-08-05
+SBOM_Session90_Update.md|repo|0ba4ac54656fa094c52ac5a3f2e7c6276f742b6a02d46c7befe2fb3254b757e2|57|v1.56 — Session 90; supersedes v1.55|2026-08-05
+SBOM_Session90b_Update.md|repo|4e5c01e7131dbad5aa8478315dc5f5c30fd65453c7d22877aa13af58d2d6e1b7|53|v1.57 — Session 90b follow-on; supersedes v1.56; no standard handoff|2026-08-05
+SOVEREIGN_Session91_Handoff.md|repo|f1f99cc52191120b5585c1af293608f0445392e78b5d053eb78b97e7b101bff7|142|Session 91 Handoff; commit e618a5d|2026-08-05
+SBOM_Session91_Update.md|repo|6b06370a7fff0917f56d3d62ed036125db4651dd6b8002836f45bf8f0d8d5446|87|v1.58 — Session 91; supersedes v1.57|2026-08-05
+SOVEREIGN_Session92_Handoff.md|repo|a47fc017d1a2413f751e40637cc1725404593598014ac29996b3cb75a0141669|88|Session 92 Handoff; commit 4f93aea|2026-08-05
+SBOM_Session92_Update.md|repo|d70be9874fc02c69f53c446884856d54ddcadf09be8feec9c077565a6cdf1fc8|73|v1.59 — Session 92; supersedes v1.58|2026-08-05
+SOVEREIGN_Session93_Handoff.md|repo|6d85a4b76137fba2cb422c371b836eea688743818381d02b6d993c183685c08f|163|Session 93 Handoff; commit 107538f|2026-08-05
+SBOM_Session93_Update.md|repo|93c552764288c120bf8731c964bb42f5b817ec7631528b9fca594e3f37ae51d5|77|v1.60 — Session 93; supersedes v1.59|2026-08-05
+SOVEREIGN_Session94_Handoff.md|repo|5d3fe5a3207d98508ad62efc2a26daa25f02b70cd69c17c5f8ccff350a643db6|420|Session 94 Handoff; commit e46fe16|2026-08-05
+SBOM_Session94_Update.md|repo|815bd2fc55b31f1c48ab34575a4627de7edb7eb59edadf7f80751338195d29e7|60|v1.61 — Session 94; supersedes v1.60|2026-08-05
+SOVEREIGN_Session95_Handoff.md|repo|dbba20b8f2aa472e553c462e2d7289c3f848f4d8956e51a8a62b2a9bf1c9ac1c|287|Session 95 Handoff; commit c0ea505|2026-08-05
+SBOM_Session95_Update.md|repo|3a363315252b73a294fd7966be1ff21189522855c4dfefa30561f85587c9c059|103|v1.62 — Session 95; supersedes v1.61|2026-08-05
+SOVEREIGN_Session96_Handoff.md|repo|61fa8b4ed190af4c57fabd9c81069ee1ee081d215d957bf0c9d6439a478fea66|110|Session 96 Handoff; commit d696c88|2026-08-06
+SBOM_Session96_Update.md|repo|b6541eaf6bf049e6ef116f9d92d19430b854000edbfd9f8158ca962f39d6ba06|63|v1.63 — Session 96; supersedes v1.62|2026-08-06
+SOVEREIGN_Session97_Handoff.md|repo|86cf9fa7e9a05b8baeb9a32f99d795071a27e4b11e2c676a442eec4810309edf|65|Session 97 Handoff; commit 5c51c47|2026-08-09
+SBOM_Session97_Update.md|repo|deb58f0763f9d51d80526e9ee2be765b4cf61d47bcc6463f4ee1d5e7ad6d756f|70|v1.64 — Session 97; supersedes v1.63|2026-08-09
+SOVEREIGN_Session98_Handoff.md|repo|93c5c0ce9debf942deaf8e6b133da3ce62a4911ad1020be6905aabe591ab5c07|165|Session 98 Handoff; commit 1649464|2026-08-09
+SBOM_Session98_Update.md|repo|329b32e13141eced4d0fb27def01263e37e9169c8d7ee02c3f7e331a8c54a3e0|113|v1.66 — Session 98; supersedes v1.65 (v1.65 skipped at placement)|2026-08-09
+SOVEREIGN_Session101_Handoff.md|repo|63241f0c7b643f72bd6dc57faf6d7f797e2e3f9a2803cd6e6fc4bfab989d4f32|111|Session 101 Handoff; commit ce87ddb|2026-08-10
+SBOM_Session101_Update.md|repo|b568427e4dfb3ffef24559db9604f42dcb67829893748bd42e8e507ad7fc9707|53|v1.69 — Session 101; supersedes v1.68|2026-08-10
+SOVEREIGN_Session102_Handoff.md|repo|5c3183a49f4139783b70f9b7e788c2e8ef25923f1454d035831c7dfc26e8e9fc|63|Session 102 Handoff; commit d4ca830|2026-08-10
+SBOM_Session102_Update.md|repo|9f3b9db23d923ae6713ef0a5bc161d2da7a92e02d7d7e24d5b7d352b8be2be81|48|v1.70 — Session 102; supersedes v1.69|2026-08-10
+SOVEREIGN_Session103_Handoff.md|repo|ca5570d53065c81866b1da408b5a7369ac9f2f5bfdf83118745a499d48663b64|44|Session 103 Handoff; commit 1a8a5e0|2026-08-10
+SBOM_Session103_Update.md|repo|ee4bd7a7dcd123fd24471cdb35159ad9375e22c35227e4dda18cad4718c89b96|49|v1.71 — Session 103; supersedes v1.70|2026-08-10
+SOVEREIGN_Session104_Handoff.md|repo|01deb3bff24f30a5b064a6e21326f3a3439140ae437a8ca869f110052eb5356c|78|Session 104 Handoff; commit 9ae2d94|2026-08-10
+SBOM_Session104_Update.md|repo|949acd1436f2340e2c763a84efb706541bd6b7de5a60928fea8211362344aad3|51|v1.72 — Session 104; supersedes v1.71|2026-08-10
+SOVEREIGN_Session105_Handoff.md|repo|ac380b64d04eadf3bea00a5c393054573e48d9310e4706ceda384713f75b8da8|152|Session 105 Handoff; commit 6b27e33|2026-08-10
+SBOM_Session105_Update.md|repo|8c6a8a61435a4c7dffbc82f0194a940600bf163f78f4603ed1091d19881c9299|63|v1.73 — Session 105; supersedes v1.72|2026-08-10
+SOVEREIGN_Session106_Handoff.md|repo|2eab1c99a06906e6ad2ab3071b01d790362c15450913d6e69247adf9497a96ee|160|Session 106 Handoff; commit 07e2c06|2026-08-11
+SBOM_Session106_Update.md|repo|00086399ceb044c25b560422413897bc4113d648340f8a563f29e906a7442462|66|v1.74 — Session 106; supersedes v1.73|2026-08-11
+
+# --- D1 FINDING, Session 110 — System Prompt manifest rows ---
+# SOVEREIGN_System_Prompt_v37.md: exists in ~/Downloads (SHA 398fb8b4..., 179 lines,
+# July 24, 2026). Prior note claiming "no file on disk anywhere" was factually wrong;
+# corrected here. SOVEREIGN_System_Prompt_v38.md also found in ~/Downloads
+# (SHA eb604959..., 323 lines, July 27, 2026), not tracked in manifest.
+# Both are by-design outside git history. No repo row appropriate; iCloud copy
+# and project-knowledge copy remain a manual Project Principal step.
