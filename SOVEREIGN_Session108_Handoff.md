@@ -220,7 +220,7 @@ Sessions 81-106 have no manifest rows. Stale rows (3) for superseded documents n
 
 | Item | Value |
 |---|---|
-| HEAD after push | *(populated below after push)* |
+| HEAD after push | `33c093e` |
 | `AGENT_REFERENCE.md` SHA | `a1d567d825a25d7ffb495e764ddfbf648cfd5e620eee1f0c51eb95439bfbddac` |
 | `AGENT_REFERENCE.md` lines | 2,006 |
 | Shell contract SHA | `c99355cea43b63672615e76551aa835c3eb73a2f6435fbc43665f67d50ec681b` (both copies) |
