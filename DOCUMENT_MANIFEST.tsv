@@ -111,8 +111,8 @@ SOVEREIGN_Session109_Handoff.md|repo|5d218267649fdc80a81aeb12e266f803249e0e53cbb
 SBOM_Session109_Update.md|repo|e2c6215cbc8890bf58711971f59eec26aeb30867ec5212261cf94cf80bff87d2|113|v1.77 — Session 109 governance resolution|2026-08-12
 
 # --- Repo root: Session 110 ---
-SOVEREIGN_Session110_Handoff.md|repo|7499b1c4b4a1a3222e0dc69b85abb5b243246760566d85e0f341a9e2fbc63448|157|Session 110 Handoff — D1-D5 governance resolution; AGENT_REFERENCE.md v3.8; D5a 47 rows; D4 SBOM convention|2026-08-12
-SBOM_Session110_Update.md|repo|2416e5b31e9f185b5d465bec1a96ee8d36fd3e064da860f411aa0fca1f83da73|100|v1.78 — Session 110 governance resolution|2026-08-12
+SOVEREIGN_Session110_Handoff.md|repo|7499b1c4b4a1a3222e0dc69b85abb5b243246760566d85e0f341a9e2fbc63448|157|Session 110 Handoff — D1-D5 governance resolution; AGENT_REFERENCE.md v3.8; D5a 47 rows; D4 SBOM convention; terminal HEAD 6223ddd|2026-08-12
+SBOM_Session110_Update.md|repo|2416e5b31e9f185b5d465bec1a96ee8d36fd3e064da860f411aa0fca1f83da73|100|v1.78 — Session 110 governance resolution; terminal HEAD 6223ddd|2026-08-12
 
 # --- Sessions 81-106: governance documents ---
 # Evidence source for governance documents below: PLACEMENT_LOG.tsv rows 15-33.
