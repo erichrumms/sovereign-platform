@@ -1,7 +1,7 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.6 — August 12, 2026**
+**Version: 3.7 — August 12, 2026**
 **Supersedes:** v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
@@ -61,6 +61,16 @@ sentence. Rules 11-17 and Lessons 30-38 are unchanged from v3.5. The two paralle
 lineages are otherwise not merged — their Rules 13/14 divergence is an open item for
 the Project Principal (documented in Session 108 Handoff). Supersedes line corrected
 to show the full v3.0-v3.5 chain. Footer updated to v3.6.
+**v3.7 change:** Rules 13/14 lineage conflict resolved by Project Principal decision,
+August 12, 2026. Block D: the parallel lineage's Rule 13 — two supporting incidents
+(commit-attribution suppression non-functional for seven sessions; placement script
+and verification manifest unused for roughly twenty) — folded into canonical Rule 17
+as an evidence paragraph, attributed and recovered Session 109. Block E: the parallel
+lineage's Rule 14 (finality language is a prompt to re-verify) re-homed as Lesson 39
+by Project Principal decision; Rule 14 remains deliberately and permanently unassigned.
+D2: citation guidance for the intentional Rule 1–3 duplication across Part I and
+Part II added to the "How to read" section — this finding existed in no file before
+this note. Rules 11–16 and Lessons 1–38 byte-identical to v3.6. Footer updated to v3.7.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -74,6 +84,14 @@ system, walkthrough protocol, iCloud structure, Lessons 1-12). The
 numbered Lesson sequence runs 1-12 in Part I and continues from 13
 onward in the Integration Brief lineage (13 first appears in Brief
 v1.37, June 30, 2026).
+**Citations specifying a rule by number alone are ambiguous where both sequences
+cover the same number** — Rule 2 in Part I is "the shell-contract hash must match
+before any build work begins" (line 794); Rule 2 in Part II is "prompts are approved
+before they run live" (line 1598 in v3.6; shifts with edits). Write "Part I Rule 2"
+or "Part II Rule 2" to remove the ambiguity. The duplication is intentional, documented
+here, and is not a defect to correct. *(D2, Session 109, August 12, 2026. This finding
+existed in no file before this note — it was lost when the project-knowledge copy was
+replaced by the repo copy after the v3.0 merge.)*
 
 ═══════════════════════════════════════════════════════════════════
 # PART I — SOVEREIGN Multi-Agent Development System Reference
@@ -1304,6 +1322,26 @@ finding itself is real and correctly investigated. "Gap found and fixed" describ
 test-coverage gap for already-correct behavior, not a functional bug — worth precision
 in how a finding is titled, not just how it's explained in the body.
 
+### Lesson 39: Finality language in a governance document is a prompt to re-verify, not a signal that verification is unnecessary
+
+Phrases like "not open for further relitigation," "genuinely settled," or "no
+longer a risk," appearing in a governance document about a factual claim
+(not a decision the Project Principal has actually made), should be read as
+exactly the place a fresh check is most overdue — not as permission to skip
+one. A real instance: a governance document used this exact language about
+two files' repository status, closing the question definitively. Both files
+existed exactly as the original, correctly-relitigated finding had said, and
+were found again within minutes by an unrelated routine check. The more
+definitively a document closes a question, the more that specific claim is
+worth checking directly before building anything on top of it — precisely
+because definitive language is what makes a later reader least likely to
+check it themselves.
+
+*(Authored as Rule 14 in the parallel lineage — AGENT_REFERENCE_v3.5.md, SHA-256 14aa83ad….
+Re-homed as Lesson 39 by Project Principal decision, Session 109, August 12, 2026.
+Rule 14 in the canonical document remains deliberately and permanently unassigned,
+per standing Project Principal decision of August 6, 2026.)*
+
 ---
 
 ## Document Naming Conventions
@@ -1888,6 +1926,22 @@ to monitoring agents and anomaly-detector thresholds per the Session 94 findings
 "Rule 13" citation as pointing at this principle applied to the monitoring-agent case.
 No content from the original governance-document application was changed.
 
+**Two supporting incidents recovered from the parallel lineage, Session 109:** The first —
+a commit-attribution suppression setting in `.claude/settings.json`, correctly configured,
+non-functional for seven consecutive sessions before anyone checked actual commit output
+rather than the settings file that was supposed to control it — shares the same failure
+pattern as an open backlog item in this repository: `git config user.name` and `user.email`
+are not set, so `git log` records `developmentsystem@Erichs-Mac-mini.local` (the machine
+hostname) as the author email on every commit, confirmed by direct check at Session 109
+open. Both the suppression setting and the git configuration look correct until someone
+checks what actual output contains. The second — `place_governance_doc.sh` and its
+verification manifest `DOCUMENT_MANIFEST.tsv` went unused for roughly twenty sessions
+after being rebuilt July 24, 2026, silently drifting out of sync with the real files
+they exist to check, with no announcement of the lapse. D5 of Session 109 exists because
+of the second incident. *(Recovered from the parallel lineage — authored as Rule 13 in
+AGENT_REFERENCE_v3.5.md, SHA-256 14aa83ad…; re-homed as evidence for canonical Rule 17
+by Project Principal decision, Session 109, August 12, 2026.)*
+
 ---
 
 ## Detecting Drift, Duplication, and Staleness
@@ -2004,3 +2058,4 @@ If a conflict arises between a document and the actual, directly-observable stat
 *Lessons 13+ continue in the Integration Brief lineage*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
+*v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*

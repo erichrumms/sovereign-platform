@@ -39,10 +39,10 @@
 # ---------------------------------------------------------------------------
 
 # --- Repo root: NEW this cycle (Sessions 54-61) ---
-SOVEREIGN_Platform_Integration_Brief_v1.49.md|repo|5b090347fe442309ae0390a176d9de91d2156208ae5ddb9e7426bbd916fb4272|210|v1.49 — supersedes v1.48; Rule 1 currency restored; D4-5 scope corrected in place 2026-07-24|2026-07-24
-SOVEREIGN_Strategic_Plan_CTO_Demo_v3.7.md|repo|3a8e48f507811099b36d500fffb10d053203595603e1885d98f2f7157fb32444|680|v3.7 — root placement; supersedes v3.6 (docs/) and v3.3 (root); D4-5 scope corrected in place 2026-07-24|2026-07-24
+SOVEREIGN_Platform_Integration_Brief_v1.58.md|repo|c047f2f03c459cd855a0a40702e8dee02defe6341806ce4b2dd7f9c6b2c1b141|197|v1.58 — supersedes v1.49–v1.57; reconciled against real repo state; PLACEMENT_LOG row 15; stale v1.49 row corrected Session 109|2026-08-06
+SOVEREIGN_Strategic_Plan_CTO_Demo_v3.11.md|repo|c371ee015c7af19c1e598a0734a852e48edf0e4b8fa98b25f2f469cad39525bb|102|v3.11 — supersedes v3.7 and v3.10; PLACEMENT_LOG row 18; stale v3.7 row corrected Session 109|2026-08-09
 SOVEREIGN_Agent_to_Agent_Briefing.md|repo|63fa08c22e94b65693826422386dee542ac0637ce3897f56552645051ccd69aa|196|July 24 2026 — canonical undated filename per AGENT_REFERENCE layout|2026-07-24
-SOVEREIGN_New_Conversation_Handoff_v7_20260724.md|repo|d9c1048feb13d3e773e45677f06057c510db5c82b9f6eb720a508e0aef0a9515|162|v7 — supersedes v6|2026-07-24
+SOVEREIGN_New_Conversation_Handoff_v8_20260730.md|repo|25b1e9e0ddf45c0c8abd41d5c046c3a8e24bd8f75f7b3802be2d1ae8134fd416|101|v8 — supersedes v6; v7 absent from disk; stale v7 row corrected Session 109|2026-07-30
 
 CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|56|Build Agent conventions — primary control for the naming convention; see also .githooks/commit-msg|2026-07-24
 
@@ -56,9 +56,14 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # never committed to this repository — confirmed present in ~/Downloads, Session 108
 # (August 12, 2026). The original "never existed" claim in this note was incorrect
 # for AGENT_REFERENCE.md: the file existed outside git history; the merge was simply
-# never pushed. For Agent_Identity_Standard.md (SHA e317ab8e...), the original
-# "never existed" claim is unverified this session and stands as recorded.
-AGENT_REFERENCE.md|repo|a1d567d825a25d7ffb495e764ddfbf648cfd5e620eee1f0c51eb95439bfbddac|2006|v3.6 — Lessons 26-29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; Session 108; also needs manual copy to iCloud root + project knowledge|2026-08-12
+# never pushed. For Agent_Identity_Standard.md (SHA e317ab8e...), Session 109 applied the same
+# investigation: ~/Downloads/Agent_Identity_Standard.md (dated July 31, 23:12, 85,964 bytes)
+# has full SHA e317ab8e74ad2ce36aa255f44b972c2c961320750532dd7ff439106495fe4a68, matching
+# the July 31 manifest entry. The file was produced locally (July 31, 2026) and never
+# committed to the repository. The repo's current Agent_Identity_Standard.md (SHA 4bd67a3a...)
+# reflects the later v1.1 merge performed in Session 107. The "never existed" claim is
+# retracted — the file exists in ~/Downloads but was never pushed to git.
+AGENT_REFERENCE.md|repo|2d3f02ca591b548ec68f1a5d9919bc446e328b59553cb74770993933c46fb842|2061|v3.7 — Block D (Rule 13 incidents) added to Rule 17; Lesson 39 (parallel Rule 14) added; citation guidance for Part I/II Rule duplication; Rule 14 permanently unassigned; Session 109; also needs manual copy to iCloud root + project knowledge|2026-08-12
 Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
@@ -98,8 +103,35 @@ SOVEREIGN_Session107_Handoff.md|repo|129cdfc4751f7e9b7724888c22d11dcc8ddf8b656e8
 SBOM_Session107_Update.md|repo|a6465ba47eba2603d8e41b8a9cc36f5e1e4bd8aa089bfe9dc8f6454d88ce39f3|62|v1.75 — Session 107 documentation correction|2026-08-11
 
 # --- Repo root: Session 108 ---
-SOVEREIGN_Session108_Handoff.md|repo|f486ff2ca149d9d40eff6988cc81553beae59e00cbed960d360becda57cb34d2|233|Session 108 Handoff — AGENT_REFERENCE.md v3.6 content recovery|2026-08-12
+SOVEREIGN_Session108_Handoff.md|repo|b73575425f863b0ed8849f2290838a066a2a69f93e8d23e19c43a5297abce6c5|233|Session 108 Handoff — AGENT_REFERENCE.md v3.6 content recovery; corrected Session 109 (HEAD and commit-count errors)|2026-08-12
 SBOM_Session108_Update.md|repo|d2fa79a42fb8487641e6168b19584899c87cf11b30e7de4f5344063bd80a7d0e|81|v1.76 — Session 108 content recovery|2026-08-12
+
+# --- Repo root: Session 109 ---
+SOVEREIGN_Session109_Handoff.md|repo|349b0e6a8e568f4f110241bb6d942f4e7cfae4703d61145f658f4bf1d6847a10|250|Session 109 Handoff — D1-D5 governance resolution; Rules 13/14 conflict resolved; Lesson 39; manifest remediation|2026-08-12
+SBOM_Session109_Update.md|repo|e2c6215cbc8890bf58711971f59eec26aeb30867ec5212261cf94cf80bff87d2|113|v1.77 — Session 109 governance resolution|2026-08-12
+
+# --- Sessions 81-106: PLACEMENT_LOG-evidenced governance documents ---
+# Evidence source: PLACEMENT_LOG.tsv rows 15-33. SHAs below are current disk state;
+# PLACEMENT_LOG has point-in-time placement SHAs which may differ for corrected files.
+# NOTE: SOVEREIGN_CTO_Demonstration_Script_20260806.md (PLACEMENT_LOG row 17) is not
+# on disk — superseded by 20260810 version; 20260810 row added below.
+# BOUNDED GAP: Session handoffs and SBOM updates for Sessions 81-86, 87-98, 101-106
+# exist in git (confirmed by direct ls) but have no PLACEMENT_LOG entries. Individual
+# rows are a bounded follow-up task — volume exceeds one session's remediation scope.
+# D5b reached through PLACEMENT_LOG rows 15-33 only; Sessions 81-86/88-98/101-106
+# handoffs and SBOMs remain without manifest rows until that follow-up session.
+SOVEREIGN_GD_Registry_20260806.md|repo|cefab8a97c52e394209b815b0f7ae680285187e6b62824c374b6d36bab2aad30|59|GD-34 and GD-35 added; PLACEMENT_LOG row 16|2026-08-06
+SOVEREIGN_CTO_Demonstration_Script_20260810.md|repo|ba7a7bec910e0dbb9d47682ee245e2baa0d182c536be3c771b50bce9a5e2c865|163|supersedes 20260806 (not on disk); PLACEMENT_LOG rows 17/ref|2026-08-10
+SOVEREIGN_Remaining_Build_Backlog_v3_20260806.md|repo|bebecb30f1ab79f990de9c78b3d4ceb7048d6b5787c8eae7cab18501d7eb1966|79|v3 — WH-43 closed; GD-31–35 closed; PLACEMENT_LOG row 19|2026-08-09
+docs/37_STRATA_Architecture_Overview.md|repo_docs|29c0fa3e99b14c17d11aa4d90ac70ca7af09ba21bcd46158f55d48f73e987fa5|561|DRAFT v0.4 — GD-36–41 approval recorded; corrected post-PLACEMENT_LOG (rows 20/25); current disk SHA|2026-08-10
+docs/38_STRATA_Layer3_Semantic_Modeling_Build_Spec.md|repo_docs|394c4d530d6644c3935dd2830becedf1e1032d3c7c5d0b3ff0d6f57601fb012d|689|DRAFT v0.4 — GD-36–41 recorded; §9 updated; PLACEMENT_LOG row 26|2026-08-10
+docs/39_STRATA_Integration_Work_Scope_and_Schedule.md|repo_docs|74823e5c8af71ea58a237eab2a174156491a96bba597d589b1e585a850a7835a|362|DRAFT v0.4 — GD-36–41; §5.1–5.2 updated; corrected post-PLACEMENT_LOG (rows 22/27/29); current disk SHA|2026-08-10
+SOVEREIGN_GD_Registry_20260809.md|repo|5adb15fcdd8817f7ba3de612bf3df39dab43b0f34e5501e8fb4b4fa5facc7802|138|GD-36–41 proposed (not approved); superseded by 20260810; PLACEMENT_LOG row 23|2026-08-09
+SOVEREIGN_GD_Registry_20260810.md|repo|13a2669491241712edffd4bb3fdcb27f5ef5c108177a20ae2f5043a945170796|181|GD-36–41 approved Aug 10; corrected Session 100 (PLACEMENT_LOG rows 24/28); current disk SHA differs from PLACEMENT_LOG|2026-08-10
+SOVEREIGN_Session99_Handoff.md|repo|8a85f5990d802c44aa37e57cd978eb01dfd57f3af7f909df356ae1250eee7133|104|Session 99 Handoff — GD-36–41 approval; corrected Session 100 (MCP claim); PLACEMENT_LOG row 30|2026-08-10
+SBOM_Session99_Update.md|repo|a2662e2408ea0d9446298ace7ed4958af190223f53daa6ab55d0e60d1df15c9f|67|v1.67 — GD-36–41; corrected Session 100; PLACEMENT_LOG row 31|2026-08-10
+SOVEREIGN_Session100_Handoff.md|repo|24b47db2bbff9210084a9a467e10fa46d6b3b8c6f0da28d97b1a905d7776c3d8|71|Session 100 Handoff — record correction; PLACEMENT_LOG row 32|2026-08-10
+SBOM_Session100_Update.md|repo|ca9e87f95ea290841c3b8793715fd3260d5730109ad1276bc4584300a216223a|50|v1.68 — Session 100 record correction; PLACEMENT_LOG row 33|2026-08-10
 
 # --- KNOWN GAP, deliberately recorded rather than left to be rediscovered ---
 # System Prompt v37 has no file on disk anywhere. It lives only in the Governance

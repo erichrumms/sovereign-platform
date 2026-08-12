@@ -6,7 +6,7 @@
 
 ## What changed this session
 
-One commit. Files changed:
+Two commits. Files changed: *(Correction applied Session 109: the original "One commit" was wrong — the real close was `8d12119` across two commits: `33c093e` for the AGENT_REFERENCE.md content and `8d12119` carrying the manifest SHA correction and SBOM row. Both are in git log. The close table below is corrected to match.)*
 
 ```
  AGENT_REFERENCE.md         | +107 lines
@@ -220,7 +220,7 @@ Sessions 81-106 have no manifest rows. Stale rows (3) for superseded documents n
 
 | Item | Value |
 |---|---|
-| HEAD after push | `33c093e` |
+| HEAD after push | `8d12119` *(corrected Session 109 — original recorded `33c093e`, which was the content commit; `8d12119` was the close commit carrying the manifest SHA correction and SBOM row, confirmed by `git log`)* |
 | `AGENT_REFERENCE.md` SHA | `a1d567d825a25d7ffb495e764ddfbf648cfd5e620eee1f0c51eb95439bfbddac` |
 | `AGENT_REFERENCE.md` lines | 2,006 |
 | Shell contract SHA | `c99355cea43b63672615e76551aa835c3eb73a2f6435fbc43665f67d50ec681b` (both copies) |
