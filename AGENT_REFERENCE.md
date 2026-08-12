@@ -447,7 +447,7 @@ platform in a browser while Claude Chat provides step-by-step guidance.
 
 ### Purpose
 - Validate that the stage works end-to-end as a system
-- Surface integration gaps that 934 passing tests cannot detect
+- Surface integration gaps that the automated test suite (2,245 tests as of Session 106) cannot detect
 - Build Project Principal familiarity with platform operation
 - Produce a demo rehearsal at each stage milestone
 

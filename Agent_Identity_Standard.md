@@ -2,10 +2,19 @@
 **Agent Identity, Access Rights, Credential Lifecycle, and Accountability**
 
 Document Type: Governance Standard  
-Version: 1.0 — May 2026  
+Version: 1.1 — August 11, 2026  
 Authority: Project Principal · SOVEREIGN Platform Governance Authority  
-Status: APPROVED — incorporated into Integration Brief v1.3  
+Status: APPROVED — incorporated into Integration Brief v1.58  
 Classification: Pre-Decisional · Internal Working Document
+
+---
+
+## Version History
+
+| Version | Date | Summary |
+|---|---|---|
+| v1.0 | May 2026 | Original — agent classification taxonomy, six-product registry (FLOWPATH through ARIA Suite), credential lifecycle, anomaly response process, adversarial prompt injection defense, defense contractor sector position. Incorporated into Integration Brief v1.3. |
+| v1.1 | August 11, 2026 | What v1.1 is: the July 30, 2026 Confirmation Note (Sessions 71–76) was merged into this document from its addendum (`Agent_Identity_Standard_Append_20260730.md`) in Session 106, after the addendum had sat unmerged. The header itself was found still reading v1.0/May 2026 when checked in Session 107 (August 11, 2026) and is corrected here — stated plainly rather than silently fixed, consistent with how AGENT_REFERENCE.md v3.5 recorded its own stale footer. Status line updated from Integration Brief v1.3 to v1.58, the version actually placed in the repo at this date. Correction note: no July 27, 2026 confirmation note ever existed anywhere in this file or in git history — per the merge note already recorded in DOCUMENT_MANIFEST.tsv and visible in the July 30 note itself. Additions in Session 107: Sessions 77–106 confirmation note and deployment_feedback gap note appended. |
 
 ---
 
@@ -31,6 +40,14 @@ The following field is added to the SOVEREIGN Logger schema effective immediatel
 ```
 
 `agent_id` values must come from the Agent Registry in this document. Free-text agent identifiers are not acceptable. If an agent_id is not in the registry, the agent must be registered before it is used.
+
+### `deployment_feedback` — Forward-Contract Gap (Session 90 finding; Session 107 note)
+
+The schema above governs the fields required on `AGENT_STEP_START` and `AGENT_STEP_COMPLETE`. An additional field, `deployment_feedback`, was added to the logger as an optional field on `AGENT_STEP_COMPLETE` (see `sovereign_logger.py` — accepted if provided, validated for required sub-fields, but not enforced as mandatory). `sovereign_config.yaml` lists it with the comment "Every AGENT_STEP_COMPLETE event," which overstates its current status.
+
+**Confirmed by direct code search (Session 107, August 11, 2026):** `deployment_feedback` is absent from every `AGENT_STEP_COMPLETE` emission in every platform module (module-vigil, module-lens, module-agentos, module-nexus, module-apex, module-cpmi, module-flowpath, module-scribe, module-counsel, module-aria, module-workspace). No module passes this field when logging an `AGENT_STEP_COMPLETE` event. This is a deliberate forward-contract for the unbuilt Intelligence Layer, not a defect — the field is a designed hook for when the IL is built to consume step-completion data.
+
+**Open governance question:** whether to (a) design real `deployment_feedback` capture in each module when the Intelligence Layer build begins, or (b) formally scope down the "every event" expectation in `sovereign_config.yaml` to match what modules actually emit. This is a Project Principal decision, not a documentation cleanup.
 
 ---
 
@@ -1649,3 +1666,62 @@ followed since the July 19 correction note continues to hold.
 *Pre-Decisional · Internal Working Document*
 
 ---
+
+# Agent Identity Standard — Confirmation Note (Sessions 77–106)
+
+**Date:** August 11, 2026
+**Recorded by:** Build Agent, Session 107, per standing confirmation-note practice established in this document.
+
+### Step 1 — Agent count from this document's own registry tables
+
+This document contains two tables that state a total:
+
+1. **"Complete Agent Registry — As of June 29, 2026"** (PPBE Workflow Layer Additions section): 36 agents. This line now carries an explicit historical-snapshot note (applied July 19, 2026) stating it was superseded by the Time & Travel additions immediately following it. **Historical count only — not current.**
+
+2. **"Updated Agent Count — Full Platform (as of June 29, 2026)"** (Time & Travel Workflow Layer Additions section): **44 agents** — 6 FLOWPATH + 3 CPMI + 6 AgentOS core + 3 AgentOS orchestration + 2 NEXUS + 2 APEX + 1 ARIA Suite + 7 Companion Suite (COUNSEL/SCRIBE/LENS/VIGIL) + 6 PPBE workflow layer + 8 Time & Travel workflow layer. Both tables agree: the 36-agent table is the pre-Time-and-Travel snapshot; the 44-agent table is the current authoritative total. No discrepancy requiring a flag.
+
+### Step 2 — Verification script output
+
+`sovereign_session_verify.sh` (Section 4, "Agent Registry Count"):
+
+```
+Lines in the file claiming a total:
+  1013:**Total registered agents: 36** — *this was the correct count at this specific point
+  1371:**Total registered agents after this addition: 44**
+```
+
+Confirms both numbers and their relationship. No unexpected third total found.
+
+### Step 3 — Code cross-check
+
+`sovereign_logger.py` validates `agent_class` values against `APPROVED_AGENT_CLASSES` (`frozenset{"Analytical", "Operational", "Governance", "Monitoring", "Orchestration"}`) but does **not** validate `agent_id` values against any hardcoded list. There is no separate code-side agent registry. This document is the authoritative registry; the code does not maintain a parallel list to count against. The 44-agent count is confirmed from this document's own tables and the verification script.
+
+### Confirmed current total: 44 registered agents
+
+**Still 44 as of August 11, 2026.** No change from the Sessions 71–76 confirmation (July 30, 2026).
+
+### Sessions 77–106 platform work — agent registration review
+
+The following platform work occurred in the Sessions 77–106 window. None registered a new agent identity:
+
+- **GD-31 through GD-35 (cost telemetry instrumentation, Sessions 77–88):** Cost attribution fields and token-cost telemetry added to existing `AGENT_STEP_COMPLETE` and related events. No new agent identity — all events logged under already-registered agent IDs.
+
+- **Program/staff data foundation (Sessions 83–88 range):** `ProgramRecord`, `StaffRecord`, and related sovereign-data entities built. These are data-layer additions. No agent was registered for data-entry or data-management operations — existing APEX and AgentOS agents cover these surfaces.
+
+- **SUPERVISOR role addition (Session 91, shell-contract v1.28, August 5, 2026):** `SUPERVISOR` added to the `SovereignRole` union in `shell-contract.ts` and synced to `sovereign-data/src/shared-types.ts`. This is a human role, not an agent identity. The eight synthetic supervisor employees (SYNTH-E-401–408) were reassigned from `INDEPENDENT_REVIEWER` to `SUPERVISOR`. No entry is added to this registry.
+
+- **GD-36 through GD-41 (STRATA architecture decisions, approved August 10, 2026):** Architecture governance decisions for the STRATA Intelligence Layer substrate. STRATA has no built agents yet; GD-36 through GD-41 establish structural rules (one-way dependency, `ReviewerWorkspaceSurface` pattern, schema authority, entity resolution) that will govern agent behavior when Intelligence Layer agents are built. No agent registered.
+
+**No Session 77–106 work registered a new agent. This is confirmed, not assumed.** If any future session in this window is found to have registered an agent that was missed here, that is a gap in this note — not silent confirmation of 44.
+
+---
+
+*Agent Identity Standard — Confirmation Note (Sessions 77–106)*
+*August 11, 2026 · Recorded by Build Agent, Session 107*
+*Pre-Decisional · Internal Working Document*
+
+---
+
+*SOVEREIGN Agent Identity Standard v1.1 · August 11, 2026*
+*44 registered agents across all six products and workflow layers*
+*v1.0 May 2026 — original. v1.1 August 11, 2026 — header corrected, Sessions 77–106 confirmation note appended, deployment_feedback gap documented.*

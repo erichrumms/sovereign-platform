@@ -53,8 +53,8 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # Agent_Identity_Standard.md reflect the real merges performed August 11, 2026.
 # The July 31 manifest entries for these files (SHA 14aa83ad... for AGENT_REFERENCE,
 # SHA e317ab8e... for Agent_Identity_Standard) described file states that never existed.
-AGENT_REFERENCE.md|repo|fa7f21d22cb72a6c7267b1c655f8eb95655f0a2438ed4a6fd627ff12b29c6e7a|1899|v3.5 — Rules 15-17 and Lessons 30-38 merged from addendum (Aug 11 2026); also needs manual copy to iCloud root + project knowledge|2026-08-11
-Agent_Identity_Standard.md|repo|6d7940b73b24bc2d96344ed26c85f0e34b5e47d9cca4ff851ba8d23726c24960|1651|current — 44 agents; July 30 confirmation note merged Aug 11 2026 (no July 27 note ever existed)|2026-08-11
+AGENT_REFERENCE.md|repo|5384ed243f74fb7d1f3f1f3181ed9bb9bb3e4f806559299a441e070be2db5af7|1899|v3.5 — corrected stale test figure at Level 1 Walkthrough Protocol bullet (934→"2,245 tests as of Session 106"); Session 107; also needs manual copy to iCloud root + project knowledge|2026-08-11
+Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
 SOVEREIGN_Walkthrough_F_Complete.md|repo|39031d017f1ff0f2522ebd61cc340f963d4cbcf14c7b01d065653218c19e00bd|990|current — Findings Report + Repeat Pass Script|2026-07-24

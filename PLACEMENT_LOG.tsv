@@ -31,3 +31,5 @@ SOVEREIGN_Session99_Handoff.md	Corrected (Session 100): note #1 and Open Questio
 SBOM_Session99_Update.md	Corrected (Session 100): GD registry state note #1 — false MCP-subject claim removed	repo	a2662e2408ea0d9446298ace7ed4958af190223f53daa6ab55d0e60d1df15c9f	2026-08-10T00:00:00Z
 SOVEREIGN_Session100_Handoff.md	Session 100 — record correction; no new decisions	repo	24b47db2bbff9210084a9a467e10fa46d6b3b8c6f0da28d97b1a905d7776c3d8	2026-08-10T00:00:00Z
 SBOM_Session100_Update.md	v1.68 — Session 100 record correction	repo	ca9e87f95ea290841c3b8793715fd3260d5730109ad1276bc4584300a216223a	2026-08-10T00:00:00Z
+AGENT_REFERENCE.md	v3.5 — corrected stale test figure at Level 1 Walkthrough Protocol Purpose bullet (934 → "2,245 tests as of Session 106"); Session 107	repo	5384ed243f74fb7d1f3f1f3181ed9bb9bb3e4f806559299a441e070be2db5af7	2026-08-11T00:00:00Z
+Agent_Identity_Standard.md	v1.1 — header corrected (was v1.0/May 2026/IB v1.3); version-history block added; Sessions 77-106 confirmation note (44 agents confirmed); deployment_feedback gap documented; Session 107	repo	4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a	2026-08-11T00:00:00Z
