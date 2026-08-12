@@ -1,7 +1,7 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.4 — August 5, 2026**
+**Version: 3.5 — August 11, 2026**
 **Supersedes:** v3.2 (July 22, 2026), which itself was one addition on top of
 v3.1 (July 19, 2026) — itself one addition on top of v3.0 (July 18, 2026) —
 the merge of BOTH prior lineages: the repo copy (1014 lines, last committed
@@ -35,6 +35,14 @@ fourth principle was found in the repository. The phantom cross-reference in the
 former Rule 11's closing paragraph ("Known Codebase Fact about derived-value
 defects (Rule 11/12 from Part I)") is removed; no such fact exists in Part I. Nothing
 else in v3.3 changed.
+**v3.5 change:** Three real content additions, merged from addendum
+`AGENT_REFERENCE_Addendum_20260730.md` (committed July 31, 2026 but never spliced
+into this document until now — Session 105, August 11, 2026). Rules 15, 16, and 17
+added to Part II's rule sequence after Rule 14. Lessons 30-38 added to Part I's
+lesson sequence after Lesson 25. Note: Lessons 26-29 are confirmed absent from this
+document and from git history — no content for those numbers exists anywhere in the
+repository. The sequence moves directly from Lesson 25 to Lesson 30 as authored.
+Footer updated from the stale "v3.0" to v3.5.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -1143,6 +1151,66 @@ author, edit, or restructure any `docs/NN` spec file, or this document.**
 Reconciliations between a spec and what was actually built belong in the
 session's Handoff, never in the spec itself.
 
+*Note: Lessons 26-29 are not present in this document. No content for those
+numbers was found anywhere in the repository or in git history. The sequence
+moves directly from Lesson 25 to Lesson 30 as authored by the Governance Agent
+(July 30, 2026, merged August 11, 2026).*
+
+### Lesson 30: A comprehensive audit's clean result is a point-in-time claim, not a permanent property
+
+A comprehensive audit's "zero MAJOR/BROKEN" result describes what was
+checked, not a permanent property of the code. Real, demo-critical defects (WH-34,
+WH-43) surfaced through ordinary use two days after an audit had rated the same screens
+clean.
+
+### Lesson 31: A re-derived test count must state its own scope
+
+A re-derived test count needs to state its own scope, or it isn't a
+re-derivation. A total silently narrowed to JS/TS-only, presented as "the platform
+total," is a harder failure to catch than an obviously wrong number.
+
+### Lesson 32: A flagged discrepancy reconciled with shown arithmetic is the success case
+
+A flagged discrepancy, reconciled with shown arithmetic, is the success
+case worth naming as explicitly as the failure that preceded it.
+
+### Lesson 33: See Rule 15
+
+See Rule 15, below — recorded as both a rule and a lesson given its severity. A
+Handoff's fabricated code-change description was specific, detailed, internally
+consistent, and caught only under direct challenge. A general "does this look right"
+review would very likely have missed it.
+
+### Lesson 34: An "all passing" claim needs per-test verification, not just arithmetic reconciliation
+
+An "all passing" claim needs per-test verification, not just arithmetic
+reconciliation. A total that adds up correctly is not the same claim as every test in
+that total actually passing.
+
+### Lesson 35: A stated correction is only confirmed once tested against the next session's real output
+
+A stated correction is only confirmed once it's tested against the very
+next session's real output, not just declared and hoped for.
+
+### Lesson 36: Arithmetic that reconciles is not the same claim as an answer being correct
+
+Arithmetic that reconciles is not the same claim as an answer being
+correct. Only a specific, falsifiable challenge — checking a number against an
+independent structural ceiling — reliably surfaces the difference; a general "is this
+right?" usually just gets the same confident restatement back.
+
+### Lesson 37: See Rule 16
+
+See Rule 16, below — a finding that de-risks a question is not the same claim
+as one that answers it. Both deserve to be stated separately.
+
+### Lesson 38: A finding's headline can overstate its severity even when the finding is real
+
+A finding's own headline can overstate its severity even when the
+finding itself is real and correctly investigated. "Gap found and fixed" described a
+test-coverage gap for already-correct behavior, not a functional bug — worth precision
+in how a finding is titled, not just how it's explained in the body.
+
 ---
 
 ## Document Naming Conventions
@@ -1653,6 +1721,67 @@ docs/36 and had no individual citation, definition, or description anywhere in t
 repository. No fourth principle was identified. This number is held open rather than
 filled, pending a Governance Agent / Project Principal decision to assign it.
 
+### Rule 15 — Handoff code-change descriptions must quote real diff output
+
+**A Handoff's description of a code change must be written with the diff open, quoting
+only text that appears verbatim in real `git show` or `git diff` output — never
+reconstructed from what the change was intended to do.** Session 73's Handoff contained
+a fabricated section: specific, detailed, plausible-sounding before/after text for a
+tooltip fix that named three modules never actually touched by the real commit. Caught
+only because it was directly, specifically challenged — a general "does this look
+right" review would very likely have missed it, since the fabricated text was
+internally consistent and read exactly like real diff output. The fix, stated by Build
+Agent under direct questioning: compose every Handoff sentence describing a code
+change with the actual diff open, copy-pasting the real before/after text, never
+writing from memory of what the change was supposed to accomplish.
+
+### Rule 16 — A de-risking finding and an answering finding are not the same claim
+
+**A finding that de-risks a question is not the same claim as one that answers it, and
+both deserve to be stated separately.** Session 76's platform-wide investigation into
+every `HUMAN_DECISION` emission site found zero exceptions — real, comprehensive,
+reassuring evidence that no code path can silently duplicate or fabricate an audit-log
+entry. It did not, and could not, answer the narrower question that prompted it:
+whether specific observed log entries came entirely from a scripted sequence of
+actions. Recording the strong evidence and the unresolved narrower question as two
+separate facts, rather than rounding the whole thing up to "resolved," is the standard
+this rule names explicitly.
+
+### Rule 17 — A tool's or safeguard's continued existence is not evidence of its continued use
+
+**A tool's or safeguard's continued existence is not evidence of its continued use —
+check whether it's actually active, not just whether it's still listed.**
+
+This rule covers two application domains that share the same underlying failure mode
+(a visible, well-documented artifact creates a false impression of active protection)
+but require different verification actions:
+
+**Governance documents and tooling:** `DOCUMENT_MANIFEST.tsv` is designed to be the
+authoritative record of what document version is current where, with an explicit rule
+that it overrides chat if the two disagree. It fell out of use once before (last
+updated July 18, silently abandoned, rebuilt July 24) and did so again immediately
+after being rebuilt — no placement across Sessions 62 through 76 touched it. A tool
+this authoritative-sounding, sitting unused for six days of otherwise thorough work,
+is a more dangerous failure mode than a tool that was never built at all, because it
+still looks trustworthy on inspection. *Verification action for this domain: check
+whether the file was recently written, not just whether it exists.*
+
+**Monitoring agents and anomaly-detector thresholds:** an agent registered in
+`Agent_Identity_Standard.md` with a monitoring scope and anomaly thresholds listed
+is not evidence that those thresholds are still in force in the live configuration.
+A safeguard can be silently deregistered, its threshold changed, or its check-cycle
+disabled while still appearing in the Standard as-registered. *Verification action
+for this domain: query the Agent Identity Standard for the registered threshold,
+then confirm the live configuration uses the same value — not just that an entry
+exists. A mismatch between the Standard and the live config is itself an anomaly.*
+
+**August 5, 2026 scope widening — Session 95 (Governance Agent authorization):**
+the original rule (July 30, 2026) covered governance documents only. Scope extended
+to monitoring agents and anomaly-detector thresholds per the Session 94 findings
+(Finding C in SOVEREIGN_Session94_Handoff.md), which identified docs/36's informal
+"Rule 13" citation as pointing at this principle applied to the monitoring-agent case.
+No content from the original governance-document application was changed.
+
 ---
 
 ## Detecting Drift, Duplication, and Staleness
@@ -1764,6 +1893,7 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 ---
 
-*Agent Reference Document — Unified v3.0 · July 18, 2026*
+*Agent Reference Document — Unified v3.5 · August 11, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
 *Lessons 13+ continue in the Integration Brief lineage*
+*v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*

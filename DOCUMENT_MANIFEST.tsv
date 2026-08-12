@@ -47,8 +47,14 @@ SOVEREIGN_New_Conversation_Handoff_v7_20260724.md|repo|d9c1048feb13d3e773e45677f
 CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|56|Build Agent conventions — primary control for the naming convention; see also .githooks/commit-msg|2026-07-24
 
 # --- Repo root: already current; checksums CORRECTED to the real files ---
-AGENT_REFERENCE.md|repo|d7c1755bc7e2e934b5a0594e37226626f6721893511a52664a0d9e676c0819e8|1684|v3.3 — also needs manual copy to iCloud root + project knowledge|2026-07-24
-Agent_Identity_Standard.md|repo|483731f2e34bacfcc9b05d9db4cf8dda701fb889a2340c81867d6224447a2648|1608|current — 44 agents, PPBE deferral note|2026-07-24
+# NOTE (August 11, 2026 — Session 106): The July 31, 2026 commit (c2d9f5c) placed
+# three addendum files but wrote the manifest as if those addenda had been fully merged
+# into their primary documents. The SHAs below for AGENT_REFERENCE.md and
+# Agent_Identity_Standard.md reflect the real merges performed August 11, 2026.
+# The July 31 manifest entries for these files (SHA 14aa83ad... for AGENT_REFERENCE,
+# SHA e317ab8e... for Agent_Identity_Standard) described file states that never existed.
+AGENT_REFERENCE.md|repo|fa7f21d22cb72a6c7267b1c655f8eb95655f0a2438ed4a6fd627ff12b29c6e7a|1899|v3.5 — Rules 15-17 and Lessons 30-38 merged from addendum (Aug 11 2026); also needs manual copy to iCloud root + project knowledge|2026-08-11
+Agent_Identity_Standard.md|repo|6d7940b73b24bc2d96344ed26c85f0e34b5e47d9cca4ff851ba8d23726c24960|1651|current — 44 agents; July 30 confirmation note merged Aug 11 2026 (no July 27 note ever existed)|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
 SOVEREIGN_Walkthrough_F_Complete.md|repo|39031d017f1ff0f2522ebd61cc340f963d4cbcf14c7b01d065653218c19e00bd|990|current — Findings Report + Repeat Pass Script|2026-07-24
@@ -58,7 +64,7 @@ SOVEREIGN_Walkthrough_H.md|repo_docs|954e26c1d50b469ded39e5400942859caad401fd5a6
 SOVEREIGN_Walkthrough_G_Findings_Report_20260721.md|repo_docs|f96fe697871b0edee4dfdb4b06a25ec15f1fbd2daaf11a350acf5eaeb06b8f11|138|updated July 24 — build scope fully closed; D4-5 scope corrected in place 2026-07-24|2026-07-24
 30_Session60_Assessment_Action_Plan.md|repo_docs|1ff6d6bc84ff73f8ed094f157fc3d2b89936993092e12df929a4bcb78a18fe64|133|S2 closed Session 61; S3 governance items open; D4-5 scope corrected in place 2026-07-24|2026-07-24
 29_Governance_Decisions_WG11_WG7_WG14.md|repo_docs|31690f225121ddf64d70ddaa5baed4ce4fcda92250e41159a2bf23557a33707f|99|all three decided and built|2026-07-24
-28_Logger_Write_Only_Provenance_Gap.md|repo_docs|765dc759195130decc55251f0db91ccf3eef5bac0baaba6522898de4c41632d6|109|RESOLVED — GD-28 executed Session 58|2026-07-24
+28_Logger_Write_Only_Provenance_Gap.md|repo_docs|0fe35eaaa11a7ad5ef85cbffa04c74fd3434f909efbb489bc8b80b6c3fc966c9|132|RESOLVED — GD-28 executed Session 58; July 30 append merged Aug 11 2026 (SHA 24544c39... in July 31 manifest was for a file version never created)|2026-08-11
 22_Informed_Decision_Making.md|repo_docs|3f270f3dd0a87682ef615a32906ffd52b48d2c65cffe0fec5ea6d31f0911bbd7|217|updated July 24 — EG-E addressed|2026-07-24
 18_PPBE_Workflow_Architecture.md|repo_docs|269c8fbf88f610693153ba0dcbd1d62dcf4e479c2dc41290bae3b77223aa79a4|461|v1.3|2026-07-24
 SOVEREIGN_Shell_Surface_Reference_20260721.md|repo_docs|efe0b4929a6e1f58ed38f255bf4b73c288d67abeb7408ccb48422e37be7dc588|93|six shell-owned surfaces|2026-07-24
