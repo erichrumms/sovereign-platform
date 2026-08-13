@@ -63,7 +63,7 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # committed to the repository. The repo's current Agent_Identity_Standard.md (SHA 4bd67a3a...)
 # reflects the later v1.1 merge performed in Session 107. The "never existed" claim is
 # retracted — the file exists in ~/Downloads but was never pushed to git.
-AGENT_REFERENCE.md|repo|f6a1aebafec8050dbe4f182800127b5f5ee8f83fa12875f9cede73913d45b09f|2109|v3.8 — D2: Supersedes line corrected (v3.7 skipped v3.6); handoff HEAD convention changed; D4: SBOM version-numbering convention added; D5b: Rule 17 git-attribution framing updated; D1 finding recorded; Session 110; also needs manual copy to iCloud root + project knowledge|2026-08-12
+AGENT_REFERENCE.md|repo|d11bcf90911c2705496ab850f52345dcb79bf925c31a18e0e2e0ba8712f28117|2151|v3.9 — D1b: close protocol wiring (verify script required at close); D2: SBOM derivation rule added; Session 111; also needs manual copy to iCloud root + project knowledge|2026-08-12
 Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|6a60b7aebc7e58dbc8cc4370d747a389eff89016ed1978131178a4f8afab01c6|118|updated July 24 — D4-2 Activity tab ratified|2026-07-24
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
@@ -113,6 +113,10 @@ SBOM_Session109_Update.md|repo|e2c6215cbc8890bf58711971f59eec26aeb30867ec5212261
 # --- Repo root: Session 110 ---
 SOVEREIGN_Session110_Handoff.md|repo|7499b1c4b4a1a3222e0dc69b85abb5b243246760566d85e0f341a9e2fbc63448|157|Session 110 Handoff — D1-D5 governance resolution; AGENT_REFERENCE.md v3.8; D5a 47 rows; D4 SBOM convention; terminal HEAD 6223ddd|2026-08-12
 SBOM_Session110_Update.md|repo|2416e5b31e9f185b5d465bec1a96ee8d36fd3e064da860f411aa0fca1f83da73|100|v1.78 — Session 110 governance resolution; terminal HEAD 6223ddd|2026-08-12
+
+# --- Repo root: Session 111 ---
+SOVEREIGN_Session111_Handoff.md|repo|47b4a41e2ffa0d3bc5c5268a0e731b6813681a040e6da9d144efec843daabf37|277|Session 111 Handoff — verify script v5; AGENT_REFERENCE.md v3.9; first-run findings; terminal HEAD TBD|2026-08-12
+SBOM_Session111_Update.md|repo|3dd67f0b028c6976c24d59d45f3eb09b81e83cf3143b2b5121856b5bff5d3daf|107|v1.79 — Session 111 tooling change; terminal HEAD TBD|2026-08-12
 
 # --- Sessions 81-106: governance documents ---
 # Evidence source for governance documents below: PLACEMENT_LOG.tsv rows 15-33.
