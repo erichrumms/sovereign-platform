@@ -1,8 +1,8 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.8 — August 12, 2026**
-**Supersedes:** v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
+**Version: 3.9 — August 12, 2026**
+**Supersedes:** v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
 which superseded v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
@@ -91,6 +91,27 @@ exists in ~/Downloads (SHA 398fb8b4…, 179 lines, July 24, 2026); DOCUMENT_MANI
 "KNOWN GAP" claim of "no file on disk" is factually wrong. SOVEREIGN_System_Prompt_v38.md
 also exists (SHA eb604959…, 323 lines, July 27, 2026), not tracked in manifest.
 Rules 11–17 and Lessons 1–39 byte-identical to v3.7. Footer corrected from stale v3.6 header.
+**v3.9 change:** Two deliverables, Session 111, August 12, 2026. (1) D1b — close
+protocol update: `sovereign_session_verify.sh` is now a stated close requirement in
+both §Session Handoff Document sections (Part I §2 and Part II §2) and in the
+autonomous-session close requirements template (Part I §7). The script was also
+extended in Session 111 to add four invariant checks (manifest-to-disk integrity,
+version-chain continuity, SBOM count accuracy, PLACEMENT_LOG file existence) and to
+resolve six standing warnings (HEAD check made informational; working tree check
+filters untracked files; contract hash updated from stale v1.20 to v1.28; Walkthrough F
+check updated to the compiled file). First-run findings (not fixed this session, per
+scope): four SHA mismatches in DOCUMENT_MANIFEST.tsv (SOVEREIGN_Agent_to_Agent_Briefing.md,
+SOVEREIGN_Role_Access_Matrix_20260721.md, 30_Session60_Assessment_Action_Plan.md,
+22_Informed_Decision_Making.md). Section 7's grep had a multi-line bug (only read the
+first line of the Supersedes block); corrected in the same session. (2) D2 — SBOM
+version-numbering convention amended: the embedded specific "next available" number in
+both Part I §3 and Part II §3 is replaced with a derivation rule (scan all SBOM files
+in the repository, find the highest version number, add one). Convention confirmed as
+"next free number in the shared space" — not "inherit the last-update number" — by
+evidence from merged registry v1.44 (supersedes v1.43, numbered v1.44, not v1.43).
+Two unplaced drafts labeled v1.74 and v1.75 collide with committed per-session updates
+(Sessions 106/107); relabeling is the Governance Agent's task. Rules 11–17 and
+Lessons 1–39 byte-identical to v3.8.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -211,6 +232,11 @@ updates) always follow the handoff; Sessions 108 and 109 both recorded wrong val
 attempting it. The session's terminal HEAD is recorded in the DOCUMENT_MANIFEST.tsv row
 added at close, not in the handoff itself.
 
+**Close requirement (Session 111):** `sovereign_session_verify.sh` must be run at
+session close and its full output quoted verbatim in the handoff. A script that exists
+but goes unrun is the exact failure shape Rule 17 describes — this requirement closes
+that loop. The handoff is not complete without the verify output present.
+
 **Who writes it:** Build Agent at session close. Commits and pushes to repo root.
 
 **Who reads it:** Governance Agent uses it as the primary input for all
@@ -239,14 +265,20 @@ prompts, shell-contract versions, VRS certificates, and model registry entries.
 **Who writes it:** Build Agent produces a session update file. Governance Agent
 merges it into the cumulative registry.
 
-**Version-numbering convention (established D4, Session 110):** Per-session update
-files and merged registry files share one number space — they do not run independent
-sequences. Each document takes the next available number regardless of type. The
-merged registry v1.44 (July 30, 2026, through Session 76) was followed by per-session
-update v1.45 (Session 77); both sequences draw from the same counter. As of Session 109,
-the last number used is v1.77. The next available number is **v1.78**. Assigning v1.74
-or v1.75 to a new merged registry would collide with per-session updates already committed
-at those numbers (Session 106 = v1.74, Session 107 = v1.75 — confirmed in real files).
+**Version-numbering convention (established D4, Session 110; amended D2, Session 111):**
+Per-session update files and merged registry files share one number space — they do not
+run independent sequences. Each document takes the next available number regardless of
+type. The merged registry v1.44 (July 30, 2026, through Session 76) was followed by
+per-session update v1.45 (Session 77); both sequences draw from the same counter.
+**Derivation rule (Session 111):** the next available number is always determined by
+scanning all `SBOM_Session*_Update.md` and `SBOM_Registry_v*.md` files in the
+repository, finding the highest version number present, and adding one. Never carry
+a specific number forward from a prior session's claim — a specific number goes stale
+immediately after it is used. Assigning v1.74 or v1.75 to a new merged registry would
+collide with per-session updates already committed at those numbers (Session 106 =
+v1.74, Session 107 = v1.75 — confirmed in real files). Two unplaced draft registries
+labeled v1.74 and v1.75 exist in Governance Agent conversation history (not on disk);
+relabeling is the Governance Agent's task.
 
 **Project Principal action:** Downloads the merged registry and places in iCloud
 `Companion Suite/Governance/`.
@@ -436,7 +468,7 @@ Every autonomous opening prompt contains these sections in order:
 4. DONE CONDITION — D1, D2, D3... in order, each exact and verifiable
 5. AUTONOMOUS OPERATION RULES — what Claude Code may decide vs. must surface
 6. STANDING CONSTRAINTS — all 11, every session
-7. CLOSE REQUIREMENTS — test suite, tsc, audit, SHA verify, commits, handoff
+7. CLOSE REQUIREMENTS — sovereign_session_verify.sh (full output quoted in handoff), test suite, tsc, audit, SHA verify, commits, handoff
 ```
 
 The opening prompt explicitly states: "Begin now. Build D1 → D2 → D3 without
@@ -1487,6 +1519,11 @@ the handoff. Sessions 108 and 109 both recorded wrong values attempting it. The 
 terminal HEAD is recorded in the DOCUMENT_MANIFEST.tsv row added at close, not in the
 handoff itself.
 
+**Close requirement (Session 111):** `sovereign_session_verify.sh` must be run at
+session close and its full output quoted verbatim in the handoff. A script that exists
+but goes unrun is the exact failure shape Rule 17 describes — this requirement closes
+that loop.
+
 **Who writes it:** Build Agent at session close. Commits and pushes it to the repository.
 
 **Who reads it:** Governance Agent uses it as the primary input for all post-session document updates.
@@ -1519,9 +1556,12 @@ forward-references whenever a renumbering happens, not assume none exist.
 
 **Who writes it:** Build Agent produces a session update file. Governance Agent merges it into the cumulative registry and produces the next full version. Neither agent modifies the cumulative registry directly.
 
-**Version-numbering convention (established D4, Session 110):** Per-session update
-files and merged registry files share one number space. Next available number as of
-Session 109: **v1.78**. See Part I §3 for the full convention record.
+**Version-numbering convention (established D4, Session 110; amended D2, Session 111):**
+Per-session update files and merged registry files share one number space. The next
+available number is always derived by scanning all SBOM files in the repository,
+finding the highest version number, and adding one — never carried forward from a
+prior session's claim. See Part I §3 for the full convention record and the D2
+collision inventory.
 
 **Project Principal action:** Downloads the merged registry and archives it. This is primarily a compliance artifact — does not need to be read in detail each session.
 
@@ -1602,6 +1642,7 @@ Every session follows the same five-step cycle. The Project Principal is the lin
 
 ```
 Step 1 — BUILD AGENT closes the session
+         Runs sovereign_session_verify.sh, quotes full output in handoff
          Produces handoff document and SBOM update
          Commits both, pushes to repository
 
@@ -2100,10 +2141,11 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 ---
 
-*Agent Reference Document — Unified v3.8 · August 12, 2026*
+*Agent Reference Document — Unified v3.9 · August 12, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
 *Lessons 13+ continue in the Integration Brief lineage*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
 *v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*
 *v3.8 — August 12, 2026: Supersedes line corrected (v3.7 skipped v3.6); handoff close-table HEAD convention changed (no longer recorded in handoff); D1 inventory System Prompt findings recorded; footer v3.6 header corrected*
+*v3.9 — August 12, 2026: Close protocol updated (verify script required at close, D1b); SBOM version-numbering derivation rule added replacing embedded specific number (D2)*
