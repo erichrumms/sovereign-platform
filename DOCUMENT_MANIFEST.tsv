@@ -115,8 +115,8 @@ SOVEREIGN_Session110_Handoff.md|repo|7499b1c4b4a1a3222e0dc69b85abb5b243246760566
 SBOM_Session110_Update.md|repo|2416e5b31e9f185b5d465bec1a96ee8d36fd3e064da860f411aa0fca1f83da73|100|v1.78 — Session 110 governance resolution; terminal HEAD 6223ddd|2026-08-12
 
 # --- Repo root: Session 111 ---
-SOVEREIGN_Session111_Handoff.md|repo|47b4a41e2ffa0d3bc5c5268a0e731b6813681a040e6da9d144efec843daabf37|277|Session 111 Handoff — verify script v5; AGENT_REFERENCE.md v3.9; first-run findings; terminal HEAD TBD|2026-08-12
-SBOM_Session111_Update.md|repo|3dd67f0b028c6976c24d59d45f3eb09b81e83cf3143b2b5121856b5bff5d3daf|107|v1.79 — Session 111 tooling change; terminal HEAD TBD|2026-08-12
+SOVEREIGN_Session111_Handoff.md|repo|47b4a41e2ffa0d3bc5c5268a0e731b6813681a040e6da9d144efec843daabf37|277|Session 111 Handoff — verify script v5; AGENT_REFERENCE.md v3.9; first-run findings; terminal HEAD dfa1059|2026-08-12
+SBOM_Session111_Update.md|repo|3dd67f0b028c6976c24d59d45f3eb09b81e83cf3143b2b5121856b5bff5d3daf|107|v1.79 — Session 111 tooling change; terminal HEAD dfa1059|2026-08-12
 
 # --- Sessions 81-106: governance documents ---
 # Evidence source for governance documents below: PLACEMENT_LOG.tsv rows 15-33.
