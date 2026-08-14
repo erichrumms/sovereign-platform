@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# BROKEN — stale target list (Integration Brief v1.57; current is v1.58+). Committed
+# August 13, 2026 via broad git add -A. Do not run without updating copy_first_match
+# targets. Project Principal decision needed: update targets or remove from tracking.
 # Governance Agent — pull the four Category 3 governance documents fresh from the
 # real repo into iCloud, for re-upload to project knowledge.
 # Run from anywhere; the script cds into the repo itself.
