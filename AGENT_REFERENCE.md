@@ -1,8 +1,8 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.9 — August 12, 2026**
-**Supersedes:** v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
+**Version: 3.10 — August 13, 2026**
+**Supersedes:** v3.9 (August 12, 2026), which superseded v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
 which superseded v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
@@ -112,6 +112,15 @@ evidence from merged registry v1.44 (supersedes v1.43, numbered v1.44, not v1.43
 Two unplaced drafts labeled v1.74 and v1.75 collide with committed per-session updates
 (Sessions 106/107); relabeling is the Governance Agent's task. Rules 11–17 and
 Lessons 1–39 byte-identical to v3.8.
+**v3.10 change:** D2, Session 112, August 13, 2026. Lessons 13–23 imported verbatim
+from `PROJECT_SUMMARY.md` Part 7 (June 1, 2026), by Project Principal decision of
+August 13, 2026. The structural gap note (flagged five times, most recently in System
+Prompt v44) was replaced by the content itself. Character note: Lessons 1–12 and
+24–39 in this document are session-practice lessons from the repo lineage; Lessons
+13–23 are platform-design lessons from the project-knowledge lineage. Both lineages
+hold different lessons at the overlapping numbers 1–12 and 24–30 — neither lineage
+is renumbered, as that would break every existing citation. Rules 11–17 and
+Lessons 24–39 byte-identical to v3.9.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -1236,16 +1245,67 @@ in the Brief.
 
 ---
 
-**A structural gap, found and flagged July 21, 2026, not yet fixed:** this
-document's own Lessons sequence stops at 12. Lessons 13 through 23 exist —
-iCloud-only SBOM storage, verification-tooling discipline, checking every
-storage location before declaring something missing, among others — but only
-in the Integration Brief's own "Key Lessons" section, which gets substantially
-rewritten every few sessions. That is the wrong home for anything meant to be
-permanent. **The two most recent lessons are added here, numbered to match the
-Integration Brief's sequence rather than restarting at 13, so the eventual
-backfill of 13-23 doesn't collide with a second, conflicting numbering
-scheme.** That backfill is a real, bounded future task — not attempted here.
+### Lesson 13: Role separation is a design constraint, not a checkbox
+
+Who can read, write, and approve must be in the data model from the start.
+
+### Lesson 14: The intelligence layer of every system is its data model
+
+SOVEREIGN's long-term value is its data — human decision events, deployment
+feedback, reasoning traces. Design data models for their downstream consumers from
+the start.
+
+### Lesson 15: Production-grade means three things beyond "it works"
+
+Failure handling, observability, and maintainability by the next developer without
+access to original conversations.
+
+### Lesson 16: Sandbox constraints are architectural — learn them before you code
+
+Artifact `localStorage` exists but doesn't work. Tailwind bracket syntax fails
+silently. These are facts, not bugs.
+
+### Lesson 17: Data constants outside the component, always
+
+Data inside `App` causes re-evaluation on every render. All data constants belong at
+module level.
+
+### Lesson 18: Identity color vs. semantic color is the most important design system discipline
+
+Corporate purple is for structural framing only. Using it to signal functional states
+makes the UI unreadable.
+
+### Lesson 19: Fix known issues before adding features
+
+Known issues compound. Every version's first session must resolve prior known issues.
+
+### Lesson 20: The Domain Translator pattern is bigger than one product
+
+It solves a problem that exists in multiple contexts. When a component solves a
+problem that appears in multiple products, it belongs in the shared platform.
+
+### Lesson 21: Structural replacement is stronger than disabled buttons
+
+When a control matters, make it impossible to violate, not hard to violate.
+
+### Lesson 22: Policy-as-data makes systems context-agnostic
+
+Rules in typed data structures evaluated by pure functions are inspectable, testable,
+replaceable. Rule logic embedded in code is expensive to adapt.
+
+### Lesson 23: Reasoning chains at point of decision prevent approver errors
+
+Self-documenting systems at the moment of decision are a design requirement, not a
+nice-to-have.
+
+*(Lessons 13-23 recovered in Session 112 from `PROJECT_SUMMARY.md` Part 7, June 1,
+2026, by Project Principal decision of August 13, 2026. These numbers had been flagged
+as a gap five times, most recently in System Prompt v44, on the belief that the content
+existed only in older Integration Brief material. The content existed in the repository
+the entire time, in a second lessons lineage using a different heading format. See
+`docs/40_Defect_Class_Register.md` §7 for the four-location collision record: `PROJECT_SUMMARY.md`
+Lessons 1-12 and 24-30 are DIFFERENT lessons sharing the same numbers, and neither
+lineage is renumbered.)*
 
 ### Lesson 24: A `docs/NN` spec being referenced is not evidence it's in the repo
 
@@ -2141,11 +2201,12 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 ---
 
-*Agent Reference Document — Unified v3.9 · August 12, 2026*
+*Agent Reference Document — Unified v3.10 · August 13, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
-*Lessons 13+ continue in the Integration Brief lineage*
+*Lessons 13-23 imported from PROJECT_SUMMARY.md Part 7 (Session 112); Lessons 40+ continue in docs/40 and Integration Brief lineage*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
 *v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*
 *v3.8 — August 12, 2026: Supersedes line corrected (v3.7 skipped v3.6); handoff close-table HEAD convention changed (no longer recorded in handoff); D1 inventory System Prompt findings recorded; footer v3.6 header corrected*
 *v3.9 — August 12, 2026: Close protocol updated (verify script required at close, D1b); SBOM version-numbering derivation rule added replacing embedded specific number (D2)*
+*v3.10 — August 13, 2026: Lessons 13-23 imported from PROJECT_SUMMARY.md Part 7 (D2, Session 112); structural gap note replaced by content*
