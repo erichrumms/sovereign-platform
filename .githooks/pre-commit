@@ -65,9 +65,16 @@ if [ -n "$CONTRACT" ]; then
   # Only hashes on lines that reference the shell contract. A gather script
   # recording an expected checksum for a DIFFERENT file is Rule 10 discipline,
   # not drift. Narrowed Session 112 after a true block on a false positive.
-  STALE=$(grep -ihE 'contract' *.sh 2>/dev/null | grep -ohE '\b[a-f0-9]{64}\b' \
-    | sort -u | grep -vc "^${REAL}$")
+  # A hash assigned to an EXPECTED_* variable, or labelled as expected, is a
+  # frozen expectation. It is drift the moment its target moves. Gather scripts
+  # recording an input checksum inline are Rule 10 discipline and are excluded.
+  # Widened Session 112 after the narrowed form missed three dead expectations.
+  STALE=$(grep -hE '^[[:space:]]*(EXPECTED|KNOWN)[A-Z_]*=|[Ee]xpected hash' *.sh 2>/dev/null \
+    | grep -ohE '\b[a-f0-9]{64}\b' | sort -u | grep -vc "^${REAL}$")
   STALE=$(printf '%s' "$STALE" | tr -dc '0-9'); STALE=${STALE:-0}
+  echo "  (frozen EXPECTED_* hashes that are not the live contract hash:)"
+  grep -nE '^[[:space:]]*(EXPECTED|KNOWN)[A-Z_]*=|[Ee]xpected hash' *.sh 2>/dev/null \
+    | grep -E '\b[a-f0-9]{64}\b' | grep -v "$REAL" | sed 's/^/       /' | cut -c1-120
   judge STALE_CONTRACT_HASH_IN_TOOLING "$STALE"
 fi
 

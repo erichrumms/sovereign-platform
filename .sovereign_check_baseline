@@ -3,7 +3,7 @@
 #
 # ACTIVE — these measure what their names claim:
 EMITTED_NOT_IN_CONTRACT=4
-STALE_CONTRACT_HASH_IN_TOOLING=9
+STALE_CONTRACT_HASH_IN_TOOLING=3
 #
 # NOT ACTIVE — parser does not measure the stated property. Do not baseline
 # until the extraction is proven. See docs/40 Defect Class Register.
