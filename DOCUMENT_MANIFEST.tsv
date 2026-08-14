@@ -186,6 +186,10 @@ SBOM_Session105_Update.md|repo|8c6a8a61435a4c7dffbc82f0194a940600bf163f78f4603ed
 SOVEREIGN_Session106_Handoff.md|repo|2eab1c99a06906e6ad2ab3071b01d790362c15450913d6e69247adf9497a96ee|160|Session 106 Handoff; commit 07e2c06|2026-08-11
 SBOM_Session106_Update.md|repo|00086399ceb044c25b560422413897bc4113d648340f8a563f29e906a7442462|66|v1.74 — Session 106; supersedes v1.73|2026-08-11
 
+# --- Repo root: Session 112 ---
+SOVEREIGN_Session112_Handoff.md|repo|3b08d59c7fb995ead3cb6bd714e043c4a429b407585f36e6122d6189299bf91d|319|Session 112 Handoff — D2 AGENT_REFERENCE.md v3.10; D3 four manifest corrections; D4 docs/40 §10; D5 frozen expectations triage; terminal HEAD (see close push)|2026-08-13
+SBOM_Session112_Update.md|repo|75276f7484cbcbc031d16d4aa6107e870e2934bf4f88ae01188138d9c12d319b|103|v1.80 — Session 112 governance-record correction|2026-08-13
+
 # --- D1 FINDING, Session 110 — System Prompt manifest rows ---
 # SOVEREIGN_System_Prompt_v37.md: exists in ~/Downloads (SHA 398fb8b4..., 179 lines,
 # July 24, 2026). Prior note claiming "no file on disk anywhere" was factually wrong;
