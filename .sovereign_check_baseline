@@ -1,0 +1,16 @@
+# SOVEREIGN Tier 1 baselines — recorded Session 111, HEAD 467134e.
+# Lower when drift genuinely reduces. Raise only by recorded decision.
+#
+# ACTIVE — these measure what their names claim:
+EMITTED_NOT_IN_CONTRACT=4
+STALE_CONTRACT_HASH_IN_TOOLING=9
+#
+# NOT ACTIVE — parser does not measure the stated property. Do not baseline
+# until the extraction is proven. See docs/40 Defect Class Register.
+#   EVENTTYPE_NOT_PROPAGATED  — reported 79/98; shared-types likely re-exports
+#     rather than restating members. The real, independently confirmed gap is
+#     narrower: INFERENCE_CALL, INFERENCE_PROVIDER_FALLBACK, MODEL_HASH_MISMATCH
+#     absent from shared-types (grep -c returned 0).
+#   LOGGER_EVENTS_UNROUTED    — reported 94; non-dispatch is by design per
+#     sovereign_alerts.py. Needs an explicit INTENTIONALLY_NOT_DISPATCHED set
+#     before the delta means anything.
