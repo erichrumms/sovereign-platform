@@ -222,5 +222,103 @@ instance. Read it before the next session.
 
 ---
 
+## 10 — Session 112 findings (D4)
+
+**§9 items 3 and 4 are closed as of this session.**
+Item 3 (`core.hooksPath` / commit-msg): read below. Item 4 (lessons import): executed
+as D2 — Project Principal decision August 13, 2026.
+
+---
+
+**(a) Attribution is a documented three-layer control, not an absence.**
+
+The three layers, in order of precedence: `.claude/settings.json` sets suppression —
+that setting is known not to work (upstream defect, built-in instruction overrides it).
+`CLAUDE.md §2` is the primary control — Build Agent reads it at session open.
+`.githooks/commit-msg` is the enforced backstop — strips `Co-Authored-By:`, "Generated
+with", and session URLs from every commit. Thirteen historical commits carrying trailers
+are deliberately preserved (rewriting shared history is ruled out; they are a documented
+known gap). **Verified holding this session:** zero attribution trailers and zero model
+names across the last 60 commits (`git log --oneline -60 | grep -iE "co-authored|generated with|claude\.ai"` returned nothing).
+
+**Implication:** describing attribution as "not working" or "absent" conflates the broken
+settings.json layer with the two layers that do work. The accurate description is:
+one suppression mechanism is confirmed non-functional; two others are active and holding.
+
+---
+
+**(b) `core.hooksPath` must be set once per clone — hook enforcement does not survive a fresh clone automatically.**
+
+The `.githooks/` directory is version-controlled. The git configuration setting
+`core.hooksPath = .githooks` is not — it is set per-clone, not persisted in any tracked
+file. A fresh clone of this repository has hooks disabled until the setting is
+established (`git config core.hooksPath .githooks`). Confirmed: `core.hooksPath` is
+already set in the current clone (hooks are active). A CI environment or a new
+development machine cloning fresh would need this step added explicitly. This is the
+Tier 1 enforcement gap with highest likelihood of causing a silent miss in the future.
+
+---
+
+**(c) CLAUDE.md is a sixth enforced-convention location — no session in the 106-111 arc consulted it.**
+
+CLAUDE.md is the primary control for attribution suppression (§2), the naming convention
+(§1), the `git push` requirement (§3), governance-document authorship (§4), PLACEMENT_LOG
+discipline (§5), and the verify-before-claim rule (§6). It is the document the Build
+Agent is explicitly instructed to read before any commit. Sessions 106-111 neither
+referenced it in their Handoffs nor cited it as a source for any decision. The Tier 1
+pre-commit hook (`.githooks/pre-commit`) and the Session 111 verify script both ran and
+were built during that arc — neither was cross-referenced with CLAUDE.md. This is a
+DC-1 instance: the canonical convention document and the enforcement layer both exist;
+neither knows the other does.
+
+---
+
+**(d) T1-4 was corrected three times in one evening — the middle state must be on the record.**
+
+T1-4 (`STALE_CONTRACT_HASH_IN_TOOLING`) went through three states before settling:
+
+| State | Grep pattern | Count | Problem |
+|---|---|---|---|
+| **Too broad** (initial) | Any 64-char hex in `*.sh` | 9 | Matched legitimate input-file checksums in gather scripts (Rule 10 discipline) — blocked a valid commit on a false positive |
+| **Too narrow** (narrowed) | Only lines containing the word "shell-contract" | 0 | The frozen expectations use `EXPECTED_AGENT_REF_HASH` and similar — none reference "shell-contract" in the same line; check went blind |
+| **Correct** (widened) | Lines whose first token is `EXPECTED_*=` or `KNOWN_*=`, or lines containing "Expected hash" | 3 | Finds the three frozen hash assignments by their role (stored expectation) rather than their referent |
+
+The baseline of 3 reflects the correct final state. The middle state (count → 0) went
+undetected because the check produced no block and no output — silence looked like
+success. Lesson 43 applies: the second correction pass confirmed the parser, not the
+codebase.
+
+---
+
+**(e) Lesson 43 gains a second clause.**
+
+Existing clause: *a check's first run tests the check, not the codebase.*
+
+New clause: **a check's first block tests your willingness to keep it.** T1-4's first
+block was a false positive (a gather script's legitimate checksum). The correct response
+was to fix the check's scope, not the gather script. The response that would have been
+easier was to raise the baseline or widen the exclusion until the block went away.
+The pressure to quiet a check is strongest the first time it inconveniences you —
+exactly the moment when the check is most likely to be correctly identifying a real gap
+in the check's own precision, not a real gap in the code. Both "fix the check" and
+"raise the baseline" feel similar under pressure; only one is the right call in each case.
+
+The distinction: if the check fired because the codebase drifted, raise nothing — fix
+the drift. If the check fired because the check's own parser was wrong, fix the parser
+and verify the corrected count before baselining it. Raising a baseline without
+verifying the corrected count is how drift hides.
+
+---
+
+**`.githooks/commit-msg` — content recorded (§9 item 3):**
+
+11 lines. Strips three patterns from every commit message: `Co-Authored-By:` lines,
+"Generated with" lines (with and without the 🤖 prefix), and `https://claude.ai/code/session_*`
+URLs. Dated July 24, 2026 — three weeks before the Tier 1 pre-commit hook was built.
+Both hooks run because `core.hooksPath = .githooks` points at the directory containing
+both. This is the backstop CLAUDE.md §2 describes.
+
+---
+
 *SOVEREIGN Platform · docs/40 Defect Class Register · v1.0 · August 13, 2026*
 *Pre-Decisional · Internal Working Document*
