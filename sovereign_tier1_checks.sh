@@ -62,7 +62,11 @@ fi
 # 4. Shell-contract hash literals in tooling that no longer match the file
 if [ -n "$CONTRACT" ]; then
   REAL=$(shasum -a 256 "$CONTRACT" | awk '{print $1}')
-  STALE=$(grep -ohE '\b[a-f0-9]{64}\b' *.sh 2>/dev/null | sort -u | grep -vc "^${REAL}$")
+  # Only hashes on lines that reference the shell contract. A gather script
+  # recording an expected checksum for a DIFFERENT file is Rule 10 discipline,
+  # not drift. Narrowed Session 112 after a true block on a false positive.
+  STALE=$(grep -ihE 'contract' *.sh 2>/dev/null | grep -ohE '\b[a-f0-9]{64}\b' \
+    | sort -u | grep -vc "^${REAL}$")
   STALE=$(printf '%s' "$STALE" | tr -dc '0-9'); STALE=${STALE:-0}
   judge STALE_CONTRACT_HASH_IN_TOOLING "$STALE"
 fi
