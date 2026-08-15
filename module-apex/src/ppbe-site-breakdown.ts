@@ -38,14 +38,18 @@ export interface SyntheticSiteBreakdown {
   region: string;
   obligations_to_date: number;
   planned_amount: number;
-  /** Derived using the same thresholds as statusFromObligationRate (≥80% on_track,
-   *  ≥50% at_risk, <50% off_track). */
+  /** Thresholds: >100% at_risk (over-obligation — obligated beyond plan is not "on track"),
+   *  ≥80% on_track, ≥50% at_risk, <50% off_track. Shares the lower-bound bands with
+   *  statusFromObligationRate; the over-obligation (>100%) case is applied here (D2,
+   *  Session 113 — the program-level function carries the same latent gap, reported in
+   *  the Session 113 handoff, not changed there this session). */
   status: "on_track" | "at_risk" | "off_track";
 }
 
 function siteStatus(obligated: number, planned: number): SyntheticSiteBreakdown["status"] {
   if (planned === 0) return "off_track";
   const pct = Math.round((obligated / planned) * 100);
+  if (pct > 100) return "at_risk"; // over-obligation — obligated beyond plan is not "on track"
   if (pct >= 80) return "on_track";
   if (pct >= 50) return "at_risk";
   return "off_track";
