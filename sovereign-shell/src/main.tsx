@@ -83,7 +83,7 @@ import {
 
 const DEV_PERSONA_NAMES: Record<DevPersonaRole, string> = {
   PLATFORM_ADMIN:       "Dev — Platform Admin",
-  SYSTEM_ADMIN:         "Platform Developer",
+  SYSTEM_ADMIN:         "Dev — System Admin",
   PROGRAM_MANAGER:      "Dev — Program Manager",
   ANALYST:              "Dev — Analyst",
   COMPLIANCE_OFFICER:   "Dev — Compliance Officer",
