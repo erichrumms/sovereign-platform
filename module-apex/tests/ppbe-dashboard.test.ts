@@ -21,8 +21,15 @@ import {
   dependencyHealthIndex,
   learningVelocity,
   buildPPBEDashboard,
+  statusFromObligationRate,
+  publishProgramStatuses,
   type PPBEDashboardInputs,
 } from "../src/ppbe-dashboard";
+import { createSyntheticPPBEDashboardInputs } from "../src/ppbe-data-adapter";
+import type {
+  ProgramStatusSnapshot,
+  ProgramStatusSurface,
+} from "../../sovereign-shell/shell-contract";
 
 function program(id: string): ProgramRecord {
   return {
@@ -160,6 +167,78 @@ describe("learningVelocity", () => {
     const m = learningVelocity([]);
     expect(m.velocity_percent).toBeNull();
     expect(m.narrative).toContain("not evidence");
+  });
+});
+
+describe("statusFromObligationRate", () => {
+  // Over-obligation upper bound (Session 114 D2), mirroring siteStatus in
+  // ppbe-site-breakdown.ts: a rate above 100% is at_risk, not on_track —
+  // obligating beyond plan is an Anti-Deficiency exposure, not health.
+  it("flags over-obligation (>100%) as at_risk — obligated beyond plan is not on track", () => {
+    expect(statusFromObligationRate(101)).toBe("at_risk");
+    expect(statusFromObligationRate(104)).toBe("at_risk"); // ECHO — the ADA example
+    expect(statusFromObligationRate(203)).toBe("at_risk"); // DELTA lifecycle (combined years)
+  });
+
+  // Regression guard: the 80–100% band stays on_track. 100% is exactly on plan,
+  // not over it (matches the existing e2e threshold assertion at 100).
+  it("keeps the 80–100% band on_track (regression guard for the lower bound)", () => {
+    expect(statusFromObligationRate(80)).toBe("on_track");
+    expect(statusFromObligationRate(95)).toBe("on_track");
+    expect(statusFromObligationRate(97)).toBe("on_track"); // ALPHA
+    expect(statusFromObligationRate(100)).toBe("on_track"); // exactly on plan — not over
+  });
+
+  it("preserves the existing lower bands unchanged", () => {
+    expect(statusFromObligationRate(79)).toBe("at_risk");
+    expect(statusFromObligationRate(50)).toBe("at_risk");
+    expect(statusFromObligationRate(49)).toBe("off_track");
+    expect(statusFromObligationRate(46)).toBe("off_track"); // BRAVO
+    expect(statusFromObligationRate(null)).toBe("off_track");
+  });
+});
+
+/** Minimal in-memory ProgramStatusSurface for asserting what APEX publishes. */
+function makeStatusSurface(): ProgramStatusSurface & {
+  snapshots: Map<string, ProgramStatusSnapshot>;
+} {
+  const snapshots = new Map<string, ProgramStatusSnapshot>();
+  return {
+    snapshots,
+    publish: (s) => snapshots.set(s.program_id, s),
+    get: (id) => snapshots.get(id),
+    list: () => [...snapshots.values()],
+    subscribe: () => () => {},
+  };
+}
+
+describe("publishProgramStatuses — ECHO over-obligation reaches the Home surface", () => {
+  const surface = makeStatusSurface();
+  publishProgramStatuses(
+    createSyntheticPPBEDashboardInputs(),
+    surface,
+    "2026-08-15T00:00:00.000Z"
+  );
+
+  it("publishes ECHO (104% of FY2026 plan) as at_risk, agreeing with the ledger monitor's P1 flag", () => {
+    const echo = surface.get("SYNTH-PRG-ECHO");
+    expect(echo?.percent_obligated).toBe(104);
+    expect(echo?.status).toBe("at_risk");
+  });
+
+  it("leaves the other four programs' statuses unchanged (only ECHO flips)", () => {
+    expect(surface.get("SYNTH-PRG-ALPHA")?.status).toBe("on_track");  // 97%
+    expect(surface.get("SYNTH-PRG-CHARLIE")?.status).toBe("on_track"); // 95%
+    expect(surface.get("SYNTH-PRG-DELTA")?.status).toBe("on_track");  // 95%
+    expect(surface.get("SYNTH-PRG-BRAVO")?.status).toBe("off_track"); // 46%
+  });
+
+  it("moves the Home Dashboard flagged count (status !== on_track) from 1 to 2", () => {
+    const flagged = surface.list().filter((s) => s.status !== "on_track");
+    expect(flagged.map((s) => s.program_id).sort()).toEqual([
+      "SYNTH-PRG-BRAVO",
+      "SYNTH-PRG-ECHO",
+    ]);
   });
 });
 
