@@ -5,7 +5,7 @@ cd ~/Developer/sovereign-platform || { echo "FAIL: repo not found"; exit 1; }
 OUT="$(mktemp)"; FOUND=0; MISSING=0; ML=""
 FILES=( "AGENT_REFERENCE.md" "CLAUDE.md" "DOCUMENT_MANIFEST.tsv" "PLACEMENT_LOG.tsv"
   "docs/40_Defect_Class_Register.md" ".sovereign_check_baseline"
-  "SOVEREIGN_CTO_Demonstration_Script_20260811.md" )
+  "SOVEREIGN_CTO_Demonstration_Script_20260810.md" )
 emit() { printf '%s\n' "$1" >> "$OUT"; }
 emit "================================================================"
 emit "SOVEREIGN — SESSION 113 CONTEXT PACKAGE   $(date '+%Y-%m-%d %H:%M')"
