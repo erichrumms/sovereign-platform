@@ -42,7 +42,7 @@ interface SyntheticSeed {
 const SYNTHETIC_SEEDS: readonly SyntheticSeed[] = [
   {
     request_id: "req-dev-001",
-    requesting_agent_id: "agentos-deployer",
+    requesting_agent_id: "agentos.deployer",
     requesting_agent_class: "Operational",
     action_type: "model_deployment",
     action_detail: {
@@ -60,7 +60,7 @@ const SYNTHETIC_SEEDS: readonly SyntheticSeed[] = [
   },
   {
     request_id: "req-dev-002",
-    requesting_agent_id: "agentos-exporter",
+    requesting_agent_id: "agentos.exporter",
     requesting_agent_class: "Operational",
     action_type: "data_export",
     action_detail: {
@@ -74,7 +74,7 @@ const SYNTHETIC_SEEDS: readonly SyntheticSeed[] = [
   },
   {
     request_id: "req-dev-003",
-    requesting_agent_id: "agentos-configurator",
+    requesting_agent_id: "agentos.configurator",
     requesting_agent_class: "Operational",
     action_type: "configuration_change",
     action_detail: {
