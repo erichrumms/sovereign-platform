@@ -191,7 +191,7 @@ SOVEREIGN_Session112_Handoff.md|repo|3b08d59c7fb995ead3cb6bd714e043c4a429b407585
 SBOM_Session112_Update.md|repo|75276f7484cbcbc031d16d4aa6107e870e2934bf4f88ae01188138d9c12d319b|103|v1.80 — Session 112 governance-record correction|2026-08-13
 
 # --- Repo root: Session 113 ---
-SOVEREIGN_Session113_Handoff.md|repo|64691106f53b172d14e7b220243b765bfd07496b5a736563c4dda8cbd85518f9|196|Session 113 Handoff — D1 investigate-only (dataset split); D2 site over-obligation fix; D3 dotted agentos ids; D4 operator label; terminal HEAD <pending>|2026-08-15
+SOVEREIGN_Session113_Handoff.md|repo|64691106f53b172d14e7b220243b765bfd07496b5a736563c4dda8cbd85518f9|196|Session 113 Handoff — D1 investigate-only (dataset split); D2 site over-obligation fix; D3 dotted agentos ids; D4 operator label; terminal HEAD ba221d3|2026-08-15
 SBOM_Session113_Update.md|repo|09833c5509739b45b978fa0948b0cc86aca6a3db5b8b461f2f2584f07d003feb|93|v1.81 — Session 113 demonstration-surface defect correction; JS/TS 2050->2053|2026-08-15
 
 # --- D1 FINDING, Session 110 — System Prompt manifest rows ---
