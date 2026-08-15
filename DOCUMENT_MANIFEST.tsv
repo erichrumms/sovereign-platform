@@ -63,8 +63,8 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # committed to the repository. The repo's current Agent_Identity_Standard.md (SHA 4bd67a3a...)
 # reflects the later v1.1 merge performed in Session 107. The "never existed" claim is
 # retracted — the file exists in ~/Downloads but was never pushed to git.
-AGENT_REFERENCE.md|repo|02a8fbe2f6881d206fd0f4d464f72f301d5a6a2b105030642db3ca206d11d976|2212|v3.10 — D2: Lessons 13-23 imported (Session 112); also needs manual copy to iCloud root + project knowledge|2026-08-13
-Agent_Identity_Standard.md|repo|4bd67a3a37db565b92dd2a67965b5ce3efd23b0ab64d39743b83fa44fcf6b78a|1727|v1.1 — header corrected (was v1.0/May 2026); Status updated to Integration Brief v1.58; version-history block added; Sessions 77-106 confirmation note (still 44 agents); deployment_feedback gap documented; Session 107|2026-08-11
+AGENT_REFERENCE.md|repo|2f6e0f097ce67499cddf1a1eacf9225fc77b10d3adc0a566864c6620f8f12d73|2293|v3.11 — Lessons 40-45 imported from docs/40 §6 and §10 (Session 115); Lessons 1-45 now continuous; also needs manual copy to iCloud root + project knowledge|2026-08-15
+Agent_Identity_Standard.md|repo|aaa335cf51e830e58cf3d8a13346ae1518014817892e585e95e10dd830ddd176|1806|v1.2 — Sessions 107-114 confirmation note (44 agents unchanged); agent id formatting partially resolved; credential lifecycle review flagged a second time|2026-08-15
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|e7b66e752b83aa8cca9c2158d8c324f9e8cdb5a442704e346e592b2634e11200|118|corrected Session 112 (D3) — SHA drift; file updated between placements|2026-08-13
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
 SOVEREIGN_Walkthrough_F_Complete.md|repo|39031d017f1ff0f2522ebd61cc340f963d4cbcf14c7b01d065653218c19e00bd|990|current — Findings Report + Repeat Pass Script|2026-07-24
@@ -205,3 +205,20 @@ SBOM_Session114_Update.md|repo|59fa7d8ab4130157a084057c628e1bf4ebdb58607fb3f2204
 # (SHA eb604959..., 323 lines, July 27, 2026), not tracked in manifest.
 # Both are by-design outside git history. No repo row appropriate; iCloud copy
 # and project-knowledge copy remain a manual Project Principal step.
+
+
+# --- Session 115 placement batch (Governance Agent authored, August 15 2026) ---
+SOVEREIGN_Platform_Integration_Brief_v1.61.md|repo|1e4ae22fd238755ab450b6bfe0f229e8f51380b13006643932bf55d543845504|255|v1.61 — retracts two v1.60 claims (model-governance gap; rulebook status); records GD-42, the enforcement layer, Sessions 112-114|2026-08-15
+SOVEREIGN_Remaining_Build_Backlog_v6_20260815.md|repo|21793d3dbb7036a0c405ca1441464e4f7f14210dfe9dfabd57bd94b1e40b9519|122|v6 — retracts two v5 claims; records Sessions 106-114 closures and the enforcement layer|2026-08-15
+SOVEREIGN_Strategic_Plan_CTO_Demo_v3.14.md|repo|47f85f6db37aba62e6554b9e792f86367f897f03716f992274d8cc2a5951e405|153|v3.14 — GD-42 recorded; model-governance answer rewritten; Part XIII what-not-to-claim added|2026-08-15
+GD-42_APPROVED_and_GD-40_Amendment.md|repo|a921c4d86656f77da3226f5b33b301442ef0fea99b74eaf739cd24f12404965d|173|GD-42 APPROVED and GD-40 amended — source for entry into the GD Registry, not the registry itself|2026-08-15
+SOVEREIGN_CTO_Framework_Applied_v2.md|repo|357c78aba5e0e06031a2b17df04df210ed6bd8a1bfdb7378fd54d31c79db38e8|294|v2 — corrects four statements now factually wrong, including the WH-43 headline gap and the audit-log banner praise|2026-08-15
+SBOM_Registry_v1.83_MERGED.md|repo|a566b664bde3f6ea74e6cc2d444e40067b4f53b5c351df28714354ecef9a0383|203|v1.83 MERGED — supersedes v1.74 (never placed) and v1.44 (on disk); merges Sessions 107-114; six sessions remain unmerged, named in §6|2026-08-15
+
+# --- NOTE, Session 115 (Governance Agent) ---
+# DOCUMENT_MANIFEST_v4.tsv exists as a separate file and is NOT current. It is the
+# July 31 state, 103 rows, and its AGENT_REFERENCE.md row records SHA 14aa83ad at
+# 1,993 lines — the parallel-lineage copy produced locally and never committed, the
+# state Session 108 investigated and corrected. Its name reads as newer than this
+# file and is not. Rename or remove it; two manifests where the one that looks
+# newer is four weeks stale is the same hazard that produced the lineage split.

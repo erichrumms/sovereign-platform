@@ -2,7 +2,7 @@
 **Agent Identity, Access Rights, Credential Lifecycle, and Accountability**
 
 Document Type: Governance Standard  
-Version: 1.1 — August 11, 2026  
+Version: 1.2 — August 15, 2026  
 Authority: Project Principal · SOVEREIGN Platform Governance Authority  
 Status: APPROVED — incorporated into Integration Brief v1.58  
 Classification: Pre-Decisional · Internal Working Document
@@ -1722,6 +1722,85 @@ The following platform work occurred in the Sessions 77–106 window. None regis
 
 ---
 
-*SOVEREIGN Agent Identity Standard v1.1 · August 11, 2026*
+# Agent Identity Standard — Confirmation Note (Sessions 107–114)
+
+**Recorded August 15, 2026 · Governance Agent**
+
+## Registered agent total: 44 — unchanged
+
+Confirmed against every session close in the window. Sessions 107 through 114 were
+governance-record correction, enforcement hardening, and demonstration-surface defect
+work. **No session in this window registered, retired, or re-classified an agent**,
+and prompts remain 20 (19 approved + 1 pending), unchanged since Session 76.
+
+Scope reviewed for agent-identity impact: Session 107 (document currency), 108
+(parallel-lineage content recovery), 109 (Rules 13/14 re-homing, manifest
+remediation), 110 (Downloads inventory, handoff-HEAD convention, SBOM numbering),
+111 (invariant checks added to the verify script), 112 (Lessons 13–23 import,
+manifest SHA corrections), 113 and 114 (four demonstration-surface defects). None
+touched the registry.
+
+## Agent identifier formatting — partially resolved, recorded here
+
+The `agentos.*` versus `agentos-*` inconsistency first raised in the Session 105 arc
+was traced and partly closed in Session 113.
+
+**This document is the canonical source, and it uses two formats by design:** dots
+for product agents (`agentos.orchestrator`, `nexus.routing-agent`) and dashes for
+PPBE-layer agents (`ppbe-ledger-monitor`, `ppbe-scenario-analyst`). That coexistence
+is deliberate and is the likely origin of the confusion.
+
+| Surface | State |
+|---|---|
+| LENS Pipeline Navigator | Dotted — matches this registry. Was always correct |
+| AgentOS AgentCards (`module-agentos/src/index.ts`) | Dotted — matches |
+| VIGIL Approval Request Detail (`module-vigil/src/approval-port.ts`) | **Corrected Session 113** — three synthetic seeds changed from dashed to dotted |
+| AgentOS dispatcher (`module-agentos/src/agent-dispatcher.ts`) | **Still dashed.** A second, independent synthetic copy of the same three ids |
+
+Confirmed before the Session 113 change: no runtime code joins a requesting agent id
+to any dispatcher id, and no test asserts on agent id. The remaining dashed copy
+breaks nothing, but the two synthetic sources now differ in form. **Open, in-kind
+follow-up.**
+
+## `deployment_feedback` — unchanged, still absent
+
+The forward-contract gap recorded in v1.1 stands. A direct search confirms the field
+is absent from every `AGENT_STEP_COMPLETE` emission site platform-wide. It remains a
+deliberate, documented contract for the unbuilt Intelligence Layer rather than a
+defect. The open governance question — design real capture, or formally scope down
+the "every event" expectation — is still open.
+
+## Credential lifecycle review — still no record, flagged a second time
+
+The Credential Lifecycle section requires a review within 90 days of issuance,
+covering four points: still in active use, rights still appropriate, no anomalies
+logged, not compromised. **This document dates from May 2026 and contains no record
+that the review has ever been performed.** It was flagged in the Session 107 currency
+review and remains unaddressed.
+
+This is a Rule 17 instance in the document that defines the safeguard: a control's
+continued existence is not evidence of its continued use. **Project Principal
+decision required** — either perform and record the review, or record a deliberate
+determination that under the current development-only posture, with a single shared
+credential injected at runtime and never stored in a file, the review reduces to a
+short attestation rather than a per-agent audit.
+
+## What a reader should take from this note
+
+Nothing in the registry changed across eight sessions. That is the expected result
+and it is recorded as confirmed rather than assumed — but a confirmation note is only
+as good as its scope. **If a future session finds that any of Sessions 107–114
+registered an agent this note missed, that is a gap in this note, not evidence that
+44 was ever wrong.**
+
+---
+
+*Agent Identity Standard — Confirmation Note (Sessions 107–114)*
+*August 15, 2026 · Governance Agent*
+*Pre-Decisional · Internal Working Document*
+
+---
+
+*SOVEREIGN Agent Identity Standard v1.2 · August 15, 2026*
 *44 registered agents across all six products and workflow layers*
-*v1.0 May 2026 — original. v1.1 August 11, 2026 — header corrected, Sessions 77–106 confirmation note appended, deployment_feedback gap documented.*
+*v1.0 May 2026 — original. v1.1 August 11, 2026 — header corrected, Sessions 77–106 confirmation note appended, deployment_feedback gap documented. v1.2 August 15, 2026 — Sessions 107–114 confirmation note appended; agent identifier formatting partially resolved and recorded; credential lifecycle review flagged a second time.*

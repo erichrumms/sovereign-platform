@@ -1,8 +1,8 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.10 — August 13, 2026**
-**Supersedes:** v3.9 (August 12, 2026), which superseded v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
+**Version: 3.11 — August 15, 2026**
+**Supersedes:** v3.10 (August 13, 2026), which superseded v3.9 (August 12, 2026), which superseded v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
 which superseded v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
@@ -121,6 +121,18 @@ Prompt v44) was replaced by the content itself. Character note: Lessons 1–12 a
 hold different lessons at the overlapping numbers 1–12 and 24–30 — neither lineage
 is renumbered, as that would break every existing citation. Rules 11–17 and
 Lessons 24–39 byte-identical to v3.9.
+**v3.11 change:** Session 115, August 15, 2026. Lessons 40–45 imported at their
+existing numbers from `docs/40_Defect_Class_Register.md` §6, with Lesson 43's second
+clause from §10. They were authored in Session 111 and recorded only in the register,
+leaving this document at 1–39 while a sixth numbered set accumulated elsewhere — a
+third lessons lineage forming in a repository that had already spent four sessions
+resolving the consequences of two. **With this import, Lessons 1–45 are continuous
+here**; both long-carried gaps (13–23 and 26–29) are closed. `docs/40` remains the
+register of defect classes and enforced checks; this document remains the rulebook,
+and where they overlap they now agree. The four-location collision note stands
+unchanged: `PROJECT_SUMMARY.md` holds different lessons at overlapping numbers and
+`AGENT_BACKGROUND_AND_LESSONS_LEARNED.md` has never been examined. Neither lineage is
+renumbered. Rules 11–17 and Lessons 1–39 byte-identical to v3.10.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -1469,6 +1481,74 @@ Re-homed as Lesson 39 by Project Principal decision, Session 109, August 12, 202
 Rule 14 in the canonical document remains deliberately and permanently unassigned,
 per standing Project Principal decision of August 6, 2026.)*
 
+### Lesson 40: A citation to a section heading is not a citation to its content
+
+`docs/06 §8.1` is titled "Decisions Required Before Stage 4 Build" and lists five
+open questions. The answers were recorded the day before in Integration Brief v1.17
+and restated in `docs/10 §7`. Two governance documents cited `docs/07 §8.1` — one
+document number off — and reported the decisions as unrecorded. A gap that did not
+exist was carried in two documents for weeks, and closing it consumed three sessions
+of investigation. Read the section, not the heading, and confirm whether an open
+question has since been answered elsewhere.
+
+### Lesson 41: A passing test can verify the label rather than the behaviour
+
+`test_inference_logger.test.ts` contains a green test named "emits
+MODEL_HASH_MISMATCH at P1." It verifies that the TypeScript emitter writes the
+string "P1". It never touches the Python dispatcher that decides what is actually
+alerted — and `MODEL_HASH_MISMATCH` is in neither `P1_EVENT_TYPES` nor
+`P2_EVENT_TYPES`, so no alert is dispatched at all. A passing test, an accurate
+label, and an untrue end-to-end claim: three layers agreeing with each other and
+none of them checking the assertion.
+
+### Lesson 42: Unbuilt authorised scope is not a defect
+
+The missing alert routing looked like a bug. It is a Stage 4 deliverable specified in
+`docs/06 §4.4`, in a stage that was never authorised. "Specified but unbuilt" and
+"built wrong" require opposite responses — one is a scope decision, the other is a
+fix — and treating the first as the second produces work nobody asked for.
+
+### Lesson 43: A check's first run tests its parser; a check's first block tests your willingness to keep it
+
+Session 111's version-chain check produced five false positives from a grep that read
+only the first line of a multi-line block. The Tier 1 cross-artifact checks produced
+two more on their first run — one an integer-parsing bug, two measuring their own
+parsers rather than the property they named. Budget one correction pass into every
+new check, and never baseline a number before its parser is proven.
+
+**Second clause, added Session 112.** T1-4 was wrong three times in one evening: too
+broad — it counted legitimate recorded input checksums and blocked a valid commit;
+then too narrow — keyed on a nearby word, the count fell from 9 to 0 and it read as
+success while going blind to the exact defect it existed for; then correct — keyed on
+the role of the value, finding three frozen expectations including one explicitly
+named `EXPECTED_AGENT_REF_HASH` pointing at a state that had not existed for many
+versions. **The middle step is the lesson.** Narrowing until the alarm stopped felt
+like progress and produced a check that could not fail. The pressure to quiet a check
+is strongest at the moment it first inconveniences you, and that is the moment to
+widen the evidence rather than narrow the pattern.
+
+### Lesson 44: Specification and implementation diverge in names before they diverge in behaviour
+
+`docs/06 §4.4` names `INFERENCE_ANOMALY`, `MODEL_DRIFT_DETECTED`,
+`INFERENCE_FALLBACK`, and `INFERENCE_PERFORMANCE_ANOMALY`. The code emits
+`INFERENCE_CALL`, `INFERENCE_PROVIDER_FALLBACK`, and `MODEL_HASH_MISMATCH`. Only one
+matches. Nothing fails today because the dispatcher extension is unbuilt — it would
+fail the day it is built, against event names the emitter does not produce.
+
+### Lesson 45: When a claim fails verification, change the claim, not the code
+
+Especially before a demonstration. Altering code so that a document becomes true is
+how a self-correction record becomes worthless. Every check script in this repository
+states this in its own output, and it is the reason Session 113 investigated the
+program-count discrepancy and recommended a disclosure rather than fixing three
+surfaces days before a CTO session.
+
+*(Lessons 40-45 authored in Session 111 and recorded in
+`docs/40_Defect_Class_Register.md` §6, with Lesson 43's second clause added in Session
+112 §10. Imported here at their existing numbers to prevent a third numbered-lesson
+lineage from forming. `docs/40` remains the register of defect classes and enforced
+checks; this document remains the rulebook. Where they overlap, they now agree.)*
+
 ---
 
 ## Document Naming Conventions
@@ -2203,10 +2283,11 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 *Agent Reference Document — Unified v3.10 · August 13, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
-*Lessons 13-23 imported from PROJECT_SUMMARY.md Part 7 (Session 112); Lessons 40+ continue in docs/40 and Integration Brief lineage*
+*Lessons 1-45 continuous in this document as of v3.11; docs/40 remains the defect-class register*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
 *v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*
 *v3.8 — August 12, 2026: Supersedes line corrected (v3.7 skipped v3.6); handoff close-table HEAD convention changed (no longer recorded in handoff); D1 inventory System Prompt findings recorded; footer v3.6 header corrected*
 *v3.9 — August 12, 2026: Close protocol updated (verify script required at close, D1b); SBOM version-numbering derivation rule added replacing embedded specific number (D2)*
 *v3.10 — August 13, 2026: Lessons 13-23 imported from PROJECT_SUMMARY.md Part 7 (D2, Session 112); structural gap note replaced by content*
+*v3.11 — August 15, 2026: Lessons 40-45 imported from docs/40 §6 and §10; Lessons 1-45 now continuous; Supersedes line updated to name v3.10*
