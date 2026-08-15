@@ -195,7 +195,7 @@ SOVEREIGN_Session113_Handoff.md|repo|64691106f53b172d14e7b220243b765bfd07496b5a7
 SBOM_Session113_Update.md|repo|09833c5509739b45b978fa0948b0cc86aca6a3db5b8b461f2f2584f07d003feb|93|v1.81 — Session 113 demonstration-surface defect correction; JS/TS 2050->2053|2026-08-15
 
 # --- Repo root: Session 114 ---
-SOVEREIGN_Session114_Handoff.md|repo|e3b01b5f2539580d116fff4a42e9c5c3c2c05005199716aa6ab1b1d37699440e|186|Session 114 Handoff — D1 verify (five FY2026 rates; ECHO 104% only flip); D2 program over-obligation fix in statusFromObligationRate; D3 six tests; D4 no snapshot affected|2026-08-15
+SOVEREIGN_Session114_Handoff.md|repo|e3b01b5f2539580d116fff4a42e9c5c3c2c05005199716aa6ab1b1d37699440e|186|Session 114 Handoff — D1 verify (five FY2026 rates; ECHO 104% only flip); D2 program over-obligation fix in statusFromObligationRate; D3 six tests; D4 no snapshot affected; terminal HEAD bc6cdba|2026-08-15
 SBOM_Session114_Update.md|repo|59fa7d8ab4130157a084057c628e1bf4ebdb58607fb3f2204fbf5e650924f559|105|v1.82 — Session 114 program-level obligation status fix; JS/TS 2053->2059|2026-08-15
 
 # --- D1 FINDING, Session 110 — System Prompt manifest rows ---
