@@ -84,8 +84,9 @@ export function DeterminismBanner(): JSX.Element {
 export function ClassificationBoundaryBanner({ operatorName }: { operatorName: string }): JSX.Element {
   return (
     <GovernanceBanner label="Classification boundary (GD-10):">
-      This platform processes UNCLASSIFIED data only. Attempts to process CUI, SECRET, or TOP SECRET
-      data are blocked and logged. Reviewer: <strong>{operatorName}</strong>. Governance Clock OFF — all data is synthetic.
+      This platform processes UNCLASSIFIED data only. Requests marked CUI, SECRET, or TOP SECRET are
+      refused before any model call, and the refusal is logged. Classification labels are caller-supplied;
+      content is not inspected. Reviewer: <strong>{operatorName}</strong>. Governance Clock OFF — all data is synthetic.
     </GovernanceBanner>
   );
 }

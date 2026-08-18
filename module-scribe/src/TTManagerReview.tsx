@@ -245,7 +245,7 @@ export function TTManagerReview({ ctx, items, onSent, initialSelectedKey, employ
               )}
             </ul>
 
-            <h3>Pre-populated draft — review before any action</h3>
+            <h3>Pre-populated draft — read before sending</h3>
             <div data-testid="tt-draft" style={draftContainerStyle}>
               <div style={draftHeaderStyle}>
                 <div style={draftHeaderRowStyle}>

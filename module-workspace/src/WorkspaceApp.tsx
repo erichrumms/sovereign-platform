@@ -254,11 +254,10 @@ export function WorkspaceApp({ ctx }: WorkspaceAppProps): JSX.Element {
       </header>
 
       <div style={disclosureStyle}>
-        Each panel embeds the source module&apos;s real decision component; a decision recorded
-        here is the same governed decision, with the same audit trail, confirmed by deciding
-        in either surface. Items appear as their source module publishes them this session,
-        and leave the Workspace when decided. Full reference material stays in the source
-        module, one click away (docs/22 §2).
+        These are the actual approval controls from each module, not copies. A decision
+        made here is the same decision, with the same audit record, as one made in the
+        module itself. Items appear when a module publishes them and disappear once
+        decided. For full background on any item, open it in its source module.
       </div>
 
       <nav style={tabBarStyle} aria-label="Reviewer's Workspace sections">
@@ -765,18 +764,30 @@ function CostDashboardSection({ ctx }: { ctx: SovereignShellContext }): JSX.Elem
         history exists (Stage 2 persistence per docs/28 has not been built).
       </div>
 
-      {/* Coverage statement — grounded in GD-31 Build Session 1 actual facts. */}
+      {/* Coverage statement — plain-English summary by default (F-35, Session 116). The full
+          technical paragraph is preserved verbatim behind a "Technical references" toggle,
+          matching TRACER's collapsible disclosure pattern (TracerExplorer.tsx). */}
       <div style={costCoverageStyle} data-testid="cost-coverage-disclosure">
-        Coverage (GD-31 / GD-35): all 14 in-scope AGENT_STEP_COMPLETE emission sites are
-        instrumented. The 4 PPBE advisory panels (ppbe-exhibit-drafter, ppbe-coordination-assistant,
-        ppbe-evidence-synthesizer, ppbe-scenario-analyst) were added in GD-35 (Session 88).
-        The 4 excluded non-model sites (tracer-integration, security-query, 2 NEXUS
-        deterministic engines) do not call the model and have no token usage to report.
-        The 3 COUNSEL hooks (useAnalysis, useCounterargument, usePreMortem) emit
-        REASONING_STEP_COMPLETE, not AGENT_STEP_COMPLETE — they make live model calls
-        whose cost is not captured here. This session total is complete.
-        GovCloud live-call cost estimates are excluded until R7 resolves — the GovCloud
-        provider always serves the static fallback tier.
+        All 14 in-scope agent actions in this session are tracked for cost. Four
+        deterministic checks that never call a model aren&apos;t included, because they have
+        no cost to report. Three COUNSEL tools make live model calls but aren&apos;t captured
+        here yet — a known gap, not a hidden one. This session&apos;s total is complete for
+        everything it does track.
+        <details style={costTechDetailsStyle} data-testid="cost-coverage-tech">
+          <summary style={costTechSummaryStyle}>Technical references</summary>
+          <div style={costTechBodyStyle}>
+            Coverage (GD-31 / GD-35): all 14 in-scope AGENT_STEP_COMPLETE emission sites are
+            instrumented. The 4 PPBE advisory panels (ppbe-exhibit-drafter, ppbe-coordination-assistant,
+            ppbe-evidence-synthesizer, ppbe-scenario-analyst) were added in GD-35 (Session 88).
+            The 4 excluded non-model sites (tracer-integration, security-query, 2 NEXUS
+            deterministic engines) do not call the model and have no token usage to report.
+            The 3 COUNSEL hooks (useAnalysis, useCounterargument, usePreMortem) emit
+            REASONING_STEP_COMPLETE, not AGENT_STEP_COMPLETE — they make live model calls
+            whose cost is not captured here. This session total is complete.
+            GovCloud live-call cost estimates are excluded until R7 resolves — the GovCloud
+            provider always serves the static fallback tier.
+          </div>
+        </details>
       </div>
 
       {/* Workspace parity-test audit status — Session 93 (docs/36 §4). */}
@@ -1052,6 +1063,10 @@ const costCoverageStyle: CSSProperties = {
   padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8,
   color: "#166534", fontSize: 13, marginBottom: 16, maxWidth: 720,
 };
+// F-35 (Session 116): "Technical references" collapsible — same pattern as TracerExplorer.tsx.
+const costTechDetailsStyle: CSSProperties = { marginTop: 8 };
+const costTechSummaryStyle: CSSProperties = { fontSize: 12, fontWeight: 600, color: "#166534", cursor: "pointer" };
+const costTechBodyStyle: CSSProperties = { marginTop: 6, fontSize: 12, color: "#166534", lineHeight: 1.5 };
 // Parity audit status banner (Session 93, docs/36 §4) — same honest-static style as costCoverageStyle.
 const parityAuditStyle: CSSProperties = {
   padding: "10px 14px", background: "#faf5ff", border: "1px solid #d8b4fe", borderRadius: 8,
