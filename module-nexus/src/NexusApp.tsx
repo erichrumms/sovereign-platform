@@ -300,8 +300,12 @@ const subtitleStyle: CSSProperties = { margin: 0, color: "#475569" };
 const disclosureStyle: CSSProperties = {
   padding: "10px 14px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, color: "#1e40af", fontSize: 13, marginBottom: 10, maxWidth: 820,
 };
+// F-16 (Session 116): the GD-10 classification boundary is a permanent governance guardrail
+// (Category 2 = blue), not a transient status notice. Aligned to the same blue palette as this
+// module's own AI-disclosure banner and the APEX/ARIA/FLOWPATH boundary banners; the amber here
+// was the older, inconsistent treatment. Colours match disclosureStyle above (AA-contrast).
 const boundaryStyle: CSSProperties = {
-  padding: "10px 14px", background: "#fef9c3", border: "1px solid #fde047", borderRadius: 8, color: "#854d0e", fontSize: 13, marginBottom: 16, maxWidth: 820,
+  padding: "10px 14px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, color: "#1e40af", fontSize: 13, marginBottom: 16, maxWidth: 820,
 };
 const tabBarStyle: CSSProperties = { display: "flex", gap: 4, borderBottom: "1px solid #e2e8f0", marginBottom: 16 };
 const tabStyle: CSSProperties = { padding: "8px 14px", fontSize: 14, background: "none", border: "none", cursor: "pointer" };
