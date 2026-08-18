@@ -45,6 +45,7 @@ import {
   SCRIBE_WORKSPACE_MODULE_ID,
 } from "./scribe-workspace-publisher";
 import { isScribeItemSent, markScribeItemSent } from "./scribe-sent-session";
+import { Gate1Banner } from "./banners";
 
 /**
  * GD-27 (shell-contract v1.22, docs/25 §3) — SCRIBE's narrowed initialState shape.
@@ -108,6 +109,12 @@ export function ScribeApp({ ctx, initialState }: ScribeAppProps): JSX.Element {
         <h1 style={titleStyle}>SCRIBE</h1>
         <p style={subtitleStyle}>Drafting & Style DNA · Companion Suite</p>
       </header>
+
+      {/* F-20 (Session 117): permanent CPMI-VRS Gate 1 AI-disclosure guardrail. Rendered
+          at the ScribeApp top level, above the surface toggle, so it is present on all
+          three tabs (Drafting Modes, Time & Travel Review, PPBE Exhibits) and cannot be
+          missed on any one of them. Matches the APEX/FLOWPATH blue Category-2 pattern. */}
+      <Gate1Banner />
 
       <div style={scaffoldBannerStyle}>
         Drafting engine live for the six product-aligned modes — capture → draft →

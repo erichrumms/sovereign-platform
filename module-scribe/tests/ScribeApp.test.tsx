@@ -67,6 +67,34 @@ describe("ScribeApp", () => {
   });
 });
 
+describe("ScribeApp F-20 — CPMI-VRS Gate 1 AI-disclosure banner is app-wide", () => {
+  const DISCLOSURE =
+    /All drafting in SCRIBE is AI-assisted\. Outputs are advisory and must be reviewed and approved by a qualified human before export\./;
+
+  it("renders the exact Gate 1 disclosure text on the Drafting Modes tab (default)", () => {
+    render(<ScribeApp ctx={makeCtx()} />);
+    expect(screen.getByText(/AI disclosure \(CPMI-VRS Gate 1\):/)).toBeInTheDocument();
+    expect(screen.getByText(DISCLOSURE)).toBeInTheDocument();
+  });
+
+  it("keeps the disclosure banner visible after switching to the Time & Travel Review tab", () => {
+    render(<ScribeApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("scribe-tt-review-tab"));
+    expect(screen.getByText(DISCLOSURE)).toBeInTheDocument();
+  });
+
+  it("keeps the disclosure banner visible after switching to the PPBE Exhibits tab", () => {
+    render(<ScribeApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByTestId("scribe-ppbe-exhibits-tab"));
+    expect(screen.getByText(DISCLOSURE)).toBeInTheDocument();
+  });
+
+  it("renders the banner exactly once at the top level, not duplicated per-tab", () => {
+    render(<ScribeApp ctx={makeCtx()} />);
+    expect(screen.getAllByText(DISCLOSURE)).toHaveLength(1);
+  });
+});
+
 describe("ScribeApp WG-15 — sent-session filtering on mount effects", () => {
   beforeEach(() => resetScribeSessionForTests());
 
