@@ -54,7 +54,7 @@ describe("PPBEDashboard renders the adapter's data live", () => {
   it("shows real metrics and no empty-state notice", () => {
     render(<PPBEDashboard inputs={createSyntheticPPBEDashboardInputs()} />);
     expect(screen.queryByText(/No PPBE execution data is recorded yet/)).not.toBeInTheDocument();
-    expect(screen.getByText(/97 percent/)).toBeInTheDocument();
+    expect(screen.getByText(/has obligated \$802,000 of \$825,000 planned/)).toBeInTheDocument();
     expect(screen.getByText(/6 of 8 registered dependencies are healthy \(75 percent\)/)).toBeInTheDocument();
     expect(screen.getByText(/15 of 22 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
     expect(screen.getByText(/PPBE_ANOMALY: 10 recorded events/)).toBeInTheDocument();

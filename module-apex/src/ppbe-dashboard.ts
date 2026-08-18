@@ -87,7 +87,7 @@ export function obligationRate(
     narrative:
       rate === null
         ? `${program.name} has no planned obligations recorded — an obligation rate cannot be computed.`
-        : `${program.name} has obligated ${obligated} of ${planned} planned — ${rate} percent.`,
+        : `${program.name} has obligated $${obligated.toLocaleString()} of $${planned.toLocaleString()} planned.`,
   };
 }
 

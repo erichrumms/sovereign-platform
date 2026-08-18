@@ -106,7 +106,11 @@ describe("obligationRate", () => {
     expect(m.planned_total).toBe(300000);
     expect(m.obligated_total).toBe(150000);
     expect(m.rate_percent).toBe(50);
-    expect(m.narrative).toContain("50 percent");
+    // F-9 (currency label + thousands separators) and F-11 (percent stated once, in the
+    // progress line, not restated in the sentence): the narrative carries the formatted
+    // dollar figures; rate_percent (asserted above) remains the single percent source.
+    expect(m.narrative).toContain("obligated $150,000 of $300,000 planned");
+    expect(m.narrative).not.toContain("percent");
   });
 
   it("reports null (not zero) when nothing is planned — a rate over zero is not a rate", () => {

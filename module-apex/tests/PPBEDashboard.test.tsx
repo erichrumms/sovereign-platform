@@ -75,7 +75,7 @@ describe("PPBEDashboard", () => {
   it("renders all four metric sections and the event activity with data", () => {
     render(<PPBEDashboard inputs={inputs} />);
     expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
-    expect(screen.getByText(/obligated 50000 of 100000 planned — 50 percent/)).toBeInTheDocument();
+    expect(screen.getByText(/obligated \$50,000 of \$100,000 planned/)).toBeInTheDocument();
     // WH-48: variance prose replaced by table — check table and period cell.
     expect(screen.getByLabelText("Budget-to-actual variance by period")).toBeInTheDocument();
     expect(screen.getByText("001 FY 2026 Q1")).toBeInTheDocument();

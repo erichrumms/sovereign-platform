@@ -35,7 +35,7 @@ describe("ApexApp", () => {
     expect(screen.getByRole("heading", { name: "APEX — Execution Monitoring" })).toBeInTheDocument();
     // The Session 32 empty state is gone — the host adapter feeds the seeded portfolio.
     expect(screen.queryByText(/No PPBE execution data is recorded yet/)).not.toBeInTheDocument();
-    expect(screen.getByText(/Logistics Data Interchange Modernization has obligated 802000 of 825000 planned — 97 percent/)).toBeInTheDocument();
+    expect(screen.getByText(/Logistics Data Interchange Modernization has obligated \$802,000 of \$825,000 planned\./)).toBeInTheDocument();
     expect(screen.getByText(/15 of 22 evaluation findings are feeding the planning cycle/)).toBeInTheDocument();
   });
 

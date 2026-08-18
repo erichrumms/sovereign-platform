@@ -185,7 +185,13 @@ function ProgramHealthPanel({
   const lv = ppbeMetrics?.learning_velocity;
   return (
     <div style={subPanelStyle}>
-      <h3 style={subPanelTitleStyle}>Program Health</h3>
+      <div style={programHealthHeaderStyle}>
+        <h3 style={subPanelTitleStyle}>Program Health</h3>
+        {/* F-10 (Session 116): the fiscal reporting period, so every obligation percentage on
+            the panel is interpretable. Static demonstration label — no live fiscal-period value
+            is published in the program data. */}
+        <span style={asOfLabelStyle}>As of FY 2026 Q4</span>
+      </div>
       {ppbeMetrics && (
         <div style={portfolioMetricsRowStyle}>
           <div style={portfolioMetricBoxStyle}>
@@ -570,6 +576,20 @@ const subPanelTitleStyle: CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
   color: "#0f172a",
+};
+
+// F-10 (Session 116): Program Health header row + fiscal-period "as of" label.
+const programHealthHeaderStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 10,
+  marginBottom: 6,
+};
+
+const asOfLabelStyle: CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#64748b",
 };
 
 const emptyTextStyle: CSSProperties = {

@@ -3123,11 +3123,20 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >
@@ -3915,11 +3924,20 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >
@@ -4524,11 +4542,20 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >
@@ -5118,11 +5145,20 @@ exports[`PlatformHome snapshots To Do / Review section shows empty state when no
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >
@@ -5272,11 +5308,20 @@ exports[`PlatformHome snapshots empty state — no programs, no modules (SYSTEM_
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >
@@ -5426,11 +5471,20 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
       <div
         style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: rgb(255, 255, 255); display: flex; flex-direction: column; gap: 8px;"
       >
-        <h3
-          style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+        <div
+          style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;"
         >
-          Program Health
-        </h3>
+          <h3
+            style="margin: 0px; font-size: 12px; font-weight: 700; color: rgb(15, 23, 42);"
+          >
+            Program Health
+          </h3>
+          <span
+            style="font-size: 11px; font-weight: 600; color: rgb(100, 116, 139);"
+          >
+            As of FY 2026 Q4
+          </span>
+        </div>
         <div
           style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;"
         >

@@ -95,7 +95,7 @@ describe("PPBEProgramDetail", () => {
 
   it("shows obligation narrative from obligationRate()", () => {
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={() => {}} />);
-    expect(screen.getByText(/has obligated 150000 of 220000 planned/)).toBeInTheDocument();
+    expect(screen.getByText(/has obligated \$150,000 of \$220,000 planned/)).toBeInTheDocument();
   });
 
   it("shows variance history for each obligation plan period (via narrative captions below chart)", () => {
