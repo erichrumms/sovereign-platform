@@ -105,7 +105,7 @@ const DEV_USER: SovereignUser = {
   name: DEV_PERSONA_NAMES[_devPersona],
   org_unit: "SOVEREIGN Platform Engineering",
   role: _devPersona as SovereignRole,
-  clearance_level: "CUI",
+  clearance_level: "UNCLASSIFIED",
   cost_code_assignments: [],
 };
 
