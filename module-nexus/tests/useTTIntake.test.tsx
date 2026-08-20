@@ -135,6 +135,37 @@ describe("useTTIntake — travel path", () => {
     expect(logSink).toHaveLength(0);
   });
 
+  // F-50 (Session 118): the submit functions report whether the submission
+  // committed, so the form bodies clear only on success and never discard
+  // user input on a validation error.
+  it("submitTravel returns true on a committed submission and false on a validation error", () => {
+    const { result } = renderHook(() => useTTIntake(makeCtx(), ports()));
+    let outcome = true;
+    act(() => {
+      outcome = result.current.submitTravel(travelForm({ airfare: "not-a-number" }));
+    });
+    expect(outcome).toBe(false);
+    act(() => {
+      outcome = result.current.submitTravel(travelForm());
+    });
+    expect(outcome).toBe(true);
+  });
+
+  it("submitTime returns true on a committed submission and false on a validation error", () => {
+    const { result } = renderHook(() => useTTIntake(makeCtx(), ports()));
+    let outcome = true;
+    act(() => {
+      const invalid = timeForm();
+      invalid.entries[0].hours = "not-a-number";
+      outcome = result.current.submitTime(invalid);
+    });
+    expect(outcome).toBe(false);
+    act(() => {
+      outcome = result.current.submitTime(timeForm());
+    });
+    expect(outcome).toBe(true);
+  });
+
   it("previewTravel evaluates purely — a finding with zero Logger events", () => {
     const logSink: SovereignLogEvent[] = [];
     const { result } = renderHook(() => useTTIntake(makeCtx({ logSink }), ports()));

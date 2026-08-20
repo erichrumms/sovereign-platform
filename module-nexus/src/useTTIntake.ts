@@ -167,10 +167,15 @@ export interface UseTTIntake {
   travelItems: SubmittedTravelItem[];
   timeItems: SubmittedTimeItem[];
   error: string | null;
-  /** Build → evaluate → route one travel request through the Session 27/28 pipeline. */
-  submitTravel: (form: TravelIntakeForm) => void;
-  /** Build → evaluate one time record through the injected compliance port. */
-  submitTime: (form: TimeIntakeForm) => void;
+  /**
+   * Build → evaluate → route one travel request through the Session 27/28 pipeline.
+   * Returns true only when the request was committed to the queue — false on a
+   * validation error or a Gate 2 halt, so the form knows to PRESERVE its state
+   * (F-50, Session 118: the form must never discard user input on a failed submit).
+   */
+  submitTravel: (form: TravelIntakeForm) => boolean;
+  /** Build → evaluate one time record through the injected compliance port. Same F-50 contract. */
+  submitTime: (form: TimeIntakeForm) => boolean;
   /** Record the manager's decision on a routed request (HUMAN_DECISION · TRAVEL_APPROVAL, GD-21). */
   decideTravel: (requestId: string, outcome: TravelDecisionOutcome, note: string) => void;
   /** Pure real-time policy preview of the current form state (docs/17 §5.1). No Logger events. */
@@ -259,14 +264,14 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
   const nowIso = ports.nowIsoFn ?? (() => new Date().toISOString());
 
   const submitTravel = useCallback(
-    (form: TravelIntakeForm): void => {
+    (form: TravelIntakeForm): boolean => {
       setError(null);
       const requestId = `TR-${(travelIdRef.current += 1)}`;
       const built = buildTravelRequest(form, requestId, actorId, nowIso());
       if (!built.ok) {
         travelIdRef.current -= 1; // id not consumed by an invalid form
         setError(built.errors.join(" · "));
-        return;
+        return false;
       }
       try {
         const processed = processTravelSubmission(
@@ -282,6 +287,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           workflow_step_id: processed.workflow_step_id,
         };
         commitTravel([...travelRef.current, item]);
+        return true;
       } catch (err) {
         // Gate 2 fail-closed: an emit failure mid-pipeline commits nothing.
         setError(
@@ -289,6 +295,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
             err instanceof Error ? err.message : String(err)
           }`
         );
+        return false;
       }
     },
     [actorId, ctx, ports, commitTravel]
@@ -363,14 +370,14 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
   );
 
   const submitTime = useCallback(
-    (form: TimeIntakeForm): void => {
+    (form: TimeIntakeForm): boolean => {
       setError(null);
       const recordId = `TM-${(timeIdRef.current += 1)}`;
       const built = buildTimeRecord(form, recordId, actorId, nowIso());
       if (!built.ok) {
         timeIdRef.current -= 1;
         setError(built.errors.join(" · "));
-        return;
+        return false;
       }
       const record = built.value;
       const wsid = `tt-time-${record.record_id}`;
@@ -382,7 +389,7 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           ...timeRef.current,
           { record, flags: [], evaluated: false, workflow_step_id: wsid },
         ]);
-        return;
+        return true;
       }
 
       // --- Audit bracketing, mirroring tt-travel-queue (Constraints #4/#6). ---
@@ -421,12 +428,14 @@ export function useTTIntake(ctx: SovereignShellContext, ports: TTIntakePorts): U
           ...timeRef.current,
           { record, flags, evaluated: true, workflow_step_id: wsid },
         ]);
+        return true;
       } catch (err) {
         setError(
           `Time record submission halted — Logger emission failed (CPMI-VRS Gate 2): ${
             err instanceof Error ? err.message : String(err)
           }`
         );
+        return false;
       }
     },
     [actorId, ctx, ports, commitTime]

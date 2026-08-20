@@ -36,9 +36,11 @@ export function TravelIntakeFormBody({ tt }: { tt: UseTTIntake }): JSX.Element {
 
   const preview = tt.previewTravel(form);
 
+  // F-50 (Session 118): clear the form ONLY when the submission actually committed.
+  // A validation error (or a Gate 2 halt) must preserve every entered field — the
+  // prior unconditional clear discarded all user input on a single invalid field.
   const onSubmit = (): void => {
-    tt.submitTravel(form);
-    setForm({ ...EMPTY_TRAVEL_FORM });
+    if (tt.submitTravel(form)) setForm({ ...EMPTY_TRAVEL_FORM });
   };
 
   return (
@@ -126,9 +128,9 @@ export function TimeIntakeFormBody({ tt }: { tt: UseTTIntake }): JSX.Element {
   const removeEntry = (index: number): void =>
     setForm((f) => ({ ...f, entries: f.entries.filter((_, i) => i !== index) }));
 
+  // F-50 (Session 118, Rule 12 sibling): same conditional clear as the travel form.
   const onSubmit = (): void => {
-    tt.submitTime(form);
-    setForm({ ...EMPTY_TIME_FORM, entries: [{ ...EMPTY_TIME_ENTRY }] });
+    if (tt.submitTime(form)) setForm({ ...EMPTY_TIME_FORM, entries: [{ ...EMPTY_TIME_ENTRY }] });
   };
 
   return (
