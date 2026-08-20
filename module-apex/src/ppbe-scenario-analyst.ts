@@ -311,10 +311,10 @@ export function staticScenarioReport(input: ScenarioAnalysisInput): PPBEScenario
         confidence: "LOW",
       },
       {
-        scenario_name: "Uniform ten percent reduction across the portfolio",
+        scenario_name: "Uniform 10% reduction across the portfolio",
         allocation_changes: reducedChanges,
         projected_performance_impact:
-          "Every program's planned obligations are reduced by ten percent, computed by arithmetic. " +
+          "Every program's planned obligations are reduced by 10%, computed by arithmetic. " +
           "The performance effect of that reduction is not assessed by this static tier.",
         projected_risk_implications:
           "A uniform reduction ignores programs' differing tolerance for cuts — the mechanism of risk " +

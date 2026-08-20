@@ -105,7 +105,7 @@ export function PortfolioDashboard({ ctx, adapter, onOpenProgram, onExportDossie
                 <td style={tdStyle}>
                   <span style={{ ...pillStyle, color: pill.color, background: pill.background }}>{statusLabelText(p.status_label)}</span>
                 </td>
-                <td style={tdStyle}>{p.completion_pct} percent complete</td>
+                <td style={tdStyle}>{p.completion_pct}% complete</td>
                 <td style={tdStyle}>{p.responsible_party}</td>
                 <td style={tdStyle}>
                   <button type="button" onClick={() => onExportDossier(p.program_id)} style={exportBtnStyle}>

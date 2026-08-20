@@ -19,7 +19,7 @@ describe("ReportCharts", () => {
     render(<ReportCharts program={p100} />);
     const indicator = screen.getByLabelText("Completion indicator");
     expect(indicator).toHaveAttribute("data-completion", "62");
-    expect(screen.getByText("This program is 62 percent complete.")).toBeInTheDocument();
+    expect(screen.getByText("This program is 62% complete.")).toBeInTheDocument();
   });
 
   it("cost variance indicator is amber/over-plan when a cost-variance flag is open", () => {
@@ -28,7 +28,7 @@ describe("ReportCharts", () => {
     expect(cost).toHaveAttribute("data-cost-state", "over");
     expect(within(cost).getByText("Cost over plan")).toBeInTheDocument();
     // Caption carries the variance prose and the priority (Gap 5).
-    expect(within(cost).getByText(/8 percentage points above the planned 58 percent/)).toBeInTheDocument();
+    expect(within(cost).getByText(/8 points above the planned 58%/)).toBeInTheDocument();
     expect(within(cost).getByText(/Risk Level 2 risk/)).toBeInTheDocument();
   });
 

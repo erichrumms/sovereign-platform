@@ -34,7 +34,7 @@ describe("PortfolioDashboard", () => {
   it("lists each program with plain-prose completion (Gap 5)", () => {
     renderDash();
     expect(screen.getByText(/Joint Logistics Modernization/)).toBeInTheDocument();
-    expect(screen.getByText("62 percent complete")).toBeInTheDocument();
+    expect(screen.getByText("62% complete")).toBeInTheDocument();
     // Two programs are at risk (P-100, P-150) — both render an "At risk" status pill.
     expect(screen.getAllByText(/At risk/).length).toBeGreaterThanOrEqual(2);
   });

@@ -179,7 +179,7 @@ export function IndividualWorkstyle({ ctx }: IndividualWorkstyleProps): JSX.Elem
             <Field label={WORKSTYLE_QUESTIONS.firstLook} value={firstLook} onChange={setFirstLook} />
             <Field label={WORKSTYLE_QUESTIONS.trustVsVerify} value={trustVsVerify} onChange={setTrustVsVerify} />
             <Field label={WORKSTYLE_QUESTIONS.programContext} value={programContext} onChange={setProgramContext} />
-            <Field label={WORKSTYLE_QUESTIONS.costThreshold} value={costThreshold} onChange={setCostThreshold} placeholder="e.g. 5 percent" />
+            <Field label={WORKSTYLE_QUESTIONS.costThreshold} value={costThreshold} onChange={setCostThreshold} placeholder="e.g. 5%" />
             <button type="button" onClick={save} style={primaryButtonStyle}>
               Save my workstyle
             </button>

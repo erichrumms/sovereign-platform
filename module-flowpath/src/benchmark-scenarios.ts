@@ -59,8 +59,8 @@ export const FLOWPATH_BENCHMARK_SCENARIOS: readonly FlowpathBenchmarkScenario[] 
     label: "Conditional branch with an external dependency",
     workflow_type: "operational",
     expectation:
-      "A budget variance review that branches on the variance amount — over 10 percent escalates to " +
-      "the CFO, 10 percent or under self-certifies — and draws obligation records from the accounting " +
+      "A budget variance review that branches on the variance amount — over 10% escalates to " +
+      "the CFO, 10% or under self-certifies — and draws obligation records from the accounting " +
       "system, which is registered as a data source.",
   },
   {
@@ -144,7 +144,7 @@ function scenarioB(): FlowpathMapperOutput {
     title: "Budget Variance Review",
     summary:
       "A program manager initiates a budget variance review using obligation records from the " +
-      "accounting system. If the variance exceeds 10 percent the review escalates to the CFO; " +
+      "accounting system. If the variance exceeds 10% the review escalates to the CFO; " +
       "otherwise the program manager self-certifies. The work is complete once the variance has " +
       "either been escalated to the CFO or self-certified.",
     steps: [
@@ -160,20 +160,20 @@ function scenarioB(): FlowpathMapperOutput {
       },
       {
         step_id: "B-2",
-        description: "When the variance exceeds 10 percent, the program manager escalates the review to the CFO for disposition.",
+        description: "When the variance exceeds 10%, the program manager escalates the review to the CFO for disposition.",
         responsible_role: "Chief Financial Officer",
         sequence: 2,
-        trigger_condition: "The computed budget variance is greater than 10 percent.",
+        trigger_condition: "The computed budget variance is greater than 10%.",
         inputs: ["Computed budget variance"],
         outputs: ["CFO disposition of the variance"],
         is_terminal: true,
       },
       {
         step_id: "B-3",
-        description: "When the variance is 10 percent or under, the program manager self-certifies the variance with a short note.",
+        description: "When the variance is 10% or under, the program manager self-certifies the variance with a short note.",
         responsible_role: "Program Manager",
         sequence: 3,
-        trigger_condition: "The computed budget variance is 10 percent or under.",
+        trigger_condition: "The computed budget variance is 10% or under.",
         inputs: ["Computed budget variance"],
         outputs: ["Self-certified variance note"],
         is_terminal: true,
@@ -201,7 +201,7 @@ function vocabularyB(sessionId: string): OrganizationalVocabulary {
   return {
     session_id: sessionId,
     entries: [
-      { term: "budget variance", definition: "The percentage difference between actual obligations and the program spend plan.", threshold: "10 percent" },
+      { term: "budget variance", definition: "The percentage difference between actual obligations and the program spend plan.", threshold: "10%" },
       { term: "self-certify", definition: "A program manager's recorded confirmation that a within-threshold variance needs no escalation." },
     ],
     data_classification: "user",

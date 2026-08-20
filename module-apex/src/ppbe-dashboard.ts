@@ -156,7 +156,7 @@ export function dependencyHealthIndex(dependencies: readonly DependencyMap[]): D
     narrative:
       index === null
         ? "No inter-workflow dependencies are registered — there is no handoff health to index."
-        : `${healthy} of ${dependencies.length} registered dependencies are healthy (${index} percent); ` +
+        : `${healthy} of ${dependencies.length} registered dependencies are healthy (${index}%); ` +
           `${atRisk} at risk, ${failed} failed.`,
   };
 }
@@ -186,7 +186,7 @@ export function learningVelocity(findings: readonly EvaluationFinding[]): Learni
         ? "No evaluation findings are recorded. That absence is reported as a fact — it is not evidence " +
           "that the feedback loop is working."
         : `${feeding} of ${findings.length} evaluation findings are feeding the planning cycle ` +
-          `(${velocity} percent). Findings that never re-enter planning are the R-P7 failure mode.`,
+          `(${velocity}%). Findings that never re-enter planning are the R-P7 failure mode.`,
   };
 }
 

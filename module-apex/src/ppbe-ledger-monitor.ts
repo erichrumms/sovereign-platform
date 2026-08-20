@@ -90,7 +90,7 @@ export function detectObligationRateDeviation(
       findings.push({
         anomaly_type: "OBLIGATION_RATE_DEVIATION",
         program_id: program.program_id,
-        threshold_breached: `Obligations for ${planned.period} are ${rounded} percent ${direction} plan — the configured limit is ${config.obligation_deviation_percent} percent.`,
+        threshold_breached: `Obligations for ${planned.period} are ${rounded}% ${direction} plan — the configured limit is ${config.obligation_deviation_percent}%.`,
         severity: Math.abs(deviation) >= config.obligation_deviation_percent * 2 ? "P1" : "P2",
         workflow_step_id: ledgerWorkflowStep(program.program_id),
         observation_only: true,
@@ -102,7 +102,7 @@ export function detectObligationRateDeviation(
 
 /**
  * Rule 2 — lifecycle ceiling. Flags proximity at the configured percent and
- * exceedance at 100 percent of lifecycle_cost_estimate. Deterministic.
+ * exceedance at 100% of lifecycle_cost_estimate. Deterministic.
  */
 export function detectCeilingBreach(
   program: ProgramRecord,
@@ -118,7 +118,7 @@ export function detectCeilingBreach(
       {
         anomaly_type: "CEILING_EXCEEDED",
         program_id: program.program_id,
-        threshold_breached: `Cumulative obligations are ${rounded} percent of the lifecycle cost estimate — the ceiling has been exceeded.`,
+        threshold_breached: `Cumulative obligations are ${rounded}% of the lifecycle cost estimate — the ceiling has been exceeded.`,
         severity: "P1",
         workflow_step_id: ledgerWorkflowStep(program.program_id),
         observation_only: true,
@@ -130,7 +130,7 @@ export function detectCeilingBreach(
       {
         anomaly_type: "CEILING_PROXIMITY",
         program_id: program.program_id,
-        threshold_breached: `Cumulative obligations are ${rounded} percent of the lifecycle cost estimate — the configured proximity limit is ${config.ceiling_proximity_percent} percent.`,
+        threshold_breached: `Cumulative obligations are ${rounded}% of the lifecycle cost estimate — the configured proximity limit is ${config.ceiling_proximity_percent}%.`,
         severity: "P2",
         workflow_step_id: ledgerWorkflowStep(program.program_id),
         observation_only: true,
@@ -159,7 +159,7 @@ export function detectFeedbackLoopStall(
     {
       anomaly_type: "FEEDBACK_LOOP_STALL",
       program_id: programId,
-      threshold_breached: `${stalled} of ${programFindings.length} evaluation findings are not feeding the planning cycle — the configured limit is ${Math.round(config.feedback_stall_fraction * 100)} percent.`,
+      threshold_breached: `${stalled} of ${programFindings.length} evaluation findings are not feeding the planning cycle — the configured limit is ${Math.round(config.feedback_stall_fraction * 100)}%.`,
       severity: "P3",
       workflow_step_id: ledgerWorkflowStep(programId),
       observation_only: true,

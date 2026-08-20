@@ -67,7 +67,7 @@ export const SYNTHETIC_WORKFLOW_ARTIFACT: WorkflowArtifact = {
 export const SYNTHETIC_VOCABULARY: OrganizationalVocabulary = {
   session_id: SYNTHETIC_SESSION_ID,
   entries: [
-    { term: "cost variance", definition: "How far a program's actual obligations differ from its spend plan, expressed as a percentage.", threshold: "8 percent" },
+    { term: "cost variance", definition: "How far a program's actual obligations differ from its spend plan, expressed as a percentage.", threshold: "8%" },
     { term: "at risk", definition: "A program with at least one open flag that the program manager has not yet dispositioned." },
     { term: "on track", definition: "A program whose cost variance is within threshold and whose milestones are on schedule." },
   ],

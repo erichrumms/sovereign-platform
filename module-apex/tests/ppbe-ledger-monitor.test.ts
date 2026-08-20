@@ -92,7 +92,7 @@ describe("obligation rate deviation (Rule 1)", () => {
       severity: "P1", // 20% >= 2x the 10% limit
       observation_only: true,
     });
-    expect(findings[0].threshold_breached).toContain("20 percent below plan");
+    expect(findings[0].threshold_breached).toContain("20% below plan");
     expect(findings[0].workflow_step_id).toBe("ppbe-ledger-PRG-001");
   });
 
@@ -111,7 +111,7 @@ describe("lifecycle ceiling (Rule 2)", () => {
   it("flags proximity at the configured percent (P2)", () => {
     const findings = detectCeilingBreach(program, [obligation("OB-1", 920000)], config);
     expect(findings[0]).toMatchObject({ anomaly_type: "CEILING_PROXIMITY", severity: "P2" });
-    expect(findings[0].threshold_breached).toContain("92 percent");
+    expect(findings[0].threshold_breached).toContain("92%");
   });
 
   it("flags exceedance as P1", () => {

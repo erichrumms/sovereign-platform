@@ -160,8 +160,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { period: 'FY 2026 Q4', planned_amount: 300000 },
     ],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90% of milestones on schedule' },
     ],
     point_of_contact: { name: 'Marcus Cole', role: 'Program Manager' },
   },
@@ -182,8 +182,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { period: 'FY 2026 Q4', planned_amount: 250000 },
     ],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70% of tier-one suppliers instrumented' },
     ],
     point_of_contact: { name: 'Sarah Okonkwo', role: 'Program Manager' },
   },
@@ -204,7 +204,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { period: 'FY 2026 Q4', planned_amount: 100000 },
     ],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
       { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
     ],
     point_of_contact: { name: 'James Rivera', role: 'Senior Analyst' },
@@ -249,8 +249,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
       { period: 'FY 2026 Q4', planned_amount: 150000 },
     ],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'depot throughput', baseline_value: 'five percent scheduling improvement by pilot close' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'depot throughput', baseline_value: '5% scheduling improvement by pilot close' },
     ],
     point_of_contact: { name: 'David Nkosi', role: 'Program Manager' },
   },
@@ -270,8 +270,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 750000,
     obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 750000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90% of milestones on schedule' },
     ],
   },
   {
@@ -286,8 +286,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 520000,
     obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 520000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70% of tier-one suppliers instrumented' },
     ],
   },
   {
@@ -302,7 +302,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 280000,
     obligation_plan: [{ period: 'FY 2025 Q4', planned_amount: 280000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
       { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
     ],
   },
@@ -338,8 +338,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 860000,
     obligation_plan: [{ period: 'FY 2027', planned_amount: 860000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90% of milestones on schedule' },
     ],
   },
   {
@@ -354,8 +354,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 500000,
     obligation_plan: [{ period: 'FY 2027', planned_amount: 500000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70% of tier-one suppliers instrumented' },
     ],
   },
   {
@@ -370,7 +370,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 340000,
     obligation_plan: [{ period: 'FY 2027', planned_amount: 340000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
       { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
     ],
   },
@@ -403,8 +403,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 480000,
     obligation_plan: [{ period: 'FY 2027', planned_amount: 480000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'depot throughput', baseline_value: 'ten percent scheduling improvement over pilot baseline' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'depot throughput', baseline_value: '10% scheduling improvement over pilot baseline' },
     ],
   },
 
@@ -422,8 +422,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 900000,
     obligation_plan: [{ period: 'FY 2028', planned_amount: 900000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'milestone completion', baseline_value: '90 percent of milestones on schedule' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'milestone completion', baseline_value: '90% of milestones on schedule' },
     ],
   },
   {
@@ -438,8 +438,8 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 520000,
     obligation_plan: [{ period: 'FY 2028', planned_amount: 520000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-      { metric: 'sensor coverage', baseline_value: '70 percent of tier-one suppliers instrumented' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+      { metric: 'sensor coverage', baseline_value: '70% of tier-one suppliers instrumented' },
     ],
   },
   {
@@ -454,7 +454,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 350000,
     obligation_plan: [{ period: 'FY 2028', planned_amount: 350000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
       { metric: 'systems retrofitted', baseline_value: 'twelve systems per quarter' },
     ],
   },
@@ -470,7 +470,7 @@ export const SYNTH_PPBE_PROGRAMS: ProgramRecord[] = [
     lifecycle_cost_estimate: 500000,
     obligation_plan: [{ period: 'FY 2028', planned_amount: 500000 }],
     performance_baseline: [
-      { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+      { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
       { metric: 'depot throughput', baseline_value: 'standing-program throughput targets to be defined' },
     ],
   },
@@ -529,7 +529,7 @@ export const SYNTH_PPBE_OBLIGATIONS: ObligationRecord[] = [
   ob('SYNTH-OB-C1', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 100000, '2026-04-28T14:00:00Z', 'SYNTH R. Okafor'),
   ob('SYNTH-OB-C2', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-130', 60000, '2026-06-12T14:00:00Z', 'SYNTH R. Okafor'),
   ob('SYNTH-OB-C3', 'SYNTH-PRG-CHARLIE', 'SYNTH-CC-131', 30000, '2026-07-06T14:00:00Z', 'SYNTH R. Okafor'),
-  // DELTA — ceiling-proximate: 485000 of a 500000 lifecycle estimate (97 percent) across all four quarters.
+  // DELTA — ceiling-proximate: 485000 of a 500000 lifecycle estimate (97%) across all four quarters.
   // Q1/Q2 are minimal ramp-up; main obligations front-loaded into Q3/Q4.
   // Per-quarter actuals stay INSIDE the deviation threshold so DELTA's signal is
   // cleanly CEILING_PROXIMITY, not a mixed rate-deviation case.
@@ -541,7 +541,7 @@ export const SYNTH_PPBE_OBLIGATIONS: ObligationRecord[] = [
   ob('SYNTH-OB-D4', 'SYNTH-PRG-DELTA', 'SYNTH-CC-141', 115000, '2026-07-09T14:00:00Z', 'SYNTH M. Hale'),
   // ECHO — THE DELIBERATE CEILING-EXCEEDED EXAMPLE.
   // Q1/Q2 on plan (70000 each); ceiling reached by end of Q3; Q4 extends the violation.
-  // Total across all four quarters: 458000 of a 300000 lifecycle estimate (153 percent).
+  // Total across all four quarters: 458000 of a 300000 lifecycle estimate (153%).
   // Seeded ADA exposure for the walkthrough — the ledger monitor must flag it P1.
   ob('SYNTH-OB-E5', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 70000, '2025-10-30T14:00:00Z', 'SYNTH M. Hale'),
   ob('SYNTH-OB-E6', 'SYNTH-PRG-ECHO', 'SYNTH-CC-150', 70000, '2026-01-19T14:00:00Z', 'SYNTH M. Hale'),
@@ -655,7 +655,7 @@ export const SYNTH_PPBE_DEPENDENCIES: DependencyMap[] = [
 
 // ============================================================
 // EVALUATION FINDINGS — twenty, mixed profile: 13 of 20 feed the
-// planning cycle (65 percent portfolio learning velocity). ECHO is
+// planning cycle (65% portfolio learning velocity). ECHO is
 // the stalled program: 3 of its 4 findings do NOT feed planning →
 // FEEDBACK_LOOP_STALL at the standard thresholds.
 // ============================================================
@@ -682,7 +682,7 @@ function ef(
 export const SYNTH_PPBE_FINDINGS: EvaluationFinding[] = [
   // ALPHA — 5 findings, 4 feeding.
   ef('SYNTH-EF-A1', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'on-track', 'Interchange throughput met its Q3 baseline.', true),
-  ef('SYNTH-EF-A2', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'on-track', 'Milestone completion held at 92 percent, above the 90 percent baseline.', true),
+  ef('SYNTH-EF-A2', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'on-track', 'Milestone completion held at 92%, above the 90% baseline.', true),
   ef('SYNTH-EF-A3', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'variance', 'Data-quality remediation took two weeks longer than planned in May.', true),
   ef('SYNTH-EF-A4', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'on-track', 'Supplier onboarding pace matches the plan.', true),
   ef('SYNTH-EF-A5', 'SYNTH-PRG-ALPHA', 'SYNTH-SO-01', 'variance', 'Training uptake lagged in one region; not yet raised at a planning forum.', false),
@@ -692,19 +692,19 @@ export const SYNTH_PPBE_FINDINGS: EvaluationFinding[] = [
   ef('SYNTH-EF-B3', 'SYNTH-PRG-BRAVO', 'SYNTH-SO-02', 'on-track', 'Instrumented suppliers are reporting at the expected fidelity.', true),
   ef('SYNTH-EF-B4', 'SYNTH-PRG-BRAVO', 'SYNTH-SO-02', 'variance', 'Integration lab backlog grew in June; awaiting a planning review slot.', false),
   // CHARLIE — 4 findings, 3 feeding, including the portfolio's contradicts-assumption example.
-  ef('SYNTH-EF-C1', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'contradicts-assumption', 'Retrofit unit cost is running 40 percent above the planning assumption — the assumption does not survive contact with the actuals.', true),
+  ef('SYNTH-EF-C1', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'contradicts-assumption', 'Retrofit unit cost is running 40% above the planning assumption — the assumption does not survive contact with the actuals.', true),
   ef('SYNTH-EF-C2', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'variance', 'Q3 over-execution reflects accelerated retrofit starts pulled forward from Q4.', true),
   ef('SYNTH-EF-C3', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'on-track', 'Accreditation pre-checks are passing on first submission.', true),
   ef('SYNTH-EF-C4', 'SYNTH-PRG-CHARLIE', 'SYNTH-SO-02', 'variance', 'Vendor staffing churn noted in June; not yet before a planning forum.', false),
   // DELTA — 3 findings, 2 feeding.
   ef('SYNTH-EF-D1', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'on-track', 'Two of four legacy systems retired ahead of schedule.', true),
-  // WH-47 (Session 73): updated from "95 percent" — combined FY2025 closeout (530K) + FY2026 (485K) = 1,015K against the 500K lifecycle estimate, 203 percent CEILING_EXCEEDED.
-  ef('SYNTH-EF-D2', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Lifecycle obligations total 1,015K against the 500K estimate, 203 percent; program is in closeout with two retirements remaining.', true),
+  // WH-47 (Session 73): updated from "95%" — combined FY2025 closeout (530K) + FY2026 (485K) = 1,015K against the 500K lifecycle estimate, 203% CEILING_EXCEEDED.
+  ef('SYNTH-EF-D2', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Lifecycle obligations total 1,015K against the 500K estimate, 203%; program is in closeout with two retirements remaining.', true),
   ef('SYNTH-EF-D3', 'SYNTH-PRG-DELTA', 'SYNTH-SO-03', 'variance', 'Data migration rework in one depot; on the working-group list only.', false),
   // ECHO — 4 findings, ONLY 1 feeding: the stalled learning loop (R-P7).
-  ef('SYNTH-EF-E1', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'contradicts-assumption', 'Pilot throughput gains are 1 percent, against the 5 percent planning assumption.', true),
-  // WH-47 (Session 73): updated to state the rate plainly — 458K obligated against 440K annual plan = 104 percent. No invented cause.
-  ef('SYNTH-EF-E2', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'FY2026 obligations reached 104 percent of plan in July; finding recorded but never routed to planning.', false),
+  ef('SYNTH-EF-E1', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'contradicts-assumption', 'Pilot throughput gains are 1%, against the 5% planning assumption.', true),
+  // WH-47 (Session 73): updated to state the rate plainly — 458K obligated against 440K annual plan = 104%. No invented cause.
+  ef('SYNTH-EF-E2', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'FY2026 obligations reached 104% of plan in July; finding recorded but never routed to planning.', false),
   ef('SYNTH-EF-E3', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Scheduler adoption is voluntary and uneven across shifts; not before any planning forum.', false),
   ef('SYNTH-EF-E4', 'SYNTH-PRG-ECHO', 'SYNTH-SO-03', 'variance', 'Depot staff report double-entry against the legacy tool; unrouted.', false),
 
@@ -729,7 +729,7 @@ export const SYNTH_PPBE_EXHIBITS: BudgetExhibit[] = [
     fiscal_year: 'FY 2026',
     narrative_content:
       'The Logistics Data Interchange Modernization program has obligated 485000 of its 500000 ' +
-      'planned for FY 2026 to date, within ten percent of plan in both quarters. Figures are ' +
+      'planned for FY 2026 to date, within 10% of plan in both quarters. Figures are ' +
       'traceable to the cited obligation records.',
     source_data_lineage: [
       'ppbe-obligation-SYNTH-OB-A1',

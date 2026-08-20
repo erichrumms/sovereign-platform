@@ -30,14 +30,14 @@ describe("staticAnalysis", () => {
     expect(isSurfaceableAnalysis(out)).toBe(true);
     expect(out.program_id).toBe("P-100");
     expect(out.risk_findings).toHaveLength(3);
-    expect(out.status_narrative).toMatch(/62 percent/);
+    expect(out.status_narrative).toMatch(/62%/);
   });
 
   it("maps each risk flag's DC-3 provenance into the finding", () => {
     const out = staticAnalysis(p100, "MSR", "ws");
     const cost = out.risk_findings.find((f) => f.flag_id === "P-100-R1")!;
     expect(cost.source_data).toMatch(/cost ledger/i);
-    expect(cost.baseline).toMatch(/58 percent/);
+    expect(cost.baseline).toMatch(/58%/);
     expect(cost.responsible_party).toBe("Business Financial Manager Alex Reed");
     expect(cost.trend).toBe("DEGRADING");
   });

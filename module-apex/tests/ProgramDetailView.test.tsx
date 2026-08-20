@@ -30,7 +30,7 @@ describe("ProgramDetailView", () => {
   it("renders the program status narrative in plain prose (Gap 5)", () => {
     renderDetail();
     expect(screen.getByRole("heading", { name: "Joint Logistics Modernization" })).toBeInTheDocument();
-    expect(screen.getByText(/62 percent through its execution phase/)).toBeInTheDocument();
+    expect(screen.getByText(/62% through its execution phase/)).toBeInTheDocument();
   });
 
   it("always shows the Export Dossier button", () => {
@@ -42,7 +42,7 @@ describe("ProgramDetailView", () => {
     const logSink: SovereignLogEvent[] = [];
     renderDetail(logSink);
     // Click the first risk flag (cost variance).
-    fireEvent.click(screen.getByText(/Cost variance is trending unfavorably — actual costs are running about 8 percent/));
+    fireEvent.click(screen.getByText(/Cost variance is trending unfavorably — actual costs are running about 8%/));
     expect(screen.getByLabelText("Data provenance")).toBeInTheDocument();
     expect(screen.getByText("Source record")).toBeInTheDocument();
     const viewed = logSink.find((e) => e.event_type === "APEX_PROVENANCE_VIEWED");

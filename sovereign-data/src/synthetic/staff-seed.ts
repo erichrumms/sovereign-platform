@@ -386,8 +386,8 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 300000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-        { metric: 'routing accuracy', baseline_value: 'ninety-five percent on-time routing decisions' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+        { metric: 'routing accuracy', baseline_value: '95% on-time routing decisions' },
       ],
       point_of_contact: { name: 'Marcus Cole', role: 'Program Manager' },
     },
@@ -406,8 +406,8 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 180000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-        { metric: 'inventory accuracy', baseline_value: 'ninety-eight percent item accuracy by Q4' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+        { metric: 'inventory accuracy', baseline_value: '98% item accuracy by Q4' },
       ],
       point_of_contact: { name: 'Marcus Cole', role: 'Program Manager' },
     },
@@ -427,7 +427,7 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 120000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
         { metric: 'feed coverage', baseline_value: 'eight priority threat categories monitored by Q4' },
       ],
       point_of_contact: { name: 'Sarah Okonkwo', role: 'Program Manager' },
@@ -447,8 +447,8 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 200000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-        { metric: 'segment coverage', baseline_value: 'sixty percent of enterprise segments isolated by Q4' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+        { metric: 'segment coverage', baseline_value: '60% of enterprise segments isolated by Q4' },
       ],
       point_of_contact: { name: 'Sarah Okonkwo', role: 'Program Manager' },
     },
@@ -468,8 +468,8 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 140000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-        { metric: 'endpoint compliance', baseline_value: 'ninety-five percent of managed endpoints compliant by Q4' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+        { metric: 'endpoint compliance', baseline_value: '95% of managed endpoints compliant by Q4' },
       ],
       point_of_contact: { name: 'James Rivera', role: 'Senior Analyst' },
     },
@@ -488,7 +488,7 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 80000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
         { metric: 'patch cycle', baseline_value: 'critical patches applied within seventy-two hours' },
       ],
       point_of_contact: { name: 'James Rivera', role: 'Senior Analyst' },
@@ -509,8 +509,8 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 120000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
-        { metric: 'data migration', baseline_value: 'forty percent of depot records migrated by Q4' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
+        { metric: 'data migration', baseline_value: '40% of depot records migrated by Q4' },
       ],
       point_of_contact: { name: 'Patricia Webb', role: 'Program Manager' },
     },
@@ -529,7 +529,7 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 70000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
         { metric: 'digitization rate', baseline_value: 'twelve thousand records digitized per quarter' },
       ],
       point_of_contact: { name: 'Patricia Webb', role: 'Program Manager' },
@@ -550,7 +550,7 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 100000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
         { metric: 'readiness reporting', baseline_value: 'weekly automated readiness reports delivered by Q3' },
       ],
       point_of_contact: { name: 'David Nkosi', role: 'Program Manager' },
@@ -570,7 +570,7 @@ function buildPPBEPrograms(): ProgramRecord[] {
         { period: 'FY 2026 Q4', planned_amount: 65000 },
       ],
       performance_baseline: [
-        { metric: 'obligation rate', baseline_value: 'within ten percent of plan each quarter' },
+        { metric: 'obligation rate', baseline_value: 'within 10% of plan each quarter' },
         { metric: 'supplier coverage', baseline_value: 'seventy tier-two suppliers monitored by Q4' },
       ],
       point_of_contact: { name: 'David Nkosi', role: 'Program Manager' },

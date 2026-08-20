@@ -27,7 +27,7 @@ const P100: ApexProgramRecord = {
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
   status_narrative:
-    "The Joint Logistics Modernization program is 62 percent through its execution phase. " +
+    "The Joint Logistics Modernization program is 62% through its execution phase. " +
     "Most objectives are progressing as planned, but Milestone 3 is at risk and three issues " +
     "are currently flagged for review. The program remains recoverable, but a program manager " +
     "should review the flagged items below before the next quarterly review.",
@@ -50,15 +50,15 @@ const P100: ApexProgramRecord = {
   risk_flags: [
     {
       flag_id: "P-100-R1",
-      summary: "Cost variance is trending unfavorably — actual costs are running about 8 percent over the plan to date.",
+      summary: "Cost variance is trending unfavorably — actual costs are running about 8% over the plan to date.",
       severity: "P2",
       provenance: {
         entity_type: "World Model risk flag",
         field_label: "Cost variance",
         source_data: "CPMI World Model cost ledger for P-100, monthly obligation roll-up through May 2026.",
-        baseline: "Planned spend of 58 percent of budget at this point in the schedule.",
-        current_actual_value: "Spending is at about 66 percent of budget — roughly 8 points above the planned rate for this point in the schedule.",
-        variance_from_baseline: "8 percentage points above the planned 58 percent spend rate — unfavorable.",
+        baseline: "Planned spend of 58% of budget at this point in the schedule.",
+        current_actual_value: "Spending is at about 66% of budget — roughly 8 points above the planned rate for this point in the schedule.",
+        variance_from_baseline: "8 points above the planned 58% spend rate — unfavorable.",
         last_updated: "2026-05-31",
         trend: "DEGRADING",
         responsible_party: "Business Financial Manager Alex Reed",
@@ -115,7 +115,7 @@ const P200: ApexProgramRecord = {
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
   status_narrative:
-    "The Maintenance Data Consolidation program is 80 percent complete and all milestones are " +
+    "The Maintenance Data Consolidation program is 80% complete and all milestones are " +
     "on schedule. There are no open risk flags. The program is performing as planned and does " +
     "not currently require escalation.",
   completion_pct: 80,
@@ -146,7 +146,7 @@ const P150: ApexProgramRecord = {
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
   status_narrative:
-    "The Training Range Scheduling program is 55 percent complete. One milestone is two weeks " +
+    "The Training Range Scheduling program is 55% complete. One milestone is two weeks " +
     "behind schedule and cost variance is trending unfavorably. A program manager should review " +
     "the cost variance flag and decide whether a corrective action is needed.",
   completion_pct: 55,
@@ -166,15 +166,15 @@ const P150: ApexProgramRecord = {
   risk_flags: [
     {
       flag_id: "P-150-R1",
-      summary: "Cost variance is trending unfavorably — actual costs are running about 6 percent over the plan to date.",
+      summary: "Cost variance is trending unfavorably — actual costs are running about 6% over the plan to date.",
       severity: "P2",
       provenance: {
         entity_type: "World Model risk flag",
         field_label: "Cost variance",
         source_data: "CPMI World Model cost ledger for P-150, monthly obligation roll-up through May 2026.",
-        baseline: "Planned spend of 52 percent of budget at this point in the schedule.",
-        current_actual_value: "Spending is at about 58 percent of budget — roughly 6 points above the planned rate for this point in the schedule.",
-        variance_from_baseline: "6 percentage points above the planned 52 percent spend rate — unfavorable.",
+        baseline: "Planned spend of 52% of budget at this point in the schedule.",
+        current_actual_value: "Spending is at about 58% of budget — roughly 6 points above the planned rate for this point in the schedule.",
+        variance_from_baseline: "6 points above the planned 52% spend rate — unfavorable.",
         last_updated: "2026-05-31",
         trend: "DEGRADING",
         responsible_party: "Business Financial Manager Lee Okafor",
@@ -197,7 +197,7 @@ const P300: ApexProgramRecord = {
   classification: "UNCLASSIFIED",
   status_label: "OFF_TRACK",
   status_narrative:
-    "The Depot Modernization program is 30 percent complete and is off track. Two milestones have " +
+    "The Depot Modernization program is 30% complete and is off track. Two milestones have " +
     "been missed, three issues are flagged, and one regulatory compliance question is open. This " +
     "program should be escalated for a program review and the open legal question referred for " +
     "human legal review.",
@@ -228,9 +228,9 @@ const P300: ApexProgramRecord = {
         entity_type: "World Model risk flag",
         field_label: "Schedule",
         source_data: "CPMI World Model milestone tracker for P-300, baseline comparison through June 2026.",
-        baseline: "Approved schedule baseline placing the program at 50 percent complete by June 2026.",
-        current_actual_value: "The program is about 30 percent complete as of June 2026.",
-        variance_from_baseline: "About 20 percentage points behind the planned 50 percent — roughly three months late, unfavorable.",
+        baseline: "Approved schedule baseline placing the program at 50% complete by June 2026.",
+        current_actual_value: "The program is about 30% complete as of June 2026.",
+        variance_from_baseline: "About 20 points behind the planned 50% — roughly three months late, unfavorable.",
         last_updated: "2026-06-07",
         trend: "DEGRADING",
         responsible_party: "Integration Lead Morgan Diaz",
@@ -238,15 +238,15 @@ const P300: ApexProgramRecord = {
     },
     {
       flag_id: "P-300-R2",
-      summary: "Cost variance is severe — actual costs are running about 22 percent over the plan to date.",
+      summary: "Cost variance is severe — actual costs are running about 22% over the plan to date.",
       severity: "P1",
       provenance: {
         entity_type: "World Model risk flag",
         field_label: "Cost variance",
         source_data: "CPMI World Model cost ledger for P-300, monthly obligation roll-up through May 2026.",
-        baseline: "Planned spend of 28 percent of budget at this point in the schedule.",
-        current_actual_value: "Spending is at about 50 percent of budget — roughly 22 points above the planned rate for this point in the schedule.",
-        variance_from_baseline: "22 percentage points above the planned 28 percent spend rate — severely unfavorable.",
+        baseline: "Planned spend of 28% of budget at this point in the schedule.",
+        current_actual_value: "Spending is at about 50% of budget — roughly 22 points above the planned rate for this point in the schedule.",
+        variance_from_baseline: "22 points above the planned 28% spend rate — severely unfavorable.",
         last_updated: "2026-05-31",
         trend: "DEGRADING",
         responsible_party: "Business Financial Manager Taylor Brooks",
@@ -291,7 +291,7 @@ const P401: ApexProgramRecord = {
   program_name: "Integrated Financial Reporting Platform",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Integrated Financial Reporting Platform is 45 percent complete and all milestones are on schedule. No open risk flags.",
+  status_narrative: "The Integrated Financial Reporting Platform is 45% complete and all milestones are on schedule. No open risk flags.",
   completion_pct: 45,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Consolidate disparate financial reporting feeds into a single governed platform."],
@@ -310,7 +310,7 @@ const P402: ApexProgramRecord = {
   program_name: "Contract Performance Monitoring Suite",
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
-  status_narrative: "The Contract Performance Monitoring Suite is 38 percent complete. One milestone is at risk due to a vendor staffing gap.",
+  status_narrative: "The Contract Performance Monitoring Suite is 38% complete. One milestone is at risk due to a vendor staffing gap.",
   completion_pct: 38,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Automate contract performance data collection and alerting."],
@@ -328,8 +328,8 @@ const P402: ApexProgramRecord = {
         field_label: "Vendor staffing",
         source_data: "CPMI World Model vendor register for P-402.",
         baseline: "Full vendor team on-site by June 2026.",
-        current_actual_value: "Vendor team is at sixty percent of planned headcount.",
-        variance_from_baseline: "Forty percent below planned headcount — unfavorable.",
+        current_actual_value: "Vendor team is at 60% of planned headcount.",
+        variance_from_baseline: "40% below planned headcount — unfavorable.",
         last_updated: "2026-07-28",
         trend: "STABLE",
         responsible_party: "Contracting Officer Representative",
@@ -346,7 +346,7 @@ const P403: ApexProgramRecord = {
   program_name: "Workforce Analytics Dashboard",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Workforce Analytics Dashboard is 60 percent complete and performing as planned.",
+  status_narrative: "The Workforce Analytics Dashboard is 60% complete and performing as planned.",
   completion_pct: 60,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Provide leadership with near-real-time workforce readiness metrics."],
@@ -365,7 +365,7 @@ const P404: ApexProgramRecord = {
   program_name: "Regulatory Compliance Tracking System",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Regulatory Compliance Tracking System is 55 percent complete and on schedule.",
+  status_narrative: "The Regulatory Compliance Tracking System is 55% complete and on schedule.",
   completion_pct: 55,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Consolidate regulatory compliance obligations into a single governed tracker."],
@@ -384,7 +384,7 @@ const P405: ApexProgramRecord = {
   program_name: "Mission Systems Health Monitor",
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
-  status_narrative: "The Mission Systems Health Monitor is 42 percent complete. Cost variance is trending slightly unfavorable.",
+  status_narrative: "The Mission Systems Health Monitor is 42% complete. Cost variance is trending slightly unfavorable.",
   completion_pct: 42,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Provide continuous health monitoring for mission-critical systems."],
@@ -395,15 +395,15 @@ const P405: ApexProgramRecord = {
   risk_flags: [
     {
       flag_id: "P-405-R1",
-      summary: "Cost variance trending 5 percent above plan.",
+      summary: "Cost variance trending 5% above plan.",
       severity: "P3",
       provenance: {
         entity_type: "World Model risk flag",
         field_label: "Cost variance",
         source_data: "CPMI World Model cost ledger for P-405.",
-        baseline: "Planned spend of 40 percent of budget at this schedule point.",
-        current_actual_value: "Spending is at 45 percent of budget.",
-        variance_from_baseline: "5 percentage points above plan — slightly unfavorable.",
+        baseline: "Planned spend of 40% of budget at this schedule point.",
+        current_actual_value: "Spending is at 45% of budget.",
+        variance_from_baseline: "5 points above plan — slightly unfavorable.",
         last_updated: "2026-07-30",
         trend: "STABLE",
         responsible_party: "Business Financial Manager",
@@ -420,7 +420,7 @@ const P406: ApexProgramRecord = {
   program_name: "Data Quality Governance Framework",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Data Quality Governance Framework is 70 percent complete and performing as planned.",
+  status_narrative: "The Data Quality Governance Framework is 70% complete and performing as planned.",
   completion_pct: 70,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Establish a governed framework for enterprise data quality monitoring."],
@@ -439,7 +439,7 @@ const P407: ApexProgramRecord = {
   program_name: "Acquisition Lifecycle Transparency Tool",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Acquisition Lifecycle Transparency Tool is 50 percent complete and on schedule.",
+  status_narrative: "The Acquisition Lifecycle Transparency Tool is 50% complete and on schedule.",
   completion_pct: 50,
   responsible_party: "Program Manager Dana Jones",
   objectives: ["Provide end-to-end acquisition lifecycle visibility to program stakeholders."],
@@ -458,7 +458,7 @@ const P408: ApexProgramRecord = {
   program_name: "Interoperability Standards Registry",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Interoperability Standards Registry is 35 percent complete and progressing as planned.",
+  status_narrative: "The Interoperability Standards Registry is 35% complete and progressing as planned.",
   completion_pct: 35,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Maintain a governed registry of approved interoperability standards."],
@@ -477,7 +477,7 @@ const P409: ApexProgramRecord = {
   program_name: "Strategic Communication Workflow",
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
-  status_narrative: "The Strategic Communication Workflow is 28 percent complete. A dependency on a shared platform integration is delayed.",
+  status_narrative: "The Strategic Communication Workflow is 28% complete. A dependency on a shared platform integration is delayed.",
   completion_pct: 28,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Streamline the production and approval workflow for strategic communications."],
@@ -513,7 +513,7 @@ const P410: ApexProgramRecord = {
   program_name: "Knowledge Management Portal",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Knowledge Management Portal is 65 percent complete and performing as planned.",
+  status_narrative: "The Knowledge Management Portal is 65% complete and performing as planned.",
   completion_pct: 65,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Provide a governed portal for institutional knowledge capture and retrieval."],
@@ -532,7 +532,7 @@ const P411: ApexProgramRecord = {
   program_name: "Audit Readiness Accelerator",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Audit Readiness Accelerator is 48 percent complete and on schedule.",
+  status_narrative: "The Audit Readiness Accelerator is 48% complete and on schedule.",
   completion_pct: 48,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Accelerate audit readiness by automating evidence collection and packaging."],
@@ -551,7 +551,7 @@ const P412: ApexProgramRecord = {
   program_name: "Resource Allocation Decision Support",
   classification: "UNCLASSIFIED",
   status_label: "AT_RISK",
-  status_narrative: "The Resource Allocation Decision Support program is 32 percent complete. A requirements gap was identified in July.",
+  status_narrative: "The Resource Allocation Decision Support program is 32% complete. A requirements gap was identified in July.",
   completion_pct: 32,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Provide decision-support tooling for enterprise resource allocation."],
@@ -587,7 +587,7 @@ const P413: ApexProgramRecord = {
   program_name: "Executive Decision Briefing Automation",
   classification: "UNCLASSIFIED",
   status_label: "ON_TRACK",
-  status_narrative: "The Executive Decision Briefing Automation program is 55 percent complete and performing as planned.",
+  status_narrative: "The Executive Decision Briefing Automation program is 55% complete and performing as planned.",
   completion_pct: 55,
   responsible_party: "Program Manager Robin Vasquez",
   objectives: ["Automate the preparation and formatting of executive decision briefings."],

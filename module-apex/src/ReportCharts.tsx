@@ -71,7 +71,7 @@ export function ReportCharts({ program }: ReportChartsProps): JSX.Element {
         <div style={barTrackStyle}>
           <div style={{ ...barFillStyle, width: `${Math.max(0, Math.min(100, pct))}%` }} />
         </div>
-        <p style={captionStyle}>This program is {pct} percent complete.</p>
+        <p style={captionStyle}>This program is {pct}% complete.</p>
       </div>
 
       {/* Chart 2 — cost variance */}
