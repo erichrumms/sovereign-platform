@@ -47,20 +47,13 @@ describe("SessionManager (Screen 1)", () => {
     expect(screen.getByText(/Validation cadence — with the Senior Program Analyst/i)).toBeInTheDocument();
   });
 
-  // Session 122 (survey Finding 5): Gate 1 moved to the FlowpathApp composition root —
-  // the panel keeps only the GD-10 boundary banner.
-  it("keeps the GD-10 governance banner; the AI disclosure lives at the app root", () => {
+  // Session 123: both governance banners now live at the FlowpathApp composition root —
+  // the panel renders neither (Gate 1 consolidated Session 122, GD-10 this session).
+  it("renders no Category-2 governance banner at the panel level; both live at the app root", () => {
     const { container } = render(<SessionManager ctx={makeCtx()} sessions={SYNTHETIC_SESSIONS} onNewSession={() => {}} />);
-    const banners = container.querySelectorAll('[data-category="2-governance"]');
-    expect(banners.length).toBeGreaterThanOrEqual(1); // classification boundary
-    const disclosure = Array.from(banners).find((b) => /AI disclosure/i.test(b.textContent ?? ""));
-    expect(disclosure).toBeUndefined();
-  });
-
-  it("renders the GD-10 classification boundary banner (Category 2)", () => {
-    render(<SessionManager ctx={makeCtx()} sessions={SYNTHETIC_SESSIONS} onNewSession={() => {}} />);
-    expect(screen.getByText(/Classification boundary/i)).toBeInTheDocument();
-    expect(screen.getByText(/UNCLASSIFIED data only/i)).toBeInTheDocument();
+    expect(container.querySelectorAll('[data-category="2-governance"]').length).toBe(0);
+    expect(screen.queryByText(/AI disclosure/i)).toBeNull();
+    expect(screen.queryByText(/Classification boundary/i)).toBeNull();
   });
 
   it("shows gate status as a complete plain-prose sentence (Gap 5)", () => {

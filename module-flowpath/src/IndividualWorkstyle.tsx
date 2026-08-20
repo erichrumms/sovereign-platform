@@ -22,7 +22,6 @@ import { useCallback, useMemo, useState, type CSSProperties } from "react";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
   WorkstylePrivacyBanner,
-  ClassificationBoundaryBanner,
   StatusNotice,
   contentCardStyle,
   sectionHeadingStyle,
@@ -136,10 +135,9 @@ export function IndividualWorkstyle({ ctx }: IndividualWorkstyleProps): JSX.Elem
 
   return (
     <div>
-      {/* Category 2 — permanent privacy guarantee + classification boundary. */}
+      {/* Category 2 — permanent privacy guarantee. (Classification boundary moved to the
+          FlowpathApp root, Session 123.) */}
       <WorkstylePrivacyBanner />
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
-
       {/* Entry points (Category 3). */}
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Your workstyle</h2>

@@ -36,7 +36,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  ClassificationBoundaryBanner,
 } from "./banners";
 import { evaluateAllBenchmarks, type FlowpathBenchmarkResult } from "./benchmark-scenarios";
 import { type WorkflowArtifact, type WorkflowType } from "./flowpath-contract";
@@ -127,8 +126,6 @@ export function GateRunnerPanel({ ctx }: GateRunnerPanelProps): JSX.Element {
           recorded automatically; Gate 3 is your attestation; Gate 4 establishes the monitoring baseline.
         </p>
       </header>
-
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* Certification summary — Category 3, read first. */}
       <div style={summaryStyle} role="status" data-category="3-content">

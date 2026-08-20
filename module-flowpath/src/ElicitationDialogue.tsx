@@ -24,7 +24,6 @@ import { useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  ClassificationBoundaryBanner,
   StatusNotice,
   contentCardStyle,
   sectionHeadingStyle,
@@ -145,9 +144,6 @@ export function ElicitationDialogue({
 
   return (
     <div>
-      {/* Category 2 — permanent governance guardrails. */}
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
-
       {/* ── PRELIMINARY CONTEXT STAGE ────────────────────────────────────────
           Four context-setting questions answered BEFORE the five-question elicitation.
           Question wording approved by Project Principal (Session 64, WH-20).

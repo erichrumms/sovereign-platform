@@ -23,7 +23,6 @@ import { useState, type CSSProperties } from "react";
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
   GovernanceBanner,
-  ClassificationBoundaryBanner,
   StatusNotice,
   contentCardStyle,
   sectionHeadingStyle,
@@ -155,8 +154,6 @@ export function WorkflowArtifactReview({ ctx, bundle, onApproved, onReturnForRev
         This artifact was produced from AI-assisted elicitation. Review carefully before approving —
         your approval commits it to the workflow registry.
       </GovernanceBanner>
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
-
       {/* Category 1 — transient revision-in-progress notice. */}
       {revising && (
         <StatusNotice label="Returning for revision:">

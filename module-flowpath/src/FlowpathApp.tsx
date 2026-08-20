@@ -34,7 +34,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
-import { Gate1Banner, rootStyle, titleStyle, subtitleStyle } from "./banners";
+import { Gate1Banner, ClassificationBoundaryBanner, rootStyle, titleStyle, subtitleStyle } from "./banners";
 import {
   getApprovedFlowpathSessionIds,
   markFlowpathSessionApproved,
@@ -179,8 +179,15 @@ export function FlowpathApp({ ctx, initialState }: FlowpathAppProps): JSX.Elemen
       {/* Session 122 (Session 121 survey Finding 5): Gate 1 consolidated to the composition
           root — F-20 pattern — covering all five tabs. Replaces the three panel-level
           instances (SessionManager, ElicitationDialogue, GateRunnerPanel); Workstyle and
-          Review previously had no disclosure. */}
+          Review previously had no disclosure.
+          Session 123: GD-10 joins it at the root, same two-banner convention as SCRIBE
+          (Gate 1 first, then GD-10). NOTE — unlike Gate 1, GD-10 already rendered on ALL
+          FIVE FLOWPATH tab-components (SessionManager, ElicitationDialogue,
+          WorkflowArtifactReview, IndividualWorkstyle, GateRunnerPanel), not three; all five
+          panel instances are removed so no tab shows a duplicate. This dedupes five copies
+          into one — it does not close a coverage gap the way the APEX change did. */}
       <Gate1Banner />
+      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
       <nav style={tabBarStyle} aria-label="FLOWPATH surfaces">
         {TABS.map((t) => {
           const active = t.id === tab;

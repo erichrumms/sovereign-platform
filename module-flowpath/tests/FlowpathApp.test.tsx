@@ -31,16 +31,19 @@ describe("FlowpathApp", () => {
     expect(screen.getByRole("list", { name: /elicitation sessions/i })).toBeInTheDocument();
   });
 
-  // Session 122 (survey Finding 5): Gate 1 consolidated to the composition root —
-  // present on every tab, exactly once, including Workstyle and Review which
-  // previously had no disclosure.
-  it("renders the Gate 1 banner once at the root, on every tab", () => {
+  // Session 122 (survey Finding 5) + Session 123: both governance banners consolidated to
+  // the composition root — each present on every tab, exactly once. GD-10 previously rendered
+  // once per tab via five separate panel instances; it is now a single root instance.
+  it("renders both governance banners once at the root, on every tab", () => {
     render(<FlowpathApp ctx={makeCtx()} />);
     const GATE1 = /AI disclosure \(CPMI-VRS Gate 1\)/;
+    const GD10 = /Classification boundary \(GD-10\)/;
     expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    expect(screen.getAllByText(GD10)).toHaveLength(1);
     for (const tab of [/my workstyle/i, /certification/i, /artifact review/i, /elicitation dialogue/i, /elicitation sessions/i]) {
       fireEvent.click(screen.getByRole("tab", { name: tab }));
       expect(screen.getAllByText(GATE1)).toHaveLength(1);
+      expect(screen.getAllByText(GD10)).toHaveLength(1);
     }
   });
 
