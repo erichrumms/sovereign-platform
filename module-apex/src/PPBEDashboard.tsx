@@ -233,7 +233,7 @@ function ObligationRateChart({
 // the bar-body order below. Rendered by VarianceLegendContent.
 const VARIANCE_LEGEND_ITEMS = [
   { label: "Planned", color: "#94a3b8" },
-  { label: "Actual", color: "#0c4a6e" },
+  { label: "Obligated", color: "#0c4a6e" },
 ] as const;
 
 export function VarianceLegendContent(): JSX.Element {
@@ -294,7 +294,7 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
                 renderer with a hardcoded item order. */}
             <Legend content={VarianceLegendContent} />
             <Bar dataKey="planned" name="Planned" fill="#94a3b8" />
-            <Bar dataKey="actual" name="Actual" fill="#0c4a6e" />
+            <Bar dataKey="actual" name="Obligated" fill="#0c4a6e" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -305,7 +305,7 @@ function VarianceChart({ variances }: { variances: PeriodVariance[] }): JSX.Elem
           <tr>
             <th style={thStyle}>Period</th>
             <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
-            <th style={{ ...thStyle, textAlign: "right" }}>Actual</th>
+            <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
             <th style={{ ...thStyle, textAlign: "right" }}>Variance</th>
           </tr>
         </thead>

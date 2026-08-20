@@ -262,14 +262,15 @@ describe("PPBEDashboard — Session 54 (WG-3 codename key, WG-4 legend order, WG
     expect(key).toHaveTextContent("001 = Logistics Data Interchange");
   });
 
-  it("WG-4: variance legend content renders with deterministic order — Planned before Actual", () => {
+  it("WG-4: variance legend content renders with deterministic order — Planned before Obligated", () => {
     // Recharts renders no chart internals under jsdom (zero-size container), so the
     // explicit content renderer is asserted directly — it IS the deterministic order.
+    // F-48 (Session 118): the label is "Obligated" — the platform-wide term.
     const { VarianceLegendContent } = require("../src/PPBEDashboard");
     render(<VarianceLegendContent />);
     const legend = screen.getByLabelText("Variance chart legend");
     const items = Array.from(legend.querySelectorAll("li")).map((li) => li.textContent);
-    expect(items).toEqual(["Planned", "Actual"]);
+    expect(items).toEqual(["Planned", "Obligated"]);
   });
 
   it("WG-12: dependency detail table identifies WHICH dependency is at risk, not just counts", () => {

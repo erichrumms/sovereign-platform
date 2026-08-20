@@ -289,7 +289,7 @@ export function PPBEProgramDetail({ programId, inputs, onBack, initialFiscalYear
                   <Line
                     type="monotone"
                     dataKey="actual_amount"
-                    name="Actual"
+                    name="Obligated"
                     stroke="#0c4a6e"
                     strokeWidth={2}
                     dot={{ r: 4 }}
@@ -304,7 +304,9 @@ export function PPBEProgramDetail({ programId, inputs, onBack, initialFiscalYear
                 <tr>
                   <th style={thStyle}>Period</th>
                   <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
-                  <th style={{ ...thStyle, textAlign: "right" }}>Actual</th>
+                  {/* F-48 (Session 118): "Obligated" is the platform-wide term — "Actual" was
+                      inconsistent with every other surface. */}
+                  <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
                   <th style={{ ...thStyle, textAlign: "right" }}>Variance</th>
                 </tr>
               </thead>
@@ -359,7 +361,10 @@ export function PPBEProgramDetail({ programId, inputs, onBack, initialFiscalYear
         )}
       </div>
 
-      {/* Section 4 — Site breakdown (filtered to this program) */}
+      {/* Section 4 — Site breakdown (filtered to this program).
+          F-48 (Session 118): column order matches the quarterly variance table above
+          (Planned → Obligated → Variance), and the Variance column is computed as
+          Obligated − Planned — the same positive-when-over-plan sign convention. */}
       <div style={contentCardStyle}>
         <h2 style={sectionHeadingStyle}>Site breakdown</h2>
         {sites.length === 0 ? (
@@ -370,29 +375,36 @@ export function PPBEProgramDetail({ programId, inputs, onBack, initialFiscalYear
               <tr>
                 <th style={thStyle}>Site</th>
                 <th style={thStyle}>Region</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>Planned</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Obligated</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Variance</th>
                 <th style={thStyle}>Status</th>
               </tr>
             </thead>
             <tbody>
-              {sites.map((s) => (
-                <tr key={s.site_id}>
-                  <td style={tdStyle}>{s.site_name}</td>
-                  <td style={tdStyle}>{s.region}</td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>
-                    {formatCurrency(s.obligations_to_date)}
-                  </td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>
-                    {formatCurrency(s.planned_amount)}
-                  </td>
-                  <td style={tdStyle}>
-                    <span style={{ color: statusFill(s.status), fontWeight: 600 }}>
-                      {statusLabel(s.status)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {sites.map((s) => {
+                const siteVariance = s.obligations_to_date - s.planned_amount;
+                return (
+                  <tr key={s.site_id}>
+                    <td style={tdStyle}>{s.site_name}</td>
+                    <td style={tdStyle}>{s.region}</td>
+                    <td style={{ ...tdStyle, textAlign: "right" }}>
+                      {formatCurrency(s.planned_amount)}
+                    </td>
+                    <td style={{ ...tdStyle, textAlign: "right" }}>
+                      {formatCurrency(s.obligations_to_date)}
+                    </td>
+                    <td style={{ ...tdStyle, textAlign: "right", color: siteVariance < 0 ? "#dc2626" : siteVariance > 0 ? "#059669" : "#64748b", fontWeight: 600 }}>
+                      {siteVariance === 0 ? "On plan" : `${siteVariance > 0 ? "+" : ""}${formatCurrency(siteVariance)}`}
+                    </td>
+                    <td style={tdStyle}>
+                      <span style={{ color: statusFill(s.status), fontWeight: 600 }}>
+                        {statusLabel(s.status)}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

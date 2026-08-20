@@ -120,6 +120,29 @@ describe("PPBEProgramDetail", () => {
     expect(screen.getByRole("table", { name: "Per-site obligation breakdown" })).toBeInTheDocument();
   });
 
+  // F-48 (Session 118): the two tables on this page agree with each other — the
+  // quarterly table says "Obligated" (not "Actual"), and the site table carries
+  // the same Planned → Obligated → Variance column order with a computed variance.
+  it("F-48: quarterly variance table header uses the platform term 'Obligated'", () => {
+    render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={() => {}} />);
+    const quarterly = screen.getByRole("table", { name: "Budget-to-actual variance by period" });
+    const headers = Array.from(quarterly.querySelectorAll("th")).map((th) => th.textContent);
+    expect(headers).toEqual(["Period", "Planned", "Obligated", "Variance"]);
+    expect(headers).not.toContain("Actual");
+  });
+
+  it("F-48: site table columns run Planned → Obligated → Variance → Status with a computed variance", () => {
+    render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={() => {}} />);
+    const site = screen.getByRole("table", { name: "Per-site obligation breakdown" });
+    const headers = Array.from(site.querySelectorAll("th")).map((th) => th.textContent);
+    expect(headers).toEqual(["Site", "Region", "Planned", "Obligated", "Variance", "Status"]);
+    // Variance = Obligated − Planned per row, rendered like the quarterly table
+    // ("On plan" at zero, signed currency otherwise).
+    const firstRow = site.querySelectorAll("tbody tr")[0];
+    const cells = Array.from(firstRow?.querySelectorAll("td") ?? []).map((td) => td.textContent ?? "");
+    expect(cells[4]).toMatch(/^On plan$|^[+-]?\$/);
+  });
+
   it("calls onBack when the Back button is clicked", () => {
     const onBack = jest.fn();
     render(<PPBEProgramDetail programId="SYNTH-PRG-ALPHA" inputs={INPUTS} onBack={onBack} />);
