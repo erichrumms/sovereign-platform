@@ -88,7 +88,9 @@ export function PortfolioDashboard({ ctx, adapter, onOpenProgram, onExportDossie
             <th style={thStyle}>Program</th>
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Completion</th>
-            <th style={thStyle}>Responsible party</th>
+            {/* F-41 (Session 119): all 17 World Model responsible parties are titled
+                Program Manager (confirmed Session 118) — the column now says so. */}
+            <th style={thStyle}>Program Manager</th>
             <th style={thStyle}>Actions</th>
           </tr>
         </thead>

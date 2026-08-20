@@ -39,6 +39,13 @@ describe("PortfolioDashboard", () => {
     expect(screen.getAllByText(/At risk/).length).toBeGreaterThanOrEqual(2);
   });
 
+  // F-41 (Session 119): the column header names the role every row actually holds.
+  it("titles the responsible-party column 'Program Manager' (F-41)", () => {
+    renderDash();
+    expect(screen.getByRole("columnheader", { name: "Program Manager" })).toBeInTheDocument();
+    expect(screen.queryByText("Responsible party")).toBeNull();
+  });
+
   it("shows an Export Dossier button on every program row", () => {
     renderDash();
     expect(screen.getAllByRole("button", { name: "Export Dossier" })).toHaveLength(adapter.listPrograms().length);
