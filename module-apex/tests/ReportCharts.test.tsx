@@ -22,6 +22,19 @@ describe("ReportCharts", () => {
     expect(screen.getByText("This program is 62% complete.")).toBeInTheDocument();
   });
 
+  // Session 122 (Session 121 survey Finding 6): the completion bar's fill is keyed to
+  // program status — the F-47 colour map — not a fixed colour.
+  it("keys the completion bar fill to program status (F-47 pattern)", () => {
+    const { unmount } = render(<ReportCharts program={p200} />);
+    expect(screen.getByTestId("completion-bar-fill")).toHaveStyle({ background: "#166534" }); // ON_TRACK
+    unmount();
+    const second = render(<ReportCharts program={p100} />);
+    expect(screen.getByTestId("completion-bar-fill")).toHaveStyle({ background: "#854d0e" }); // AT_RISK
+    second.unmount();
+    render(<ReportCharts program={p300} />);
+    expect(screen.getByTestId("completion-bar-fill")).toHaveStyle({ background: "#7f1d1d" }); // OFF_TRACK
+  });
+
   it("cost variance indicator is amber/over-plan when a cost-variance flag is open", () => {
     render(<ReportCharts program={p100} />);
     const cost = screen.getByLabelText("Cost variance indicator");

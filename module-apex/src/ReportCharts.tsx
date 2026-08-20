@@ -21,7 +21,7 @@
 
 import type { CSSProperties } from "react";
 
-import type { ApexProgramRecord, ApexMilestone, ApexRiskFlag } from "./apex-contract";
+import type { ApexProgramRecord, ApexMilestone, ApexRiskFlag, ProgramStatus } from "./apex-contract";
 import { sectionHeadingStyle } from "./banners";
 
 export interface ReportChartsProps {
@@ -66,10 +66,20 @@ export function ReportCharts({ program }: ReportChartsProps): JSX.Element {
     <section style={wrapStyle} aria-label="Program indicators" data-category="3-content">
       <h3 style={sectionHeadingStyle}>Program indicators</h3>
 
-      {/* Chart 1 — completion percentage */}
+      {/* Chart 1 — completion percentage. Session 122 (Session 121 survey Finding 6): the
+          fill colour is keyed to program status — the F-47 three-colour map — instead of
+          the former fixed blue. Completion is capped at 100 by the data, so no overflow
+          marker is needed here. */}
       <div style={blockStyle} aria-label="Completion indicator" data-completion={pct}>
         <div style={barTrackStyle}>
-          <div style={{ ...barFillStyle, width: `${Math.max(0, Math.min(100, pct))}%` }} />
+          <div
+            data-testid="completion-bar-fill"
+            style={{
+              ...barFillStyle,
+              background: BAR_FILL_BY_STATUS[program.status_label],
+              width: `${Math.max(0, Math.min(100, pct))}%`,
+            }}
+          />
         </div>
         <p style={captionStyle}>This program is {pct}% complete.</p>
       </div>
@@ -103,6 +113,14 @@ function MilestoneCount({ label, n }: { label: string; n: number }): JSX.Element
     </div>
   );
 }
+
+/** F-47 pattern (Session 122): completion-bar fill per program status — the same colour
+    family as the status badges, so bar and badge always agree (Rule 11). */
+const BAR_FILL_BY_STATUS: Record<ProgramStatus, string> = {
+  ON_TRACK: "#166534",
+  AT_RISK: "#854d0e",
+  OFF_TRACK: "#7f1d1d",
+};
 
 function costStateColors(state: CostState): { color: string; background: string } {
   if (state === "over") return { color: "#854d0e", background: "#fffbeb" }; // amber — over plan / at risk
