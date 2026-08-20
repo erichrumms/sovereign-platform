@@ -3208,10 +3208,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                data-testid="obligation-bar-P-2025-001"
+                style="height: 100%; border-radius: 3px; background: rgb(22, 101, 52); width: 82%;"
                 title="82% obligated"
               />
             </div>
@@ -3245,10 +3246,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                data-testid="obligation-bar-P-2025-002"
+                style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
                 title="67% obligated"
               />
             </div>
@@ -3282,10 +3284,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                data-testid="obligation-bar-P-2025-003"
+                style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
                 title="41% obligated"
               />
             </div>
@@ -3344,10 +3347,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+              data-testid="obligation-bar-P-2025-002"
+              style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
               title="67% obligated"
             />
           </div>
@@ -3381,10 +3385,11 @@ exports[`PlatformHome snapshots ANALYST — sees Program Health, Flagged Program
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+              data-testid="obligation-bar-P-2025-003"
+              style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
               title="41% obligated"
             />
           </div>
@@ -4009,10 +4014,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                data-testid="obligation-bar-P-2025-001"
+                style="height: 100%; border-radius: 3px; background: rgb(22, 101, 52); width: 82%;"
                 title="82% obligated"
               />
             </div>
@@ -4046,10 +4052,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                data-testid="obligation-bar-P-2025-002"
+                style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
                 title="67% obligated"
               />
             </div>
@@ -4083,10 +4090,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                data-testid="obligation-bar-P-2025-003"
+                style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
                 title="41% obligated"
               />
             </div>
@@ -4145,10 +4153,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+              data-testid="obligation-bar-P-2025-002"
+              style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
               title="67% obligated"
             />
           </div>
@@ -4182,10 +4191,11 @@ exports[`PlatformHome snapshots PROGRAM_MANAGER — sees Program Health, Flagged
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+              data-testid="obligation-bar-P-2025-003"
+              style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
               title="41% obligated"
             />
           </div>
@@ -4627,10 +4637,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                data-testid="obligation-bar-P-2025-001"
+                style="height: 100%; border-radius: 3px; background: rgb(22, 101, 52); width: 82%;"
                 title="82% obligated"
               />
             </div>
@@ -4664,10 +4675,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                data-testid="obligation-bar-P-2025-002"
+                style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
                 title="67% obligated"
               />
             </div>
@@ -4701,10 +4713,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                data-testid="obligation-bar-P-2025-003"
+                style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
                 title="41% obligated"
               />
             </div>
@@ -4763,10 +4776,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+              data-testid="obligation-bar-P-2025-002"
+              style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
               title="67% obligated"
             />
           </div>
@@ -4800,10 +4814,11 @@ exports[`PlatformHome snapshots SYSTEM_ADMIN — sees Program Health, Flagged Pr
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+              data-testid="obligation-bar-P-2025-003"
+              style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
               title="41% obligated"
             />
           </div>
@@ -5556,10 +5571,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 82%;"
+                data-testid="obligation-bar-P-2025-001"
+                style="height: 100%; border-radius: 3px; background: rgb(22, 101, 52); width: 82%;"
                 title="82% obligated"
               />
             </div>
@@ -5593,10 +5609,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+                data-testid="obligation-bar-P-2025-002"
+                style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
                 title="67% obligated"
               />
             </div>
@@ -5630,10 +5647,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
               </span>
             </div>
             <div
-              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+              style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
             >
               <div
-                style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+                data-testid="obligation-bar-P-2025-003"
+                style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
                 title="41% obligated"
               />
             </div>
@@ -5692,10 +5710,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 67%;"
+              data-testid="obligation-bar-P-2025-002"
+              style="height: 100%; border-radius: 3px; background: rgb(133, 77, 14); width: 67%;"
               title="67% obligated"
             />
           </div>
@@ -5729,10 +5748,11 @@ exports[`PlatformHome snapshots with program data — 3 programs including at_ri
             </span>
           </div>
           <div
-            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden;"
+            style="background: rgb(226, 232, 240); border-radius: 3px; height: 5px; overflow: hidden; position: relative;"
           >
             <div
-              style="height: 100%; border-radius: 3px; background: rgb(59, 130, 246); width: 41%;"
+              data-testid="obligation-bar-P-2025-003"
+              style="height: 100%; border-radius: 3px; background: rgb(127, 29, 29); width: 41%;"
               title="41% obligated"
             />
           </div>

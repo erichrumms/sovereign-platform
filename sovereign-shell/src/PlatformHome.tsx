@@ -112,6 +112,14 @@ function StatusBadge({
   );
 }
 
+/** F-47: obligation-bar fill per status — the StatusBadge text colours, so the bar and
+    badge always agree. (Rule 11: one status → one colour family, not a second palette.) */
+const BAR_FILL_BY_STATUS: Record<ProgramStatusSnapshot["status"], string> = {
+  on_track: "#166534",
+  at_risk: "#854d0e",
+  off_track: "#7f1d1d",
+};
+
 function ProgramTile({
   snapshot,
   variances,
@@ -140,16 +148,37 @@ function ProgramTile({
         <span style={programIdStyle}>{snapshot.program_id}</span>
         <StatusBadge status={snapshot.status} />
       </div>
-      <div style={barTrackStyle}>
+      {/* F-47 (Session 118): the fill colour is keyed to the program's status — the same
+          green/amber/red family as the StatusBadge — instead of the former fixed blue,
+          and over-obligation (>100%) gets a striped end marker so a bar capped at full
+          width is visually distinct from a bar at exactly 100%. */}
+      <div style={{ ...barTrackStyle, position: "relative" }}>
         <div
+          data-testid={`obligation-bar-${snapshot.program_id}`}
           style={{
             height: "100%",
             borderRadius: 3,
-            background: "#3b82f6",
+            background: BAR_FILL_BY_STATUS[snapshot.status],
             width: `${Math.min(pct, 100)}%`,
           }}
-          title={`${pct}% obligated`}
+          title={`${pct}% obligated${pct > 100 ? " — exceeds 100% of the annual plan" : ""}`}
         />
+        {pct > 100 && (
+          <div
+            data-testid={`obligation-overflow-${snapshot.program_id}`}
+            title={`${pct}% obligated — exceeds 100% of the annual plan`}
+            style={{
+              position: "absolute",
+              right: 0,
+              top: -2,
+              bottom: -2,
+              width: 7,
+              borderRadius: 2,
+              background:
+                "repeating-linear-gradient(135deg, #7f1d1d, #7f1d1d 2px, #fecaca 2px, #fecaca 4px)",
+            }}
+          />
+        )}
       </div>
       <span style={pctLabelStyle}>{pct}% obligated</span>
       {latestVariance && varianceSign !== null && (

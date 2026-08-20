@@ -34,7 +34,7 @@
  *   (was 3, 2, 0 respectively in the stale fixture).
  */
 
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type {
   SovereignRole,
   SovereignUser,
@@ -336,5 +336,39 @@ describe("DevPersonaToggle snapshots", () => {
     // localStorage starts empty in jsdom — readDevPersona() returns "SYSTEM_ADMIN".
     const { container } = render(<DevPersonaToggle />);
     expect(container).toMatchSnapshot();
+  });
+});
+
+// ---- F-47 (Session 118): obligation bar reflects status and over-obligation ----
+describe("Program Health obligation bar (F-47)", () => {
+  const F47_PROGRAMS: ProgramStatusSnapshot[] = [
+    { program_id: "P-F47-GREEN", percent_obligated: 82, status: "on_track", narrative: "On track.", updated_at: "2026-08-19" },
+    { program_id: "P-F47-AMBER", percent_obligated: 100, status: "at_risk", narrative: "At risk.", updated_at: "2026-08-19" },
+    { program_id: "P-F47-RED", percent_obligated: 104, status: "off_track", narrative: "Over-obligated.", updated_at: "2026-08-19" },
+  ];
+
+  function renderF47(): void {
+    const ctx = makePlatformHomeCtx({ role: "SYSTEM_ADMIN", programSnapshots: F47_PROGRAMS });
+    render(<PlatformHome ctx={ctx} />);
+  }
+
+  // At-risk and off-track tiles render in BOTH the Program Health and Flagged
+  // Programs sections, so their testids appear more than once — assert on all.
+  it("keys the bar fill colour to program status (badge colour family, not fixed blue)", () => {
+    renderF47();
+    for (const bar of screen.getAllByTestId("obligation-bar-P-F47-GREEN")) expect(bar).toHaveStyle({ background: "#166534" });
+    for (const bar of screen.getAllByTestId("obligation-bar-P-F47-AMBER")) expect(bar).toHaveStyle({ background: "#854d0e" });
+    for (const bar of screen.getAllByTestId("obligation-bar-P-F47-RED")) expect(bar).toHaveStyle({ background: "#7f1d1d" });
+  });
+
+  it("marks over-100% obligation with an end marker; exactly 100% gets none", () => {
+    renderF47();
+    // 104% — capped fill plus the distinct overflow marker, in every rendering of the tile.
+    const redBars = screen.getAllByTestId("obligation-bar-P-F47-RED");
+    for (const bar of redBars) expect(bar).toHaveStyle({ width: "100%" });
+    expect(screen.getAllByTestId("obligation-overflow-P-F47-RED")).toHaveLength(redBars.length);
+    // Exactly 100% and below — no marker anywhere.
+    expect(screen.queryAllByTestId("obligation-overflow-P-F47-AMBER")).toHaveLength(0);
+    expect(screen.queryAllByTestId("obligation-overflow-P-F47-GREEN")).toHaveLength(0);
   });
 });
