@@ -61,9 +61,14 @@ export function LensApp({ ctx }: LensAppProps): JSX.Element {
         <p style={subtitleStyle}>Orientation &amp; Explanation · Companion Suite</p>
       </header>
 
+      {/* Session 122 (Session 121 survey Finding 4): the banner now discloses the one
+          AI-assisted surface. "Makes no decisions" was true but let a reader infer no AI
+          involvement — false for the Governance Explainer tab. */}
       <div style={bannerStyle}>
         Signed in as <strong>{ctx.auth.user.name}</strong>. LENS explains how the platform
-        works — it makes no decisions and takes no actions.
+        works — it makes no decisions and takes no actions. The Governance Explainer&apos;s
+        answers are AI-generated and advisory; Pipeline Navigation and AI Transparency are
+        read-only.
       </div>
 
       <nav style={tabBarStyle} aria-label="LENS surfaces">

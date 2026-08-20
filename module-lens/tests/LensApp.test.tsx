@@ -18,6 +18,13 @@ describe("LensApp (core)", () => {
     expect(screen.getByText(/Sam Reader/)).toBeInTheDocument();
   });
 
+  // Session 122 (Session 121 survey Finding 4): the banner discloses the Explainer's AI use.
+  it("banner discloses that Governance Explainer answers are AI-generated and advisory", () => {
+    render(<LensApp ctx={makeCtx()} />);
+    expect(screen.getByText(/answers are AI-generated and advisory/)).toBeInTheDocument();
+    expect(screen.getByText(/Pipeline Navigation and AI Transparency are read-only/)).toBeInTheDocument();
+  });
+
   it("defaults to the Governance Explainer surface", () => {
     render(<LensApp ctx={makeCtx()} />);
     expect(screen.getByLabelText("Governance Explainer")).toBeInTheDocument();
