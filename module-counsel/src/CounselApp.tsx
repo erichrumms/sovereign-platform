@@ -22,7 +22,7 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
-import { DecisionFramer } from "./DecisionFramer";
+import { DecisionFramer, Gate1DisclosureStrip } from "./DecisionFramer";
 import { PriorPositionAlert } from "./PriorPositionAlert";
 import { AnalysisPanel, AnalysisResultView } from "./AnalysisPanel";
 import { CounterargumentPanel } from "./CounterargumentPanel";
@@ -145,6 +145,11 @@ export function CounselApp({ ctx, inbound }: CounselAppProps): JSX.Element {
         <h1 style={titleStyle}>COUNSEL</h1>
         <p style={subtitleStyle}>Human Decision Support · Companion Suite</p>
       </header>
+      {/* Session 122 (Session 121 survey Finding 5): the Gate 1 strip persists across every
+          stage AFTER framing (prior-position check, analysis, hub, counterargument,
+          pre-mortem, record) — the acknowledge dialog and the framing stage carry their own
+          disclosure inside DecisionFramer, so this renders only once at any moment. */}
+      {frame !== null && <Gate1DisclosureStrip />}
       {body}
     </section>
   );

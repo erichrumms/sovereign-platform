@@ -30,6 +30,22 @@ export interface DecisionFramerProps {
   onSubmit: (frame: DecisionFrame) => void;
 }
 
+/**
+ * The slim Gate 1 disclosure strip. Session 122 (Session 121 survey Finding 5): extracted
+ * so CounselApp can render it at the composition root for every post-framing stage —
+ * previously it lived only inside this component and unmounted with it, leaving the
+ * AI-output panels (Analysis, Counterargument, Pre-Mortem, Record) with no visible
+ * disclosure after the one-time acknowledge dialog was dismissed.
+ */
+export function Gate1DisclosureStrip(): JSX.Element {
+  return (
+    <div style={discloStripStyle} data-category="2-governance">
+      CPMI-VRS Gate 1 acknowledged · AI decision support · you retain judgment ·
+      records are auditable
+    </div>
+  );
+}
+
 export function DecisionFramer({ ctx, inbound, onSubmit }: DecisionFramerProps): JSX.Element {
   const [acknowledged, setAcknowledged] = useState(false);
   const [constraintDraft, setConstraintDraft] = useState("");
@@ -64,10 +80,7 @@ export function DecisionFramer({ ctx, inbound, onSubmit }: DecisionFramerProps):
 
   return (
     <div style={rootStyle}>
-      <div style={discloStripStyle}>
-        CPMI-VRS Gate 1 acknowledged · AI decision support · you retain judgment ·
-        records are auditable
-      </div>
+      <Gate1DisclosureStrip />
 
       <h2 style={sectionTitleStyle}>Frame the decision</h2>
       <p style={mutedStyle}>
