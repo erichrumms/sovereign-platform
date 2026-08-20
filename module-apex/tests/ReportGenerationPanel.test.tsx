@@ -46,4 +46,19 @@ describe("ReportGenerationPanel", () => {
     await waitFor(() => expect(screen.getByText(/resolve the hold before a report is generated/)).toBeInTheDocument());
     expect(screen.queryByText(/Monthly Status Report — /)).not.toBeInTheDocument();
   });
+
+  // F-42 (Session 118): the Program dropdown opens on the program the caller navigated
+  // from, instead of resetting to the first program in the list.
+  it("F-42: opens on the initialProgramId when it is a known program", () => {
+    render(<ReportGenerationPanel ctx={makeCtx()} adapter={adapter} initialProgramId="P-300" />);
+    expect(screen.getByLabelText("program")).toHaveValue("P-300");
+  });
+
+  it("F-42: falls back to the first program when initialProgramId is absent or unknown", () => {
+    const { unmount } = render(<ReportGenerationPanel ctx={makeCtx()} adapter={adapter} />);
+    expect(screen.getByLabelText("program")).toHaveValue("P-100");
+    unmount();
+    render(<ReportGenerationPanel ctx={makeCtx()} adapter={adapter} initialProgramId="SYNTH-PRG-ECHO" />);
+    expect(screen.getByLabelText("program")).toHaveValue("P-100");
+  });
 });

@@ -5,7 +5,7 @@
  * navigates to the Program Detail tab; the Execution Monitoring tab shows the live PPBE
  * performance dashboard (Session 32 — replaced the Session 17 stub).
  */
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 
 import { ApexApp } from "../src/ApexApp";
 import { createSyntheticApexDataAdapter } from "../src/apex-data-adapter";
@@ -43,5 +43,15 @@ describe("ApexApp", () => {
     render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
     fireEvent.click(screen.getByRole("tab", { name: "Program Detail" }));
     expect(screen.getByText(/Select a program from the Portfolio Dashboard to view its detail/)).toBeInTheDocument();
+  });
+
+  // F-42 (Session 118): Export Dossier on a non-default program's row carries that
+  // program into Report Generation — the dropdown no longer resets to P-100.
+  it("F-42: Export Dossier on P-300 lands on Report Generation with P-300 selected", () => {
+    render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
+    const row = screen.getByText(/Depot Modernization/).closest("tr") as HTMLElement;
+    fireEvent.click(within(row).getByRole("button", { name: "Export Dossier" }));
+    expect(screen.getByRole("heading", { name: "APEX — Report Generation" })).toBeInTheDocument();
+    expect(screen.getByLabelText("program")).toHaveValue("P-300");
   });
 });

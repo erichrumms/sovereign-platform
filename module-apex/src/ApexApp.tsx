@@ -99,7 +99,10 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
           <p style={detailHintStyle}>Select a program from the Portfolio Dashboard to view its detail.</p>
         )
       )}
-      {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} />}
+      {/* F-42 (Session 118): Export Dossier stores the clicked program in selectedProgram
+          (exportDossierFor above) but the panel never received it — the Program dropdown
+          reset to the first program on every navigation. Pass it through. */}
+      {tab === "report" && <ReportGenerationPanel ctx={ctx} adapter={adapter} initialProgramId={selectedProgram} />}
       {tab === "gates" && <GateRunnerPanel ctx={ctx} adapter={adapter} />}
       {/* Session 32 (D5) replaced the Session 17 stub with the live PPBE dashboard;
           Session 33 (goal item 8) wired the host data adapter over the canonical

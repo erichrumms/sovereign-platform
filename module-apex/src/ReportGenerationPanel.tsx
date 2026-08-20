@@ -35,6 +35,13 @@ import {
 export interface ReportGenerationPanelProps {
   ctx: SovereignShellContext;
   adapter: ApexDataAdapter;
+  /**
+   * F-42 (Session 118): the program already selected at the click site that navigated
+   * here (Export Dossier on the Portfolio Dashboard or Program Detail). When present
+   * and known to the adapter, the Program dropdown opens on it instead of resetting
+   * to the first program in the list. Absent = the pre-F-42 default (first program).
+   */
+  initialProgramId?: string | null;
 }
 
 const REPORT_TYPES: Array<{ id: ApexReportType; label: string }> = [
@@ -43,9 +50,13 @@ const REPORT_TYPES: Array<{ id: ApexReportType; label: string }> = [
   { id: "AD_HOC", label: "Ad-hoc Analysis" },
 ];
 
-export function ReportGenerationPanel({ ctx, adapter }: ReportGenerationPanelProps): JSX.Element {
+export function ReportGenerationPanel({ ctx, adapter, initialProgramId }: ReportGenerationPanelProps): JSX.Element {
   const programs = adapter.listPrograms();
-  const [programId, setProgramId] = useState(programs[0]?.program_id ?? "");
+  const [programId, setProgramId] = useState(() =>
+    initialProgramId && programs.some((p) => p.program_id === initialProgramId)
+      ? initialProgramId
+      : programs[0]?.program_id ?? ""
+  );
   const [reportType, setReportType] = useState<ApexReportType>("MSR");
   const [note, setNote] = useState("");
 
