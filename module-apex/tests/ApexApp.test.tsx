@@ -45,15 +45,19 @@ describe("ApexApp", () => {
     expect(screen.getByText(/Select a program from the Portfolio Dashboard to view its detail/)).toBeInTheDocument();
   });
 
-  // Session 122 (survey Finding 5): Gate 1 consolidated to the composition root —
-  // present on every tab, exactly once, including the two tabs that had no disclosure.
-  it("renders the Gate 1 banner once at the root, on every tab", () => {
+  // Session 122 (survey Finding 5) + Session 123: both governance banners consolidated to
+  // the composition root — each present on every tab, exactly once, including Program Detail
+  // and Execution Monitoring, which previously had neither.
+  it("renders both governance banners once at the root, on every tab", () => {
     render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
     const GATE1 = /AI disclosure \(CPMI-VRS Gate 1\)/;
+    const GD10 = /Classification boundary \(GD-10\)/;
     expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    expect(screen.getAllByText(GD10)).toHaveLength(1);
     for (const tab of ["Program Detail", "Report Generation", "CPMI-VRS Certification", "Execution Monitoring", "Portfolio Dashboard"]) {
       fireEvent.click(screen.getByRole("tab", { name: tab }));
       expect(screen.getAllByText(GATE1)).toHaveLength(1);
+      expect(screen.getAllByText(GD10)).toHaveLength(1);
     }
   });
 

@@ -116,12 +116,12 @@ describe("GateRunnerPanel — CPMI-VRS Certification tab", () => {
     expect(screen.getByText(/APEX CPMI-VRS certification is complete/)).toBeInTheDocument();
   });
 
-  // Session 122 (survey Finding 5): Gate 1 moved to the ApexApp composition root —
-  // the panel keeps only the GD-10 boundary banner.
-  it("renders the GD-10 governance banner (Gap 6 Category 2); Gate 1 lives at the app root", () => {
+  // Session 123: both governance banners now live at the ApexApp composition root —
+  // the panel renders neither (Gate 1 consolidated Session 122, GD-10 this session).
+  it("renders neither governance banner at the panel level; both live at the app root", () => {
     render(<GateRunnerPanel ctx={makeCtx()} adapter={adapter} />);
     expect(screen.queryByText(/AI disclosure \(CPMI-VRS Gate 1\):/)).toBeNull();
-    expect(screen.getByText(/Classification boundary \(GD-10\):/)).toBeInTheDocument();
+    expect(screen.queryByText(/Classification boundary \(GD-10\):/)).toBeNull();
   });
 
   it("fails closed: a logger emission failure blocks Gate 3 attestation", () => {

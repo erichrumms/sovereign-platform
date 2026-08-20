@@ -43,7 +43,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  ClassificationBoundaryBanner,
 } from "./banners";
 
 export interface GateRunnerPanelProps {
@@ -134,8 +133,6 @@ export function GateRunnerPanel({ ctx, adapter }: GateRunnerPanelProps): JSX.Ele
           recorded automatically; Gate 3 is your attestation; Gate 4 establishes the monitoring baseline.
         </p>
       </header>
-
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* Certification summary — Category 3 substantive content, read first. */}
       <div style={summaryStyle} role="status" data-category="3-content">

@@ -18,7 +18,7 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "./apex-data-adapter";
-import { Gate1Banner } from "./banners";
+import { Gate1Banner, ClassificationBoundaryBanner } from "./banners";
 import { PortfolioDashboard } from "./PortfolioDashboard";
 import { ProgramDetailView } from "./ProgramDetailView";
 import { ReportGenerationPanel } from "./ReportGenerationPanel";
@@ -75,8 +75,12 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
       {/* Session 122 (Session 121 survey Finding 5): Gate 1 consolidated to the composition
           root — F-20 pattern — covering all five tabs. Replaces the three panel-level
           instances (GateRunnerPanel, ReportGenerationPanel, PortfolioDashboard), which
-          left Program Detail and Execution Monitoring with no disclosure. */}
+          left Program Detail and Execution Monitoring with no disclosure.
+          Session 123: GD-10 joins it at the root for the same reason — it too rendered on
+          only three of five tabs (Program Detail and Execution Monitoring lacked it). Same
+          two-banner-at-root convention as SCRIBE (Gate 1 first, then GD-10). */}
       <Gate1Banner />
+      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
       <nav style={tabBarStyle} aria-label="APEX surfaces">
         {TABS.map((t) => {
           const active = t.id === tab;

@@ -27,7 +27,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  ClassificationBoundaryBanner,
   StatusNotice,
 } from "./banners";
 
@@ -78,8 +77,6 @@ export function ReportGenerationPanel({ ctx, adapter, initialProgramId }: Report
         <h1 style={titleStyle}>APEX — Report Generation</h1>
         <p style={subtitleStyle}>Generate a status report or program dossier from governed program data.</p>
       </header>
-
-      <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       <div style={contentCardStyle}>
       <div style={formStyle}>
