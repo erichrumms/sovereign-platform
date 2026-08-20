@@ -18,6 +18,7 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import { createSyntheticApexDataAdapter, type ApexDataAdapter } from "./apex-data-adapter";
+import { Gate1Banner } from "./banners";
 import { PortfolioDashboard } from "./PortfolioDashboard";
 import { ProgramDetailView } from "./ProgramDetailView";
 import { ReportGenerationPanel } from "./ReportGenerationPanel";
@@ -71,6 +72,11 @@ export function ApexApp({ ctx, adapter: injected }: ApexAppProps): JSX.Element {
 
   return (
     <section style={shellStyle}>
+      {/* Session 122 (Session 121 survey Finding 5): Gate 1 consolidated to the composition
+          root — F-20 pattern — covering all five tabs. Replaces the three panel-level
+          instances (GateRunnerPanel, ReportGenerationPanel, PortfolioDashboard), which
+          left Program Detail and Execution Monitoring with no disclosure. */}
+      <Gate1Banner />
       <nav style={tabBarStyle} aria-label="APEX surfaces">
         {TABS.map((t) => {
           const active = t.id === tab;

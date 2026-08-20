@@ -25,10 +25,12 @@ function renderDash(over: { logSink?: SovereignLogEvent[]; onOpen?: (id: string)
 }
 
 describe("PortfolioDashboard", () => {
-  it("renders the Gate-1 and GD-10 governance banners (Category 2)", () => {
+  // Session 122 (survey Finding 5): Gate 1 moved to the ApexApp composition root —
+  // the panel keeps only the GD-10 boundary banner.
+  it("renders the GD-10 governance banner (Category 2); Gate 1 lives at the app root", () => {
     renderDash();
-    expect(screen.getByText(/AI disclosure \(CPMI-VRS Gate 1\)/)).toBeInTheDocument();
     expect(screen.getByText(/Classification boundary \(GD-10\)/)).toBeInTheDocument();
+    expect(screen.queryByText(/AI disclosure \(CPMI-VRS Gate 1\)/)).toBeNull();
   });
 
   it("lists each program with plain-prose completion (Gap 5)", () => {

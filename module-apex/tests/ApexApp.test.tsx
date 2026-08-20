@@ -45,6 +45,18 @@ describe("ApexApp", () => {
     expect(screen.getByText(/Select a program from the Portfolio Dashboard to view its detail/)).toBeInTheDocument();
   });
 
+  // Session 122 (survey Finding 5): Gate 1 consolidated to the composition root —
+  // present on every tab, exactly once, including the two tabs that had no disclosure.
+  it("renders the Gate 1 banner once at the root, on every tab", () => {
+    render(<ApexApp ctx={makeCtx()} adapter={adapter} />);
+    const GATE1 = /AI disclosure \(CPMI-VRS Gate 1\)/;
+    expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    for (const tab of ["Program Detail", "Report Generation", "CPMI-VRS Certification", "Execution Monitoring", "Portfolio Dashboard"]) {
+      fireEvent.click(screen.getByRole("tab", { name: tab }));
+      expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    }
+  });
+
   // F-42 (Session 118): Export Dossier on a non-default program's row carries that
   // program into Report Generation — the dropdown no longer resets to P-100.
   it("F-42: Export Dossier on P-300 lands on Report Generation with P-300 selected", () => {

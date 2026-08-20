@@ -27,7 +27,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  Gate1Banner,
   ClassificationBoundaryBanner,
   StatusNotice,
 } from "./banners";
@@ -80,7 +79,6 @@ export function ReportGenerationPanel({ ctx, adapter, initialProgramId }: Report
         <p style={subtitleStyle}>Generate a status report or program dossier from governed program data.</p>
       </header>
 
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       <div style={contentCardStyle}>

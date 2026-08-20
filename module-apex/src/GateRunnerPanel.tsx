@@ -43,7 +43,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  Gate1Banner,
   ClassificationBoundaryBanner,
 } from "./banners";
 
@@ -136,7 +135,6 @@ export function GateRunnerPanel({ ctx, adapter }: GateRunnerPanelProps): JSX.Ele
         </p>
       </header>
 
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* Certification summary — Category 3 substantive content, read first. */}

@@ -17,7 +17,6 @@ import type { SovereignShellContext } from "../../sovereign-shell/shell-contract
 import type { ApexDataAdapter } from "./apex-data-adapter";
 import { APEX_AI_ASSISTANT } from "./apex-contract";
 import {
-  Gate1Banner,
   ClassificationBoundaryBanner,
   rootStyle,
   contentCardStyle,
@@ -71,7 +70,6 @@ export function PortfolioDashboard({ ctx, adapter, onOpenProgram, onExportDossie
         <p style={subtitleStyle}>Analytics and Program Executive Suite · program portfolio overview</p>
       </header>
 
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       <div style={contentCardStyle} data-category="3-content">
