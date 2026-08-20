@@ -46,6 +46,15 @@ describe("PortfolioDashboard", () => {
     expect(screen.queryByText("Responsible party")).toBeNull();
   });
 
+  // Session 120: cells carry just the name — the role lives in the column header,
+  // not repeated in every row. (Provenance-record responsible parties keep their
+  // role prefixes; that is a different entity.)
+  it("renders bare names in the Program Manager column, without the role prefix", () => {
+    renderDash();
+    expect(screen.getAllByText("Dana Jones").length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByText(/Program Manager Dana Jones/)).toBeNull();
+  });
+
   it("shows an Export Dossier button on every program row", () => {
     renderDash();
     expect(screen.getAllByRole("button", { name: "Export Dossier" })).toHaveLength(adapter.listPrograms().length);

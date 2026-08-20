@@ -32,7 +32,7 @@ const P100: ApexProgramRecord = {
     "are currently flagged for review. The program remains recoverable, but a program manager " +
     "should review the flagged items below before the next quarterly review.",
   completion_pct: 62,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: [
     "Replace the legacy logistics tracking system with a governed, auditable platform.",
     "Reduce average requisition cycle time across the supported commands.",
@@ -119,7 +119,7 @@ const P200: ApexProgramRecord = {
     "on schedule. There are no open risk flags. The program is performing as planned and does " +
     "not currently require escalation.",
   completion_pct: 80,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: [
     "Consolidate maintenance records from four legacy systems into one governed repository.",
     "Provide maintenance leadership with a single accurate readiness view.",
@@ -150,7 +150,7 @@ const P150: ApexProgramRecord = {
     "behind schedule and cost variance is trending unfavorably. A program manager should review " +
     "the cost variance flag and decide whether a corrective action is needed.",
   completion_pct: 55,
-  responsible_party: "Program Manager Jordan Kim",
+  responsible_party: "Jordan Kim",
   objectives: [
     "Automate scheduling of shared training ranges across units.",
     "Reduce scheduling conflicts and unused range time.",
@@ -202,7 +202,7 @@ const P300: ApexProgramRecord = {
     "program should be escalated for a program review and the open legal question referred for " +
     "human legal review.",
   completion_pct: 30,
-  responsible_party: "Program Manager Casey Morgan",
+  responsible_party: "Casey Morgan",
   objectives: [
     "Modernize depot maintenance facilities and tooling.",
     "Bring depot throughput in line with fleet sustainment demand.",
@@ -293,7 +293,7 @@ const P401: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Integrated Financial Reporting Platform is 45% complete and all milestones are on schedule. No open risk flags.",
   completion_pct: 45,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Consolidate disparate financial reporting feeds into a single governed platform."],
   milestones: [
     { name: "Milestone 1 — Requirements baseline", status_narrative: "Completed on schedule.", on_track: true },
@@ -312,7 +312,7 @@ const P402: ApexProgramRecord = {
   status_label: "AT_RISK",
   status_narrative: "The Contract Performance Monitoring Suite is 38% complete. One milestone is at risk due to a vendor staffing gap.",
   completion_pct: 38,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Automate contract performance data collection and alerting."],
   milestones: [
     { name: "Milestone 1 — Data schema approval", status_narrative: "Completed on schedule.", on_track: true },
@@ -348,7 +348,7 @@ const P403: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Workforce Analytics Dashboard is 60% complete and performing as planned.",
   completion_pct: 60,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Provide leadership with near-real-time workforce readiness metrics."],
   milestones: [
     { name: "Milestone 1 — Data ingestion pipeline", status_narrative: "Completed on schedule.", on_track: true },
@@ -367,7 +367,7 @@ const P404: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Regulatory Compliance Tracking System is 55% complete and on schedule.",
   completion_pct: 55,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Consolidate regulatory compliance obligations into a single governed tracker."],
   milestones: [
     { name: "Milestone 1 — Obligation inventory", status_narrative: "Completed on schedule.", on_track: true },
@@ -386,7 +386,7 @@ const P405: ApexProgramRecord = {
   status_label: "AT_RISK",
   status_narrative: "The Mission Systems Health Monitor is 42% complete. Cost variance is trending slightly unfavorable.",
   completion_pct: 42,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Provide continuous health monitoring for mission-critical systems."],
   milestones: [
     { name: "Milestone 1 — Sensor integration", status_narrative: "Completed on schedule.", on_track: true },
@@ -422,7 +422,7 @@ const P406: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Data Quality Governance Framework is 70% complete and performing as planned.",
   completion_pct: 70,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Establish a governed framework for enterprise data quality monitoring."],
   milestones: [
     { name: "Milestone 1 — Standards publication", status_narrative: "Completed on schedule.", on_track: true },
@@ -441,7 +441,7 @@ const P407: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Acquisition Lifecycle Transparency Tool is 50% complete and on schedule.",
   completion_pct: 50,
-  responsible_party: "Program Manager Dana Jones",
+  responsible_party: "Dana Jones",
   objectives: ["Provide end-to-end acquisition lifecycle visibility to program stakeholders."],
   milestones: [
     { name: "Milestone 1 — Data model finalization", status_narrative: "Completed on schedule.", on_track: true },
@@ -460,7 +460,7 @@ const P408: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Interoperability Standards Registry is 35% complete and progressing as planned.",
   completion_pct: 35,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Maintain a governed registry of approved interoperability standards."],
   milestones: [
     { name: "Milestone 1 — Registry schema approval", status_narrative: "Completed on schedule.", on_track: true },
@@ -479,7 +479,7 @@ const P409: ApexProgramRecord = {
   status_label: "AT_RISK",
   status_narrative: "The Strategic Communication Workflow is 28% complete. A dependency on a shared platform integration is delayed.",
   completion_pct: 28,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Streamline the production and approval workflow for strategic communications."],
   milestones: [
     { name: "Milestone 1 — Workflow design", status_narrative: "Completed on schedule.", on_track: true },
@@ -515,7 +515,7 @@ const P410: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Knowledge Management Portal is 65% complete and performing as planned.",
   completion_pct: 65,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Provide a governed portal for institutional knowledge capture and retrieval."],
   milestones: [
     { name: "Milestone 1 — Portal launch", status_narrative: "Completed on schedule.", on_track: true },
@@ -534,7 +534,7 @@ const P411: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Audit Readiness Accelerator is 48% complete and on schedule.",
   completion_pct: 48,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Accelerate audit readiness by automating evidence collection and packaging."],
   milestones: [
     { name: "Milestone 1 — Evidence taxonomy", status_narrative: "Completed on schedule.", on_track: true },
@@ -553,7 +553,7 @@ const P412: ApexProgramRecord = {
   status_label: "AT_RISK",
   status_narrative: "The Resource Allocation Decision Support program is 32% complete. A requirements gap was identified in July.",
   completion_pct: 32,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Provide decision-support tooling for enterprise resource allocation."],
   milestones: [
     { name: "Milestone 1 — Use case definition", status_narrative: "Completed with a minor scope change.", on_track: true },
@@ -589,7 +589,7 @@ const P413: ApexProgramRecord = {
   status_label: "ON_TRACK",
   status_narrative: "The Executive Decision Briefing Automation program is 55% complete and performing as planned.",
   completion_pct: 55,
-  responsible_party: "Program Manager Robin Vasquez",
+  responsible_party: "Robin Vasquez",
   objectives: ["Automate the preparation and formatting of executive decision briefings."],
   milestones: [
     { name: "Milestone 1 — Template library", status_narrative: "Completed on schedule.", on_track: true },
