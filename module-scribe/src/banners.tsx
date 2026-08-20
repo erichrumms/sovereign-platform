@@ -49,3 +49,15 @@ export function Gate1Banner(): JSX.Element {
     </GovernanceBanner>
   );
 }
+
+/** The GD-10 classification boundary guardrail (Category 2) — added Session 122 (Session 121
+    survey Finding 2 decision). Same corrected F-18 wording as APEX/FLOWPATH/ARIA. */
+export function ClassificationBoundaryBanner({ operatorName }: { operatorName: string }): JSX.Element {
+  return (
+    <GovernanceBanner label="Classification boundary (GD-10):">
+      This platform processes UNCLASSIFIED data only. Requests marked CUI, SECRET, or TOP SECRET are
+      refused before any model call, and the refusal is logged. Classification labels are caller-supplied;
+      content is not inspected. Reviewer: <strong>{operatorName}</strong>. Governance Clock OFF — all data is synthetic.
+    </GovernanceBanner>
+  );
+}

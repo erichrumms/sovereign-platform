@@ -93,6 +93,18 @@ describe("ScribeApp F-20 — CPMI-VRS Gate 1 AI-disclosure banner is app-wide", 
     render(<ScribeApp ctx={makeCtx()} />);
     expect(screen.getAllByText(DISCLOSURE)).toHaveLength(1);
   });
+
+  // Session 122 (Session 121 survey Finding 2 decision): the GD-10 classification
+  // boundary renders alongside the Gate 1 banner at the same composition root, with
+  // the corrected F-18 clauses.
+  it("renders the GD-10 classification boundary banner with the corrected F-18 wording", () => {
+    render(<ScribeApp ctx={makeCtx()} />);
+    expect(screen.getByText(/Classification boundary \(GD-10\):/)).toBeInTheDocument();
+    expect(screen.getByText(/refused before any model call/)).toBeInTheDocument();
+    expect(screen.getByText(/content is not inspected/)).toBeInTheDocument();
+    // Same single-instance property as the Gate 1 banner.
+    expect(screen.getAllByText(/Classification boundary \(GD-10\):/)).toHaveLength(1);
+  });
 });
 
 describe("ScribeApp WG-15 — sent-session filtering on mount effects", () => {
