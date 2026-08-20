@@ -32,6 +32,20 @@ describe("VigilApp (scaffold)", () => {
     expect(screen.getByText(/Pat Operator/)).toBeInTheDocument();
   });
 
+  // Session 122 (Session 121 survey Finding 3): the Gate 1 AI disclosure is rendered once
+  // at the composition root and is present regardless of which VIGIL view is active.
+  it("shows the Gate 1 AI-disclosure banner on the Alert Queue tab (default)", () => {
+    render(<VigilApp ctx={makeCtx()} />);
+    expect(screen.getByText(/AI disclosure \(CPMI-VRS Gate 1\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Approval briefs and alert-triage briefs in VIGIL are AI-generated/)).toBeInTheDocument();
+  });
+
+  it("keeps the Gate 1 banner visible on the approvals tab, rendered exactly once", () => {
+    render(<VigilApp ctx={makeCtx()} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Actions Awaiting Your Approval" }));
+    expect(screen.getAllByText(/AI disclosure \(CPMI-VRS Gate 1\)/)).toHaveLength(1);
+  });
+
   it("renders the Alert Queue with the seeded ARIA Suite CLEAR alerts (S23 · D5)", () => {
     render(<VigilApp ctx={makeCtx()} />);
     const queue = screen.getByLabelText("Alert Queue");

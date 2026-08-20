@@ -25,6 +25,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
+import { Gate1Banner } from "./banners";
 import { AlertQueue } from "./AlertQueue";
 import { AlertDetail } from "./AlertDetail";
 import { ApprovalQueue } from "./ApprovalQueue";
@@ -157,6 +158,10 @@ export function VigilApp({ ctx, initialState }: VigilAppProps): JSX.Element {
         <h1 style={titleStyle}>VIGIL</h1>
         <p style={subtitleStyle}>Agent &amp; Security Operator Dashboard · Companion Suite</p>
       </header>
+
+      {/* Session 122 (Session 121 survey Finding 3): app-wide CPMI-VRS Gate 1 AI disclosure —
+          rendered once at the composition root so it is present on both tabs (F-20 pattern). */}
+      <Gate1Banner />
 
       <div style={bannerStyle}>
         Alert response (vigil-triage-analyst, PR-VIGIL-001) and Agent Approval
