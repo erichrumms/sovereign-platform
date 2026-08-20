@@ -24,7 +24,6 @@ import { useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  Gate1Banner,
   ClassificationBoundaryBanner,
   StatusNotice,
   contentCardStyle,
@@ -147,7 +146,6 @@ export function ElicitationDialogue({
   return (
     <div>
       {/* Category 2 — permanent governance guardrails. */}
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* ── PRELIMINARY CONTEXT STAGE ────────────────────────────────────────

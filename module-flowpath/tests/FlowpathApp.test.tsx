@@ -31,6 +31,19 @@ describe("FlowpathApp", () => {
     expect(screen.getByRole("list", { name: /elicitation sessions/i })).toBeInTheDocument();
   });
 
+  // Session 122 (survey Finding 5): Gate 1 consolidated to the composition root —
+  // present on every tab, exactly once, including Workstyle and Review which
+  // previously had no disclosure.
+  it("renders the Gate 1 banner once at the root, on every tab", () => {
+    render(<FlowpathApp ctx={makeCtx()} />);
+    const GATE1 = /AI disclosure \(CPMI-VRS Gate 1\)/;
+    expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    for (const tab of [/my workstyle/i, /certification/i, /artifact review/i, /elicitation dialogue/i, /elicitation sessions/i]) {
+      fireEvent.click(screen.getByRole("tab", { name: tab }));
+      expect(screen.getAllByText(GATE1)).toHaveLength(1);
+    }
+  });
+
   it("switches to the Elicitation Dialogue via the tab bar and shows the preliminary context stage", () => {
     render(<FlowpathApp ctx={makeCtx()} />);
     fireEvent.click(screen.getByRole("tab", { name: /elicitation dialogue/i }));

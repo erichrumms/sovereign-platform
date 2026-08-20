@@ -47,13 +47,14 @@ describe("SessionManager (Screen 1)", () => {
     expect(screen.getByText(/Validation cadence — with the Senior Program Analyst/i)).toBeInTheDocument();
   });
 
-  it("renders the AI-disclosure governance banner, present and blue (Category 2)", () => {
+  // Session 122 (survey Finding 5): Gate 1 moved to the FlowpathApp composition root —
+  // the panel keeps only the GD-10 boundary banner.
+  it("keeps the GD-10 governance banner; the AI disclosure lives at the app root", () => {
     const { container } = render(<SessionManager ctx={makeCtx()} sessions={SYNTHETIC_SESSIONS} onNewSession={() => {}} />);
     const banners = container.querySelectorAll('[data-category="2-governance"]');
-    expect(banners.length).toBeGreaterThanOrEqual(2); // AI disclosure + classification boundary
+    expect(banners.length).toBeGreaterThanOrEqual(1); // classification boundary
     const disclosure = Array.from(banners).find((b) => /AI disclosure/i.test(b.textContent ?? ""));
-    expect(disclosure).toBeTruthy();
-    expect(disclosure as HTMLElement).toHaveStyle({ color: "#1e40af" });
+    expect(disclosure).toBeUndefined();
   });
 
   it("renders the GD-10 classification boundary banner (Category 2)", () => {

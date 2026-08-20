@@ -95,10 +95,13 @@ describe("GateRunnerPanel (FLOWPATH CPMI-VRS Certification)", () => {
     expect(screen.getByRole("status").textContent ?? "").toMatch(/certification is complete/i);
   });
 
-  it("shows the permanent blue governance banners (Category 2)", () => {
+  // Session 122 (survey Finding 5): Gate 1 moved to the FlowpathApp composition root —
+  // the panel keeps only the GD-10 boundary banner.
+  it("shows the permanent blue GD-10 governance banner (Category 2); Gate 1 lives at the app root", () => {
     const { container } = render(<GateRunnerPanel ctx={ctxWith()} />);
     const banners = container.querySelectorAll('[data-category="2-governance"]');
-    expect(banners.length).toBeGreaterThanOrEqual(2); // AI disclosure + classification boundary
+    expect(banners.length).toBeGreaterThanOrEqual(1); // classification boundary
+    expect(screen.queryByText(/AI disclosure/)).toBeNull();
   });
 
   it("applies the white card pattern to gate cards (#ffffff)", () => {

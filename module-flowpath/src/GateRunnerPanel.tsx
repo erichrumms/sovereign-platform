@@ -36,7 +36,6 @@ import {
   subtitleStyle,
   sectionHeadingStyle,
   bodyTextStyle,
-  Gate1Banner,
   ClassificationBoundaryBanner,
 } from "./banners";
 import { evaluateAllBenchmarks, type FlowpathBenchmarkResult } from "./benchmark-scenarios";
@@ -129,7 +128,6 @@ export function GateRunnerPanel({ ctx }: GateRunnerPanelProps): JSX.Element {
         </p>
       </header>
 
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* Certification summary — Category 3, read first. */}

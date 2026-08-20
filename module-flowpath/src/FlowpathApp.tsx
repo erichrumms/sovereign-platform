@@ -34,7 +34,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
-import { rootStyle, titleStyle, subtitleStyle } from "./banners";
+import { Gate1Banner, rootStyle, titleStyle, subtitleStyle } from "./banners";
 import {
   getApprovedFlowpathSessionIds,
   markFlowpathSessionApproved,
@@ -176,6 +176,11 @@ export function FlowpathApp({ ctx, initialState }: FlowpathAppProps): JSX.Elemen
 
   return (
     <section style={shellStyle}>
+      {/* Session 122 (Session 121 survey Finding 5): Gate 1 consolidated to the composition
+          root — F-20 pattern — covering all five tabs. Replaces the three panel-level
+          instances (SessionManager, ElicitationDialogue, GateRunnerPanel); Workstyle and
+          Review previously had no disclosure. */}
+      <Gate1Banner />
       <nav style={tabBarStyle} aria-label="FLOWPATH surfaces">
         {TABS.map((t) => {
           const active = t.id === tab;

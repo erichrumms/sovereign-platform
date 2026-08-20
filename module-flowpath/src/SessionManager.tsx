@@ -17,7 +17,6 @@ import { useRef, type CSSProperties } from "react";
 
 import type { SovereignShellContext } from "../../sovereign-shell/shell-contract";
 import {
-  Gate1Banner,
   ClassificationBoundaryBanner,
   contentCardStyle,
   sectionHeadingStyle,
@@ -151,7 +150,6 @@ export function SessionManager({
   return (
     <div>
       {/* Category 2 — permanent governance guardrails. */}
-      <Gate1Banner />
       <ClassificationBoundaryBanner operatorName={ctx.auth.user.name} />
 
       {/* Category 3 — substantive content. */}
