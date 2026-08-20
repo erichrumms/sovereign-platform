@@ -121,6 +121,24 @@ export function RequestIntakePanel({ registry, ctx, tt }: RequestIntakePanelProp
                 <td style={tdStyle}>{table[t].requires_approval ? "requires approval" : "no approval"}</td>
               </tr>
             ))}
+            {/* F-49 (Session 118): the two TT intake types are a module-local taxonomy that
+                never enters the GD-11 NEXUS_REQUEST_* state machine (header note above), so
+                routingTable() cannot carry them — but they ARE selectable in the dropdown and
+                have a real, distinct approval pathway (the Travel & Time Queue's authority
+                ladder), which this table previously omitted entirely. Static rows; the agent
+                classes are the registered classes of the engines each path actually runs
+                (travel: tt compliance engine Governance + tt router Operational; time: the
+                injected time-compliance port, Operational). */}
+            <tr key="TRAVEL_REQUEST">
+              <td style={tdStyle}>TRAVEL_REQUEST</td>
+              <td style={tdStyle}>Governance · Operational</td>
+              <td style={tdStyle}>Travel &amp; Time Queue (manager / director / executive)</td>
+            </tr>
+            <tr key="TIME_RECORD">
+              <td style={tdStyle}>TIME_RECORD</td>
+              <td style={tdStyle}>Operational</td>
+              <td style={tdStyle}>Travel &amp; Time Queue (manager / director / executive)</td>
+            </tr>
           </tbody>
         </table>
       </div>
