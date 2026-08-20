@@ -38,6 +38,13 @@ describe("ProgramDetailView", () => {
     expect(screen.getByRole("button", { name: "Export Dossier" })).toBeInTheDocument();
   });
 
+  // Session 121: the header labels program ownership with the canonical term (F-41 family).
+  it("labels program ownership 'Program Manager', not the retired 'Responsible party'", () => {
+    renderDetail();
+    expect(screen.getByText(/Program Manager: Dana Jones/)).toBeInTheDocument();
+    expect(screen.queryByText(/Responsible party:/)).toBeNull();
+  });
+
   it("opens the DC-3 provenance panel when a risk flag is clicked, and logs APEX_PROVENANCE_VIEWED", () => {
     const logSink: SovereignLogEvent[] = [];
     renderDetail(logSink);

@@ -82,7 +82,9 @@ export function ProgramDetailView({ ctx, adapter, programId, onExportDossier, on
         <p style={subtitleStyle}>
           Program {program.program_id} · {program.classification} ·{" "}
           <span style={{ ...pillStyle, color: pill.color, background: pill.background }}>{statusLabelText(program.status_label)}</span> ·
-          Responsible party: {program.responsible_party}
+          {/* Session 121: same label the Portfolio Dashboard retired in Session 119 (F-41),
+              same field — renamed for consistency with the dashboard column. */}
+          Program Manager: {program.responsible_party}
         </p>
       </header>
 
