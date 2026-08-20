@@ -28,6 +28,10 @@ describe("NexusApp", () => {
     expect(screen.getByRole("heading", { name: "NEXUS" })).toBeInTheDocument();
     expect(screen.getByText(/AI disclosure \(CPMI-VRS Gate 1\)/)).toBeInTheDocument();
     expect(screen.getByText(/Classification boundary \(GD-10\)/)).toBeInTheDocument();
+    // Session 122 (survey Finding 1): the corrected F-18 clauses are present.
+    expect(screen.getByText(/before any model call/)).toBeInTheDocument();
+    expect(screen.getByText(/the refusal is logged/)).toBeInTheDocument();
+    expect(screen.getByText(/content is not inspected/)).toBeInTheDocument();
   });
 
   it("drives a COMPLIANCE_CHECK request through the approval path to COMPLETE", () => {

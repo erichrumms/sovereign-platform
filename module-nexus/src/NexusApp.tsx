@@ -255,10 +255,14 @@ export function NexusApp({ ctx, travelDrafterComplete }: NexusAppProps): JSX.Ele
         are routed to the VIGIL approval queue. Outputs are advisory until human review.
       </div>
 
+      {/* Session 122 (Session 121 survey Finding 1): corrected F-18 wording — the inline
+          banner predated the Session 116 correction and lacked "before any model call",
+          "the refusal is logged", and "content is not inspected". Intake framing kept. */}
       <div style={boundaryStyle}>
         <strong>Classification boundary (GD-10):</strong> SOVEREIGN processes <strong>UNCLASSIFIED</strong> synthetic
-        data only. CUI / SECRET / TOP_SECRET requests are refused at intake. Operator: <strong>{ctx.auth.user.name}</strong>.
-        Governance Clock OFF.
+        data only. Requests marked CUI, SECRET, or TOP_SECRET are refused at intake — before any model
+        call — and the refusal is logged. Classification labels are caller-supplied; content is not
+        inspected. Operator: <strong>{ctx.auth.user.name}</strong>. Governance Clock OFF.
       </div>
 
       <nav style={tabBarStyle} aria-label="NEXUS surfaces">
