@@ -298,3 +298,11 @@ SOVEREIGN_Session129_Handoff.md|repo|14a8f90d14663d4a57ccdd7f8d4c4b3089fdb095744
 # 1-46 continuous). Version header remains v3.11 — bump to v3.12 + changelog/Supersedes/footer is
 # Governance-Agent authorship, surfaced in F-130-1 of the handoff, NOT done this session.
 SOVEREIGN_Session130_Handoff.md|repo|8725f4bacfb081641169d0a71bb78c8c1247578f55d0796e6909ef741917fa0d|206|Session 130 Handoff — placement only: Lesson 46 (consistency-survey/VIGIL) placed in AGENT_REFERENCE.md from authored draft; Lessons 1-46 continuous; §7 version-chain PASS; §6 manifest SHA regenerated; v3.12 version bump left for Governance Agent (F-130-1); no code/contract change; 2126+195=2321; terminal HEAD 9e6d4d6|2026-08-21
+
+# --- Repo root: Session 131 close (AGENT_REFERENCE.md v3.12 metadata bump — closes F-130-1) ---
+# Mechanical placement of Governance-Agent-authored metadata per CLAUDE.md §4. AGENT_REFERENCE.md
+# row above updated (SHA ae1792b2, line_count 2323, v3.12). Four coupled edits: version header
+# 3.11->3.12, Supersedes names v3.11, v3.12 changelog entry, footer "Lessons 1-46 as of v3.12";
+# §7 PASS. Lesson 46 content untouched. Superseded draft git rm'd (content in history + Lesson 46).
+# Surfaced (F-131-2, NOT done): footer-header "Unified v3.10" line + no v3.12 footer-note line.
+SOVEREIGN_Session131_Handoff.md|repo|8f17e31189e518cd10d53f14f9a5831609087ed0ef77c7ce35870abf22bf4769|211|Session 131 Handoff — AGENT_REFERENCE.md v3.11->v3.12 metadata bump closes F-130-1 (header/Supersedes/changelog/footer, four coupled edits); §7 version-chain PASS; §6 manifest SHA regenerated (ae1792b2, 2323 lines); Lesson 46 content untouched; superseded draft retired via git rm; F-131-1 footer "as of vN" coupling done; F-131-2 two footer staleness items surfaced; no code/contract change; 2126+195=2321; terminal HEAD 59bed20|2026-08-21
