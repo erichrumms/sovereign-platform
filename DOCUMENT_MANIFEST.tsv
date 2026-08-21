@@ -212,6 +212,7 @@ SOVEREIGN_Platform_Integration_Brief_v1.61.md|repo|1e4ae22fd238755ab450b6bfe0f22
 SOVEREIGN_Remaining_Build_Backlog_v6_20260815.md|repo|21793d3dbb7036a0c405ca1441464e4f7f14210dfe9dfabd57bd94b1e40b9519|122|v6 — retracts two v5 claims; records Sessions 106-114 closures and the enforcement layer|2026-08-15
 SOVEREIGN_Strategic_Plan_CTO_Demo_v3.14.md|repo|47f85f6db37aba62e6554b9e792f86367f897f03716f992274d8cc2a5951e405|153|v3.14 — GD-42 recorded; model-governance answer rewritten; Part XIII what-not-to-claim added|2026-08-15
 GD-42_APPROVED_and_GD-40_Amendment.md|repo|a921c4d86656f77da3226f5b33b301442ef0fea99b74eaf739cd24f12404965d|173|GD-42 APPROVED and GD-40 amended — source for entry into the GD Registry, not the registry itself|2026-08-15
+SOVEREIGN_GD_Registry_20260815.md|repo|f9474beded2ede558873b642394bfa00ae582d7d156a6397c37811d5d82a4f34|228|GD Registry through GD-42; GD-42 APPROVED + GD-40 amendment ALREADY placed here in commit dadca63 (2026-08-16); supersedes 20260810; next available GD-43. Manifest row ADDED Session 128 — registry was placed but never manifest-tracked (Rule 17 blind spot); no content change to the registry itself|2026-08-20
 SOVEREIGN_CTO_Framework_Applied_v2.md|repo|357c78aba5e0e06031a2b17df04df210ed6bd8a1bfdb7378fd54d31c79db38e8|294|v2 — corrects four statements now factually wrong, including the WH-43 headline gap and the audit-log banner praise|2026-08-15
 SBOM_Registry_v1.83_MERGED.md|repo|a566b664bde3f6ea74e6cc2d444e40067b4f53b5c351df28714354ecef9a0383|203|v1.83 MERGED — supersedes v1.74 (never placed) and v1.44 (on disk); merges Sessions 107-114; six sessions remain unmerged, named in §6|2026-08-15
 
@@ -276,3 +277,11 @@ SBOM_Session126_Update.md|repo|47be08fd3152297eb765975675ee046438ec2c5a790e56057
 # --- Repo root: Session 127 close (SBOM Registry merge — documents-only) ---
 SBOM_Registry_v1.96_MERGED.md|repo|0ffa6ee511f7e14820c1169017d51f4d5c44f99abe497faf993d7e41a30ae148|708|v1.96 MERGED — Session 127 mechanical Build-Agent merge; supersedes v1.83 (through S114) and per-session v1.84-v1.95 (S115-126); CLOSES v1.83 §6 backlog (S99,101-104,106 recovered verbatim from disk); merges S115-126 verbatim; test-count chain verified unbroken 114->126; JS/TS 2126 + Python 195 = 2321 unchanged; individual SBOMs NOT deleted; terminal HEAD 3a443e1|2026-08-20
 SOVEREIGN_Session127_Handoff.md|repo|9658b3153cde456c1ab7b18ab198a2655e60634b96331f40fed8e861db3cea50|294|Session 127 Handoff — documents-only SBOM registry merge; D1 enumeration (Set A older six 99/101-104/106 + Set B 115-126 = 18); D2 SBOM_Registry_v1.96_MERGED.md (verbatim, v1.83 template, next-number-by-scan); D3 chain unbroken 114->126; D4 manifest row added, no source SBOM deleted; no SBOM_Session127_Update (deliverable is the registry); contract v1.28 unchanged; 2126+195=2321; terminal HEAD 3a443e1|2026-08-20
+
+# --- Repo root: Session 128 close (GD Registry placement — NO-OP; manifest fix only) ---
+# Premise of the session (GD-42 + GD-40 amendment "never placed in the registry") was
+# found FALSE at the D1 gate: SOVEREIGN_GD_Registry_20260815.md has had both since dadca63
+# (2026-08-16). No placement performed (would duplicate). Only concrete change: the
+# registry's own missing manifest row, added above in the Session 115 batch. No
+# SBOM_Session128_Update (no code, no test-count change; 2126+195=2321 unchanged).
+SOVEREIGN_Session128_Handoff.md|repo|96ea10f57ae9f1551185fcd751b26d84971f8f1ee48a425a56d009af11633cb1|289|Session 128 Handoff — NO-OP placement: GD-42 (APPROVED) + GD-40 amendment already in SOVEREIGN_GD_Registry_20260815.md (committed dadca63, 2026-08-16); D1 halted per Rule 6, D3 not performed (would duplicate), D4 already reads GD-43; false premise inherited from Session 127 Handoff lines 275-277 (Lesson 26/Rule 5), flagged for Governance Agent; D-fix added the registry's missing manifest row (Rule 17 blind spot); contract v1.28 unchanged; 2126+195=2321; terminal HEAD __TERMINAL_HEAD__|2026-08-20
