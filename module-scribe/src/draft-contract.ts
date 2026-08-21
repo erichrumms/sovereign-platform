@@ -166,8 +166,12 @@ export function isUnfilledPlaceholder(v: unknown): boolean {
 /**
  * Walk every string value in a draft (including array elements and nested action-item
  * objects) and record one error per field still holding unedited static-fallback text.
+ *
+ * Exported (Session 125) so the module-local TT drafting validator can reuse this exact
+ * walk rather than reimplementing the sentinel logic (Rule 11 — one detector, one source
+ * of truth). It is generic over any draft object shape.
  */
-function collectPlaceholderErrors(value: unknown, path: string, errors: string[]): void {
+export function collectPlaceholderErrors(value: unknown, path: string, errors: string[]): void {
   if (typeof value === "string") {
     if (isUnfilledPlaceholder(value)) {
       errors.push(

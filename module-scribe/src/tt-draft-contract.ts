@@ -35,6 +35,8 @@ import type {
   CorrectionCommunicationType,
 } from "@sovereign/data";
 
+import { collectPlaceholderErrors } from "./draft-contract";
+
 // ============================================================
 // AGENT IDS + PROMPT REGISTRY BINDINGS
 // ============================================================
@@ -222,5 +224,15 @@ export function validateTTDraft(value: unknown): ValidationResult {
         "the tool name never appears in outgoing communications (docs/17 §6.4)"
     );
   }
-  return result(errors);
+  // Structural errors first — if the shape is wrong, don't also complain about placeholders.
+  if (errors.length > 0) return result(errors);
+  // Then reject an unedited static fallback. The TT static tier (tt-draft-engine.ts
+  // TT_UNAVAILABLE) is schema-SHAPED — a non-empty body — but is nothing but placeholder
+  // text the manager MUST replace before sending. It carries the shared FALLBACK_SENTINELS
+  // core, so the same detector the six SCRIBE modes use (F-51, Session 124) recognizes it
+  // here too — one detector, one source of truth (Rule 11). Extended to this validator in
+  // Session 125 (F-51 follow-on).
+  const placeholderErrors: string[] = [];
+  collectPlaceholderErrors(value, "", placeholderErrors);
+  return result(placeholderErrors);
 }
