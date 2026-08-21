@@ -285,3 +285,9 @@ SOVEREIGN_Session127_Handoff.md|repo|9658b3153cde456c1ab7b18ab198a2655e60634b963
 # registry's own missing manifest row, added above in the Session 115 batch. No
 # SBOM_Session128_Update (no code, no test-count change; 2126+195=2321 unchanged).
 SOVEREIGN_Session128_Handoff.md|repo|96ea10f57ae9f1551185fcd751b26d84971f8f1ee48a425a56d009af11633cb1|289|Session 128 Handoff — NO-OP placement: GD-42 (APPROVED) + GD-40 amendment already in SOVEREIGN_GD_Registry_20260815.md (committed dadca63, 2026-08-16); D1 halted per Rule 6, D3 not performed (would duplicate), D4 already reads GD-43; false premise inherited from Session 127 Handoff lines 275-277 (Lesson 26/Rule 5), flagged for Governance Agent; D-fix added the registry's missing manifest row (Rule 17 blind spot); contract v1.28 unchanged; 2126+195=2321; terminal HEAD beeffef|2026-08-20
+
+# --- Repo root: Session 129 close (STRATA docs/37-39 placement audit — INVESTIGATION, no change) ---
+# D1: docs/37, docs/38, docs/39 all exist, are committed (latest 9ae2d94), and have manifest
+# rows (lines 130-132) with SHAs matching disk exactly. D2 not triggered (no missing-row gap).
+# No file content or manifest data row changed; only this handoff's own tracking row added.
+SOVEREIGN_Session129_Handoff.md|repo|14a8f90d14663d4a57ccdd7f8d4c4b3089fdb0957448bd6437094173619f1826|212|Session 129 Handoff — investigation only: STRATA docs/37-39 confirmed present, committed (latest 9ae2d94), manifest rows 130-132 with matching SHAs; D2 not triggered (no gap, unlike S128 GD Registry); no content or data-row change; contract v1.28 unchanged; 2126+195=2321; terminal HEAD __TERMINAL_HEAD__|2026-08-20
