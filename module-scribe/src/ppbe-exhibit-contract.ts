@@ -43,6 +43,7 @@
 import type { ValidationResult } from "@sovereign/data";
 import type { SovereignLogEvent } from "../../sovereign-shell/shell-contract";
 import { disclosesSystem } from "./tt-draft-contract";
+import { collectPlaceholderErrors } from "./draft-contract";
 
 // ============================================================
 // AGENT ID + PROMPT REGISTRY BINDING (Constraints #9 / #10)
@@ -168,7 +169,18 @@ export function validatePPBEExhibitDraft(
         "PPBE documents follow the same invisibility rule as every other drafted communication"
     );
   }
-  return result(errors);
+  // Structural + traceability errors first — if the shape is wrong, don't also complain
+  // about placeholders (mirrors validateModeOutput and validateTTDraft).
+  if (errors.length > 0) return result(errors);
+  // Then reject an unedited static fallback. The PPBE static tier (ppbe-exhibit-engine.ts
+  // STATIC_NOTICE) is schema-VALID and figure-traceable — real figures, real citations —
+  // but its narrative still carries the shared FALLBACK_SENTINELS core until the reviewing
+  // official completes the document from the cited records. Re-run by the sign-off gate
+  // (recordExhibitSignOff), this closes F-51 for PPBE exhibits (Session 126, D4). One
+  // detector, one source of truth (Rule 11) — the same walk the six SCRIBE modes and TT use.
+  const placeholderErrors: string[] = [];
+  collectPlaceholderErrors(value, "", placeholderErrors);
+  return result(placeholderErrors);
 }
 
 /**

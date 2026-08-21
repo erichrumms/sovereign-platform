@@ -325,15 +325,27 @@ describe("exhibit engine", () => {
     ).toContain("Budget Exhibit");
   });
 
-  it("static tier cites only real sources and validates in every mode", () => {
+  // Session 126 (F-51, D4): before this session the unedited static fallback PASSED
+  // validatePPBEExhibitDraft in every mode — that was the F-51 gap (an untouched notice
+  // could satisfy the sign-off gate). The traceability intent this test was written to
+  // guard (figures cite only supplied governed records) still holds and is asserted
+  // directly; the validity expectation now flips — the unedited notice is correctly
+  // rejected by the placeholder gate.
+  it("static tier cites only real sources in every mode, but the unedited notice fails the placeholder gate (F-51)", () => {
     for (const mode of PPBE_DOCUMENT_MODES) {
       const staticInput = input({
         mode,
         findings: mode === "EVALUATION_REPORT" ? [finding("EF-1", true), finding("EF-2", false)] : undefined,
       });
+      const refs = allowedSourceRefs(staticInput);
       const draft = staticExhibitDraft(staticInput);
       expect(draft.document_mode).toBe(mode);
-      expect(validatePPBEExhibitDraft(draft, allowedSourceRefs(staticInput)).valid).toBe(true);
+      // Traceability holds: every figure cites a real supplied governed record.
+      expect(draft.figures.every((f) => refs.has(f.source_workflow_step_id))).toBe(true);
+      // But the unedited static NOTICE is placeholder text and must NOT satisfy the gate.
+      const r = validatePPBEExhibitDraft(draft, refs);
+      expect(r.valid).toBe(false);
+      expect((r as { valid: false; errors: string[] }).errors.join(" ")).toMatch(/placeholder/);
     }
   });
 

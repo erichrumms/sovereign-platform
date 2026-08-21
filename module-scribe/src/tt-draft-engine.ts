@@ -44,6 +44,7 @@ import {
   type TravelCommunicationType,
   type TimeCommunicationType,
 } from "./tt-draft-contract";
+import { FALLBACK_SENTINELS } from "./draft-contract";
 
 export type TTDraftTier = "live" | "cache" | "static";
 
@@ -193,8 +194,13 @@ export function parseTTDraft(
 // the reviewing manager; validation re-runs on the edited result.
 // ============================================================
 
+// Built FROM the shared sentinel (not hardcoded) so the placeholder detector in
+// validateTTDraft can never silently drift from this text (Rule 11 — one source of
+// truth; Session 126, D2). The resulting string is byte-identical to the prior
+// hardcoded text, which already matched FALLBACK_SENTINELS.unavailableCore by wording;
+// only its construction changed.
 const TT_UNAVAILABLE =
-  "[Drafting service unavailable — this is a static fallback, not a generated draft. " +
+  `[Drafting service unavailable — ${FALLBACK_SENTINELS.unavailableCore}. ` +
   "Compose the communication from the compliance record before sending.]";
 
 const STATIC_SUBJECTS: Record<TravelCommunicationType | TimeCommunicationType, string> = {

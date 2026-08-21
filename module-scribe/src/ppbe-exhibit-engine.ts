@@ -44,6 +44,7 @@ import {
   type PPBEExhibitDraft,
   type ExhibitFigure,
 } from "./ppbe-exhibit-contract";
+import { FALLBACK_SENTINELS } from "./draft-contract";
 
 export type PPBEExhibitTier = "live" | "cache" | "static";
 
@@ -157,9 +158,17 @@ export function parseExhibitDraft(
 // STATIC TIER — real figures, real citations, bracketed instructions
 // ============================================================
 
+// Built FROM the shared sentinel (not hardcoded) so validatePPBEExhibitDraft's
+// placeholder gate reliably recognizes an unedited static fallback and cannot silently
+// drift from this text (Rule 11 — one detector, one source of truth; Session 126, D2).
+// The governed-record distinction is preserved and sharpened: PPBE's static tier is
+// genuinely different from a pure-template fallback — its figures and citations ARE
+// assembled from real governed records (see staticExhibitDraft below); only the
+// narrative prose is non-generated. The notice now states exactly that.
 const STATIC_NOTICE =
-  "[Drafting service unavailable — this is a static fallback assembled from the governed " +
-  "records, not a generated narrative. Complete the document from the cited records before review.]";
+  `[Drafting service unavailable — ${FALLBACK_SENTINELS.unavailableCore}. The figures and ` +
+  "citations below are assembled from the governed records; the narrative is not. Complete " +
+  "the document from the cited records before review.]";
 
 /**
  * A meaningful static fallback for the mode — never fabricated. Figures are
