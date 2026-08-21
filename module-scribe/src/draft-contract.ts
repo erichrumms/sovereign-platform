@@ -136,6 +136,58 @@ function asObject(value: unknown, errors: string[]): Record<string, unknown> | n
 }
 
 // ============================================================
+// STATIC-FALLBACK PLACEHOLDER GATE (F-51, Session 124)
+// ============================================================
+// The static tier-3 fallback (draft-engine.ts) is intentionally schema-SHAPED so the
+// Draft Viewer can render it, but every content field is an unedited placeholder the
+// human MUST replace before export. The per-mode validators above only check that a
+// field is a non-empty string — a placeholder IS a non-empty string, so an untouched
+// fallback passed schema validation and the Export gate enabled Approve with nothing
+// typed (F-51, confirmed live on Rule Change Proposal). These sentinel fragments are
+// the single source of truth: draft-engine.ts builds its PLACEHOLDER / UNAVAILABLE
+// strings FROM them, so the generator and this detector cannot drift apart (Rule 11).
+
+export const FALLBACK_SENTINELS = {
+  /** Invariant tail of the short-form field placeholder: `[FIELD — supply before export]`. */
+  placeholderSuffix: "— supply before export]",
+  /** Invariant core of the long-form "service unavailable" fallback body. */
+  unavailableCore: "this is a static fallback, not a generated draft",
+} as const;
+
+/** True if a string still contains either static-fallback sentinel (i.e. an unedited placeholder). */
+export function isUnfilledPlaceholder(v: unknown): boolean {
+  return (
+    typeof v === "string" &&
+    (v.includes(FALLBACK_SENTINELS.placeholderSuffix) ||
+      v.includes(FALLBACK_SENTINELS.unavailableCore))
+  );
+}
+
+/**
+ * Walk every string value in a draft (including array elements and nested action-item
+ * objects) and record one error per field still holding unedited static-fallback text.
+ */
+function collectPlaceholderErrors(value: unknown, path: string, errors: string[]): void {
+  if (typeof value === "string") {
+    if (isUnfilledPlaceholder(value)) {
+      errors.push(
+        `${path || "draft"}: still contains unedited static-fallback placeholder text — replace with real content before export`
+      );
+    }
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => collectPlaceholderErrors(v, `${path}[${i}]`, errors));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [k, v] of Object.entries(value)) {
+      collectPlaceholderErrors(v, path ? `${path}.${k}` : k, errors);
+    }
+  }
+}
+
+// ============================================================
 // PER-MODE VALIDATORS
 // Each returns the canonical @sovereign/data ValidationResult.
 // ============================================================
@@ -271,5 +323,12 @@ export function validateModeOutput(mode: SCRIBEMode, value: unknown): Validation
       ],
     };
   }
-  return MODE_VALIDATORS[mode](value);
+  // First: structural schema check. If the shape is wrong, return those errors.
+  const structural = MODE_VALIDATORS[mode](value);
+  if (!structural.valid) return structural;
+  // Then: reject an unedited static fallback. A draft can be perfectly schema-shaped
+  // and still be nothing but placeholder text (F-51) — that must not satisfy the gate.
+  const placeholderErrors: string[] = [];
+  collectPlaceholderErrors(value, "", placeholderErrors);
+  return result(placeholderErrors);
 }

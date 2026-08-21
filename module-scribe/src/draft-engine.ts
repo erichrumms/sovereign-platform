@@ -40,6 +40,7 @@ import type {
 
 import {
   validateModeOutput,
+  FALLBACK_SENTINELS,
   type DraftableMode,
   type ModeOutput,
 } from "./draft-contract";
@@ -159,11 +160,13 @@ export function parseDraft(mode: DraftableMode, content: string): ModeOutput | n
 // the human-edited result before it can leave SCRIBE.
 // ============================================================
 
+// Built from FALLBACK_SENTINELS so the detector in draft-contract.ts (F-51 gate) and
+// these generated strings share one source and cannot drift apart (Rule 11).
 const UNAVAILABLE =
-  "[SCRIBE drafting service is unavailable — this is a static fallback, not a generated draft. " +
+  `[SCRIBE drafting service is unavailable — ${FALLBACK_SENTINELS.unavailableCore}. ` +
   "Replace this text with your own content before export. Re-run drafting when the service is restored.]";
 
-const PLACEHOLDER = (field: string): string => `[${field} — supply before export]`;
+const PLACEHOLDER = (field: string): string => `[${field} ${FALLBACK_SENTINELS.placeholderSuffix}`;
 
 const STATIC_TEMPLATES: { [M in DraftableMode]: () => ModeOutput } = {
   correspondence_draft: (): CorrespondenceDraftSchema => ({

@@ -115,10 +115,17 @@ describe("parseDraft", () => {
   });
 });
 
-describe("staticDraftFallback — every mode template is schema-valid", () => {
-  it.each(DRAFTABLE_MODES)("produces a valid %s template", (mode) => {
-    const tmpl = staticDraftFallback(mode as DraftableMode);
-    expect(validateModeOutput(mode, tmpl).valid).toBe(true);
+describe("staticDraftFallback — schema-shaped but NOT export-valid until edited (F-51)", () => {
+  // The template must render (all schema fields present, non-empty), but it is nothing
+  // but placeholder text, so validateModeOutput must REJECT it — otherwise the Export
+  // gate would enable Approve on unedited fallback content (F-51, Session 124).
+  it.each(DRAFTABLE_MODES)("produces a %s template that is a full object but fails the placeholder gate", (mode) => {
+    const tmpl = staticDraftFallback(mode as DraftableMode) as Record<string, unknown>;
+    // not an empty stub — every field is present
+    expect(Object.keys(tmpl).length).toBeGreaterThan(0);
+    const check = validateModeOutput(mode, tmpl);
+    expect(check.valid).toBe(false);
+    expect((check as { valid: false; errors: string[] }).errors.join(" ")).toMatch(/placeholder/);
   });
 });
 
@@ -153,7 +160,8 @@ describe("runDraft — three-tier fallback", () => {
       },
     }));
     expect(out.tier).toBe("static");
-    expect(validateModeOutput(out.mode, out.draft).valid).toBe(true);
+    // Served (renders), but the unedited fallback must NOT pass the export gate (F-51).
+    expect(validateModeOutput(out.mode, out.draft).valid).toBe(false);
     expect(out.detail).toMatch(/offline/);
   });
 
