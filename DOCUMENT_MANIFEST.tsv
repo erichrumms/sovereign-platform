@@ -63,7 +63,7 @@ CLAUDE.md|repo|a3001d5f435d301270ad725421445b12a11a1a555d1e03986c67b6d912a357b8|
 # committed to the repository. The repo's current Agent_Identity_Standard.md (SHA 4bd67a3a...)
 # reflects the later v1.1 merge performed in Session 107. The "never existed" claim is
 # retracted — the file exists in ~/Downloads but was never pushed to git.
-AGENT_REFERENCE.md|repo|2f6e0f097ce67499cddf1a1eacf9225fc77b10d3adc0a566864c6620f8f12d73|2293|v3.11 — Lessons 40-45 imported from docs/40 §6 and §10 (Session 115); Lessons 1-45 now continuous; also needs manual copy to iCloud root + project knowledge|2026-08-15
+AGENT_REFERENCE.md|repo|6ea9af80ddc7eecafaf4955d8c21c1b2b9a946659252841d55ecd7c03b0663bf|2319|v3.11 — Lessons 40-45 imported from docs/40 §6 and §10 (Session 115); Lesson 46 placed Session 130 (consistency-survey/VIGIL, from SOVEREIGN_New_Lesson_Draft_20260820.md) so Lessons 1-46 now continuous; SHA/line_count regenerated to match disk; document version header still v3.11 — bump to v3.12 + changelog entry pending Governance Agent (CLAUDE.md §4); also needs manual copy to iCloud root + project knowledge|2026-08-21
 Agent_Identity_Standard.md|repo|aaa335cf51e830e58cf3d8a13346ae1518014817892e585e95e10dd830ddd176|1806|v1.2 — Sessions 107-114 confirmation note (44 agents unchanged); agent id formatting partially resolved; credential lifecycle review flagged a second time|2026-08-15
 SOVEREIGN_Role_Access_Matrix_20260721.md|repo|e7b66e752b83aa8cca9c2158d8c324f9e8cdb5a442704e346e592b2634e11200|118|corrected Session 112 (D3) — SHA drift; file updated between placements|2026-08-13
 SOVEREIGN_Platform_EndToEnd_Assessment_20260723.md|repo|09ebaaeb0e976fd387f1d1911f1745227a7c3c6d9b6e00b0fa9917cea06607c5|427|Session 60 R/E/S assessment, F-2 corrected|2026-07-24
