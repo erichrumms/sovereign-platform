@@ -1,8 +1,8 @@
 # Agent Reference Document — Unified
 ## SOVEREIGN Multi-Agent Development System
 
-**Version: 3.11 — August 15, 2026**
-**Supersedes:** v3.10 (August 13, 2026), which superseded v3.9 (August 12, 2026), which superseded v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
+**Version: 3.12 — August 21, 2026**
+**Supersedes:** v3.11 (August 15, 2026), which superseded v3.10 (August 13, 2026), which superseded v3.9 (August 12, 2026), which superseded v3.8 (August 12, 2026), which superseded v3.7 (August 12, 2026), which superseded v3.6 (August 12, 2026),
 which superseded v3.5 (August 11, 2026), which superseded v3.4, which superseded v3.3,
 which superseded v3.2 (July 22, 2026), which superseded v3.1 (July 19, 2026), which
 superseded v3.0 (July 18, 2026 — the merge of BOTH prior lineages: the repo copy,
@@ -133,6 +133,10 @@ and where they overlap they now agree. The four-location collision note stands
 unchanged: `PROJECT_SUMMARY.md` holds different lessons at overlapping numbers and
 `AGENT_BACKGROUND_AND_LESSONS_LEARNED.md` has never been examined. Neither lineage is
 renumbered. Rules 11–17 and Lessons 1–39 byte-identical to v3.10.
+**v3.12 change:** Session 131, August 21, 2026. Added Lesson 46 ("Search for defect
+shapes, don't wait for accidents"), documenting Session 121's consistency-survey
+methodology. No Lesson renumbered; Lessons 1–45 unchanged in substance. No code,
+shell-contract, or agent/prompt registry change.
 
 **How to read this document:** Part I is the full SOVEREIGN-specific
 reference (the repo lineage, preserved unchanged). Part II is the
@@ -2309,7 +2313,7 @@ If a conflict arises between a document and the actual, directly-observable stat
 
 *Agent Reference Document — Unified v3.10 · August 13, 2026*
 *Merge of both lineages, Project Principal decision, July 18, 2026*
-*Lessons 1-45 continuous in this document as of v3.11; docs/40 remains the defect-class register*
+*Lessons 1-46 continuous in this document as of v3.12; docs/40 remains the defect-class register*
 *v3.5 — August 11, 2026: Rules 15–17 and Lessons 30–38 merged from addendum; July 30 docs/28 append merged; footer updated*
 *v3.6 — August 12, 2026: Lessons 26–29 recovered; Rule 10 amendment added; session-store extraction decision recorded; Supersedes line corrected; v3.5 session attribution corrected (105→106)*
 *v3.7 — August 12, 2026: Block D (Rule 13 parallel incidents) added to Rule 17; Block E (parallel Rule 14) re-homed as Lesson 39; citation guidance for Part I/II Rule duplication added; Rule 14 permanently unassigned*
