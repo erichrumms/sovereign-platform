@@ -207,17 +207,37 @@ describe("PPBE smoke — fail-closed half: every agent degrades honestly, never 
     expect(outcome.report.scenarios.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("exhibit drafter falls back to a static draft whose every figure has a real source", async () => {
+  it("exhibit drafter falls back to a static, figure-traceable draft that the export gate holds until completed", async () => {
     const outcome = await runExhibitDraft(
       exhibitInput,
       loadApprovedPrompt(PROMPTS.exhibit),
       ctx("ppbe-exhibit-drafter", "SCRIBE", "smoke-ppbe-exhibit-alpha"),
       { ...deadProvider, cacheGet: () => null, cacheSet: () => undefined }
     );
-    const valid = validatePPBEExhibitDraft(outcome.draft, allowedSourceRefs(exhibitInput)).valid;
-    results.push({ agent: "ppbe-exhibit-drafter", mode: "fallback-regression", tier: outcome.tier, validatorPassed: valid, detail: outcome.detail });
+    // F-51 (Session 126): validatePPBEExhibitDraft now ALSO enforces the placeholder gate,
+    // so the UNEDITED static fallback deliberately fails it — a reviewing official must
+    // complete the document before export. This is a strengthening of the fail-closed design,
+    // NOT a regression: the degraded artifact is still schema-shaped and every figure still
+    // cites a real governed record; its only bar to export is the placeholder gate. Unlike
+    // the other three agents (whose static tiers fully validate), PPBE's export validator is
+    // now export-gated, so a "valid" degraded artifact here means "structurally sound and the
+    // only block is the unedited placeholder."
+    const refs = allowedSourceRefs(exhibitInput);
+    const check = validatePPBEExhibitDraft(outcome.draft, refs);
+    const errs = check.valid ? [] : (check as { valid: false; errors: string[] }).errors;
+    const tracesToReal = outcome.draft.figures.every((f) => refs.has(f.source_workflow_step_id));
+    const onlyPlaceholderBlocks = !check.valid && errs.length > 0 && errs.every((e) => /placeholder/.test(e));
+    results.push({
+      agent: "ppbe-exhibit-drafter",
+      mode: "fallback-regression",
+      tier: outcome.tier,
+      validatorPassed: tracesToReal && onlyPlaceholderBlocks,
+      detail: `${outcome.detail ?? ""} F-51: static tier schema+source valid; export gate correctly holds unedited placeholder`.trim(),
+    });
     expect(outcome.tier).toBe("static");
-    expect(valid).toBe(true);
+    expect(tracesToReal).toBe(true);
+    expect(check.valid).toBe(false);
+    expect(onlyPlaceholderBlocks).toBe(true);
   });
 
   it("coordination assistant falls back to a digest that proposes nothing", async () => {
@@ -300,10 +320,19 @@ describeLive("PPBE smoke — LIVE half: first real-model exposure of the four ap
       ctx("ppbe-exhibit-drafter", "SCRIBE", "smoke-live-ppbe-exhibit-alpha"),
       { ...live, cacheGet: () => null, cacheSet: () => undefined }
     );
-    const valid = validatePPBEExhibitDraft(outcome.draft, allowedSourceRefs(exhibitInput)).valid;
+    const refs = allowedSourceRefs(exhibitInput);
+    const valid = validatePPBEExhibitDraft(outcome.draft, refs).valid;
     results.push({ agent: "ppbe-exhibit-drafter", mode: "live", tier: outcome.tier, validatorPassed: valid, detail: outcome.detail });
     expect(["live", "static"]).toContain(outcome.tier);
-    expect(valid).toBe(true);
+    // F-51 (Session 126): a genuine live draft has completed content and passes the validator;
+    // a fail-closed degradation to the static tier now (correctly) does NOT pass the export
+    // validator (unedited placeholder), so only assert validity on the live path, and check the
+    // static path is still schema+source sound.
+    if (outcome.tier === "live") {
+      expect(valid).toBe(true);
+    } else {
+      expect(outcome.draft.figures.every((f) => refs.has(f.source_workflow_step_id))).toBe(true);
+    }
   });
 
   it("ppbe-coordination-assistant — one live digest against the seeded meeting-notes corpus", async () => {

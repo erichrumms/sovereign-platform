@@ -565,7 +565,14 @@ describe("PRELIMINARY V&V — SCRIBE exhibits behind the DOUBLE gate + CLEAR + d
   const refs = allowedSourceRefs(input);
 
   async function liveDraft(): Promise<PPBEExhibitDraft> {
-    const body = staticExhibitDraft(input); // schema-true draft as the fake live body
+    // A real live model returns COMPLETED prose. Build the fake live body from the static
+    // draft but with a real narrative — F-51 (Session 126) makes the raw static fallback fail
+    // validatePPBEExhibitDraft (unedited placeholder), so it can no longer stand in for a live
+    // body: parseExhibitDraft would reject it and the tier would fall back to static.
+    const body: PPBEExhibitDraft = {
+      ...staticExhibitDraft(input),
+      narrative: "SYNTH completed Budget Exhibit narrative: obligations are presented against the cited governed records.",
+    };
     const outcome = await runExhibitDraft(
       input,
       "SYNTH PROMPT",
@@ -583,11 +590,16 @@ describe("PRELIMINARY V&V — SCRIBE exhibits behind the DOUBLE gate + CLEAR + d
   it("drafts validate in all three modes; the double gate blocks each half alone and passes with both", async () => {
     const draft = await liveDraft();
     expect(validatePPBEExhibitDraft(draft, refs).valid).toBe(true);
-    // Static drafts in the other two modes also validate (thin-data static tier).
+    // A COMPLETED draft validates in the other two modes; the UNEDITED static fallback is held
+    // by the placeholder gate until a human completes it (F-51, Session 126) — schema and figure
+    // traceability are intact, so a real narrative is all that's needed to pass.
     for (const mode of ["CONGRESSIONAL_JUSTIFICATION", "EVALUATION_REPORT"] as const) {
       const modeInput = { ...input, mode, findings: [evaluationFinding("SYNTH-EF-1", true)] };
+      const modeRefs = allowedSourceRefs(modeInput);
+      const raw = staticExhibitDraft(modeInput);
+      expect(validatePPBEExhibitDraft(raw, modeRefs).valid).toBe(false); // unedited notice held by the gate
       expect(
-        validatePPBEExhibitDraft(staticExhibitDraft(modeInput), allowedSourceRefs(modeInput)).valid
+        validatePPBEExhibitDraft({ ...raw, narrative: `SYNTH completed ${mode} narrative.` }, modeRefs).valid
       ).toBe(true);
     }
 
@@ -769,12 +781,21 @@ describe("SECOND PASS — re-confirmation of every first-pass guarantee under se
       plan_source_step_id: "SYNTH-flowpath-ppbe-elicitation-01",
     };
     const refs = allowedSourceRefs(input);
-    const draft = staticExhibitDraft(input);
+    // A COMPLETED draft (real narrative) exercises the double gate. F-51 (Session 126): the raw
+    // static fallback is held by the placeholder gate that recordExhibitSignOff re-runs, so an
+    // UNEDITED fallback can never open the gate — a separate assertion below proves that.
+    const draft: PPBEExhibitDraft = {
+      ...staticExhibitDraft(input),
+      narrative: "SYNTH completed Budget Exhibit narrative over the seeded ALPHA obligations.",
+    };
     expect(validatePPBEExhibitDraft(draft, refs).valid).toBe(true);
     const meta = { program_id: alpha.program_id, fiscal_year: alpha.fiscal_year };
     expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, NOTE, false, sink).ok).toBe(false);
     expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, "no", true, sink).ok).toBe(false);
     expect(recordExhibitSignOff(draft, meta, refs, OPERATOR, NOTE, true, sink).ok).toBe(true);
+    // F-51: the UNEDITED static fallback cannot open the gate even with both CLEAR and a note.
+    const rawStatic = staticExhibitDraft(input);
+    expect(recordExhibitSignOff(rawStatic, meta, refs, OPERATOR, NOTE, true, sink).ok).toBe(false);
   });
 
   it("all four COUNSEL PPBE decision types still produce signed records over seeded ids", () => {
