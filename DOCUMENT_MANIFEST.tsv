@@ -291,3 +291,10 @@ SOVEREIGN_Session128_Handoff.md|repo|96ea10f57ae9f1551185fcd751b26d84971f8f1ee48
 # rows (lines 130-132) with SHAs matching disk exactly. D2 not triggered (no missing-row gap).
 # No file content or manifest data row changed; only this handoff's own tracking row added.
 SOVEREIGN_Session129_Handoff.md|repo|14a8f90d14663d4a57ccdd7f8d4c4b3089fdb0957448bd6437094173619f1826|212|Session 129 Handoff — investigation only: STRATA docs/37-39 confirmed present, committed (latest 9ae2d94), manifest rows 130-132 with matching SHAs; D2 not triggered (no gap, unlike S128 GD Registry); no content or data-row change; contract v1.28 unchanged; 2126+195=2321; terminal HEAD c328119|2026-08-20
+
+# --- Repo root: Session 130 close (place Lesson 46 into AGENT_REFERENCE.md — PLACEMENT) ---
+# Mechanical placement of Governance-Agent-authored content (SOVEREIGN_New_Lesson_Draft_20260820.md)
+# per CLAUDE.md §4. AGENT_REFERENCE.md row above updated (SHA 6ea9af80, line_count 2319, Lessons
+# 1-46 continuous). Version header remains v3.11 — bump to v3.12 + changelog/Supersedes/footer is
+# Governance-Agent authorship, surfaced in F-130-1 of the handoff, NOT done this session.
+SOVEREIGN_Session130_Handoff.md|repo|8725f4bacfb081641169d0a71bb78c8c1247578f55d0796e6909ef741917fa0d|206|Session 130 Handoff — placement only: Lesson 46 (consistency-survey/VIGIL) placed in AGENT_REFERENCE.md from authored draft; Lessons 1-46 continuous; §7 version-chain PASS; §6 manifest SHA regenerated; v3.12 version bump left for Governance Agent (F-130-1); no code/contract change; 2126+195=2321; terminal HEAD 9e6d4d6|2026-08-21
